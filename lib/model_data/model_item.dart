@@ -8,9 +8,10 @@ class ModelItem {
       _idKategoriItem,
       _urlGambar,
       _idCabang,
+      _tanggalItem,
       _barcode;
   final double _qtyItem;
-  final bool _statusCondiment;
+  final bool _statusCondiment, _statusItem;
 
   ModelItem({
     required String uidUser,
@@ -23,6 +24,8 @@ class ModelItem {
     required double qtyItem,
     required String idCabang,
     required String barcode,
+    required bool statusItem,
+    required String tanggalItem,
   }) : _uidUser = uidUser,
        _namaItem = namaItem,
        _idItem = idItem,
@@ -32,7 +35,9 @@ class ModelItem {
        _urlGambar = urlGambar,
        _qtyItem = qtyItem,
        _idCabang = idCabang,
-       _barcode = barcode;
+       _barcode = barcode,
+       _statusItem = statusItem,
+       _tanggalItem = tanggalItem;
 
   String get getuidUser => _uidUser;
   String get getnamaItem => _namaItem;
@@ -44,6 +49,8 @@ class ModelItem {
   double get getqtyitem => _qtyItem;
   String get getidCabang => _idCabang;
   String get getBarcode => _barcode;
+  bool get getStatusItem => _statusItem;
+  String get getTanggalItem => _tanggalItem;
 
   set setuidUser(String value) => _uidUser;
   set setnamaItem(String value) => _namaItem;
@@ -55,6 +62,8 @@ class ModelItem {
   set setqtyItem(double value) => _qtyItem;
   set setidCabng(String value) => _idCabang;
   set setBarcode(String value) => _barcode;
+  set setStatusItem(bool value) => _statusItem;
+  String setTanggalItem(bool value) => _tanggalItem;
 
   Map<String, dynamic> convertToMap() {
     return {
@@ -68,6 +77,7 @@ class ModelItem {
       'qty_item': getqtyitem,
       'id_cabang': getidCabang,
       'barcode': getBarcode,
+      'status_item': getStatusItem,
     };
   }
 
@@ -92,6 +102,8 @@ class ModelItem {
         qtyItem: dataItem['qty_item'].toDouble(),
         idCabang: dataItem['id_cabang'],
         barcode: dataItem['barcode'],
+        statusItem: dataItem['status_item'],
+        tanggalItem: dataItem['tanggal_item'],
       );
     }).toList();
   }

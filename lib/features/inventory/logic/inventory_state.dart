@@ -1,9 +1,30 @@
-import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 
-class InventoryState {}
+class InventoryState {
+  final String selectedFilter;
+  final String selectedStatus;
+  final List<ModelItem> filteredItems;
+
+  InventoryState({
+    this.selectedFilter = "A-Z",
+    this.selectedStatus = "Active",
+    this.filteredItems = const [],
+  });
+
+  InventoryState copyWith({
+    String? selectedFilter,
+    String? selectedStatus,
+    List<ModelItem>? filteredItems,
+  }) {
+    return InventoryState(
+      selectedFilter: selectedFilter ?? this.selectedFilter,
+      selectedStatus: selectedStatus ?? this.selectedStatus,
+      filteredItems: filteredItems ?? this.filteredItems,
+    );
+  }
+}
 
 class InventoryInitial extends InventoryState {}
 
@@ -14,14 +35,33 @@ class InventoryError extends InventoryState {
   InventoryError(this.message);
 }
 
-class InventoryLoaded extends InventoryState {
+class InventoryCabangLoaded extends InventoryState {
   final List<ModelCabang> datacabang;
-  final List<ModelItem> dataItem;
-  final List<ModelKategori> dataKategori;
+  final String? selectedCabang;
+  final String? selectedIDCabang;
 
-  InventoryLoaded({
+  InventoryCabangLoaded({
     required this.datacabang,
-    required this.dataItem,
-    required this.dataKategori,
+    this.selectedCabang,
+    this.selectedIDCabang,
   });
+}
+
+class InventoryKategoriLoaded extends InventoryState {
+  final List<ModelKategori> dataKategori;
+  final String? selectedKategori;
+  final String? selectedIDKategori;
+
+  InventoryKategoriLoaded({
+    required this.dataKategori,
+    required this.selectedKategori,
+    required this.selectedIDKategori,
+  });
+}
+
+class InventoryItemLoaded extends InventoryState {
+  final List<ModelItem> dataItem;
+  final List<ModelItem> dataItemFiltered;
+
+  InventoryItemLoaded({required this.dataItem, required this.dataItemFiltered});
 }

@@ -17,7 +17,15 @@ class UiInventory extends StatefulWidget {
 }
 
 class _UiInventoryState extends State<UiInventory> {
-  List<String> dummyitem = ["item 1", "item2", "item 3"];
+  List<String> filters = [
+    "A-Z",
+    "Z-A",
+    "Terbaru",
+    "Terlama",
+    "Stock +",
+    "Stock -",
+  ];
+  List<String> statusItem = ["Active", "Deactive"];
 
   bool isOpen = false;
 
@@ -39,6 +47,7 @@ class _UiInventoryState extends State<UiInventory> {
         );
         pageControllerBottom.animateToPage(
           goto,
+
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
@@ -153,31 +162,80 @@ class _UiInventoryState extends State<UiInventory> {
           ],
         ),
         Flexible(
-          fit: FlexFit.loose,
-          child: BlocSelector<InventoryBloc, InventoryState, List<ModelCabang>>(
-            selector: (state) {
-              if (state is InventoryLoaded) {
-                return state.datacabang;
-              }
-              return [];
-            },
-            builder: (context, state) {
-              if (state.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return DropdownButtonFormField<ModelCabang>(
-                value: state.first,
-                items: state
-                    .map(
-                      (map) => DropdownMenuItem(
-                        value: map,
-                        child: Text(map.getdaerahCabang),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {},
-              );
-            },
+          child: Row(
+            children: [
+              Flexible(
+                flex: 1,
+                fit: FlexFit.loose,
+                child: DropdownButtonFormField(
+                  initialValue: filters.first,
+                  items: filters
+                      .map(
+                        (map) => DropdownMenuItem(
+                          value: map,
+                          child: Text(map, style: lv05TextStyle),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {},
+                ),
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                fit: FlexFit.loose,
+                flex: 2,
+                child:
+                    BlocSelector<
+                      InventoryBloc,
+                      InventoryState,
+                      List<ModelCabang>
+                    >(
+                      selector: (state) {
+                        if (state is InventoryLoaded) {
+                          return state.datacabang;
+                        }
+                        return [];
+                      },
+                      builder: (context, state) {
+                        if (state.isEmpty) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return DropdownButtonFormField<ModelCabang>(
+                          initialValue: state.first,
+                          items: state
+                              .map(
+                                (map) => DropdownMenuItem(
+                                  value: map,
+                                  child: Text(map.getdaerahCabang),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) {},
+                        );
+                      },
+                    ),
+              ),
+
+              const SizedBox(width: 10),
+              Flexible(
+                flex: 1,
+                fit: FlexFit.loose,
+                child: DropdownButtonFormField(
+                  initialValue: statusItem.first,
+                  items: statusItem
+                      .map(
+                        (map) => DropdownMenuItem(
+                          value: map,
+                          child: Text(map, style: lv05TextStyle),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {},
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(

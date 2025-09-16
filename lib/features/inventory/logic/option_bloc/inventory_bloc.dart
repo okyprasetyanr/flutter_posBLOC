@@ -10,7 +10,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<AmbilCabang>((event, emit) async {
       emit(InventoryLoading());
       try {
-        final cabangs = await repo.fetchCabang();
+        final cabangs = await repo.ambilCabang();
         emit(
           InventoryLoaded(datacabang: cabangs, dataItem: [], dataKategori: []),
         );
