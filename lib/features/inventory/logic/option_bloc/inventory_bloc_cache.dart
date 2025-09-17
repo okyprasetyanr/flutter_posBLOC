@@ -1,26 +1,42 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:intl/intl.dart';
 
 class InventoryBlocCache extends Bloc<InventoryEvent, InventoryState> {
-  final InventoryCabangLoaded cacheCabangrepo;
-  final InventoryKategoriLoaded cacheKategorirepo;
-  final InventoryItemLoaded cacheItemrepo;
+  final InventoryRepositoryCache cacherepo;
 
   InventoryBlocCache(this.cacherepo) : super(InventoryInitial()) {
     on<FilterItem>((event, emit) async {
       emit(InventoryLoading());
-      List<ModelItem> item = cacherepo.dataItem;
-      _filterItem(item, event.status, event.filter);
-      emit(
-        InventoryState(
-          filteredItems: _filterItem(item, event.status, event.filter),
-          selectedFilter: event.filter,
-          selectedStatus: event.status,
-        ),
-      );
+      try {
+        List<ModelItem> item = cacherepo.cache!.dataItem;
+        emit(
+          InventoryFilteredItem(
+            dataItem: _filterItem(item, event.status, event.filter),
+          ),
+        );
+      } catch (e) {
+        emit(InventoryError("Error: $e"));
+      }
+    });
+
+    on<FilterKategori>((event, emit) {
+      emit(InventoryLoading());
+      try {
+        emit(
+          InventoryFilteredKategory(
+            dataKategori: cacherepo.cache!.dataKategori
+                .where((data) => data.getidCabang == event.idCabang)
+                .toList(),
+          ),
+        );
+      } catch (e) {
+        emit(InventoryError("Error: $e"));
+      }
     });
   }
 

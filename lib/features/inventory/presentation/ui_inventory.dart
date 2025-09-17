@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/features/inventory/logic/option_bloc/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/logic/option_bloc/inventory_bloc_cache.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template_responsif/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/widget_navigation_gesture.dart';
+import 'package:flutter_pos/widget/widget_snack_bar.dart';
 import 'package:provider/provider.dart';
 
 class UiInventory extends StatefulWidget {
@@ -26,6 +31,18 @@ class _UiInventoryState extends State<UiInventory> {
     "Stock -",
   ];
   List<String> statusItem = ["Active", "Deactive"];
+  String? selectedFilterItem;
+  String? selectedStatusItem;
+  String? selectedkategori;
+  String? selectedIdkategori;
+
+  bool checkcondiment = false;
+  bool condiment = false;
+  TextEditingController namaItemController = TextEditingController();
+  TextEditingController cabangItemController = TextEditingController();
+  TextEditingController hargaItemController = TextEditingController();
+  TextEditingController kodeBarcodeController = TextEditingController();
+  TextEditingController namaKategoriController = TextEditingController();
 
   bool isOpen = false;
 
@@ -58,11 +75,20 @@ class _UiInventoryState extends State<UiInventory> {
   @override
   void initState() {
     super.initState();
+    final bloc = context.read<InventoryBloc>();
+    bloc.add(AmbilData());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final bloc = context.read<InventoryBloc>();
-      bloc.add(AmbilCabang());
-    });
+    final blocInitItem = context.read<InventoryBlocCache>();
+    blocInitItem.add(
+      FilterItem(filter: statusItem.first, status: filters.first),
+    );
+
+    final blocInitKategori = context.read<InventoryBlocCache>().state;
+    if (blocInitKategori is InventoryLoaded) {
+      context.read<InventoryBlocCache>().add(
+        FilterKategori(idCabang: blocInitKategori.idCabang!),
+      );
+    }
   }
 
   @override
@@ -165,6 +191,7 @@ class _UiInventoryState extends State<UiInventory> {
           child: Row(
             children: [
               Flexible(
+                //FilterItem
                 flex: 1,
                 fit: FlexFit.loose,
                 child: DropdownButtonFormField(
@@ -177,7 +204,16 @@ class _UiInventoryState extends State<UiInventory> {
                         ),
                       )
                       .toList(),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    selectedFilterItem = value;
+                    final bloc = context.read<InventoryBlocCache>();
+                    bloc.add(
+                      FilterItem(
+                        filter: selectedFilterItem!,
+                        status: selectedStatusItem!,
+                      ),
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: 10),
@@ -220,6 +256,7 @@ class _UiInventoryState extends State<UiInventory> {
 
               const SizedBox(width: 10),
               Flexible(
+                //StatusItem
                 flex: 1,
                 fit: FlexFit.loose,
                 child: DropdownButtonFormField(
@@ -232,39 +269,65 @@ class _UiInventoryState extends State<UiInventory> {
                         ),
                       )
                       .toList(),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    selectedStatusItem = value;
+                    final bloc = context.read<InventoryBlocCache>();
+                    bloc.add(
+                      FilterItem(
+                        filter: selectedFilterItem!,
+                        status: selectedStatusItem!,
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
           ),
         ),
         Expanded(
-          child: BlocSelector<InventoryBloc, InventoryState, List<ModelCabang>>(
-            selector: (state) {
-              if (state is InventoryLoaded) {
-                return state.datacabang;
-              }
-              return [];
-            },
-            builder: (context, state) {
-              return GridView.builder(
-                itemCount: state.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                  childAspectRatio: 2 / 3,
-                ),
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Text(state[index].getdaerahCabang, style: lv05TextStyle),
-                    ],
+          child:
+              BlocSelector<InventoryBlocCache, InventoryState, List<ModelItem>>(
+                selector: (state) {
+                  if (state is InventoryFilteredItem) {
+                    return state.dataItem;
+                  }
+                  return [];
+                },
+                builder: (context, state) {
+                  return GridView.builder(
+                    itemCount: state.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                      childAspectRatio: 2 / 3,
+                    ),
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          Image.asset("assetes/logo.png"),
+                          const SizedBox(height: 5),
+                          Text(
+                            state[index].getnamaItem,
+                            style: lv05TextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            state[index].gethargaItem,
+                            style: lv05TextStyle,
+                            textAlign: TextAlign.left,
+                          ),
+                          Text(
+                            state[index].getqtyitem.toString(),
+                            style: lv0TextStyleRED,
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
-              );
-            },
-          ),
+              ),
         ),
       ],
     );
@@ -316,6 +379,199 @@ class _UiInventoryState extends State<UiInventory> {
             ),
           ),
         ),
+        customTextField("Nama Item", namaItemController),
+        const SizedBox(height: 10),
+        customTextField("Kode/Barcode", kodeBarcodeController),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: customTextField("Harga", hargaItemController),
+            ),
+            const SizedBox(width: 20),
+            Flexible(
+              flex: 1,
+              fit: FlexFit.loose,
+              child: GestureDetector(
+                onTap: () => setState(() => condiment = !condiment),
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 500),
+                  width: 135,
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  height: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: condiment ? AppColor.primary : Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: (condiment ? Colors.black : Colors.green)
+                            .withValues(alpha: 0.4),
+                        blurStyle: BlurStyle.outer,
+                        blurRadius: 15,
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    children: [
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        left: condiment ? -50 : 5,
+                        duration: Duration(milliseconds: 500),
+                        child: Icon(
+                          Icons.check_circle_outline_rounded,
+                          size: 25,
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        left: condiment ? 100 : 150,
+                        duration: Duration(milliseconds: 500),
+                        child: Icon(
+                          Icons.check_circle_outline_rounded,
+                          size: 25,
+                          color: Colors.white,
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        top: 2,
+                        left: condiment ? -100 : 38,
+                        duration: Duration(milliseconds: 500),
+                        child: Text("Normal", style: lv1TextStyle),
+                      ),
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        left: condiment ? 10 : 150,
+                        top: 2,
+                        duration: Duration(milliseconds: 500),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text("Condiment", style: lv1TextStyleWhite),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsetsGeometry.only(left: 10, right: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child:
+                    BlocSelector<
+                      InventoryBloc,
+                      InventoryState,
+                      List<ModelKategori>
+                    >(
+                      selector: (state) {
+                        if (state is InventoryFilteredKategory) {
+                          return state.dataKategori;
+                        }
+                        return [];
+                      },
+                      builder: (context, state) {
+                        return DropdownButtonFormField<ModelKategori>(
+                          style: lv05TextStyle,
+                          decoration: InputDecoration(
+                            label: Text("Pilih Kategori", style: lv1TextStyle),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          hint: Text(
+                            state.isNotEmpty
+                                ? state.first.getnamaKategori
+                                : "Pilih Kategori",
+                            style: lv1TextStyle,
+                          ),
+                          items: state
+                              .map(
+                                (map) => DropdownMenuItem<ModelKategori>(
+                                  value: map,
+                                  child: Text(map.getnamaKategori),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) {
+                            selectedkategori = value!.getnamaKategori;
+                            selectedIdkategori = value.getidKategori;
+                          },
+                        );
+                      },
+                    ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child:
+                    BlocSelector<InventoryBlocCache, InventoryState, String?>(
+                      selector: (state) {
+                        if (state is InventoryLoaded) {
+                          return state.daerahCabang;
+                        }
+                        return "Kosong";
+                      },
+                      builder: (context, state) {
+                        if (state == null) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        cabangItemController.text = state!;
+                        return TextField(
+                          style: lv1TextStyleDisable,
+                          enabled: false,
+                          controller: cabangItemController,
+                          decoration: const InputDecoration(
+                            labelText: "Cabang",
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                        );
+                      },
+                    ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10),
+        Expanded(
+          flex: 1,
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  label: Text("Hapus", style: lv0TextStyleRED),
+                  icon: Icon(Icons.delete, color: Colors.white),
+                  style: ElevatedButton.styleFrom(elevation: 4),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    if (namaItemController.text.isEmpty ||
+                        hargaItemController.text.isEmpty ||
+                        kodeBarcodeController.text.isEmpty ||
+                        selectedkategori == null) {
+                      customSnackBar(context, "Data belum lengkap!");
+                    } else {}
+                  },
+                  label: Text("Simpan", style: lv1TextStyleWhite),
+                  icon: Icon(Icons.save, color: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 4,
+                    backgroundColor: AppColor.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -344,5 +600,19 @@ class _UiInventoryState extends State<UiInventory> {
 
   Widget rowContentAnim(Icon iconContent, Text textCOntent) {
     return Row(children: [iconContent, textCOntent]);
+  }
+
+  Widget customTextField(String text, TextEditingController controller) {
+    return TextFormField(
+      controller: controller,
+      style: lv05TextStyle,
+      decoration: InputDecoration(
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        label: Text(text, style: lv05TextStyle),
+        hint: Text("$text...", style: lv05TextStyle),
+        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
   }
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository.dart';
-import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
+import 'package:flutter_pos/features/inventory/logic/option_bloc/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/logic/option_bloc/inventory_bloc_cache.dart';
 import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/screen_main_menu.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -17,9 +19,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final repo = InventoryRepository();
+  final repoCache = InventoryRepositoryCache();
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => InventoryBloc(repo))],
+      providers: [
+        BlocProvider(create: (context) => InventoryBloc(repo, repoCache)),
+        BlocProvider(create: (context) => InventoryBlocCache(repoCache)),
+      ],
       child: MaterialApp(
         home: const ScreenLogin(),
         debugShowCheckedModeBanner: false,

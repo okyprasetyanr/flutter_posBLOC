@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ModelKategori {
-  final String _namaKategori, _idkategori;
-  ModelKategori({required String namaKategori, required String idkategori})
-    : _namaKategori = namaKategori,
-      _idkategori = idkategori;
+  final String _namaKategori, _idkategori, _idCabang;
+  ModelKategori({
+    required String namaKategori,
+    required String idkategori,
+    required String idCabang,
+  }) : _namaKategori = namaKategori,
+       _idkategori = idkategori,
+       _idCabang = idkategori;
 
   Map<String, dynamic> convertMap() {
     return {'nama_kategori': _namaKategori, 'id_kategori': _idkategori};
@@ -12,12 +16,18 @@ class ModelKategori {
 
   String get getnamaKategori => _namaKategori;
   String get getidKategori => _idkategori;
+  String get getidCabang => _idCabang;
 
   set setnamKategori(String value) => _namaKategori;
   set setidKategori(String value) => _idkategori;
+  set setidCaabng(String value) => _idCabang;
 
   Map<String, dynamic> convertToMap() {
-    return {'nama_kategori': getnamaKategori, 'id_kategori': getidKategori};
+    return {
+      'nama_kategori': getnamaKategori,
+      'id_kategori': getidKategori,
+      'id_cabang': getidCabang,
+    };
   }
 
   Future<void> pushData(String uidUser) async {
@@ -30,6 +40,7 @@ class ModelKategori {
       return ModelKategori(
         namaKategori: dataKetegori['nama_kategori'],
         idkategori: map.id,
+        idCabang: map['id_cabang'],
       );
     }).toList();
   }
