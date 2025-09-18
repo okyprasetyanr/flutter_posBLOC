@@ -18,9 +18,9 @@ class InventoryFilteredItem extends InventoryState {
   InventoryFilteredItem({required this.dataItem});
 }
 
-class InventoryFilteredKategory extends InventoryState {
+class InventoryFilteredCategory extends InventoryState {
   final List<ModelKategori> dataKategori;
-  InventoryFilteredKategory({required this.dataKategori});
+  InventoryFilteredCategory({required this.dataKategori});
 }
 
 class InventoryLoaded extends InventoryState {

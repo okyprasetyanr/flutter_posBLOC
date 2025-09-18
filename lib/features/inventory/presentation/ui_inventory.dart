@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/features/inventory/logic/option_bloc/inventory_bloc.dart';
-import 'package:flutter_pos/features/inventory/logic/option_bloc/inventory_bloc_cache.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
@@ -78,15 +77,15 @@ class _UiInventoryState extends State<UiInventory> {
     final bloc = context.read<InventoryBloc>();
     bloc.add(AmbilData());
 
-    final blocInitItem = context.read<InventoryBlocCache>();
+    final blocInitItem = context.read<InventoryBloc>();
     blocInitItem.add(
       FilterItem(filter: statusItem.first, status: filters.first),
     );
 
-    final blocInitKategori = context.read<InventoryBlocCache>().state;
+    final blocInitKategori = context.read<InventoryBloc>().state;
     if (blocInitKategori is InventoryLoaded) {
-      context.read<InventoryBlocCache>().add(
-        FilterKategori(idCabang: blocInitKategori.idCabang!),
+      context.read<InventoryBloc>().add(
+        FilterCategory(idCabang: blocInitKategori.idCabang!),
       );
     }
   }
@@ -206,7 +205,7 @@ class _UiInventoryState extends State<UiInventory> {
                       .toList(),
                   onChanged: (value) {
                     selectedFilterItem = value;
-                    final bloc = context.read<InventoryBlocCache>();
+                    final bloc = context.read<InventoryBloc>();
                     bloc.add(
                       FilterItem(
                         filter: selectedFilterItem!,
@@ -271,7 +270,7 @@ class _UiInventoryState extends State<UiInventory> {
                       .toList(),
                   onChanged: (value) {
                     selectedStatusItem = value;
-                    final bloc = context.read<InventoryBlocCache>();
+                    final bloc = context.read<InventoryBloc>();
                     bloc.add(
                       FilterItem(
                         filter: selectedFilterItem!,
@@ -285,49 +284,48 @@ class _UiInventoryState extends State<UiInventory> {
           ),
         ),
         Expanded(
-          child:
-              BlocSelector<InventoryBlocCache, InventoryState, List<ModelItem>>(
-                selector: (state) {
-                  if (state is InventoryFilteredItem) {
-                    return state.dataItem;
-                  }
-                  return [];
-                },
-                builder: (context, state) {
-                  return GridView.builder(
-                    itemCount: state.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                      childAspectRatio: 2 / 3,
-                    ),
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Image.asset("assetes/logo.png"),
-                          const SizedBox(height: 5),
-                          Text(
-                            state[index].getnamaItem,
-                            style: lv05TextStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            state[index].gethargaItem,
-                            style: lv05TextStyle,
-                            textAlign: TextAlign.left,
-                          ),
-                          Text(
-                            state[index].getqtyitem.toString(),
-                            style: lv0TextStyleRED,
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      );
-                    },
+          child: BlocSelector<InventoryBloc, InventoryState, List<ModelItem>>(
+            selector: (state) {
+              if (state is InventoryFilteredItem) {
+                return state.dataItem;
+              }
+              return [];
+            },
+            builder: (context, state) {
+              return GridView.builder(
+                itemCount: state.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                  childAspectRatio: 2 / 3,
+                ),
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Image.asset("assetes/logo.png"),
+                      const SizedBox(height: 5),
+                      Text(
+                        state[index].getnamaItem,
+                        style: lv05TextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        state[index].gethargaItem,
+                        style: lv05TextStyle,
+                        textAlign: TextAlign.left,
+                      ),
+                      Text(
+                        state[index].getqtyitem.toString(),
+                        style: lv0TextStyleRED,
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
                   );
                 },
-              ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -470,7 +468,7 @@ class _UiInventoryState extends State<UiInventory> {
                       List<ModelKategori>
                     >(
                       selector: (state) {
-                        if (state is InventoryFilteredKategory) {
+                        if (state is InventoryFilteredCategory) {
                           return state.dataKategori;
                         }
                         return [];
@@ -506,33 +504,29 @@ class _UiInventoryState extends State<UiInventory> {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child:
-                    BlocSelector<InventoryBlocCache, InventoryState, String?>(
-                      selector: (state) {
-                        if (state is InventoryLoaded) {
-                          return state.daerahCabang;
-                        }
-                        return "Kosong";
-                      },
-                      builder: (context, state) {
-                        if (state == null) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        cabangItemController.text = state!;
-                        return TextField(
-                          style: lv1TextStyleDisable,
-                          enabled: false,
-                          controller: cabangItemController,
-                          decoration: const InputDecoration(
-                            labelText: "Cabang",
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                          ),
-                        );
-                      },
-                    ),
+                child: BlocSelector<InventoryBloc, InventoryState, String?>(
+                  selector: (state) {
+                    if (state is InventoryLoaded) {
+                      return state.daerahCabang;
+                    }
+                    return null;
+                  },
+                  builder: (context, state) {
+                    if (state == null) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    cabangItemController.text = state!;
+                    return TextField(
+                      style: lv1TextStyleDisable,
+                      enabled: false,
+                      controller: cabangItemController,
+                      decoration: const InputDecoration(
+                        labelText: "Cabang",
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),

@@ -8,7 +8,7 @@ class FilterItem extends InventoryEvent {
   FilterItem({required this.filter, required this.status});
 }
 
-class FilterKategori extends InventoryEvent {
+class FilterCategory extends InventoryEvent {
   final String idCabang;
-  FilterKategori({required this.idCabang});
+  FilterCategory({required this.idCabang});
 }
