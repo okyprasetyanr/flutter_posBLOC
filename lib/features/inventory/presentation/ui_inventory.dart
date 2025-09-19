@@ -515,7 +515,7 @@ class _UiInventoryState extends State<UiInventory> {
                     if (state == null) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    cabangItemController.text = state!;
+                    cabangItemController.text = state;
                     return TextField(
                       style: lv1TextStyleDisable,
                       enabled: false,
