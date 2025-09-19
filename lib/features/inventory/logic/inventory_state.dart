@@ -13,11 +13,6 @@ class InventoryError extends InventoryState {
   InventoryError(this.message);
 }
 
-class InventoryFilteredItem extends InventoryState {
-  final List<ModelItem> dataItem;
-  InventoryFilteredItem({required this.dataItem});
-}
-
 class InventoryFilteredCategory extends InventoryState {
   final List<ModelKategori> dataKategori;
   InventoryFilteredCategory({required this.dataKategori});
@@ -26,15 +21,21 @@ class InventoryFilteredCategory extends InventoryState {
 class InventoryLoaded extends InventoryState {
   final String? idCabang;
   final String? daerahCabang;
-  final List<ModelCabang> datacabang;
-  final List<ModelItem> dataItem;
-  final List<ModelKategori> dataKategori;
+  final List<ModelCabang>? datacabang;
+  final List<ModelItem>? dataItem;
+  final List<ModelKategori>? dataKategori;
 
   InventoryLoaded({
-    required this.idCabang,
-    required this.daerahCabang,
-    required this.datacabang,
-    required this.dataItem,
-    required this.dataKategori,
+    this.idCabang,
+    this.daerahCabang,
+    this.datacabang,
+    this.dataItem,
+    this.dataKategori,
   });
+}
+
+class InventoryAllFilteredItem extends InventoryState {
+  final List<ModelItem> dataitem;
+
+  InventoryAllFilteredItem({required this.dataitem});
 }

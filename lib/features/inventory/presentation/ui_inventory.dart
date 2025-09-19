@@ -74,20 +74,18 @@ class _UiInventoryState extends State<UiInventory> {
   @override
   void initState() {
     super.initState();
+
+    selectedFilterItem = filters.first;
+    selectedStatusItem = statusItem.first;
+
     final bloc = context.read<InventoryBloc>();
-    bloc.add(AmbilData());
-
-    final blocInitItem = context.read<InventoryBloc>();
-    blocInitItem.add(
-      FilterItem(filter: statusItem.first, status: filters.first),
+    bloc.add(
+      AmbilData(
+        idCabang: null,
+        filter: selectedFilterItem!,
+        status: selectedStatusItem!,
+      ),
     );
-
-    final blocInitKategori = context.read<InventoryBloc>().state;
-    if (blocInitKategori is InventoryLoaded) {
-      context.read<InventoryBloc>().add(
-        FilterCategory(idCabang: blocInitKategori.idCabang!),
-      );
-    }
   }
 
   @override
@@ -194,7 +192,7 @@ class _UiInventoryState extends State<UiInventory> {
                 flex: 1,
                 fit: FlexFit.loose,
                 child: DropdownButtonFormField(
-                  initialValue: filters.first,
+                  initialValue: selectedFilterItem,
                   items: filters
                       .map(
                         (map) => DropdownMenuItem(
@@ -208,6 +206,11 @@ class _UiInventoryState extends State<UiInventory> {
                     final bloc = context.read<InventoryBloc>();
                     bloc.add(
                       FilterItem(
+                        idCabang: context
+                            .read<InventoryBloc>()
+                            .cacheRepo
+                            .cache!
+                            .idCabang!,
                         filter: selectedFilterItem!,
                         status: selectedStatusItem!,
                       ),
@@ -227,7 +230,7 @@ class _UiInventoryState extends State<UiInventory> {
                     >(
                       selector: (state) {
                         if (state is InventoryLoaded) {
-                          return state.datacabang;
+                          return state.datacabang!;
                         }
                         return [];
                       },
@@ -247,7 +250,17 @@ class _UiInventoryState extends State<UiInventory> {
                                 ),
                               )
                               .toList(),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            String idCabang = value!.getidCabang;
+                            final bloc = context.read<InventoryBloc>();
+                            bloc.add(
+                              AmbilData(
+                                idCabang: idCabang,
+                                filter: selectedFilterItem!,
+                                status: selectedStatusItem!,
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -259,7 +272,7 @@ class _UiInventoryState extends State<UiInventory> {
                 flex: 1,
                 fit: FlexFit.loose,
                 child: DropdownButtonFormField(
-                  initialValue: statusItem.first,
+                  initialValue: selectedStatusItem,
                   items: statusItem
                       .map(
                         (map) => DropdownMenuItem(
@@ -273,6 +286,11 @@ class _UiInventoryState extends State<UiInventory> {
                     final bloc = context.read<InventoryBloc>();
                     bloc.add(
                       FilterItem(
+                        idCabang: context
+                            .read<InventoryBloc>()
+                            .cacheRepo
+                            .cache!
+                            .idCabang!,
                         filter: selectedFilterItem!,
                         status: selectedStatusItem!,
                       ),
@@ -286,8 +304,8 @@ class _UiInventoryState extends State<UiInventory> {
         Expanded(
           child: BlocSelector<InventoryBloc, InventoryState, List<ModelItem>>(
             selector: (state) {
-              if (state is InventoryFilteredItem) {
-                return state.dataItem;
+              if (state is InventoryAllFilteredItem) {
+                return state.dataitem;
               }
               return [];
             },
