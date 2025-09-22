@@ -21,6 +21,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<FilterItem>(_onFilteredItem);
 
     on<UploadItem>(_onUploadItem);
+
+    on<SelectedKategori>(_onSelectedKategori);
+
+    on<UploadKategori>(_onUploadKategori);
   }
 
   List<ModelItem> _filterItem(
@@ -132,8 +136,13 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         if (!cekDataItem) {
           final newItems = await repo.ambilItem(event.idCabang!);
           final newKategori = await repo.ambilKategori(event.idCabang!);
-          loadedItem.addAll(newItems);
-          loadedKategori.addAll(newKategori);
+          if (newItems.isNotEmpty) {
+            loadedItem.addAll(newItems);
+          }
+
+          if (newKategori.isNotEmpty) {
+            loadedKategori.addAll(newKategori);
+          }
         }
 
         final daerahCabang = currentState.datacabang
@@ -174,5 +183,29 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .collection("items")
         .doc(event.data.getidItem)
         .set(convertToMapItem(event.data));
+  }
+
+  FutureOr<void> _onSelectedKategori(
+    SelectedKategori event,
+    Emitter<InventoryState> emit,
+  ) {
+    emit(
+      InventorySelectedKategori(
+        dataSelectedKategori: {
+          "nama_kategori": event.selectedKategori['nama_kategori']!,
+          "id_kategori": event.selectedKategori['id_kategori']!,
+        },
+      ),
+    );
+  }
+
+  FutureOr<void> _onUploadKategori(
+    UploadKategori event,
+    Emitter<InventoryState> emit,
+  ) async {
+    await FirebaseFirestore.instance
+        .collection("kategori")
+        .doc(event.data['id_kategori'])
+        .set(event.data);
   }
 }

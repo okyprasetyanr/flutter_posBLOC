@@ -63,7 +63,7 @@ class ModelItem {
   set setidCabng(String value) => _idCabang;
   set setBarcode(String value) => _barcode;
   set setStatusItem(bool value) => _statusItem;
-  String setTanggalItem(bool value) => _tanggalItem;
+  set setTanggalItem(String value) => _tanggalItem;
 
   static List<ModelItem> getDataListItem(QuerySnapshot data) {
     return data.docs.map((map) {
@@ -71,7 +71,7 @@ class ModelItem {
       return ModelItem(
         uidUser: dataItem['uid_user'],
         namaItem: dataItem['nama_item'],
-        idItem: map.id,
+        idItem: dataItem['id_item'],
         hargaItem: dataItem['harga_item'],
         idKategoriItem: dataItem['id_kategori'],
         statusCondiment: dataItem['status_condiment'],

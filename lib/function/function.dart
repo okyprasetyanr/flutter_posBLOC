@@ -53,5 +53,6 @@ Map<String, dynamic> convertToMapItem(ModelItem data) {
     'id_cabang': data.getidCabang,
     'barcode': data.getBarcode,
     'status_item': data.getStatusItem,
+    'tanggal_item': data.getTanggalItem,
   };
 }

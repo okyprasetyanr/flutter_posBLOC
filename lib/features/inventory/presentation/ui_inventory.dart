@@ -176,6 +176,7 @@ class _UiInventoryState extends State<UiInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
@@ -201,139 +202,156 @@ class _UiInventoryState extends State<UiInventory> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton.icon(
+                          style: ButtonStyle(
+                            padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                          ),
                           onPressed: () {},
-                          label: Text("Condiment", style: lv05TextStyle),
+                          label: Text(
+                            "Condiment",
+                            style: lv05TextStyle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           icon: Icon(Icons.check_rounded),
                         ),
                       ),
                     ],
                   ),
-                  Flexible(
-                    child: Row(
-                      children: [
-                        Flexible(
-                          //FilterItem
-                          flex: 1,
-                          fit: FlexFit.loose,
-                          child: DropdownButtonFormField(
-                            initialValue: selectedFilterItem,
-                            items: filters
-                                .map(
-                                  (map) => DropdownMenuItem(
-                                    value: map,
-                                    child: Text(map, style: lv05TextStyle),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              selectedFilterItem = value;
-                              final bloc = context.read<InventoryBloc>();
-                              bloc.add(
-                                FilterItem(
-                                  idCabang:
-                                      (context.read<InventoryBloc>().state
-                                              as InventoryLoaded)
-                                          .idCabang!,
-                                  filter: selectedFilterItem!,
-                                  status: selectedStatusItem!,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          fit: FlexFit.loose,
-                          flex: 2,
-                          child:
-                              BlocSelector<
-                                InventoryBloc,
-                                InventoryState,
-                                List<ModelCabang>
-                              >(
-                                selector: (state) {
-                                  if (state is InventoryLoaded) {
-                                    return state.datacabang;
-                                  }
-                                  return [];
-                                },
-                                builder: (context, state) {
-                                  if (state.isEmpty) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-                                  return DropdownButtonFormField<ModelCabang>(
-                                    initialValue: state.firstWhere(
-                                      (data) =>
-                                          data.getidCabang ==
-                                          context.select<
-                                            InventoryBloc,
-                                            String?
-                                          >(
-                                            (data) =>
-                                                data.state is InventoryLoaded
-                                                ? (data.state
-                                                          as InventoryLoaded)
-                                                      .idCabang
-                                                : "",
-                                          ),
-                                    ),
-                                    items: state
-                                        .map(
-                                          (map) => DropdownMenuItem(
-                                            value: map,
-                                            child: Text(map.getdaerahCabang),
-                                          ),
-                                        )
-                                        .toList(),
-                                    onChanged: (value) {
-                                      String idCabang = value!.getidCabang;
-                                      context.read<InventoryBloc>().add(
-                                        AmbilData(
-                                          idCabang: idCabang,
-                                          filter: selectedFilterItem!,
-                                          status: selectedStatusItem!,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                        ),
 
-                        const SizedBox(width: 10),
-                        Flexible(
-                          //StatusItem
-                          flex: 1,
-                          fit: FlexFit.loose,
-                          child: DropdownButtonFormField(
-                            initialValue: selectedStatusItem,
-                            items: statusItem
-                                .map(
-                                  (map) => DropdownMenuItem(
-                                    value: map,
-                                    child: Text(map, style: lv05TextStyle),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: Flexible(
+                      child: Row(
+                        children: [
+                          Flexible(
+                            //FilterItem
+                            flex: 1,
+                            fit: FlexFit.loose,
+                            child: DropdownButtonFormField(
+                              initialValue: selectedFilterItem,
+                              items: filters
+                                  .map(
+                                    (map) => DropdownMenuItem(
+                                      value: map,
+                                      child: Text(
+                                        map,
+                                        style: lv05TextStyle,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                selectedFilterItem = value;
+                                final bloc = context.read<InventoryBloc>();
+                                bloc.add(
+                                  FilterItem(
+                                    idCabang:
+                                        (context.read<InventoryBloc>().state
+                                                as InventoryLoaded)
+                                            .idCabang!,
+                                    filter: selectedFilterItem!,
+                                    status: selectedStatusItem!,
                                   ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              selectedStatusItem = value;
-                              final bloc = context.read<InventoryBloc>();
-                              bloc.add(
-                                FilterItem(
-                                  idCabang:
-                                      (context.read<InventoryBloc>().state
-                                              as InventoryLoaded)
-                                          .idCabang!,
-                                  filter: selectedFilterItem!,
-                                  status: selectedStatusItem!,
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 10),
+                          Flexible(
+                            fit: FlexFit.loose,
+                            flex: 2,
+                            child:
+                                BlocSelector<
+                                  InventoryBloc,
+                                  InventoryState,
+                                  List<ModelCabang>
+                                >(
+                                  selector: (state) {
+                                    if (state is InventoryLoaded) {
+                                      return state.datacabang;
+                                    }
+                                    return [];
+                                  },
+                                  builder: (context, state) {
+                                    if (state.isEmpty) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                    return DropdownButtonFormField<ModelCabang>(
+                                      initialValue: state.firstWhere(
+                                        (data) =>
+                                            data.getidCabang ==
+                                            context.select<
+                                              InventoryBloc,
+                                              String?
+                                            >(
+                                              (data) =>
+                                                  data.state is InventoryLoaded
+                                                  ? (data.state
+                                                            as InventoryLoaded)
+                                                        .idCabang
+                                                  : "",
+                                            ),
+                                      ),
+                                      items: state
+                                          .map(
+                                            (map) => DropdownMenuItem(
+                                              value: map,
+                                              child: Text(map.getdaerahCabang),
+                                            ),
+                                          )
+                                          .toList(),
+                                      onChanged: (value) {
+                                        String idCabang = value!.getidCabang;
+                                        context.read<InventoryBloc>().add(
+                                          AmbilData(
+                                            idCabang: idCabang,
+                                            filter: selectedFilterItem!,
+                                            status: selectedStatusItem!,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                          ),
+
+                          const SizedBox(width: 10),
+                          Flexible(
+                            //StatusItem
+                            flex: 1,
+                            fit: FlexFit.loose,
+                            child: DropdownButtonFormField(
+                              initialValue: selectedStatusItem,
+                              items: statusItem
+                                  .map(
+                                    (map) => DropdownMenuItem(
+                                      value: map,
+                                      child: Text(map, style: lv05TextStyle),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                selectedStatusItem = value;
+                                final bloc = context.read<InventoryBloc>();
+                                bloc.add(
+                                  FilterItem(
+                                    idCabang:
+                                        (context.read<InventoryBloc>().state
+                                                as InventoryLoaded)
+                                            .idCabang!,
+                                    filter: selectedFilterItem!,
+                                    status: selectedStatusItem!,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(
@@ -344,14 +362,29 @@ class _UiInventoryState extends State<UiInventory> {
                           List<ModelItem>
                         >(
                           selector: (state) {
-                            if (state is InventoryAllFilteredItem) {
-                              return state.dataitem;
+                            if (state is InventoryLoaded) {
+                              return state.dataItem;
                             }
                             return [];
                           },
-                          builder: (context, state) {
+                          builder: (contextBloc, state) {
+                            final items = state
+                                .where(
+                                  (data) =>
+                                      data.getidCabang ==
+                                      contextBloc.select<
+                                        InventoryBloc,
+                                        String?
+                                      >((data) {
+                                        return data.state is InventoryLoaded
+                                            ? (data.state as InventoryLoaded)
+                                                  .idCabang
+                                            : "";
+                                      }),
+                                )
+                                .toList();
                             return GridView.builder(
-                              itemCount: state.length,
+                              itemCount: items.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 4,
@@ -362,22 +395,31 @@ class _UiInventoryState extends State<UiInventory> {
                               itemBuilder: (context, index) {
                                 return Column(
                                   children: [
-                                    Image.asset("assetes/logo.png"),
+                                    Image.asset("assets/logo.png", height: 40),
                                     const SizedBox(height: 5),
                                     Text(
-                                      state[index].getnamaItem,
+                                      items[index].getnamaItem,
                                       style: lv05TextStyle,
                                       textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
-                                    Text(
-                                      state[index].gethargaItem,
-                                      style: lv05TextStyle,
-                                      textAlign: TextAlign.left,
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        formatUang(items[index].gethargaItem),
+                                        style: lv05TextStyle,
+                                        textAlign: TextAlign.left,
+                                      ),
                                     ),
-                                    Text(
-                                      state[index].getqtyitem.toString(),
-                                      style: lv0TextStyleRED,
-                                      textAlign: TextAlign.left,
+
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        items[index].getqtyitem.toString(),
+                                        style: lv0TextStyleRED,
+                                        textAlign: TextAlign.left,
+                                      ),
                                     ),
                                   ],
                                 );
@@ -414,7 +456,18 @@ class _UiInventoryState extends State<UiInventory> {
                               );
                             }
                             return DropdownButtonFormField<ModelCabang>(
-                              style: lv05TextStyle,
+                              style: lv1TextStyle,
+                              initialValue: state.firstWhere(
+                                (data) =>
+                                    data.getidCabang ==
+                                    context.select<InventoryBloc, String?>(
+                                      (value) => value.state is InventoryLoaded
+                                          ? (value.state as InventoryLoaded)
+                                                .idCabang
+                                          : "",
+                                    ),
+                                orElse: () => state.first,
+                              ),
                               items: state
                                   .map(
                                     (map) => DropdownMenuItem(
@@ -445,29 +498,31 @@ class _UiInventoryState extends State<UiInventory> {
                         >(
                           selector: (state) => state is InventoryLoaded
                               ? state.dataKategori
-                                    .where(
-                                      (data) =>
-                                          data.getidCabang ==
-                                          context.select<
-                                            InventoryBloc,
-                                            String?
-                                          >(
-                                            (data) =>
-                                                data.state is InventoryLoaded
-                                                ? (data.state
-                                                          as InventoryLoaded)
-                                                      .idCabang
-                                                : "",
-                                          ),
-                                    )
-                                    .toList()
                               : [],
                           builder: (context, state) {
-                            if (state.isEmpty) {
-                              return Text("Data Kosong!", style: lv1TextStyle);
+                            final dataKategori = state
+                                .where(
+                                  (data) =>
+                                      data.getidCabang ==
+                                      context.select<InventoryBloc, String?>(
+                                        (data) => data.state is InventoryLoaded
+                                            ? (data.state as InventoryLoaded)
+                                                  .idCabang
+                                            : "",
+                                      ),
+                                )
+                                .toList();
+                            if (dataKategori.isEmpty) {
+                              return Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  "Data Kosong!",
+                                  style: lv1TextStyle,
+                                ),
+                              );
                             }
                             return ListView.builder(
-                              itemCount: state.length,
+                              itemCount: dataKategori.length,
                               itemBuilder: (context, index) {
                                 return ShaderMask(
                                   shaderCallback: (bounds) {
@@ -504,9 +559,10 @@ class _UiInventoryState extends State<UiInventory> {
                                           SelectedKategori(
                                             selectedKategori: {
                                               "nama_kategori":
-                                                  state[index].getnamaKategori,
-                                              "id_kategori":
-                                                  state[index].getidKategori,
+                                                  dataKategori[index]
+                                                      .getnamaKategori,
+                                              "id_kategori": dataKategori[index]
+                                                  .getidKategori,
                                             },
                                           ),
                                         );
@@ -520,7 +576,7 @@ class _UiInventoryState extends State<UiInventory> {
                                         ),
 
                                         child: Text(
-                                          state[index].getnamaKategori,
+                                          dataKategori[index].getnamaKategori,
                                           style: lv1TextStyle,
                                         ),
                                       ),
@@ -587,235 +643,421 @@ class _UiInventoryState extends State<UiInventory> {
             ),
           ),
         ),
-        customTextField("Nama Item", namaItemController),
-        const SizedBox(height: 10),
-        customTextField("Kode/Barcode", kodeBarcodeController),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: customTextField("Harga", hargaItemController),
-            ),
-            const SizedBox(width: 20),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.loose,
-              child: GestureDetector(
-                onTap: () => setState(() => condiment = !condiment),
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 500),
-                  width: 135,
-                  padding: EdgeInsets.only(top: 5, bottom: 5),
-                  height: 35,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    color: condiment ? AppColor.primary : Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: (condiment ? Colors.black : Colors.green)
-                            .withValues(alpha: 0.4),
-                        blurStyle: BlurStyle.outer,
-                        blurRadius: 15,
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        left: condiment ? -50 : 5,
-                        duration: Duration(milliseconds: 500),
-                        child: Icon(
-                          Icons.check_circle_outline_rounded,
-                          size: 25,
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        left: condiment ? 100 : 150,
-                        duration: Duration(milliseconds: 500),
-                        child: Icon(
-                          Icons.check_circle_outline_rounded,
-                          size: 25,
-                          color: Colors.white,
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        top: 2,
-                        left: condiment ? -100 : 38,
-                        duration: Duration(milliseconds: 500),
-                        child: Text("Normal", style: lv1TextStyle),
-                      ),
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        left: condiment ? 10 : 150,
-                        top: 2,
-                        duration: Duration(milliseconds: 500),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text("Condiment", style: lv1TextStyleWhite),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Padding(
-          padding: EdgeInsetsGeometry.only(left: 10, right: 10),
-          child: Row(
+        Expanded(
+          child: PageView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: pageControllerBottom,
+            reverse: true,
             children: [
-              Expanded(
-                child:
-                    BlocSelector<
-                      InventoryBloc,
-                      InventoryState,
-                      List<ModelKategori>
-                    >(
-                      selector: (state) {
-                        if (state is InventoryLoaded) {
-                          return state.dataKategori;
-                        }
-                        return [];
-                      },
-                      builder: (context, state) {
-                        return DropdownButtonFormField<ModelKategori>(
-                          style: lv05TextStyle,
-                          decoration: InputDecoration(
-                            label: Text("Pilih Kategori", style: lv1TextStyle),
+              Column(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: ListView(
+                      padding: EdgeInsets.all(10),
+                      children: [
+                        customTextField("Nama Item", namaItemController),
+                        const SizedBox(height: 10),
+                        customTextField("Kode/Barcode", kodeBarcodeController),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: customTextField(
+                                "Harga",
+                                hargaItemController,
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Flexible(
+                              flex: 1,
+                              fit: FlexFit.loose,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    setState(() => condiment = !condiment),
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 500),
+                                  width: 135,
+                                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    color: condiment
+                                        ? AppColor.primary
+                                        : Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            (condiment
+                                                    ? Colors.black
+                                                    : Colors.green)
+                                                .withValues(alpha: 0.4),
+                                        blurStyle: BlurStyle.outer,
+                                        blurRadius: 15,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      AnimatedPositioned(
+                                        curve: Curves.easeInOut,
+                                        left: condiment ? -50 : 5,
+                                        duration: Duration(milliseconds: 500),
+                                        child: Icon(
+                                          Icons.check_circle_outline_rounded,
+                                          size: 25,
+                                        ),
+                                      ),
+                                      AnimatedPositioned(
+                                        curve: Curves.easeInOut,
+                                        left: condiment ? 100 : 150,
+                                        duration: Duration(milliseconds: 500),
+                                        child: Icon(
+                                          Icons.check_circle_outline_rounded,
+                                          size: 25,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      AnimatedPositioned(
+                                        curve: Curves.easeInOut,
+                                        top: 2,
+                                        left: condiment ? -100 : 38,
+                                        duration: Duration(milliseconds: 500),
+                                        child: Text(
+                                          "Normal",
+                                          style: lv1TextStyle,
+                                        ),
+                                      ),
+                                      AnimatedPositioned(
+                                        curve: Curves.easeInOut,
+                                        left: condiment ? 10 : 150,
+                                        top: 2,
+                                        duration: Duration(milliseconds: 500),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Condiment",
+                                            style: lv1TextStyleWhite,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: EdgeInsetsGeometry.only(left: 10, right: 10),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child:
+                                    BlocSelector<
+                                      InventoryBloc,
+                                      InventoryState,
+                                      List<ModelKategori>
+                                    >(
+                                      selector: (state) {
+                                        if (state is InventoryLoaded) {
+                                          return state.dataKategori;
+                                        }
+                                        return [];
+                                      },
+                                      builder: (contextBloc, state) {
+                                        return DropdownButtonFormField<
+                                          ModelKategori
+                                        >(
+                                          style: lv05TextStyle,
+                                          decoration: InputDecoration(
+                                            label: Text(
+                                              "Pilih Kategori",
+                                              style: lv1TextStyle,
+                                            ),
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.always,
+                                          ),
+                                          hint: Text(
+                                            "Kategori...",
+                                            style: lv05TextStyle,
+                                          ),
+                                          items: state
+                                              .where(
+                                                (data) =>
+                                                    data.getidCabang ==
+                                                    contextBloc.select<
+                                                      InventoryBloc,
+                                                      String?
+                                                    >(
+                                                      (data) =>
+                                                          data.state
+                                                              is InventoryLoaded
+                                                          ? (data.state
+                                                                    as InventoryLoaded)
+                                                                .idCabang
+                                                          : "",
+                                                    ),
+                                              )
+                                              .map(
+                                                (map) =>
+                                                    DropdownMenuItem<
+                                                      ModelKategori
+                                                    >(
+                                                      value: map,
+                                                      child: Text(
+                                                        map.getnamaKategori,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                              )
+                                              .toList(),
+                                          onTap: () {
+                                            if (state.isEmpty) {
+                                              customSnackBar(
+                                                context,
+                                                "Cabang tidak memiliki Kategori",
+                                              );
+                                            }
+                                          },
+                                          onChanged: (value) {
+                                            selectedIdKategori =
+                                                value!.getidCabang;
+                                          },
+                                        );
+                                      },
+                                    ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child:
+                                    BlocSelector<
+                                      InventoryBloc,
+                                      InventoryState,
+                                      String?
+                                    >(
+                                      selector: (state) {
+                                        if (state is InventoryLoaded) {
+                                          return state.daerahCabang;
+                                        }
+                                        return null;
+                                      },
+                                      builder: (context, state) {
+                                        if (state == null) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                        cabangItemController.text = state;
+                                        return TextField(
+                                          style: lv1TextStyleDisable,
+                                          enabled: false,
+                                          controller: TextEditingController(
+                                            text: context
+                                                .select<InventoryBloc, String?>(
+                                                  (value) =>
+                                                      value.state
+                                                          is InventoryLoaded
+                                                      ? (value.state
+                                                                as InventoryLoaded)
+                                                            .daerahCabang
+                                                      : "",
+                                                ),
+                                          ),
+                                          decoration: InputDecoration(
+                                            label: Text(
+                                              "Cabang",
+                                              style: lv05TextStyle,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.always,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Flexible(
+                    flex: 1,
+                    fit: FlexFit.loose,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            label: Text("Hapus", style: lv0TextStyleRED),
+                            icon: Icon(Icons.delete, color: Colors.white),
+                            style: ElevatedButton.styleFrom(elevation: 4),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              if (namaItemController.text.isEmpty ||
+                                  hargaItemController.text.isEmpty ||
+                                  kodeBarcodeController.text.isEmpty ||
+                                  selectedIdKategori == null) {
+                                customSnackBar(context, "Data belum lengkap!");
+                              } else {
+                                final data = ModelItem(
+                                  qtyItem: 0,
+                                  uidUser: UserSession.uidUser!,
+                                  namaItem: namaItemController.text,
+                                  idItem: Uuid().v4(),
+                                  hargaItem: hargaItemController.text,
+                                  idKategoriItem: selectedIdKategori!,
+                                  statusCondiment: condiment,
+                                  urlGambar: "",
+                                  idCabang:
+                                      (context.read<InventoryBloc>().state
+                                              as InventoryLoaded)
+                                          .idCabang!,
+                                  barcode: kodeBarcodeController.text,
+                                  statusItem: true,
+                                  tanggalItem: DateFormat(
+                                    'yyyy-MM-dd',
+                                  ).format(DateTime.now()),
+                                );
+                                context.read<InventoryBloc>().add(
+                                  UploadItem(data: data),
+                                );
+
+                                namaItemController.clear();
+                                kodeBarcodeController.clear();
+                                hargaItemController.clear();
+                                condiment = false;
+                              }
+                            },
+                            label: Text("Simpan", style: lv1TextStyleWhite),
+                            icon: Icon(Icons.save, color: Colors.white),
+                            style: ElevatedButton.styleFrom(
+                              elevation: 4,
+                              backgroundColor: AppColor.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: customTextField(
+                          "Nama Kategori",
+                          namaKategoriController,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        flex: 1,
+                        child: TextField(
+                          style: lv1TextStyleDisable,
+                          enabled: false,
+                          controller: TextEditingController(
+                            text: context.select<InventoryBloc, String?>(
+                              (data) => data.state is InventoryLoaded
+                                  ? (data.state as InventoryLoaded).daerahCabang
+                                  : "",
+                            ),
+                          ),
+                          decoration: const InputDecoration(
+                            labelText: "Cabang",
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                           ),
-                          hint: Text("Kategori...", style: lv05TextStyle),
-                          items: state
-                              .where(
-                                (data) =>
-                                    data.getidCabang ==
-                                    context.select<InventoryBloc, String?>(
-                                      (data) => data.state is InventoryLoaded
-                                          ? (data.state as InventoryLoaded)
-                                                .idCabang
-                                          : "",
-                                    ),
-                              )
-                              .map(
-                                (map) => DropdownMenuItem<ModelKategori>(
-                                  value: map,
-                                  child: Text(map.getnamaKategori),
-                                ),
-                              )
-                              .toList(),
-                          onTap: () {
-                            if (state.isEmpty) {
-                              customSnackBar(
-                                context,
-                                "Cabang tidak memiliki Kategori",
-                              );
-                            }
-                          },
-                          onChanged: (value) {
-                            selectedIdKategori = value!.getidCabang;
-                          },
-                        );
-                      },
-                    ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: BlocSelector<InventoryBloc, InventoryState, String?>(
-                  selector: (state) {
-                    if (state is InventoryLoaded) {
-                      return state.daerahCabang;
-                    }
-                    return null;
-                  },
-                  builder: (context, state) {
-                    if (state == null) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    cabangItemController.text = state;
-                    return TextField(
-                      style: lv1TextStyleDisable,
-                      enabled: false,
-                      controller: cabangItemController,
-                      decoration: const InputDecoration(
-                        labelText: "Cabang",
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        ),
                       ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10),
-        Expanded(
-          flex: 1,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  label: Text("Hapus", style: lv0TextStyleRED),
-                  icon: Icon(Icons.delete, color: Colors.white),
-                  style: ElevatedButton.styleFrom(elevation: 4),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    if (namaItemController.text.isEmpty ||
-                        hargaItemController.text.isEmpty ||
-                        kodeBarcodeController.text.isEmpty ||
-                        selectedIdKategori == null) {
-                      customSnackBar(context, "Data belum lengkap!");
-                    } else {
-                      final data = ModelItem(
-                        qtyItem: 0,
-                        uidUser: UserSession.uidUser!,
-                        namaItem: namaItemController.text,
-                        idItem: Uuid().v4.toString(),
-                        hargaItem: hargaItemController.text,
-                        idKategoriItem: selectedIdKategori!,
-                        statusCondiment: false,
-                        urlGambar: "",
-                        idCabang: context.select<InventoryBloc, String>(
-                          (data) => data.state is InventoryLoaded
-                              ? (data.state as InventoryLoaded).idCabang!
-                              : "",
-                        ),
-                        barcode: kodeBarcodeController.text,
-                        statusItem: true,
-                        tanggalItem: DateFormat(
-                          'yyyy-MM-dd',
-                        ).format(DateTime.now()),
-                      );
-                      context.read<InventoryBloc>().add(UploadItem(data: data));
-                      context.read<InventoryBloc>().add(
-                        AmbilData(
-                          filter: selectedFilterItem!,
-                          status: selectedStatusItem!,
-                          idCabang:
-                              (context.read<InventoryBloc>().state
-                                      as InventoryLoaded)
-                                  .idCabang,
-                        ),
-                      );
-                    }
-                  },
-                  label: Text("Simpan", style: lv1TextStyleWhite),
-                  icon: Icon(Icons.save, color: Colors.white),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 4,
-                    backgroundColor: AppColor.primary,
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child:
+                        BlocSelector<
+                          InventoryBloc,
+                          InventoryState,
+                          Map<String, String>
+                        >(
+                          selector: (state) {
+                            if (state is InventorySelectedKategori) {
+                              return state.dataSelectedKategori;
+                            }
+                            return {};
+                          },
+                          builder: (context, state) {
+                            return ElevatedButton.icon(
+                              onPressed: () async {
+                                if (namaKategoriController.text
+                                    .trim()
+                                    .isEmpty) {
+                                  customSnackBar(
+                                    context,
+                                    "Nama kategori atau cabang belum dipilih",
+                                  );
+                                  return;
+                                }
+                                String idkategori =
+                                    state['nama_kategori'] ?? const Uuid().v4();
+                                Map<String, dynamic> pushKategori = {
+                                  "nama_kategori": namaKategoriController.text
+                                      .trim(),
+                                  "id_kategori": idkategori,
+                                  "uid_user": UserSession.ambilUidUser(),
+                                  "id_cabang":
+                                      (context.read<InventoryBloc>().state
+                                              as InventoryLoaded)
+                                          .idCabang,
+                                };
+                                context.read<InventoryBloc>().add(
+                                  UploadKategori(data: pushKategori),
+                                );
+
+                                namaKategoriController.clear();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                iconColor: Colors.white,
+                                backgroundColor: AppColor.primary,
+                              ),
+                              icon: const Icon(Icons.check),
+                              label: Text("Simpan", style: lv1TextStyleWhite),
+                            );
+                          },
+                        ),
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        "PANDUAN:\nUntuk hapus Kategori, silahkan klik dan tahan Kategori yang diinginkan",
+                        style: lv05TextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
             ],
           ),
@@ -856,7 +1098,7 @@ class _UiInventoryState extends State<UiInventory> {
       style: lv05TextStyle,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        label: Text(text, style: lv05TextStyle),
+        label: Text(text, style: lv1TextStyle),
         hint: Text("$text...", style: lv05TextStyle),
         contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),

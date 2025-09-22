@@ -18,6 +18,12 @@ class InventoryFilteredKategori extends InventoryState {
   InventoryFilteredKategori({required this.dataKategori});
 }
 
+class InventorySelectedKategori extends InventoryState {
+  final Map<String, String> dataSelectedKategori;
+
+  InventorySelectedKategori({required this.dataSelectedKategori});
+}
+
 class InventoryLoaded extends InventoryState {
   final String? idCabang;
   final String? daerahCabang;
@@ -52,10 +58,4 @@ class InventoryLoaded extends InventoryState {
       filteredDataItem: filteredDataItem ?? this.filteredDataItem,
     );
   }
-}
-
-class InventoryAllFilteredItem extends InventoryState {
-  final List<ModelItem> dataitem;
-
-  InventoryAllFilteredItem({required this.dataitem});
 }

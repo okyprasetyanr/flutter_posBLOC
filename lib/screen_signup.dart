@@ -150,18 +150,16 @@ class _ScreenSignupState extends State<ScreenSignup> {
                               isExpanded: true,
                               initialValue: selectedDay,
                               hint: Text("Tanggal", style: hintTextStyle),
-                              items:
-                                  days
-                                      .map(
-                                        (d) => DropdownMenuItem(
-                                          value: d,
-                                          child: Text(d),
-                                        ),
-                                      )
-                                      .toList(),
-                              onChanged:
-                                  (value) =>
-                                      setState(() => selectedDay = value),
+                              items: days
+                                  .map(
+                                    (d) => DropdownMenuItem(
+                                      value: d,
+                                      child: Text(d),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) =>
+                                  setState(() => selectedDay = value),
                               decoration: InputDecoration(
                                 labelText: "Tanggal",
                                 labelStyle: labelTextStyle,
@@ -188,18 +186,16 @@ class _ScreenSignupState extends State<ScreenSignup> {
                               isExpanded: true,
                               initialValue: selectedMonth,
                               hint: Text("Bulan", style: hintTextStyle),
-                              items:
-                                  months
-                                      .map(
-                                        (m) => DropdownMenuItem(
-                                          value: m,
-                                          child: Text(m),
-                                        ),
-                                      )
-                                      .toList(),
-                              onChanged:
-                                  (value) =>
-                                      setState(() => selectedMonth = value),
+                              items: months
+                                  .map(
+                                    (m) => DropdownMenuItem(
+                                      value: m,
+                                      child: Text(m),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) =>
+                                  setState(() => selectedMonth = value),
                               decoration: InputDecoration(
                                 labelText: "Bulan",
                                 labelStyle: labelTextStyle,
@@ -226,18 +222,16 @@ class _ScreenSignupState extends State<ScreenSignup> {
                               isExpanded: true,
                               initialValue: selectedYear,
                               hint: Text("Tahun", style: hintTextStyle),
-                              items:
-                                  years
-                                      .map(
-                                        (y) => DropdownMenuItem(
-                                          value: y,
-                                          child: Text(y),
-                                        ),
-                                      )
-                                      .toList(),
-                              onChanged:
-                                  (value) =>
-                                      setState(() => selectedYear = value),
+                              items: years
+                                  .map(
+                                    (y) => DropdownMenuItem(
+                                      value: y,
+                                      child: Text(y),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) =>
+                                  setState(() => selectedYear = value),
                               decoration: InputDecoration(
                                 labelText: "Tahun",
                                 labelStyle: labelTextStyle,
@@ -294,17 +288,14 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                               style: hintTextStyle,
                                             ),
                                           ),
-                                          items:
-                                              cabang
-                                                  .map(
-                                                    (m) => DropdownMenuItem(
-                                                      value: m,
-                                                      child: Center(
-                                                        child: Text(m),
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
+                                          items: cabang
+                                              .map(
+                                                (m) => DropdownMenuItem(
+                                                  value: m,
+                                                  child: Center(child: Text(m)),
+                                                ),
+                                              )
+                                              .toList(),
                                           onChanged: (value) {
                                             setState(() {
                                               selectedcabang = value;

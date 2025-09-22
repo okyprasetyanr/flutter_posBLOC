@@ -37,3 +37,9 @@ class UploadItem extends InventoryEvent {
 
   UploadItem({required this.data});
 }
+
+class UploadKategori extends InventoryEvent {
+  final Map<String, dynamic> data;
+
+  UploadKategori({required this.data});
+}
