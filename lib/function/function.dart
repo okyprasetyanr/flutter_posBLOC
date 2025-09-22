@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,4 +38,20 @@ class UserSession {
   static String? ambilUidUser() {
     return uidUser; // boleh null
   }
+}
+
+Map<String, dynamic> convertToMapItem(ModelItem data) {
+  return {
+    'uid_user': data.getuidUser,
+    'nama_item': data.getnamaItem,
+    'harga_item': data.gethargaItem,
+    'id_item': data.getidItem,
+    'id_kategori': data.getidKategoriItem,
+    'status_condiment': data.getstatusCondiment,
+    'url_gambar': data.geturlGambar,
+    'qty_item': data.getqtyitem,
+    'id_cabang': data.getidCabang,
+    'barcode': data.getBarcode,
+    'status_item': data.getStatusItem,
+  };
 }

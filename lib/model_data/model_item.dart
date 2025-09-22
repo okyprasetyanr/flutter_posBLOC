@@ -14,6 +14,7 @@ class ModelItem {
   final bool _statusCondiment, _statusItem;
 
   ModelItem({
+    required double qtyItem,
     required String uidUser,
     required String namaItem,
     required String idItem,
@@ -21,7 +22,6 @@ class ModelItem {
     required String idKategoriItem,
     required bool statusCondiment,
     required String urlGambar,
-    required double qtyItem,
     required String idCabang,
     required String barcode,
     required bool statusItem,
@@ -33,9 +33,9 @@ class ModelItem {
        _idKategoriItem = idKategoriItem,
        _statusCondiment = statusCondiment,
        _urlGambar = urlGambar,
-       _qtyItem = qtyItem,
        _idCabang = idCabang,
        _barcode = barcode,
+       _qtyItem = qtyItem,
        _statusItem = statusItem,
        _tanggalItem = tanggalItem;
 
@@ -64,29 +64,6 @@ class ModelItem {
   set setBarcode(String value) => _barcode;
   set setStatusItem(bool value) => _statusItem;
   String setTanggalItem(bool value) => _tanggalItem;
-
-  Map<String, dynamic> convertToMap() {
-    return {
-      'uid_user': getuidUser,
-      'nama_item': getnamaItem,
-      'harga_item': gethargaItem,
-      'id_item': getidItem,
-      'id_kategori': getidKategoriItem,
-      'status_condiment': getstatusCondiment,
-      'url_gambar': geturlGambar,
-      'qty_item': getqtyitem,
-      'id_cabang': getidCabang,
-      'barcode': getBarcode,
-      'status_item': getStatusItem,
-    };
-  }
-
-  Future<void> pushORupdateData(String idItem) async {
-    await FirebaseFirestore.instance
-        .collection("items")
-        .doc(idItem)
-        .set(convertToMap());
-  }
 
   static List<ModelItem> getDataListItem(QuerySnapshot data) {
     return data.docs.map((map) {

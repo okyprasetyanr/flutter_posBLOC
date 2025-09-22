@@ -13,9 +13,9 @@ class InventoryError extends InventoryState {
   InventoryError(this.message);
 }
 
-class InventoryFilteredCategory extends InventoryState {
+class InventoryFilteredKategori extends InventoryState {
   final List<ModelKategori> dataKategori;
-  InventoryFilteredCategory({required this.dataKategori});
+  InventoryFilteredKategori({required this.dataKategori});
 }
 
 class InventoryLoaded extends InventoryState {

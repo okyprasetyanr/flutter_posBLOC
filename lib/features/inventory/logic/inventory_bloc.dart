@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +19,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<AmbilData>(_onAmbilData);
 
     on<FilterItem>(_onFilteredItem);
+
+    on<UploadItem>(_onUploadItem);
   }
 
   List<ModelItem> _filterItem(
@@ -71,7 +75,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     try {
-      List<ModelItem> item = cacheRepo.cache!.dataItem!;
+      List<ModelItem> item = cacheRepo.cache!.dataItem;
       emit(
         currentState.copyWith(
           filteredDataItem: _filterItem(item, event.status, event.filter),
@@ -160,5 +164,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     } catch (e) {
       emit(InventoryError("Error: Terjadi kesalahan saat memuat data, $e"));
     }
+  }
+
+  FutureOr<void> _onUploadItem(
+    UploadItem event,
+    Emitter<InventoryState> emit,
+  ) async {
+    await FirebaseFirestore.instance
+        .collection("items")
+        .doc(event.data.getidItem)
+        .set(convertToMapItem(event.data));
   }
 }

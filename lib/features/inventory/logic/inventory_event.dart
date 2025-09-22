@@ -1,3 +1,5 @@
+import 'package:flutter_pos/model_data/model_item.dart';
+
 class InventoryEvent {}
 
 class AmbilData extends InventoryEvent {
@@ -12,6 +14,12 @@ class AmbilData extends InventoryEvent {
   });
 }
 
+class SelectedKategori extends InventoryEvent {
+  final Map<String, String> selectedKategori;
+
+  SelectedKategori({required this.selectedKategori});
+}
+
 class FilterItem extends InventoryEvent {
   final String idCabang;
   final String filter;
@@ -22,4 +30,10 @@ class FilterItem extends InventoryEvent {
     required this.status,
     required this.idCabang,
   });
+}
+
+class UploadItem extends InventoryEvent {
+  final ModelItem data;
+
+  UploadItem({required this.data});
 }
