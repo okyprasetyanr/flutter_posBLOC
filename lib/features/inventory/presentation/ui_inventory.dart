@@ -74,7 +74,10 @@ class _UiInventoryState extends State<UiInventory> {
   @override
   void initState() {
     super.initState();
+    _initData();
+  }
 
+  void _initData() {
     selectedFilterItem = filters.first;
     selectedStatusItem = statusItem.first;
 
@@ -88,9 +91,16 @@ class _UiInventoryState extends State<UiInventory> {
     );
   }
 
+  Future<void> _onRefresh() async {
+    setState(() {
+      _initData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
+      refreshIndicator: _onRefresh,
       widgetTop: topLayout(),
       widgetBottom: bottomLayout(),
       widgetNavigation: navigationGesture(),
@@ -230,7 +240,7 @@ class _UiInventoryState extends State<UiInventory> {
                     >(
                       selector: (state) {
                         if (state is InventoryLoaded) {
-                          return state.datacabang!;
+                          return state.datacabang;
                         }
                         return [];
                       },
@@ -241,7 +251,15 @@ class _UiInventoryState extends State<UiInventory> {
                           );
                         }
                         return DropdownButtonFormField<ModelCabang>(
-                          initialValue: state.first,
+                          initialValue: state.firstWhere(
+                            (data) =>
+                                data.getidCabang ==
+                                context
+                                    .read<InventoryBloc>()
+                                    .cacheRepo
+                                    .cache!
+                                    .idCabang,
+                          ),
                           items: state
                               .map(
                                 (map) => DropdownMenuItem(
@@ -486,7 +504,7 @@ class _UiInventoryState extends State<UiInventory> {
                       List<ModelKategori>
                     >(
                       selector: (state) {
-                        if (state is InventoryFilteredCategory) {
+                        if (state is InventoryLoaded) {
                           return state.dataKategori;
                         }
                         return [];
@@ -494,17 +512,22 @@ class _UiInventoryState extends State<UiInventory> {
                       builder: (context, state) {
                         return DropdownButtonFormField<ModelKategori>(
                           style: lv05TextStyle,
+
                           decoration: InputDecoration(
                             label: Text("Pilih Kategori", style: lv1TextStyle),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                           ),
-                          hint: Text(
-                            state.isNotEmpty
-                                ? state.first.getnamaKategori
-                                : "Pilih Kategori",
-                            style: lv1TextStyle,
-                          ),
+                          hint: Text("Kategori....", style: lv05TextStyle),
                           items: state
+                              .where(
+                                (data) =>
+                                    data.getidCabang ==
+                                    context
+                                        .read<InventoryBloc>()
+                                        .cacheRepo
+                                        .cache!
+                                        .idCabang,
+                              )
                               .map(
                                 (map) => DropdownMenuItem<ModelKategori>(
                                   value: map,
@@ -512,6 +535,14 @@ class _UiInventoryState extends State<UiInventory> {
                                 ),
                               )
                               .toList(),
+                          onTap: () {
+                            if (state.isEmpty) {
+                              customSnackBar(
+                                context,
+                                "Cabang tidak memiliki Kategori",
+                              );
+                            }
+                          },
                           onChanged: (value) {
                             selectedkategori = value!.getnamaKategori;
                             selectedIdkategori = value.getidKategori;

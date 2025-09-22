@@ -17,7 +17,7 @@ class InventoryRepository {
 
   Future<List<ModelItem>> ambilItem(String idCabang) async {
     final data = await _db
-        .collection("users")
+        .collection("items")
         .where("uid_user", isEqualTo: UserSession.uidUser)
         .where("id_cabang", isEqualTo: idCabang)
         .get();

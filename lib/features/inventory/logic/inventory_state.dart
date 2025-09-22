@@ -21,17 +21,37 @@ class InventoryFilteredCategory extends InventoryState {
 class InventoryLoaded extends InventoryState {
   final String? idCabang;
   final String? daerahCabang;
-  final List<ModelCabang>? datacabang;
-  final List<ModelItem>? dataItem;
-  final List<ModelKategori>? dataKategori;
+  final List<ModelCabang> datacabang;
+  final List<ModelItem> dataItem;
+  final List<ModelKategori> dataKategori;
+  final List<ModelItem> filteredDataItem;
 
   InventoryLoaded({
     this.idCabang,
     this.daerahCabang,
-    this.datacabang,
-    this.dataItem,
-    this.dataKategori,
+    this.datacabang = const [],
+    this.dataItem = const [],
+    this.dataKategori = const [],
+    this.filteredDataItem = const [],
   });
+
+  InventoryLoaded copyWith({
+    String? idCabang,
+    String? daerahCabang,
+    List<ModelCabang>? datacabang,
+    List<ModelItem>? dataItem,
+    List<ModelKategori>? dataKategori,
+    List<ModelItem>? filteredDataItem,
+  }) {
+    return InventoryLoaded(
+      idCabang: idCabang ?? this.idCabang,
+      daerahCabang: daerahCabang ?? this.daerahCabang,
+      datacabang: datacabang ?? this.datacabang,
+      dataItem: dataItem ?? this.dataItem,
+      dataKategori: dataKategori ?? this.dataKategori,
+      filteredDataItem: filteredDataItem ?? this.filteredDataItem,
+    );
+  }
 }
 
 class InventoryAllFilteredItem extends InventoryState {

@@ -5,7 +5,6 @@ import 'package:flutter_pos/features/inventory/data/inventory_repository.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:intl/intl.dart';
@@ -18,8 +17,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<AmbilData>(_onAmbilData);
 
     on<FilterItem>(_onFilteredItem);
-
-    on<FilterCategory>(_onFilteredCategory);
   }
 
   List<ModelItem> _filterItem(
@@ -70,28 +67,14 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     FilterItem event,
     Emitter<InventoryState> emit,
   ) async {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
     try {
       List<ModelItem> item = cacheRepo.cache!.dataItem!;
       emit(
-        InventoryAllFilteredItem(
-          dataitem: _filterItem(item, event.status, event.filter),
-        ),
-      );
-    } catch (e) {
-      emit(InventoryError("Error: Kesalahan Data, $e"));
-    }
-  }
-
-  Future<void> _onFilteredCategory(
-    FilterCategory event,
-    Emitter<InventoryState> emit,
-  ) async {
-    try {
-      emit(
-        InventoryFilteredCategory(
-          dataKategori: cacheRepo.cache!.dataKategori!
-              .where((data) => data.getidCabang == event.idCabang)
-              .toList(),
+        currentState.copyWith(
+          filteredDataItem: _filterItem(item, event.status, event.filter),
         ),
       );
     } catch (e) {
@@ -103,98 +86,79 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     AmbilData event,
     Emitter<InventoryState> emit,
   ) async {
-    emit(InventoryLoading());
-    try {
-      List<ModelCabang> cabangs = [];
-      List<ModelItem> items = [];
-      List<ModelKategori> kategori = [];
-      InventoryLoaded loaded = InventoryLoaded(
-        idCabang: null,
-        daerahCabang: null,
-        datacabang: [],
-        dataItem: [],
-        dataKategori: [],
-      );
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
 
-      InventoryLoaded cache = cacheRepo.cache!;
+    emit(InventoryLoading());
+
+    try {
       if (event.idCabang == null) {
-        cabangs = await repo.ambilCabang();
-        items = await repo.ambilItem(cabangs.first.getidCabang);
-        kategori = await repo.ambilKategori(cabangs.first.getidCabang);
-        loaded = InventoryLoaded(
-          idCabang: cabangs.first.getidCabang,
-          daerahCabang: cabangs.first.getdaerahCabang,
+        final cabangs = await repo.ambilCabang();
+        if (cabangs.isEmpty) {
+          emit(InventoryError("Error: Tidak ada data cabang yang ditemukan."));
+          return;
+        }
+
+        final firstCabang = cabangs.first;
+        final items = await repo.ambilItem(firstCabang.getidCabang);
+        final kategori = await repo.ambilKategori(firstCabang.getidCabang);
+
+        final loaded = InventoryLoaded(
+          idCabang: firstCabang.getidCabang,
+          daerahCabang: firstCabang.getdaerahCabang,
           datacabang: cabangs,
           dataItem: items,
           dataKategori: kategori,
+          filteredDataItem: _filterItem(items, event.status, event.filter),
         );
-        emit(loaded);
-        cacheRepo.saveCache(loaded);
-      } else {
-        if (cache.idCabang != null) {
-          String daerahCabang = cache.datacabang!
-              .where((data) => data.getidCabang == event.idCabang)
-              .first
-              .getdaerahCabang;
-          if (cache.dataItem!.any(
-            (data) => data.getidCabang == event.idCabang,
-          )) {
-            items = await repo.ambilItem(event.idCabang!);
-            kategori = await repo.ambilKategori(event.idCabang!);
-            cache.dataItem!.addAll(items);
-            cache.dataKategori!.addAll(kategori);
 
-            loaded = InventoryLoaded(
-              idCabang: event.idCabang,
-              daerahCabang: daerahCabang,
-              datacabang: cacheRepo.cache!.datacabang,
-              dataItem: items,
-              dataKategori: kategori,
-            );
-            emit(loaded);
-          } else {
-            loaded = InventoryLoaded(
-              idCabang: event.idCabang,
-              daerahCabang: cache.datacabang!
-                  .where((data) => data.getidCabang == event.idCabang)
-                  .first
-                  .getdaerahCabang,
-              datacabang: cache.datacabang,
-              dataItem: cache.dataItem!
-                  .where((data) => data.getidCabang == event.idCabang)
-                  .toList(),
-              dataKategori: cache.dataKategori!
-                  .where((data) => data.getidCabang == event.idCabang)
-                  .toList(),
-            );
-            emit(loaded);
-          }
-          cacheRepo.saveCache(
-            InventoryLoaded(
-              daerahCabang: daerahCabang,
-              idCabang: event.idCabang,
-            ),
-          );
-        } else {
-          emit(InventoryError("Error: Kesalahan Load Data"));
+        cacheRepo.saveCache(loaded);
+        emit(loaded);
+      } else {
+        List<ModelItem> loadedItem = List.from(cacheRepo.cache!.dataItem);
+        List<ModelKategori> loadedKategori = List.from(
+          cacheRepo.cache!.dataKategori,
+        );
+
+        bool cekDataItem = loadedItem.any(
+          (item) => item.getidCabang == event.idCabang,
+        );
+
+        if (!cekDataItem) {
+          final newItems = await repo.ambilItem(event.idCabang!);
+          final newKategori = await repo.ambilKategori(event.idCabang!);
+          loadedItem.addAll(newItems);
+          loadedKategori.addAll(newKategori);
         }
 
-        emit(
-          InventoryAllFilteredItem(
-            dataitem: _filterItem(loaded.dataItem!, event.status, event.filter),
-          ),
+        final daerahCabang = currentState.datacabang
+            .firstWhere((data) => data.getidCabang == event.idCabang)
+            .getdaerahCabang;
+
+        final loadedItembyCabang = loadedItem
+            .where((item) => item.getidCabang == event.idCabang)
+            .toList();
+
+        final filteredItems = _filterItem(
+          loadedItembyCabang,
+          event.status,
+          event.filter,
         );
 
-        emit(
-          InventoryFilteredCategory(
-            dataKategori: loaded.dataKategori!
-                .where((data) => data.getidCabang == loaded.idCabang)
-                .toList(),
-          ),
+        final copyWithLoaded = currentState.copyWith(
+          idCabang: event.idCabang,
+          daerahCabang: daerahCabang,
+          dataItem: loadedItem,
+          dataKategori: loadedKategori,
+          filteredDataItem: filteredItems,
         );
+
+        cacheRepo.saveCache(copyWithLoaded);
+        emit(copyWithLoaded);
       }
     } catch (e) {
-      emit(InventoryError("Error: Kesalahan Data, $e"));
+      emit(InventoryError("Error: Terjadi kesalahan saat memuat data, $e"));
     }
   }
 }

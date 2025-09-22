@@ -8,10 +8,14 @@ class ModelKategori {
     required String idCabang,
   }) : _namaKategori = namaKategori,
        _idkategori = idkategori,
-       _idCabang = idkategori;
+       _idCabang = idCabang;
 
   Map<String, dynamic> convertMap() {
-    return {'nama_kategori': _namaKategori, 'id_kategori': _idkategori};
+    return {
+      'nama_kategori': _namaKategori,
+      'id_kategori': _idkategori,
+      'id_cabang': _idCabang,
+    };
   }
 
   String get getnamaKategori => _namaKategori;
@@ -20,7 +24,7 @@ class ModelKategori {
 
   set setnamKategori(String value) => _namaKategori;
   set setidKategori(String value) => _idkategori;
-  set setidCaabng(String value) => _idCabang;
+  set setidCabang(String value) => _idCabang;
 
   Map<String, dynamic> convertToMap() {
     return {
@@ -40,7 +44,7 @@ class ModelKategori {
       return ModelKategori(
         namaKategori: dataKetegori['nama_kategori'],
         idkategori: map.id,
-        idCabang: map['id_cabang'],
+        idCabang: dataKetegori['id_cabang'],
       );
     }).toList();
   }
