@@ -25,6 +25,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<SelectedKategori>(_onSelectedKategori);
 
     on<UploadKategori>(_onUploadKategori);
+
+    on<ResetKategoriForm>(_onResetKategoriForm);
   }
 
   List<ModelItem> _filterItem(
@@ -189,8 +191,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     SelectedKategori event,
     Emitter<InventoryState> emit,
   ) {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
     emit(
-      InventorySelectedKategori(
+      currentState.copyWith(
         dataSelectedKategori: {
           "nama_kategori": event.selectedKategori['nama_kategori']!,
           "id_kategori": event.selectedKategori['id_kategori']!,
@@ -207,5 +212,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .collection("kategori")
         .doc(event.data['id_kategori'])
         .set(event.data);
+  }
+
+  FutureOr<void> _onResetKategoriForm(
+    ResetKategoriForm event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
+    emit(currentState.copyWith(dataSelectedKategori: {}));
   }
 }

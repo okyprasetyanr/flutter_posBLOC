@@ -13,17 +13,6 @@ class InventoryError extends InventoryState {
   InventoryError(this.message);
 }
 
-class InventoryFilteredKategori extends InventoryState {
-  final List<ModelKategori> dataKategori;
-  InventoryFilteredKategori({required this.dataKategori});
-}
-
-class InventorySelectedKategori extends InventoryState {
-  final Map<String, String> dataSelectedKategori;
-
-  InventorySelectedKategori({required this.dataSelectedKategori});
-}
-
 class InventoryLoaded extends InventoryState {
   final String? idCabang;
   final String? daerahCabang;
@@ -31,8 +20,10 @@ class InventoryLoaded extends InventoryState {
   final List<ModelItem> dataItem;
   final List<ModelKategori> dataKategori;
   final List<ModelItem> filteredDataItem;
+  final Map<String, String> dataSelectedKategori;
 
   InventoryLoaded({
+    this.dataSelectedKategori = const {},
     this.idCabang,
     this.daerahCabang,
     this.datacabang = const [],
@@ -48,6 +39,7 @@ class InventoryLoaded extends InventoryState {
     List<ModelItem>? dataItem,
     List<ModelKategori>? dataKategori,
     List<ModelItem>? filteredDataItem,
+    Map<String, String>? dataSelectedKategori,
   }) {
     return InventoryLoaded(
       idCabang: idCabang ?? this.idCabang,
@@ -56,6 +48,7 @@ class InventoryLoaded extends InventoryState {
       dataItem: dataItem ?? this.dataItem,
       dataKategori: dataKategori ?? this.dataKategori,
       filteredDataItem: filteredDataItem ?? this.filteredDataItem,
+      dataSelectedKategori: dataSelectedKategori ?? this.dataSelectedKategori,
     );
   }
 }
