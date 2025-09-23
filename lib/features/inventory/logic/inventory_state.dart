@@ -21,9 +21,11 @@ class InventoryLoaded extends InventoryState {
   final List<ModelKategori> dataKategori;
   final List<ModelItem> filteredDataItem;
   final Map<String, String> dataSelectedKategori;
+  final Map<String, String> dataSelectItem;
 
   InventoryLoaded({
     this.dataSelectedKategori = const {},
+    this.dataSelectItem = const {},
     this.idCabang,
     this.daerahCabang,
     this.datacabang = const [],
@@ -40,6 +42,7 @@ class InventoryLoaded extends InventoryState {
     List<ModelKategori>? dataKategori,
     List<ModelItem>? filteredDataItem,
     Map<String, String>? dataSelectedKategori,
+    Map<String, String>? dataSelectItem,
   }) {
     return InventoryLoaded(
       idCabang: idCabang ?? this.idCabang,
@@ -49,6 +52,7 @@ class InventoryLoaded extends InventoryState {
       dataKategori: dataKategori ?? this.dataKategori,
       filteredDataItem: filteredDataItem ?? this.filteredDataItem,
       dataSelectedKategori: dataSelectedKategori ?? this.dataSelectedKategori,
+      dataSelectItem: dataSelectItem ?? this.dataSelectItem,
     );
   }
 }

@@ -24,21 +24,42 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<SelectedKategori>(_onSelectedKategori);
 
+    on<SelectedItem>(_onSelectedItem);
+
     on<UploadKategori>(_onUploadKategori);
 
     on<ResetKategoriForm>(_onResetKategoriForm);
+
+    on<ResetItemForm>(_onResetItemForm);
   }
 
   List<ModelItem> _filterItem(
     List<ModelItem> item,
     String status,
     String filter,
+    bool statusCondiment,
   ) {
     List<ModelItem> list = [];
     if (status == "Active") {
-      list = item.where((e) => e.getStatusItem).toList();
+      list = item.where((data) {
+        if (statusCondiment) {
+          return data.getStatusItem && data.getstatusCondiment == true;
+        } else {
+          return data.getStatusItem;
+        }
+      }).toList();
     } else if (status == "Deactive") {
-      list = item.where((e) => !e.getStatusItem).toList();
+      list = item.where((data) {
+        if (statusCondiment) {
+          return !data.getStatusItem && data.getstatusCondiment == true;
+        } else {
+          return !data.getStatusItem;
+        }
+      }).toList();
+    }
+
+    for (ModelItem a in list) {
+      print("listnya: ${a.getstatusCondiment}, ${a.getnamaItem}");
     }
 
     var formatter = DateFormat('dd-MM-yyyy');
@@ -84,7 +105,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       List<ModelItem> item = cacheRepo.cache!.dataItem;
       emit(
         currentState.copyWith(
-          filteredDataItem: _filterItem(item, event.status, event.filter),
+          filteredDataItem: _filterItem(
+            item,
+            event.status,
+            event.filter,
+            event.statusCondiment,
+          ),
         ),
       );
     } catch (e) {
@@ -120,7 +146,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           datacabang: cabangs,
           dataItem: items,
           dataKategori: kategori,
-          filteredDataItem: _filterItem(items, event.status, event.filter),
+          filteredDataItem: _filterItem(
+            items,
+            event.status,
+            event.filter,
+            event.statusCondiment,
+          ),
         );
 
         cacheRepo.saveCache(loaded);
@@ -159,6 +190,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           loadedItembyCabang,
           event.status,
           event.filter,
+          event.statusCondiment,
         );
 
         final copyWithLoaded = currentState.copyWith(
@@ -222,5 +254,30 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     emit(currentState.copyWith(dataSelectedKategori: {}));
+  }
+
+  FutureOr<void> _onSelectedItem(
+    SelectedItem event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
+
+    emit(
+      currentState.copyWith(
+        dataSelectItem: {"id_item": event.selecteditem['id_item']!},
+      ),
+    );
+  }
+
+  FutureOr<void> _onResetItemForm(
+    ResetItemForm event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
+    emit(currentState.copyWith(dataSelectItem: {}));
   }
 }
