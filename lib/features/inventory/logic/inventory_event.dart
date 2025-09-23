@@ -20,6 +20,10 @@ class SelectedKategori extends InventoryEvent {
   SelectedKategori({required this.selectedKategori});
 }
 
+class ResetKategoriForm extends InventoryEvent {}
+
+class ResetItemForm extends InventoryEvent {}
+
 class FilterItem extends InventoryEvent {
   final String idCabang;
   final String filter;
