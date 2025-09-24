@@ -7,8 +7,10 @@ class AmbilData extends InventoryEvent {
   final String filter;
   final String status;
   final bool statusCondiment;
+  final bool reloadData;
 
   AmbilData({
+    required this.reloadData,
     required this.filter,
     required this.status,
     required this.idCabang,
@@ -56,4 +58,10 @@ class UploadKategori extends InventoryEvent {
   final Map<String, dynamic> data;
 
   UploadKategori({required this.data});
+}
+
+class Searchitem extends InventoryEvent {
+  final String text;
+
+  Searchitem({required this.text});
 }

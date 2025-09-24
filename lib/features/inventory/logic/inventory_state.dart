@@ -8,6 +8,8 @@ class InventoryInitial extends InventoryState {}
 
 class InventoryLoading extends InventoryState {}
 
+class InventoryLoadingItem extends InventoryState {}
+
 class InventoryError extends InventoryState {
   final String message;
   InventoryError(this.message);
@@ -16,6 +18,9 @@ class InventoryError extends InventoryState {
 class InventoryLoaded extends InventoryState {
   final String? idCabang;
   final String? daerahCabang;
+  final String? selectedFilterItem;
+  final String? selectedStatusItem;
+  final bool? selectedStatusCondiment;
   final List<ModelCabang> datacabang;
   final List<ModelItem> dataItem;
   final List<ModelKategori> dataKategori;
@@ -24,6 +29,9 @@ class InventoryLoaded extends InventoryState {
   final Map<String, String> dataSelectItem;
 
   InventoryLoaded({
+    this.selectedStatusCondiment,
+    this.selectedFilterItem,
+    this.selectedStatusItem,
     this.dataSelectedKategori = const {},
     this.dataSelectItem = const {},
     this.idCabang,
@@ -37,6 +45,9 @@ class InventoryLoaded extends InventoryState {
   InventoryLoaded copyWith({
     String? idCabang,
     String? daerahCabang,
+    String? selectedFilterItem,
+    String? selectedStatusItem,
+    bool? selectedStatusCondiment,
     List<ModelCabang>? datacabang,
     List<ModelItem>? dataItem,
     List<ModelKategori>? dataKategori,
@@ -45,6 +56,10 @@ class InventoryLoaded extends InventoryState {
     Map<String, String>? dataSelectItem,
   }) {
     return InventoryLoaded(
+      selectedStatusCondiment:
+          selectedStatusCondiment ?? this.selectedStatusCondiment,
+      selectedFilterItem: selectedFilterItem ?? this.selectedFilterItem,
+      selectedStatusItem: selectedFilterItem ?? this.selectedStatusItem,
       idCabang: idCabang ?? this.idCabang,
       daerahCabang: daerahCabang ?? this.daerahCabang,
       datacabang: datacabang ?? this.datacabang,

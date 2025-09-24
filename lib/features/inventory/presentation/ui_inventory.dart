@@ -15,6 +15,7 @@ import 'package:flutter_pos/widget/widget_snack_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UiInventory extends StatefulWidget {
   const UiInventory({super.key});
@@ -103,6 +104,7 @@ class _UiInventoryState extends State<UiInventory> {
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
         statusCondiment: checkcondiment,
+        reloadData: false,
       ),
     );
   }
@@ -209,6 +211,9 @@ class _UiInventoryState extends State<UiInventory> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
+                          onChanged: (value) {
+                            context.read<InventoryBloc>().add(event);
+                          },
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -315,8 +320,9 @@ class _UiInventoryState extends State<UiInventory> {
                                   },
                                   builder: (context, state) {
                                     if (state.$1.isEmpty) {
-                                      return const Center(
-                                        child: CircularProgressIndicator(),
+                                      return const SpinKitThreeBounce(
+                                        color: Colors.blue,
+                                        size: 30.0,
                                       );
                                     }
                                     return DropdownButtonFormField<ModelCabang>(
@@ -339,6 +345,7 @@ class _UiInventoryState extends State<UiInventory> {
                                             filter: selectedFilterItem!,
                                             status: selectedStatusItem!,
                                             statusCondiment: checkcondiment,
+                                            reloadData: false,
                                           ),
                                         );
                                       },
@@ -383,6 +390,7 @@ class _UiInventoryState extends State<UiInventory> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Expanded(
                     child:
                         BlocSelector<
@@ -419,8 +427,9 @@ class _UiInventoryState extends State<UiInventory> {
                                     crossAxisCount: 4,
                                     crossAxisSpacing: 15,
                                     mainAxisSpacing: 15,
-                                    childAspectRatio: 2 / 3,
+                                    childAspectRatio: 1,
                                   ),
+                              padding: EdgeInsets.all(5),
                               itemBuilder: (context, index) {
                                 return Material(
                                   color: Colors.white,
@@ -445,40 +454,45 @@ class _UiInventoryState extends State<UiInventory> {
                                         ),
                                       );
                                     },
-                                    child: Column(
-                                      children: [
-                                        Image.asset(
-                                          "assets/logo.png",
-                                          height: 40,
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          items[index].getnamaItem,
-                                          style: lv05TextStyle,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            formatUang(
-                                              items[index].gethargaItem,
-                                            ),
+                                    child: Padding(
+                                      padding: EdgeInsetsGeometry.all(10),
+                                      child: Column(
+                                        children: [
+                                          Image.asset(
+                                            "assets/logo.png",
+                                            height: 40,
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            items[index].getnamaItem,
                                             style: lv05TextStyle,
-                                            textAlign: TextAlign.left,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
-                                        ),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              formatUang(
+                                                items[index].gethargaItem,
+                                              ),
+                                              style: lv05TextStyle,
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ),
 
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            formatQty(items[index].getqtyitem),
-                                            style: lv0TextStyleRED,
-                                            textAlign: TextAlign.left,
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              formatQty(
+                                                items[index].getqtyitem,
+                                              ),
+                                              style: lv0TextStyleRED,
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -510,8 +524,9 @@ class _UiInventoryState extends State<UiInventory> {
                           },
                           builder: (context, state) {
                             if (state.$1.isEmpty) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                              return const SpinKitThreeBounce(
+                                color: Colors.blue,
+                                size: 30.0,
                               );
                             }
                             return DropdownButtonFormField<ModelCabang>(
@@ -534,6 +549,7 @@ class _UiInventoryState extends State<UiInventory> {
                                     status: selectedStatusItem!,
                                     idCabang: value!.getidCabang,
                                     statusCondiment: checkcondiment,
+                                    reloadData: false,
                                   ),
                                 );
                               },
@@ -558,9 +574,9 @@ class _UiInventoryState extends State<UiInventory> {
                             if (dataKategori.isEmpty) {
                               return Padding(
                                 padding: EdgeInsets.all(10),
-                                child: Text(
-                                  "Data Kosong!",
-                                  style: lv1TextStyle,
+                                child: const SpinKitThreeBounce(
+                                  color: Colors.blue,
+                                  size: 30.0,
                                 ),
                               );
                             }
