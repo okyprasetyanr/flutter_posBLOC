@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/colors/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final labelTextStyle = GoogleFonts.poppins(
@@ -29,6 +30,36 @@ final lv05TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
   fontSize: 12,
+);
+
+final lv05TextStyleWhite = GoogleFonts.poppins(
+  color: Colors.white,
+  fontWeight: FontWeight.w300,
+  fontSize: 12,
+);
+
+final textStyleItemCondiment = GoogleFonts.poppins(
+  textStyle: TextStyle(
+    backgroundColor: Colors.grey.shade600,
+    color: Colors.white,
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+  ),
+);
+
+final textStyleItemNormal = GoogleFonts.poppins(
+  textStyle: const TextStyle(
+    backgroundColor: AppColor.primary,
+    color: Colors.white,
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+  ),
+);
+
+final textStyleHarga = GoogleFonts.poppins(
+  color: AppColor.primary,
+  fontWeight: FontWeight.w600,
+  fontSize: 10,
 );
 
 final lv1TextStyle = GoogleFonts.poppins(

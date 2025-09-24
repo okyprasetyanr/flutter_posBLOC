@@ -20,7 +20,7 @@ class InventoryLoaded extends InventoryState {
   final String? daerahCabang;
   final String? selectedFilterItem;
   final String? selectedStatusItem;
-  final bool? selectedStatusCondiment;
+  final String? selectedFilterJenisItem;
   final List<ModelCabang> datacabang;
   final List<ModelItem> dataItem;
   final List<ModelKategori> dataKategori;
@@ -29,7 +29,7 @@ class InventoryLoaded extends InventoryState {
   final Map<String, String> dataSelectItem;
 
   InventoryLoaded({
-    this.selectedStatusCondiment,
+    this.selectedFilterJenisItem,
     this.selectedFilterItem,
     this.selectedStatusItem,
     this.dataSelectedKategori = const {},
@@ -47,6 +47,7 @@ class InventoryLoaded extends InventoryState {
     String? daerahCabang,
     String? selectedFilterItem,
     String? selectedStatusItem,
+    String? selectedFilterJenisItem,
     bool? selectedStatusCondiment,
     List<ModelCabang>? datacabang,
     List<ModelItem>? dataItem,
@@ -56,10 +57,10 @@ class InventoryLoaded extends InventoryState {
     Map<String, String>? dataSelectItem,
   }) {
     return InventoryLoaded(
-      selectedStatusCondiment:
-          selectedStatusCondiment ?? this.selectedStatusCondiment,
       selectedFilterItem: selectedFilterItem ?? this.selectedFilterItem,
-      selectedStatusItem: selectedFilterItem ?? this.selectedStatusItem,
+      selectedFilterJenisItem:
+          selectedFilterJenisItem ?? this.selectedFilterJenisItem,
+      selectedStatusItem: selectedStatusItem ?? this.selectedStatusItem,
       idCabang: idCabang ?? this.idCabang,
       daerahCabang: daerahCabang ?? this.daerahCabang,
       datacabang: datacabang ?? this.datacabang,

@@ -6,15 +6,13 @@ class AmbilData extends InventoryEvent {
   final String? idCabang;
   final String filter;
   final String status;
-  final bool statusCondiment;
-  final bool reloadData;
+  final String filterjenis;
 
   AmbilData({
-    required this.reloadData,
     required this.filter,
     required this.status,
     required this.idCabang,
-    required this.statusCondiment,
+    required this.filterjenis,
   });
 }
 
@@ -38,13 +36,13 @@ class FilterItem extends InventoryEvent {
   final String idCabang;
   final String filter;
   final String status;
-  final bool statusCondiment;
+  final String filterjenis;
 
   FilterItem({
-    required this.statusCondiment,
     required this.filter,
     required this.status,
     required this.idCabang,
+    required this.filterjenis,
   });
 }
 

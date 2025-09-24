@@ -1,18 +1,17 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:intl/intl.dart';
-
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:stream_transform/stream_transform.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final InventoryRepository repo;
@@ -35,37 +34,24 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<ResetItemForm>(_onResetItemForm);
 
-    on<Searchitem>(_onSearchItem);
+    on<Searchitem>(
+      _onSearchItem,
+      transformer: debounceRestartable(const Duration(milliseconds: 400)),
+    );
   }
 
   List<ModelItem> _filterItem(
     List<ModelItem> item,
     String status,
     String filter,
-    bool statusCondiment,
+    String filterjenis,
   ) {
-    List<ModelItem> list = [];
-    if (status == "Active") {
-      list = item.where((data) {
-        if (statusCondiment) {
-          return data.getStatusItem && data.getstatusCondiment == true;
-        } else {
-          return data.getStatusItem;
-        }
-      }).toList();
-    } else if (status == "Deactive") {
-      list = item.where((data) {
-        if (statusCondiment) {
-          return !data.getStatusItem && data.getstatusCondiment == true;
-        } else {
-          return !data.getStatusItem;
-        }
-      }).toList();
-    }
-
-    for (ModelItem a in list) {
-      print("listnya: ${a.getstatusCondiment}, ${a.getnamaItem}");
-    }
+    List<ModelItem> list = item.where((e) {
+      final isActive = e.getStatusItem;
+      if (status == "Active") return isActive;
+      if (status == "Deactive") return !isActive;
+      return true;
+    }).toList();
 
     var formatter = DateFormat('dd-MM-yyyy');
     switch (filter) {
@@ -96,7 +82,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         );
         break;
     }
-    return list;
+
+    return switch (filterjenis) {
+      "Condiment" => list.where((e) => e.getstatusCondiment).toList(),
+      "Normal" => list.where((e) => !e.getstatusCondiment).toList(),
+      _ => list,
+    };
   }
 
   Future<void> _onFilteredItem(
@@ -114,7 +105,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
             item,
             event.status,
             event.filter,
-            event.statusCondiment,
+            event.filterjenis,
           ),
         ),
       );
@@ -155,22 +146,20 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
             items,
             event.status,
             event.filter,
-            event.statusCondiment,
+            event.filterjenis,
           ),
           selectedFilterItem: event.filter,
+          selectedFilterJenisItem: event.filterjenis,
           selectedStatusItem: event.status,
-          selectedStatusCondiment: event.statusCondiment,
         );
 
         cacheRepo.saveCache(loaded);
         emit(loaded);
       } else {
-        List<ModelItem> loadedItem = event.reloadData
-            ? await repo.ambilItem(event.idCabang!)
-            : List.from(cacheRepo.cache!.dataItem);
-        List<ModelKategori> loadedKategori = event.reloadData
-            ? await repo.ambilKategori(event.idCabang!)
-            : List.from(cacheRepo.cache!.dataKategori);
+        List<ModelItem> loadedItem = List.from(cacheRepo.cache!.dataItem);
+        List<ModelKategori> loadedKategori = List.from(
+          cacheRepo.cache!.dataKategori,
+        );
 
         bool cekDataItem = loadedItem.any(
           (item) => item.getidCabang == event.idCabang,
@@ -200,7 +189,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           loadedItembyCabang,
           event.status,
           event.filter,
-          event.statusCondiment,
+          event.filterjenis,
         );
 
         loadedKategori.sort(
@@ -214,7 +203,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           dataItem: loadedItem,
           dataKategori: loadedKategori,
           filteredDataItem: filteredItems,
-          selectedStatusCondiment: event.statusCondiment,
         );
 
         cacheRepo.saveCache(copyWithLoaded);
@@ -235,35 +223,21 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .set(convertToMapItem(event.data));
 
     final item = await repo.ambilItem(event.data.getidCabang);
-    final currentState = state as InventoryLoaded;
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
     final newState = currentState.copyWith(
-      dataItem: _filterItem(
+      dataItem: item,
+      filteredDataItem: _filterItem(
         item,
         currentState.selectedStatusItem!,
         currentState.selectedFilterItem!,
-        currentState.selectedStatusCondiment!,
+        currentState.selectedFilterJenisItem!,
       ),
     );
     emit(newState);
 
     cacheRepo.saveCache(newState);
-  }
-
-  FutureOr<void> _onSelectedKategori(
-    SelectedKategori event,
-    Emitter<InventoryState> emit,
-  ) {
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
-    emit(
-      currentState.copyWith(
-        dataSelectedKategori: {
-          "nama_kategori": event.selectedKategori['nama_kategori']!,
-          "id_kategori": event.selectedKategori['id_kategori']!,
-        },
-      ),
-    );
   }
 
   FutureOr<void> _onUploadKategori(
@@ -288,6 +262,23 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     cacheRepo.saveCache(newState);
   }
 
+  FutureOr<void> _onSelectedKategori(
+    SelectedKategori event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
+    emit(
+      currentState.copyWith(
+        dataSelectedKategori: {
+          "nama_kategori": event.selectedKategori['nama_kategori']!,
+          "id_kategori": event.selectedKategori['id_kategori']!,
+        },
+      ),
+    );
+  }
+
   FutureOr<void> _onResetKategoriForm(
     ResetKategoriForm event,
     Emitter<InventoryState> emit,
@@ -306,11 +297,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    emit(
-      currentState.copyWith(
-        dataSelectItem: {"id_item": event.selecteditem['id_item']!},
-      ),
-    );
+    emit(currentState.copyWith(dataSelectItem: event.selecteditem));
   }
 
   FutureOr<void> _onResetItemForm(
@@ -329,31 +316,27 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         : InventoryLoaded();
 
     if (event.text.isNotEmpty) {
-      final searchedItem = currentState.filteredDataItem.where((data)=> data.getnamaItem.toLowerCase().contains(event.text.toLowerCase())).toList();
-      emit(currentState.copyWith(filteredDataItem: searchedItem));
-    }
-  }
-  
-}
-
-EventTransformer<E> debounceRestartable<E>(Duration duration) {
-  return (events, mapper) => restartable<E>()
-      .call(events.debounce(duration), mapper);
-}
-
-
-on<SearchItemEvent>(
-  (event, emit) async {
-    final currentState = state;
-    if (currentState is InventoryLoaded) {
-      final filtered = currentState.dataKategori
-          .where((item) => item.getnamaKategori
-              .toLowerCase()
-              .contains(event.query.toLowerCase()))
+      final filtered = currentState.dataItem
+          .where(
+            (item) => item.getnamaItem.toLowerCase().contains(
+              event.text.toLowerCase(),
+            ),
+          )
           .toList();
 
-      emit(currentState.copyWith(dataKategori: filtered));
+      emit(currentState.copyWith(filteredDataItem: filtered));
+    } else {
+      List<ModelItem> list = List.from(currentState.dataItem);
+      emit(
+        currentState.copyWith(
+          filteredDataItem: _filterItem(
+            list,
+            currentState.selectedStatusItem!,
+            currentState.selectedFilterItem!,
+            currentState.selectedFilterJenisItem!,
+          ),
+        ),
+      );
     }
-  },
-  transformer: debounceRestartable(const Duration(milliseconds: 400)),
-);
+  }
+}
