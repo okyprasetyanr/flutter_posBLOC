@@ -33,6 +33,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<ResetItemForm>(_onResetItemForm);
 
+    on<CondimentForm>(_onCondimentForm);
+
     on<Searchitem>(
       _onSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
@@ -239,6 +241,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     final newState = currentState.copyWith(
+      dataSelectItem: null,
+      condimentForm: false,
       dataItem: item,
       filteredDataItem: _filterItem(
         item,
@@ -299,7 +303,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
-    emit(currentState.copyWith(dataSelectedKategori: {}));
+    emit(currentState.copyWith(dataSelectedKategori: null));
   }
 
   FutureOr<void> _onSelectedItem(
@@ -310,7 +314,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    emit(currentState.copyWith(dataSelectItem: event.selecteditem));
+    emit(currentState.copyWith(dataSelectItem: event.selectedItem));
   }
 
   FutureOr<void> _onResetItemForm(
@@ -320,7 +324,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
-    emit(currentState.copyWith(dataSelectItem: {}));
+    emit(currentState.copyWith(dataSelectItem: null, condimentForm: false));
   }
 
   FutureOr<void> _onSearchItem(Searchitem event, Emitter<InventoryState> emit) {
@@ -352,5 +356,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ),
       );
     }
+  }
+
+  FutureOr<void> _onCondimentForm(
+    CondimentForm event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? state as InventoryLoaded
+        : InventoryLoaded();
+    emit(currentState.copyWith(condimentForm: event.condimentForm));
   }
 }

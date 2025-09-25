@@ -25,9 +25,9 @@ class SelectedKategori extends InventoryEvent {
 }
 
 class SelectedItem extends InventoryEvent {
-  final Map<String, String> selecteditem;
+  final ModelItem selectedItem;
 
-  SelectedItem({required this.selecteditem});
+  SelectedItem({required this.selectedItem});
 }
 
 class ResetKategoriForm extends InventoryEvent {}
@@ -66,4 +66,10 @@ class Searchitem extends InventoryEvent {
   final String text;
 
   Searchitem({required this.text});
+}
+
+class CondimentForm extends InventoryEvent {
+  final bool condimentForm;
+
+  CondimentForm({required this.condimentForm});
 }

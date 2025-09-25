@@ -22,20 +22,22 @@ class InventoryLoaded extends InventoryState {
   final String? selectedStatusItem;
   final String? selectedFilterJenisItem;
   final String? selectedFilterIDKategoriItem;
+  final bool? condimentForm;
   final List<ModelCabang> datacabang;
   final List<ModelItem> dataItem;
   final List<ModelKategori> dataKategori;
   final List<ModelItem> filteredDataItem;
   final Map<String, String> dataSelectedKategori;
-  final Map<String, String> dataSelectItem;
+  final ModelItem? dataSelectItem;
 
   InventoryLoaded({
     this.selectedFilterIDKategoriItem,
     this.selectedFilterJenisItem,
     this.selectedFilterItem,
     this.selectedStatusItem,
+    this.condimentForm,
     this.dataSelectedKategori = const {},
-    this.dataSelectItem = const {},
+    this.dataSelectItem,
     this.idCabang,
     this.daerahCabang,
     this.datacabang = const [],
@@ -51,13 +53,13 @@ class InventoryLoaded extends InventoryState {
     String? selectedStatusItem,
     String? selectedFilterJenisItem,
     String? selectedFilterIDKategoriItem,
-    bool? selectedStatusCondiment,
+    bool? condimentForm,
     List<ModelCabang>? datacabang,
     List<ModelItem>? dataItem,
     List<ModelKategori>? dataKategori,
     List<ModelItem>? filteredDataItem,
     Map<String, String>? dataSelectedKategori,
-    Map<String, String>? dataSelectItem,
+    ModelItem? dataSelectItem,
   }) {
     return InventoryLoaded(
       selectedFilterIDKategoriItem:
@@ -66,6 +68,7 @@ class InventoryLoaded extends InventoryState {
       selectedFilterJenisItem:
           selectedFilterJenisItem ?? this.selectedFilterJenisItem,
       selectedStatusItem: selectedStatusItem ?? this.selectedStatusItem,
+      condimentForm: condimentForm ?? this.condimentForm,
       idCabang: idCabang ?? this.idCabang,
       daerahCabang: daerahCabang ?? this.daerahCabang,
       datacabang: datacabang ?? this.datacabang,

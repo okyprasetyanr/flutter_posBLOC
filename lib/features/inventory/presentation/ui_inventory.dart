@@ -45,8 +45,6 @@ class _UiInventoryState extends State<UiInventory> {
   String? selectedFilterKategoriItem;
   double ratioGridView = 0;
 
-  bool checkcondiment = false;
-  bool condiment = false;
   TextEditingController namaItemController = TextEditingController();
   TextEditingController cabangItemController = TextEditingController();
   TextEditingController hargaItemController = TextEditingController();
@@ -523,19 +521,26 @@ class _UiInventoryState extends State<UiInventory> {
                                   child: InkWell(
                                     borderRadius: BorderRadius.circular(15),
                                     onTap: () {
-                                      namaItemController.text =
-                                          items[index].getnamaItem;
-                                      kodeBarcodeController.text =
-                                          items[index].getBarcode;
-                                      hargaItemController.text =
-                                          items[index].gethargaItem;
-                                      condiment =
-                                          items[index].getstatusCondiment;
                                       context.read<InventoryBloc>().add(
                                         SelectedItem(
-                                          selecteditem: {
-                                            "id_item": items[index].getidItem,
-                                          },
+                                          selectedItem: ModelItem(
+                                            qtyItem: items[index].getqtyitem,
+                                            uidUser: UserSession.uidUser!,
+                                            namaItem: items[index].getnamaItem,
+                                            idItem: items[index].getidItem,
+                                            hargaItem:
+                                                items[index].gethargaItem,
+                                            idKategoriItem:
+                                                items[index].getidKategoriItem,
+                                            statusCondiment:
+                                                items[index].getstatusCondiment,
+                                            urlGambar: "",
+                                            idCabang: items[index].getidCabang,
+                                            barcode: items[index].getBarcode,
+                                            statusItem: true,
+                                            tanggalItem:
+                                                items[index].getTanggalItem,
+                                          ),
                                         ),
                                       );
                                     },
@@ -879,98 +884,167 @@ class _UiInventoryState extends State<UiInventory> {
                     child: ListView(
                       padding: EdgeInsets.all(10),
                       children: [
-                        customTextField("Nama Item", namaItemController),
-                        const SizedBox(height: 10),
-                        customTextField("Kode/Barcode", kodeBarcodeController),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: customTextField(
-                                "Harga",
-                                hargaItemController,
+                        BlocListener<InventoryBloc, InventoryState>(
+                          listenWhen: (prev, curr) =>
+                              prev is InventoryLoaded &&
+                              curr is InventoryLoaded &&
+                              curr.dataSelectItem != null &&
+                              prev.dataSelectItem != null &&
+                              prev.dataSelectItem != curr.dataSelectItem,
+                          listener: (context, state) {
+                            if (state is InventoryLoaded &&
+                                state.dataSelectItem != null) {
+                              namaItemController.text =
+                                  state.dataSelectItem!.getnamaItem;
+                              kodeBarcodeController.text =
+                                  state.dataSelectItem!.getBarcode;
+                              hargaItemController.text =
+                                  state.dataSelectItem!.gethargaItem;
+                            }
+                          },
+                          child: Column(
+                            children: [
+                              customTextField("Nama Item", namaItemController),
+                              const SizedBox(height: 10),
+                              customTextField(
+                                "Kode/Barcode",
+                                kodeBarcodeController,
                               ),
-                            ),
-                            const SizedBox(width: 20),
-                            Flexible(
-                              flex: 1,
-                              fit: FlexFit.loose,
-                              child: GestureDetector(
-                                onTap: () =>
-                                    setState(() => condiment = !condiment),
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 500),
-                                  width: 135,
-                                  padding: EdgeInsets.only(top: 5, bottom: 5),
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18),
-                                    color: condiment
-                                        ? AppColor.primary
-                                        : Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            (condiment
-                                                    ? Colors.black
-                                                    : Colors.green)
-                                                .withValues(alpha: 0.4),
-                                        blurStyle: BlurStyle.outer,
-                                        blurRadius: 15,
-                                      ),
-                                    ],
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: customTextField(
+                                      "Harga",
+                                      hargaItemController,
+                                    ),
                                   ),
-                                  child: Stack(
-                                    children: [
-                                      AnimatedPositioned(
-                                        curve: Curves.easeInOut,
-                                        left: condiment ? -50 : 5,
-                                        duration: Duration(milliseconds: 500),
-                                        child: Icon(
-                                          Icons.check_circle_outline_rounded,
-                                          size: 25,
+                                  const SizedBox(width: 20),
+                                  Flexible(
+                                    flex: 1,
+                                    fit: FlexFit.loose,
+                                    child:
+                                        BlocSelector<
+                                          InventoryBloc,
+                                          InventoryState,
+                                          bool
+                                        >(
+                                          selector: (state) {
+                                            if (state is InventoryLoaded) {
+                                              return state.condimentForm ??
+                                                  false;
+                                            }
+                                            return false;
+                                          },
+                                          builder: (contextBloc, state) {
+                                            return GestureDetector(
+                                              onTap: () => context
+                                                  .read<InventoryBloc>()
+                                                  .add(
+                                                    CondimentForm(
+                                                      condimentForm: !state,
+                                                    ),
+                                                  ),
+                                              child: AnimatedContainer(
+                                                duration: Duration(
+                                                  milliseconds: 500,
+                                                ),
+                                                width: 135,
+                                                padding: EdgeInsets.only(
+                                                  top: 5,
+                                                  bottom: 5,
+                                                ),
+                                                height: 35,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(18),
+                                                  color: state
+                                                      ? AppColor.primary
+                                                      : Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color:
+                                                          (state
+                                                                  ? Colors.black
+                                                                  : Colors
+                                                                        .green)
+                                                              .withValues(
+                                                                alpha: 0.4,
+                                                              ),
+                                                      blurStyle:
+                                                          BlurStyle.outer,
+                                                      blurRadius: 15,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Stack(
+                                                  children: [
+                                                    AnimatedPositioned(
+                                                      curve: Curves.easeInOut,
+                                                      left: state ? -50 : 5,
+                                                      duration: Duration(
+                                                        milliseconds: 500,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons
+                                                            .check_circle_outline_rounded,
+                                                        size: 25,
+                                                      ),
+                                                    ),
+                                                    AnimatedPositioned(
+                                                      curve: Curves.easeInOut,
+                                                      left: state ? 100 : 150,
+                                                      duration: Duration(
+                                                        milliseconds: 500,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons
+                                                            .check_circle_outline_rounded,
+                                                        size: 25,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    AnimatedPositioned(
+                                                      curve: Curves.easeInOut,
+                                                      top: 2,
+                                                      left: state ? -100 : 38,
+                                                      duration: Duration(
+                                                        milliseconds: 500,
+                                                      ),
+                                                      child: Text(
+                                                        "Normal",
+                                                        style: lv1TextStyle,
+                                                      ),
+                                                    ),
+                                                    AnimatedPositioned(
+                                                      curve: Curves.easeInOut,
+                                                      left: state ? 10 : 150,
+                                                      top: 2,
+                                                      duration: Duration(
+                                                        milliseconds: 500,
+                                                      ),
+                                                      child: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
+                                                          "Condiment",
+                                                          style:
+                                                              lv1TextStyleWhite,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
                                         ),
-                                      ),
-                                      AnimatedPositioned(
-                                        curve: Curves.easeInOut,
-                                        left: condiment ? 100 : 150,
-                                        duration: Duration(milliseconds: 500),
-                                        child: Icon(
-                                          Icons.check_circle_outline_rounded,
-                                          size: 25,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      AnimatedPositioned(
-                                        curve: Curves.easeInOut,
-                                        top: 2,
-                                        left: condiment ? -100 : 38,
-                                        duration: Duration(milliseconds: 500),
-                                        child: Text(
-                                          "Normal",
-                                          style: lv1TextStyle,
-                                        ),
-                                      ),
-                                      AnimatedPositioned(
-                                        curve: Curves.easeInOut,
-                                        left: condiment ? 10 : 150,
-                                        top: 2,
-                                        duration: Duration(milliseconds: 500),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "Condiment",
-                                            style: lv1TextStyleWhite,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
                                   ),
-                                ),
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 10),
 
@@ -992,10 +1066,15 @@ class _UiInventoryState extends State<UiInventory> {
                                         return null;
                                       },
                                       builder: (contextBloc, state) {
+                                        if (state == null) {
+                                          return const SpinKitThreeBounce(
+                                            color: Colors.blue,
+                                            size: 30.0,
+                                          );
+                                        }
                                         return DropdownButtonFormField<
                                           ModelKategori
                                         >(
-                                          initialValue: state?.first,
                                           style: lv05TextStyle,
                                           decoration: InputDecoration(
                                             label: Text(
@@ -1045,7 +1124,7 @@ class _UiInventoryState extends State<UiInventory> {
                                                     .toList()
                                               : [],
                                           onTap: () {
-                                            if (state!.isEmpty) {
+                                            if (state.isEmpty) {
                                               customSnackBar(
                                                 context,
                                                 "Cabang tidak memiliki Kategori",
@@ -1111,15 +1190,15 @@ class _UiInventoryState extends State<UiInventory> {
                               BlocSelector<
                                 InventoryBloc,
                                 InventoryState,
-                                Map<String, String>?
+                                ModelItem?
                               >(
                                 selector: (state) {
                                   if (state is InventoryLoaded) {
                                     return state.dataSelectItem;
                                   }
-                                  return {};
+                                  return null;
                                 },
-                                builder: (context, state) {
+                                builder: (contextBloc, state) {
                                   return ElevatedButton.icon(
                                     onPressed: () {
                                       if (namaItemController.text.isEmpty ||
@@ -1131,17 +1210,29 @@ class _UiInventoryState extends State<UiInventory> {
                                           "Data belum lengkap!",
                                         );
                                       } else {
-                                        String iditem =
-                                            state['id_item'] ??
-                                            const Uuid().v4();
+                                        String iditem;
+                                        double qtyitem;
+                                        if (state != null) {
+                                          iditem = state.getidItem;
+                                          qtyitem = state.getqtyitem;
+                                        } else {
+                                          iditem = Uuid().v4();
+                                          qtyitem = 0;
+                                        }
+
                                         final data = ModelItem(
-                                          qtyItem: 0,
+                                          qtyItem: qtyitem,
                                           uidUser: UserSession.uidUser!,
                                           namaItem: namaItemController.text,
                                           idItem: iditem,
                                           hargaItem: hargaItemController.text,
                                           idKategoriItem: selectedIdKategori!,
-                                          statusCondiment: condiment,
+                                          statusCondiment:
+                                              (context
+                                                          .read<InventoryBloc>()
+                                                          .state
+                                                      as InventoryLoaded)
+                                                  .condimentForm!,
                                           urlGambar: "",
                                           idCabang:
                                               (context
@@ -1162,11 +1253,10 @@ class _UiInventoryState extends State<UiInventory> {
                                         namaItemController.clear();
                                         kodeBarcodeController.clear();
                                         hargaItemController.clear();
-                                        condiment = false;
                                       }
                                     },
                                     label: Text(
-                                      state!.isEmpty ? "Simpan" : "Edit",
+                                      state == null ? "Simpan" : "Edit",
                                       style: lv1TextStyleWhite,
                                     ),
                                     icon: Icon(Icons.save, color: Colors.white),
@@ -1353,6 +1443,5 @@ class _UiInventoryState extends State<UiInventory> {
     hargaItemController.clear();
     kodeBarcodeController.clear();
     selectedIdKategori = null;
-    condiment = false;
   }
 }
