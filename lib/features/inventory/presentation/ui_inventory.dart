@@ -12,8 +12,6 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template_responsif/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/widget_navigation_gesture.dart';
 import 'package:flutter_pos/widget/widget_snack_bar.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -36,11 +34,15 @@ class _UiInventoryState extends State<UiInventory> {
   ];
   List<String> statusItem = ["Active", "Deactive"];
   List<String> filterjenis = ["All", "Condiment", "Normal"];
+  List<ModelKategori> filterkategori = [
+    ModelKategori(namaKategori: "All", idkategori: "0", idCabang: "0"),
+  ];
 
   String? selectedFilterItem;
   String? selectedStatusItem;
   String? selectedIdKategori;
   String? selectedFilterJenisItem;
+  String? selectedFilterKategoriItem;
   double ratioGridView = 0;
 
   bool checkcondiment = false;
@@ -102,6 +104,7 @@ class _UiInventoryState extends State<UiInventory> {
     selectedFilterItem = filters.first;
     selectedStatusItem = statusItem.first;
     selectedFilterJenisItem = filterjenis.first;
+    selectedFilterKategoriItem = filterkategori.first.getidKategori;
 
     final bloc = context.read<InventoryBloc>();
     bloc.add(
@@ -110,6 +113,7 @@ class _UiInventoryState extends State<UiInventory> {
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
         filterjenis: selectedFilterJenisItem!,
+        filterIDKategori: selectedFilterKategoriItem!,
       ),
     );
   }
@@ -120,6 +124,16 @@ class _UiInventoryState extends State<UiInventory> {
 
   @override
   Widget build(BuildContext context) {
+    context.select<InventoryBloc, List<ModelKategori>>((value) {
+      final dataKategori = value.state is InventoryLoaded
+          ? (value.state as InventoryLoaded).dataKategori
+          : null;
+      return filterkategori = [
+        filterkategori.first,
+        if (dataKategori != null) ...dataKategori,
+      ];
+    });
+
     final orientasi = MediaQuery.of(context).orientation;
     ratioGridView = orientasi == Orientation.portrait ? 8 / 12 : 6 / 10;
     return LayoutTopBottom(
@@ -287,6 +301,8 @@ class _UiInventoryState extends State<UiInventory> {
                                           filter: selectedFilterItem!,
                                           status: selectedStatusItem!,
                                           filterjenis: selectedFilterJenisItem!,
+                                          filterIDKategori:
+                                              selectedFilterKategoriItem!,
                                         ),
                                       );
                                     },
@@ -342,6 +358,8 @@ class _UiInventoryState extends State<UiInventory> {
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     filterjenis: selectedFilterJenisItem!,
+                                    filterIDKategori:
+                                        selectedFilterKategoriItem!,
                                   ),
                                 );
                               },
@@ -350,86 +368,65 @@ class _UiInventoryState extends State<UiInventory> {
                           const SizedBox(width: 10),
                           SizedBox(
                             width: 140,
-                            child:
-                                BlocSelector<
-                                  InventoryBloc,
-                                  InventoryState,
-                                  List<ModelKategori>?
-                                >(
-                                  selector: (state) {
-                                    if (state is InventoryLoaded) {
-                                      return state.dataKategori;
-                                    }
-                                    return null;
-                                  },
-                                  builder: (contextBloc, state) {
-                                    return DropdownButtonFormField<
-                                      ModelKategori
-                                    >(
-                                      style: lv05TextStyle,
-                                      decoration: InputDecoration(
-                                        label: Text(
-                                          "Pilih Kategori",
-                                          style: lv1TextStyle,
-                                        ),
-                                        floatingLabelBehavior:
-                                            FloatingLabelBehavior.always,
-                                      ),
-                                      hint: Text(
-                                        "Kategori...",
-                                        style: lv05TextStyle,
+                            child: DropdownButtonFormField<ModelKategori>(
+                              style: lv05TextStyle,
+                              decoration: InputDecoration(
+                                label: Text(
+                                  "Pilih Kategori",
+                                  style: lv1TextStyle,
+                                ),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                              ),
+                              hint: Text(
+                                filterkategori.first.getnamaKategori,
+                                style: lv05TextStyle,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                              items: filterkategori
+                                  .where(
+                                    (data) =>
+                                        data.getidCabang == "0" ||
+                                        data.getidCabang ==
+                                            (context.read<InventoryBloc>().state
+                                                    as InventoryLoaded)
+                                                .idCabang,
+                                  )
+                                  .map(
+                                    (map) => DropdownMenuItem<ModelKategori>(
+                                      value: map,
+                                      child: Text(
+                                        map.getnamaKategori,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                       ),
-                                      items: state != null
-                                          ? state
-                                                .where(
-                                                  (data) =>
-                                                      data.getidCabang ==
-                                                      contextBloc.select<
-                                                        InventoryBloc,
-                                                        String?
-                                                      >(
-                                                        (data) =>
-                                                            data.state
-                                                                is InventoryLoaded
-                                                            ? (data.state
-                                                                      as InventoryLoaded)
-                                                                  .idCabang
-                                                            : "",
-                                                      ),
-                                                )
-                                                .map(
-                                                  (map) =>
-                                                      DropdownMenuItem<
-                                                        ModelKategori
-                                                      >(
-                                                        value: map,
-                                                        child: Text(
-                                                          map.getnamaKategori,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 1,
-                                                        ),
-                                                      ),
-                                                )
-                                                .toList()
-                                          : [],
-                                      onTap: () {
-                                        if (state!.isEmpty) {
-                                          customSnackBar(
-                                            context,
-                                            "Cabang tidak memiliki Kategori",
-                                          );
-                                        }
-                                      },
-                                      onChanged: (value) {
-                                        selectedIdKategori =
-                                            value!.getidKategori;
-                                      },
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  )
+                                  .toList(),
+                              onTap: () {
+                                if (filterkategori.isEmpty) {
+                                  customSnackBar(
+                                    context,
+                                    "Cabang tidak memiliki Kategori",
+                                  );
+                                }
+                              },
+                              onChanged: (value) {
+                                context.read<InventoryBloc>().add(
+                                  FilterItem(
+                                    filter: selectedFilterItem!,
+                                    status: selectedStatusItem!,
+                                    idCabang:
+                                        (context.read<InventoryBloc>().state
+                                                as InventoryLoaded)
+                                            .idCabang!,
+                                    filterjenis: selectedFilterJenisItem!,
+                                    filterIDKategori: value!.getidKategori,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
 
                           const SizedBox(width: 10),
@@ -467,6 +464,8 @@ class _UiInventoryState extends State<UiInventory> {
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     filterjenis: selectedFilterJenisItem!,
+                                    filterIDKategori:
+                                        selectedFilterKategoriItem!,
                                   ),
                                 );
                               },
@@ -662,6 +661,8 @@ class _UiInventoryState extends State<UiInventory> {
                                     status: selectedStatusItem!,
                                     idCabang: value!.getidCabang,
                                     filterjenis: selectedFilterJenisItem!,
+                                    filterIDKategori:
+                                        selectedFilterKategoriItem!,
                                   ),
                                 );
                               },
@@ -775,7 +776,7 @@ class _UiInventoryState extends State<UiInventory> {
   Widget bottomLayout() {
     return Column(
       children: [
-        Container(
+        SizedBox(
           width: double.infinity,
           child: GestureDetector(
             child: AnimatedContainer(
@@ -849,6 +850,8 @@ class _UiInventoryState extends State<UiInventory> {
                                                 as InventoryLoaded)
                                             .idCabang!,
                                     filterjenis: selectedFilterJenisItem!,
+                                    filterIDKategori:
+                                        selectedFilterKategoriItem!,
                                   ),
                                 );
                               },
@@ -970,6 +973,7 @@ class _UiInventoryState extends State<UiInventory> {
                           ],
                         ),
                         const SizedBox(height: 10),
+
                         Padding(
                           padding: EdgeInsetsGeometry.only(left: 10, right: 10),
                           child: Row(
@@ -991,6 +995,7 @@ class _UiInventoryState extends State<UiInventory> {
                                         return DropdownButtonFormField<
                                           ModelKategori
                                         >(
+                                          initialValue: state?.first,
                                           style: lv05TextStyle,
                                           decoration: InputDecoration(
                                             label: Text(
@@ -1005,7 +1010,7 @@ class _UiInventoryState extends State<UiInventory> {
                                             style: lv05TextStyle,
                                           ),
                                           items: state != null
-                                              ? state!
+                                              ? state
                                                     .where(
                                                       (data) =>
                                                           data.getidCabang ==

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
@@ -45,13 +44,22 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     String status,
     String filter,
     String filterjenis,
+    String filterIDKategori,
   ) {
-    List<ModelItem> list = item.where((e) {
-      final isActive = e.getStatusItem;
+    List<ModelItem> list = item.where((element) {
+      final isActive = element.getStatusItem;
       if (status == "Active") return isActive;
       if (status == "Deactive") return !isActive;
       return true;
     }).toList();
+
+    if (filterIDKategori != "0") {
+      list = list
+          .where((element) => element.getidKategoriItem == filterIDKategori)
+          .toList();
+    } else {
+      list;
+    }
 
     var formatter = DateFormat('dd-MM-yyyy');
     switch (filter) {
@@ -106,6 +114,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
             event.status,
             event.filter,
             event.filterjenis,
+            event.filterIDKategori,
           ),
         ),
       );
@@ -147,10 +156,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
             event.status,
             event.filter,
             event.filterjenis,
+            event.filterIDKategori,
           ),
           selectedFilterItem: event.filter,
           selectedFilterJenisItem: event.filterjenis,
           selectedStatusItem: event.status,
+          selectedFilterIDKategoriItem: event.filterIDKategori,
         );
 
         cacheRepo.saveCache(loaded);
@@ -190,6 +201,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           event.status,
           event.filter,
           event.filterjenis,
+          event.filterIDKategori,
         );
 
         loadedKategori.sort(
@@ -233,6 +245,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         currentState.selectedStatusItem!,
         currentState.selectedFilterItem!,
         currentState.selectedFilterJenisItem!,
+        currentState.selectedFilterIDKategoriItem!,
       ),
     );
     emit(newState);
@@ -334,6 +347,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
             currentState.selectedStatusItem!,
             currentState.selectedFilterItem!,
             currentState.selectedFilterJenisItem!,
+            currentState.selectedFilterIDKategoriItem!,
           ),
         ),
       );

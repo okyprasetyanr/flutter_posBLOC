@@ -7,12 +7,14 @@ class AmbilData extends InventoryEvent {
   final String filter;
   final String status;
   final String filterjenis;
+  final String filterIDKategori;
 
   AmbilData({
     required this.filter,
     required this.status,
     required this.idCabang,
     required this.filterjenis,
+    required this.filterIDKategori,
   });
 }
 
@@ -37,12 +39,14 @@ class FilterItem extends InventoryEvent {
   final String filter;
   final String status;
   final String filterjenis;
+  final String filterIDKategori;
 
   FilterItem({
     required this.filter,
     required this.status,
     required this.idCabang,
     required this.filterjenis,
+    required this.filterIDKategori,
   });
 }
 
