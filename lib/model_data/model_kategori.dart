@@ -10,6 +10,10 @@ class ModelKategori {
        _idkategori = idkategori,
        _idCabang = idCabang;
 
+  static reset() {
+    ModelKategori(namaKategori: "", idkategori: "", idCabang: "");
+  }
+
   Map<String, dynamic> convertMap() {
     return {
       'nama_kategori': _namaKategori,

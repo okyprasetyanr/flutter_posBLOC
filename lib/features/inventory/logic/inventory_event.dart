@@ -1,4 +1,5 @@
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class InventoryEvent {}
 
@@ -72,4 +73,20 @@ class CondimentForm extends InventoryEvent {
   final bool condimentForm;
 
   CondimentForm({required this.condimentForm});
+}
+
+class UpdateSelectedItem extends InventoryEvent {
+  final String? namaItem;
+  final String? barcodeItem;
+  final String? hargaItem;
+  final String? kategoriItem;
+  final bool? condimentForm;
+
+  UpdateSelectedItem({
+    this.namaItem,
+    this.barcodeItem,
+    this.hargaItem,
+    this.kategoriItem,
+    this.condimentForm,
+  });
 }

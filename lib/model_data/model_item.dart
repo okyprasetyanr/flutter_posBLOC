@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class ModelItem {
+class ModelItem extends Equatable {
   final String _uidUser,
       _namaItem,
       _idItem,
@@ -84,4 +85,20 @@ class ModelItem {
       );
     }).toList();
   }
+
+  @override
+  List<Object?> get props => [
+    _uidUser,
+    _namaItem,
+    _idItem,
+    _hargaItem,
+    _idKategoriItem,
+    _statusCondiment,
+    _urlGambar,
+    _idCabang,
+    _barcode,
+    _qtyItem,
+    _statusItem,
+    _tanggalItem,
+  ];
 }

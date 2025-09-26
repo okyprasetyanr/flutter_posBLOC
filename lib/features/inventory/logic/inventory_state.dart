@@ -28,7 +28,8 @@ class InventoryLoaded extends InventoryState {
   final List<ModelKategori> dataKategori;
   final List<ModelItem> filteredDataItem;
   final Map<String, String> dataSelectedKategori;
-  final ModelItem? dataSelectItem;
+  final ModelItem? dataSelectedItem;
+  final ModelItem? updateDataSelectedItem;
 
   InventoryLoaded({
     this.selectedFilterIDKategoriItem,
@@ -37,7 +38,8 @@ class InventoryLoaded extends InventoryState {
     this.selectedStatusItem,
     this.condimentForm,
     this.dataSelectedKategori = const {},
-    this.dataSelectItem,
+    this.dataSelectedItem,
+    this.updateDataSelectedItem,
     this.idCabang,
     this.daerahCabang,
     this.datacabang = const [],
@@ -59,7 +61,8 @@ class InventoryLoaded extends InventoryState {
     List<ModelKategori>? dataKategori,
     List<ModelItem>? filteredDataItem,
     Map<String, String>? dataSelectedKategori,
-    ModelItem? dataSelectItem,
+    ModelItem? dataSelectedItem,
+    ModelItem? updateDataSelectedItem,
   }) {
     return InventoryLoaded(
       selectedFilterIDKategoriItem:
@@ -76,7 +79,9 @@ class InventoryLoaded extends InventoryState {
       dataKategori: dataKategori ?? this.dataKategori,
       filteredDataItem: filteredDataItem ?? this.filteredDataItem,
       dataSelectedKategori: dataSelectedKategori ?? this.dataSelectedKategori,
-      dataSelectItem: dataSelectItem ?? this.dataSelectItem,
+      dataSelectedItem: dataSelectedItem ?? this.dataSelectedItem,
+      updateDataSelectedItem:
+          updateDataSelectedItem ?? this.updateDataSelectedItem,
     );
   }
 }

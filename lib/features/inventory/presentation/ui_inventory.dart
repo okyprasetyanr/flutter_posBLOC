@@ -50,7 +50,6 @@ class _UiInventoryState extends State<UiInventory> {
   TextEditingController hargaItemController = TextEditingController();
   TextEditingController kodeBarcodeController = TextEditingController();
   TextEditingController namaKategoriController = TextEditingController();
-
   bool isOpen = false;
 
   PageController pageControllerTop = PageController();
@@ -114,6 +113,56 @@ class _UiInventoryState extends State<UiInventory> {
         filterIDKategori: selectedFilterKategoriItem!,
       ),
     );
+
+    BlocListener<InventoryBloc, InventoryState>(
+      listener: (contextBloc, stateBloc) {
+        if (stateBloc is InventoryLoaded) {
+          namaItemController.text = stateBloc.dataSelectedItem!.getnamaItem;
+          kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
+          hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
+
+          _setupControllerForm(
+            namaItemController,
+            (value) => context.read<InventoryBloc>().add(
+              UpdateSelectedItem(namaItem: value),
+            ),
+          );
+          _setupControllerForm(
+            hargaItemController,
+            (value) => context.read<InventoryBloc>().add(
+              UpdateSelectedItem(namaItem: value),
+            ),
+          );
+          _setupControllerForm(
+            kodeBarcodeController,
+            (value) => context.read<InventoryBloc>().add(
+              UpdateSelectedItem(namaItem: value),
+            ),
+          );
+
+          context.read<InventoryBloc>().add(
+            CondimentForm(
+              condimentForm: stateBloc.dataSelectedItem!.getstatusCondiment,
+            ),
+          );
+
+          context.read<InventoryBloc>().add(
+            UpdateSelectedItem(
+              barcodeItem: stateBloc.dataSelectedKategori['id_kategori'],
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  void _setupControllerForm(
+    TextEditingController controller,
+    void Function(String) onChanged,
+  ) {
+    return controller.addListener(() {
+      onChanged(controller.text);
+    });
   }
 
   Future<void> _onRefresh() async {
@@ -884,168 +933,147 @@ class _UiInventoryState extends State<UiInventory> {
                     child: ListView(
                       padding: EdgeInsets.all(10),
                       children: [
-                        BlocListener<InventoryBloc, InventoryState>(
-                          listenWhen: (prev, curr) =>
-                              prev is InventoryLoaded &&
-                              curr is InventoryLoaded &&
-                              curr.dataSelectItem != null &&
-                              prev.dataSelectItem != null &&
-                              prev.dataSelectItem != curr.dataSelectItem,
-                          listener: (context, state) {
-                            if (state is InventoryLoaded &&
-                                state.dataSelectItem != null) {
-                              namaItemController.text =
-                                  state.dataSelectItem!.getnamaItem;
-                              kodeBarcodeController.text =
-                                  state.dataSelectItem!.getBarcode;
-                              hargaItemController.text =
-                                  state.dataSelectItem!.gethargaItem;
-                            }
-                          },
-                          child: Column(
-                            children: [
-                              customTextField("Nama Item", namaItemController),
-                              const SizedBox(height: 10),
-                              customTextField(
-                                "Kode/Barcode",
-                                kodeBarcodeController,
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: customTextField(
-                                      "Harga",
-                                      hargaItemController,
-                                    ),
+                        Column(
+                          children: [
+                            customTextField("Nama Item", namaItemController),
+                            const SizedBox(height: 10),
+                            customTextField(
+                              "Kode/Barcode",
+                              kodeBarcodeController,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: customTextField(
+                                    "Harga",
+                                    hargaItemController,
                                   ),
-                                  const SizedBox(width: 20),
-                                  Flexible(
-                                    flex: 1,
-                                    fit: FlexFit.loose,
-                                    child:
-                                        BlocSelector<
-                                          InventoryBloc,
-                                          InventoryState,
-                                          bool
-                                        >(
-                                          selector: (state) {
-                                            if (state is InventoryLoaded) {
-                                              return state.condimentForm ??
-                                                  false;
-                                            }
-                                            return false;
-                                          },
-                                          builder: (contextBloc, state) {
-                                            return GestureDetector(
-                                              onTap: () => context
-                                                  .read<InventoryBloc>()
-                                                  .add(
-                                                    CondimentForm(
-                                                      condimentForm: !state,
+                                ),
+                                const SizedBox(width: 20),
+                                Flexible(
+                                  flex: 1,
+                                  fit: FlexFit.loose,
+                                  child:
+                                      BlocSelector<
+                                        InventoryBloc,
+                                        InventoryState,
+                                        bool
+                                      >(
+                                        selector: (state) {
+                                          if (state is InventoryLoaded) {
+                                            return state.condimentForm ?? false;
+                                          }
+                                          return false;
+                                        },
+                                        builder: (contextBloc, state) {
+                                          return GestureDetector(
+                                            onTap: () => context
+                                                .read<InventoryBloc>()
+                                                .add(
+                                                  CondimentForm(
+                                                    condimentForm: !state,
+                                                  ),
+                                                ),
+                                            child: AnimatedContainer(
+                                              duration: Duration(
+                                                milliseconds: 500,
+                                              ),
+                                              width: 135,
+                                              padding: EdgeInsets.only(
+                                                top: 5,
+                                                bottom: 5,
+                                              ),
+                                              height: 35,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(18),
+                                                color: state
+                                                    ? AppColor.primary
+                                                    : Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color:
+                                                        (state
+                                                                ? Colors.black
+                                                                : Colors.green)
+                                                            .withValues(
+                                                              alpha: 0.4,
+                                                            ),
+                                                    blurStyle: BlurStyle.outer,
+                                                    blurRadius: 15,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Stack(
+                                                children: [
+                                                  AnimatedPositioned(
+                                                    curve: Curves.easeInOut,
+                                                    left: state ? -50 : 5,
+                                                    duration: Duration(
+                                                      milliseconds: 500,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons
+                                                          .check_circle_outline_rounded,
+                                                      size: 25,
                                                     ),
                                                   ),
-                                              child: AnimatedContainer(
-                                                duration: Duration(
-                                                  milliseconds: 500,
-                                                ),
-                                                width: 135,
-                                                padding: EdgeInsets.only(
-                                                  top: 5,
-                                                  bottom: 5,
-                                                ),
-                                                height: 35,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(18),
-                                                  color: state
-                                                      ? AppColor.primary
-                                                      : Colors.white,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color:
-                                                          (state
-                                                                  ? Colors.black
-                                                                  : Colors
-                                                                        .green)
-                                                              .withValues(
-                                                                alpha: 0.4,
-                                                              ),
-                                                      blurStyle:
-                                                          BlurStyle.outer,
-                                                      blurRadius: 15,
+                                                  AnimatedPositioned(
+                                                    curve: Curves.easeInOut,
+                                                    left: state ? 100 : 150,
+                                                    duration: Duration(
+                                                      milliseconds: 500,
                                                     ),
-                                                  ],
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    AnimatedPositioned(
-                                                      curve: Curves.easeInOut,
-                                                      left: state ? -50 : 5,
-                                                      duration: Duration(
-                                                        milliseconds: 500,
-                                                      ),
-                                                      child: Icon(
-                                                        Icons
-                                                            .check_circle_outline_rounded,
-                                                        size: 25,
-                                                      ),
+                                                    child: Icon(
+                                                      Icons
+                                                          .check_circle_outline_rounded,
+                                                      size: 25,
+                                                      color: Colors.white,
                                                     ),
-                                                    AnimatedPositioned(
-                                                      curve: Curves.easeInOut,
-                                                      left: state ? 100 : 150,
-                                                      duration: Duration(
-                                                        milliseconds: 500,
-                                                      ),
-                                                      child: Icon(
-                                                        Icons
-                                                            .check_circle_outline_rounded,
-                                                        size: 25,
-                                                        color: Colors.white,
-                                                      ),
+                                                  ),
+                                                  AnimatedPositioned(
+                                                    curve: Curves.easeInOut,
+                                                    top: 2,
+                                                    left: state ? -100 : 38,
+                                                    duration: Duration(
+                                                      milliseconds: 500,
                                                     ),
-                                                    AnimatedPositioned(
-                                                      curve: Curves.easeInOut,
-                                                      top: 2,
-                                                      left: state ? -100 : 38,
-                                                      duration: Duration(
-                                                        milliseconds: 500,
-                                                      ),
+                                                    child: Text(
+                                                      "Normal",
+                                                      style: lv1TextStyle,
+                                                    ),
+                                                  ),
+                                                  AnimatedPositioned(
+                                                    curve: Curves.easeInOut,
+                                                    left: state ? 10 : 150,
+                                                    top: 2,
+                                                    duration: Duration(
+                                                      milliseconds: 500,
+                                                    ),
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       child: Text(
-                                                        "Normal",
-                                                        style: lv1TextStyle,
+                                                        "Condiment",
+                                                        style:
+                                                            lv1TextStyleWhite,
                                                       ),
                                                     ),
-                                                    AnimatedPositioned(
-                                                      curve: Curves.easeInOut,
-                                                      left: state ? 10 : 150,
-                                                      top: 2,
-                                                      duration: Duration(
-                                                        milliseconds: 500,
-                                                      ),
-                                                      child: Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: Text(
-                                                          "Condiment",
-                                                          style:
-                                                              lv1TextStyleWhite,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                            );
-                                          },
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
+
                         const SizedBox(height: 10),
 
                         Padding(
@@ -1072,9 +1100,29 @@ class _UiInventoryState extends State<UiInventory> {
                                             size: 30.0,
                                           );
                                         }
+
                                         return DropdownButtonFormField<
-                                          ModelKategori
+                                          ModelKategori?
                                         >(
+                                          initialValue:
+                                              (context
+                                                          .read<InventoryBloc>()
+                                                          .state
+                                                      as InventoryLoaded)
+                                                  .dataSelectedKategori
+                                                  .isNotEmpty
+                                              ? state.firstWhere(
+                                                  (element) =>
+                                                      element.getidKategori ==
+                                                      (contextBloc
+                                                                  .read<
+                                                                    InventoryBloc
+                                                                  >()
+                                                                  .state
+                                                              as InventoryLoaded)
+                                                          .dataSelectedKategori['id_kategori'],
+                                                )
+                                              : null,
                                           style: lv05TextStyle,
                                           decoration: InputDecoration(
                                             label: Text(
@@ -1186,87 +1234,69 @@ class _UiInventoryState extends State<UiInventory> {
                         ),
                         const SizedBox(width: 20),
                         Expanded(
-                          child:
-                              BlocSelector<
-                                InventoryBloc,
-                                InventoryState,
-                                ModelItem?
-                              >(
-                                selector: (state) {
-                                  if (state is InventoryLoaded) {
-                                    return state.dataSelectItem;
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              if (namaItemController.text.isEmpty ||
+                                  hargaItemController.text.isEmpty ||
+                                  kodeBarcodeController.text.isEmpty ||
+                                  selectedIdKategori == null) {
+                                customSnackBar(context, "Data belum lengkap!");
+                              } else {
+                                final bloc = context
+                                    .read<InventoryBloc>()
+                                    .state;
+                                if (bloc is InventoryLoaded) {
+                                  if (bloc.dataSelectedItem != null) {
+                                    context.read<InventoryBloc>().add(
+                                      UploadItem(
+                                        data: bloc.updateDataSelectedItem!,
+                                      ),
+                                    );
+                                  } else {
+                                    final data = ModelItem(
+                                      qtyItem: 0,
+                                      uidUser: UserSession.uidUser!,
+                                      namaItem: namaItemController.text,
+                                      idItem: Uuid().v4(),
+                                      hargaItem: hargaItemController.text,
+                                      idKategoriItem: selectedIdKategori!,
+                                      statusCondiment: bloc.condimentForm!,
+                                      urlGambar: "",
+                                      idCabang: bloc.idCabang!,
+                                      barcode: kodeBarcodeController.text,
+                                      statusItem: true,
+                                      tanggalItem: DateFormat(
+                                        'yyyy-MM-dd',
+                                      ).format(DateTime.now()),
+                                    );
+                                    context.read<InventoryBloc>().add(
+                                      UploadItem(data: data),
+                                    );
                                   }
-                                  return null;
-                                },
-                                builder: (contextBloc, state) {
-                                  return ElevatedButton.icon(
-                                    onPressed: () {
-                                      if (namaItemController.text.isEmpty ||
-                                          hargaItemController.text.isEmpty ||
-                                          kodeBarcodeController.text.isEmpty ||
-                                          selectedIdKategori == null) {
-                                        customSnackBar(
-                                          context,
-                                          "Data belum lengkap!",
-                                        );
-                                      } else {
-                                        String iditem;
-                                        double qtyitem;
-                                        if (state != null) {
-                                          iditem = state.getidItem;
-                                          qtyitem = state.getqtyitem;
-                                        } else {
-                                          iditem = Uuid().v4();
-                                          qtyitem = 0;
-                                        }
-
-                                        final data = ModelItem(
-                                          qtyItem: qtyitem,
-                                          uidUser: UserSession.uidUser!,
-                                          namaItem: namaItemController.text,
-                                          idItem: iditem,
-                                          hargaItem: hargaItemController.text,
-                                          idKategoriItem: selectedIdKategori!,
-                                          statusCondiment:
-                                              (context
-                                                          .read<InventoryBloc>()
-                                                          .state
-                                                      as InventoryLoaded)
-                                                  .condimentForm!,
-                                          urlGambar: "",
-                                          idCabang:
-                                              (context
-                                                          .read<InventoryBloc>()
-                                                          .state
-                                                      as InventoryLoaded)
-                                                  .idCabang!,
-                                          barcode: kodeBarcodeController.text,
-                                          statusItem: true,
-                                          tanggalItem: DateFormat(
-                                            'yyyy-MM-dd',
-                                          ).format(DateTime.now()),
-                                        );
-                                        context.read<InventoryBloc>().add(
-                                          UploadItem(data: data),
-                                        );
-
-                                        namaItemController.clear();
-                                        kodeBarcodeController.clear();
-                                        hargaItemController.clear();
-                                      }
-                                    },
-                                    label: Text(
-                                      state == null ? "Simpan" : "Edit",
-                                      style: lv1TextStyleWhite,
-                                    ),
-                                    icon: Icon(Icons.save, color: Colors.white),
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 4,
-                                      backgroundColor: AppColor.primary,
-                                    ),
-                                  );
-                                },
-                              ),
+                                  _resetItemForm();
+                                }
+                              }
+                            },
+                            label: Text(
+                              context.select<InventoryBloc, bool>((bloc) {
+                                    final state = bloc.state;
+                                    if (state is InventoryLoaded) {
+                                      return state.dataSelectedItem != null
+                                          ? true
+                                          : false;
+                                    }
+                                    return false;
+                                  })
+                                  ? "Edit"
+                                  : "Simpan",
+                              style: lv1TextStyleWhite,
+                            ),
+                            icon: Icon(Icons.save, color: Colors.white),
+                            style: ElevatedButton.styleFrom(
+                              elevation: 4,
+                              backgroundColor: AppColor.primary,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -1346,7 +1376,7 @@ class _UiInventoryState extends State<UiInventory> {
                                   return;
                                 }
                                 String idkategori =
-                                    state['id_kategori'] ?? const Uuid().v4();
+                                    state!['id_kategori'] ?? const Uuid().v4();
                                 Map<String, dynamic> pushKategori = {
                                   "nama_kategori": namaKategoriController.text
                                       .trim(),
@@ -1369,7 +1399,7 @@ class _UiInventoryState extends State<UiInventory> {
                               ),
                               icon: const Icon(Icons.check),
                               label: Text(
-                                state!.isEmpty ? "Simpan" : "Edit",
+                                state == null ? "Simpan" : "Edit",
                                 style: lv1TextStyleWhite,
                               ),
                             );
@@ -1439,6 +1469,7 @@ class _UiInventoryState extends State<UiInventory> {
   }
 
   void _resetItemForm() {
+    context.read<InventoryBloc>().add(ResetItemForm());
     namaItemController.clear();
     hargaItemController.clear();
     kodeBarcodeController.clear();

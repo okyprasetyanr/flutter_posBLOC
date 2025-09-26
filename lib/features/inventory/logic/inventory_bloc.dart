@@ -27,6 +27,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<SelectedItem>(_onSelectedItem);
 
+    on<UpdateSelectedItem>(
+      _onUpdateSelectedItem,
+      transformer: debounceRestartable(const Duration(milliseconds: 400)),
+    );
+
     on<UploadKategori>(_onUploadKategori);
 
     on<ResetKategoriForm>(_onResetKategoriForm);
@@ -241,7 +246,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     final newState = currentState.copyWith(
-      dataSelectItem: null,
+      dataSelectedItem: null,
       condimentForm: false,
       dataItem: item,
       filteredDataItem: _filterItem(
@@ -314,7 +319,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    emit(currentState.copyWith(dataSelectItem: event.selectedItem));
+    emit(currentState.copyWith(dataSelectedItem: event.selectedItem));
+    emit(currentState.copyWith(updateDataSelectedItem: event.selectedItem));
   }
 
   FutureOr<void> _onResetItemForm(
@@ -324,7 +330,14 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
-    emit(currentState.copyWith(dataSelectItem: null, condimentForm: false));
+    emit(
+      currentState.copyWith(
+        dataSelectedItem: null,
+        condimentForm: false,
+        dataSelectedKategori: null,
+        updateDataSelectedItem: null,
+      ),
+    );
   }
 
   FutureOr<void> _onSearchItem(Searchitem event, Emitter<InventoryState> emit) {
@@ -366,5 +379,22 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? state as InventoryLoaded
         : InventoryLoaded();
     emit(currentState.copyWith(condimentForm: event.condimentForm));
+  }
+
+  FutureOr<void> _onUpdateSelectedItem(
+    UpdateSelectedItem event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? state as InventoryLoaded
+        : InventoryLoaded();
+
+    final data = currentState.updateDataSelectedItem;
+    data?.setBarcode = event.barcodeItem ?? "";
+    data?.setnamaItem = event.namaItem ?? "";
+    data?.sethargaItem = event.hargaItem ?? "";
+    data?.setidKategoriItem = event.kategoriItem ?? "";
+
+    currentState.copyWith(updateDataSelectedItem: data);
   }
 }
