@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/inventory/data/inventory_repository.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
@@ -13,17 +13,20 @@ import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:intl/intl.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
-  final InventoryRepository repo;
-  final InventoryRepositoryCache cacheRepo;
+  final DataUserRepositoryCache repoCahce;
+  final InventoryRepositoryCache inventoryRepoCache;
 
-  InventoryBloc(this.repo, this.cacheRepo) : super(InventoryInitial()) {
-    on<AmbilData>(_onAmbilData);
+  InventoryBloc(this.repoCahce, this.inventoryRepoCache)
+    : super(InventoryInitial()) {
+    on<AmbilDataInventoryBloc>(_onAmbilData);
 
     on<FilterItem>(_onFilteredItem);
 
     on<UploadItem>(_onUploadItem);
 
     on<SelectedKategori>(_onSelectedKategori);
+
+    on<SelectedKategoriItem>(_onSelectedKategoriItem);
 
     on<SelectedItem>(_onSelectedItem);
 
@@ -113,7 +116,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     try {
-      List<ModelItem> item = cacheRepo.cache!.dataItem;
+      List<ModelItem> item = inventoryRepoCache.cache!.dataItem;
       emit(
         currentState.copyWith(
           filteredDataItem: _filterItem(
@@ -131,7 +134,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   Future<void> _onAmbilData(
-    AmbilData event,
+    AmbilDataInventoryBloc event,
     Emitter<InventoryState> emit,
   ) async {
     final currentState = state is InventoryLoaded
@@ -142,15 +145,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     try {
       if (event.idCabang == null) {
-        final cabangs = await repo.ambilCabang();
+        final cabangs = repoCahce.ambilCabang();
         if (cabangs.isEmpty) {
           emit(InventoryError("Error: Tidak ada data cabang yang ditemukan."));
           return;
         }
 
         final firstCabang = cabangs.first;
-        final items = await repo.ambilItem(firstCabang.getidCabang);
-        final kategori = await repo.ambilKategori(firstCabang.getidCabang);
+        final items = repoCahce.ambilItem(firstCabang.getidCabang);
+        final kategori = repoCahce.ambilKategori(firstCabang.getidCabang);
         kategori.sort((a, b) => a.getnamaKategori.compareTo(b.getnamaKategori));
         final loaded = InventoryLoaded(
           idCabang: firstCabang.getidCabang,
@@ -171,12 +174,14 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           selectedFilterIDKategoriItem: event.filterIDKategori,
         );
 
-        cacheRepo.saveCache(loaded);
+        inventoryRepoCache.saveCache(loaded);
         emit(loaded);
       } else {
-        List<ModelItem> loadedItem = List.from(cacheRepo.cache!.dataItem);
+        List<ModelItem> loadedItem = List.from(
+          inventoryRepoCache.cache!.dataItem,
+        );
         List<ModelKategori> loadedKategori = List.from(
-          cacheRepo.cache!.dataKategori,
+          inventoryRepoCache.cache!.dataKategori,
         );
 
         bool cekDataItem = loadedItem.any(
@@ -184,8 +189,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         );
 
         if (!cekDataItem) {
-          final newItems = await repo.ambilItem(event.idCabang!);
-          final newKategori = await repo.ambilKategori(event.idCabang!);
+          final newItems = repoCahce.ambilItem(event.idCabang!);
+          final newKategori = repoCahce.ambilKategori(event.idCabang!);
           if (newItems.isNotEmpty) {
             loadedItem.addAll(newItems);
           }
@@ -224,7 +229,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           filteredDataItem: filteredItems,
         );
 
-        cacheRepo.saveCache(copyWithLoaded);
+        inventoryRepoCache.saveCache(copyWithLoaded);
         emit(copyWithLoaded);
       }
     } catch (e) {
@@ -241,7 +246,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .doc(event.data.getidItem)
         .set(convertToMapItem(event.data));
 
-    final item = await repo.ambilItem(event.data.getidCabang);
+    final item = repoCahce.ambilItem(event.data.getidCabang);
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
@@ -259,7 +264,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     );
     emit(newState);
 
-    cacheRepo.saveCache(newState);
+    inventoryRepoCache.saveCache(newState);
   }
 
   FutureOr<void> _onUploadKategori(
@@ -272,7 +277,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .doc(event.data['id_kategori'])
         .set(event.data);
 
-    final kategori = await repo.ambilKategori(event.data['id_cabang']);
+    final kategori = repoCahce.ambilKategori(event.data['id_cabang']);
     kategori.sort((a, b) => a.getnamaKategori.compareTo(b.getnamaKategori));
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
@@ -281,24 +286,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final newState = currentState.copyWith(dataKategori: kategori);
     emit(newState);
 
-    cacheRepo.saveCache(newState);
-  }
-
-  FutureOr<void> _onSelectedKategori(
-    SelectedKategori event,
-    Emitter<InventoryState> emit,
-  ) {
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
-    emit(
-      currentState.copyWith(
-        dataSelectedKategori: {
-          "nama_kategori": event.selectedKategori['nama_kategori']!,
-          "id_kategori": event.selectedKategori['id_kategori']!,
-        },
-      ),
-    );
+    inventoryRepoCache.saveCache(newState);
   }
 
   FutureOr<void> _onResetKategoriForm(
@@ -311,6 +299,29 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     emit(currentState.copyWith(dataSelectedKategori: null));
   }
 
+  FutureOr<void> _onSelectedKategori(
+    SelectedKategori event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
+    emit(currentState.copyWith(dataSelectedKategori: event.selectedKategori));
+  }
+
+  FutureOr<void> _onSelectedKategoriItem(
+    SelectedKategoriItem event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state is InventoryLoaded
+        ? (state as InventoryLoaded)
+        : InventoryLoaded();
+
+    emit(
+      currentState.copyWith(dataSelectedKategoriItem: event.dataKategoriItem),
+    );
+  }
+
   FutureOr<void> _onSelectedItem(
     SelectedItem event,
     Emitter<InventoryState> emit,
@@ -318,9 +329,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
-
-    emit(currentState.copyWith(dataSelectedItem: event.selectedItem));
-    emit(currentState.copyWith(updateDataSelectedItem: event.selectedItem));
+    emit(
+      currentState.copyWith(
+        dataSelectedItem: event.selectedItem,
+        updateDataSelectedItem: event.selectedItem,
+      ),
+    );
   }
 
   FutureOr<void> _onResetItemForm(

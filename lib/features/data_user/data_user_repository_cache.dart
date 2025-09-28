@@ -1,0 +1,45 @@
+import 'package:flutter_pos/features/data_user/data_user_repository.dart';
+import 'package:flutter_pos/model_data/model_cabang.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_kategori.dart';
+
+class DataUserRepositoryCache {
+  List<ModelCabang>? dataCabang;
+  List<ModelItem>? dataItem;
+  List<ModelKategori>? dataKategori;
+
+  final DataUserRepository repo;
+
+  DataUserRepositoryCache(this.repo);
+
+  Future<void> initData() async {
+    await Future.wait([initCabang(), initItem(), initKategori()]);
+  }
+
+  Future<List<ModelCabang>> initCabang() async {
+    dataCabang ??= await repo.ambilCabang();
+    return dataCabang!;
+  }
+
+  Future<List<ModelItem>> initItem() async {
+    dataItem ??= await repo.ambilItem();
+    return dataItem!;
+  }
+
+  Future<List<ModelKategori>> initKategori() async {
+    dataKategori ??= await repo.ambilKategori();
+    return dataKategori!;
+  }
+
+  List<ModelCabang> ambilCabang() {
+    return dataCabang!;
+  }
+
+  List<ModelItem> ambilItemg() {
+    return dataItem!;
+  }
+
+  List<ModelKategori> ambilKategori() {
+    return dataKategori!;
+  }
+}

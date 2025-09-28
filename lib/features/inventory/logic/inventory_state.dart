@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
@@ -15,7 +16,7 @@ class InventoryError extends InventoryState {
   InventoryError(this.message);
 }
 
-class InventoryLoaded extends InventoryState {
+class InventoryLoaded extends InventoryState with EquatableMixin {
   final String? idCabang;
   final String? daerahCabang;
   final String? selectedFilterItem;
@@ -27,17 +28,19 @@ class InventoryLoaded extends InventoryState {
   final List<ModelItem> dataItem;
   final List<ModelKategori> dataKategori;
   final List<ModelItem> filteredDataItem;
-  final Map<String, String> dataSelectedKategori;
+  final ModelKategori? dataSelectedKategori;
   final ModelItem? dataSelectedItem;
+  final ModelKategori? dataSelectedKategoriItem;
   final ModelItem? updateDataSelectedItem;
 
   InventoryLoaded({
+    this.dataSelectedKategoriItem,
     this.selectedFilterIDKategoriItem,
     this.selectedFilterJenisItem,
     this.selectedFilterItem,
     this.selectedStatusItem,
     this.condimentForm,
-    this.dataSelectedKategori = const {},
+    this.dataSelectedKategori,
     this.dataSelectedItem,
     this.updateDataSelectedItem,
     this.idCabang,
@@ -60,7 +63,8 @@ class InventoryLoaded extends InventoryState {
     List<ModelItem>? dataItem,
     List<ModelKategori>? dataKategori,
     List<ModelItem>? filteredDataItem,
-    Map<String, String>? dataSelectedKategori,
+    ModelKategori? dataSelectedKategoriItem,
+    ModelKategori? dataSelectedKategori,
     ModelItem? dataSelectedItem,
     ModelItem? updateDataSelectedItem,
   }) {
@@ -79,9 +83,29 @@ class InventoryLoaded extends InventoryState {
       dataKategori: dataKategori ?? this.dataKategori,
       filteredDataItem: filteredDataItem ?? this.filteredDataItem,
       dataSelectedKategori: dataSelectedKategori ?? this.dataSelectedKategori,
+      dataSelectedKategoriItem:
+          dataSelectedKategoriItem ?? this.dataSelectedKategoriItem,
       dataSelectedItem: dataSelectedItem ?? this.dataSelectedItem,
       updateDataSelectedItem:
           updateDataSelectedItem ?? this.updateDataSelectedItem,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    idCabang,
+    daerahCabang,
+    selectedFilterItem,
+    selectedStatusItem,
+    selectedFilterJenisItem,
+    selectedFilterIDKategoriItem,
+    condimentForm,
+    datacabang,
+    dataItem,
+    dataKategori,
+    filteredDataItem,
+    dataSelectedKategori,
+    dataSelectedItem,
+    updateDataSelectedItem,
+  ];
 }

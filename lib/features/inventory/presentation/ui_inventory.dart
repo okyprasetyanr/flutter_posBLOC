@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
@@ -44,7 +46,7 @@ class _UiInventoryState extends State<UiInventory> {
   String? selectedFilterJenisItem;
   String? selectedFilterKategoriItem;
   double ratioGridView = 0;
-
+  StreamSubscription? _inventorySub;
   TextEditingController namaItemController = TextEditingController();
   TextEditingController cabangItemController = TextEditingController();
   TextEditingController hargaItemController = TextEditingController();
@@ -57,6 +59,7 @@ class _UiInventoryState extends State<UiInventory> {
 
   @override
   void dispose() {
+    _inventorySub?.cancel();
     namaItemController.dispose();
     cabangItemController.dispose();
     hargaItemController.dispose();
@@ -105,7 +108,7 @@ class _UiInventoryState extends State<UiInventory> {
 
     final bloc = context.read<InventoryBloc>();
     bloc.add(
-      AmbilData(
+      AmbilDataInventoryBloc(
         idCabang: null,
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
@@ -114,46 +117,50 @@ class _UiInventoryState extends State<UiInventory> {
       ),
     );
 
-    BlocListener<InventoryBloc, InventoryState>(
-      listener: (contextBloc, stateBloc) {
-        if (stateBloc is InventoryLoaded) {
-          namaItemController.text = stateBloc.dataSelectedItem!.getnamaItem;
-          kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
-          hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
+    _inventorySub = context.read<InventoryBloc>().stream.listen((stateBloc) {
+      if (stateBloc is InventoryLoaded && stateBloc.dataSelectedItem != null) {
+        namaItemController.text = stateBloc.dataSelectedItem!.getnamaItem;
+        kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
+        hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
 
-          _setupControllerForm(
-            namaItemController,
-            (value) => context.read<InventoryBloc>().add(
-              UpdateSelectedItem(namaItem: value),
-            ),
-          );
-          _setupControllerForm(
-            hargaItemController,
-            (value) => context.read<InventoryBloc>().add(
-              UpdateSelectedItem(namaItem: value),
-            ),
-          );
-          _setupControllerForm(
-            kodeBarcodeController,
-            (value) => context.read<InventoryBloc>().add(
-              UpdateSelectedItem(namaItem: value),
-            ),
-          );
+        print("datanya: ${stateBloc.dataSelectedItem!.getidKategoriItem}");
 
-          context.read<InventoryBloc>().add(
-            CondimentForm(
-              condimentForm: stateBloc.dataSelectedItem!.getstatusCondiment,
-            ),
-          );
+        _setupControllerForm(
+          namaItemController,
+          (value) => context.read<InventoryBloc>().add(
+            UpdateSelectedItem(namaItem: value),
+          ),
+        );
+        _setupControllerForm(
+          hargaItemController,
+          (value) => context.read<InventoryBloc>().add(
+            UpdateSelectedItem(namaItem: value),
+          ),
+        );
+        _setupControllerForm(
+          kodeBarcodeController,
+          (value) => context.read<InventoryBloc>().add(
+            UpdateSelectedItem(namaItem: value),
+          ),
+        );
 
-          context.read<InventoryBloc>().add(
-            UpdateSelectedItem(
-              barcodeItem: stateBloc.dataSelectedKategori['id_kategori'],
+        bloc.add(
+          CondimentForm(
+            condimentForm: stateBloc.dataSelectedItem!.getstatusCondiment,
+          ),
+        );
+
+        bloc.add(
+          SelectedKategoriItem(
+            dataKategoriItem: stateBloc.dataKategori.firstWhere(
+              (element) =>
+                  element.getidKategori ==
+                  stateBloc.dataSelectedItem!.getidKategoriItem,
             ),
-          );
-        }
-      },
-    );
+          ),
+        );
+      }
+    });
   }
 
   void _setupControllerForm(
@@ -166,6 +173,11 @@ class _UiInventoryState extends State<UiInventory> {
   }
 
   Future<void> _onRefresh() async {
+    final bloc = context.read<InventoryBloc>();
+    bloc.add(ResetItemForm());
+    bloc.add(ResetKategoriForm());
+    _resetItemForm();
+    namaKategoriController.clear();
     _initData();
   }
 
@@ -343,7 +355,7 @@ class _UiInventoryState extends State<UiInventory> {
                                     onChanged: (value) {
                                       String idCabang = value!.getidCabang;
                                       context.read<InventoryBloc>().add(
-                                        AmbilData(
+                                        AmbilDataInventoryBloc(
                                           idCabang: idCabang,
                                           filter: selectedFilterItem!,
                                           status: selectedStatusItem!,
@@ -710,7 +722,7 @@ class _UiInventoryState extends State<UiInventory> {
                                   .toList(),
                               onChanged: (value) {
                                 context.read<InventoryBloc>().add(
-                                  AmbilData(
+                                  AmbilDataInventoryBloc(
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     idCabang: value!.getidCabang,
@@ -729,16 +741,13 @@ class _UiInventoryState extends State<UiInventory> {
                         BlocSelector<
                           InventoryBloc,
                           InventoryState,
-                          (List<ModelKategori> data, String? selectedIDCabang)
+                          (List<ModelKategori>? data, String? selectedIDCabang)
                         >(
                           selector: (state) => state is InventoryLoaded
                               ? (state.dataKategori, state.idCabang)
-                              : ([], ""),
+                              : (null, null),
                           builder: (context, state) {
-                            final dataKategori = state.$1
-                                .where((data) => data.getidCabang == state.$2)
-                                .toList();
-                            if (dataKategori.isEmpty) {
+                            if (state.$1 == null) {
                               return Padding(
                                 padding: EdgeInsets.all(10),
                                 child: const SpinKitThreeBounce(
@@ -747,6 +756,9 @@ class _UiInventoryState extends State<UiInventory> {
                                 ),
                               );
                             }
+                            final dataKategori = state.$1!
+                                .where((data) => data.getidCabang == state.$2)
+                                .toList();
                             return Padding(
                               padding: EdgeInsets.only(top: 10, bottom: 10),
                               child: ListView.builder(
@@ -785,14 +797,8 @@ class _UiInventoryState extends State<UiInventory> {
                                         onTap: () {
                                           context.read<InventoryBloc>().add(
                                             SelectedKategori(
-                                              selectedKategori: {
-                                                "nama_kategori":
-                                                    dataKategori[index]
-                                                        .getnamaKategori,
-                                                "id_kategori":
-                                                    dataKategori[index]
-                                                        .getidKategori,
-                                              },
+                                              selectedKategori:
+                                                  dataKategori[index],
                                             ),
                                           );
                                         },
@@ -1085,103 +1091,75 @@ class _UiInventoryState extends State<UiInventory> {
                                     BlocSelector<
                                       InventoryBloc,
                                       InventoryState,
-                                      List<ModelKategori>?
+                                      (List<ModelKategori>?, ModelKategori?)
                                     >(
                                       selector: (state) {
                                         if (state is InventoryLoaded) {
-                                          return state.dataKategori;
+                                          return (
+                                            state.dataKategori,
+                                            state.dataSelectedKategoriItem,
+                                          );
                                         }
-                                        return null;
+                                        return (null, null);
                                       },
-                                      builder: (contextBloc, state) {
-                                        if (state == null) {
+                                      builder: (contextBloc, stateBLoc) {
+                                        if (stateBLoc.$1 == null) {
                                           return const SpinKitThreeBounce(
                                             color: Colors.blue,
                                             size: 30.0,
                                           );
                                         }
-
-                                        return DropdownButtonFormField<
+                                        final blocState = contextBloc
+                                            .read<InventoryBloc>()
+                                            .state;
+                                        final idCabang =
+                                            blocState is InventoryLoaded
+                                            ? blocState.idCabang
+                                            : "";
+                                        final initselection =
+                                            stateBLoc.$2 != null
+                                            ? stateBLoc.$1!.firstWhere((
+                                                element,
+                                              ) {
+                                                return element.getidKategori ==
+                                                    stateBLoc.$2!.getidKategori;
+                                              })
+                                            : null;
+                                        print(
+                                          "dataSelectedItemKategori: ${initselection?.getnamaKategori} ${stateBLoc.$2?.getidKategori}",
+                                        );
+                                        return DropdownMenuFormField<
                                           ModelKategori?
                                         >(
-                                          initialValue:
-                                              (context
-                                                          .read<InventoryBloc>()
-                                                          .state
-                                                      as InventoryLoaded)
-                                                  .dataSelectedKategori
-                                                  .isNotEmpty
-                                              ? state.firstWhere(
-                                                  (element) =>
-                                                      element.getidKategori ==
-                                                      (contextBloc
-                                                                  .read<
-                                                                    InventoryBloc
-                                                                  >()
-                                                                  .state
-                                                              as InventoryLoaded)
-                                                          .dataSelectedKategori['id_kategori'],
-                                                )
-                                              : null,
-                                          style: lv05TextStyle,
-                                          decoration: InputDecoration(
-                                            label: Text(
-                                              "Pilih Kategori",
-                                              style: lv1TextStyle,
-                                            ),
-                                            floatingLabelBehavior:
-                                                FloatingLabelBehavior.always,
-                                          ),
-                                          hint: Text(
+                                          initialSelection: initselection,
+                                          textStyle: lv05TextStyle,
+                                          label: Text(
                                             "Kategori...",
                                             style: lv05TextStyle,
                                           ),
-                                          items: state != null
-                                              ? state
-                                                    .where(
-                                                      (data) =>
-                                                          data.getidCabang ==
-                                                          contextBloc.select<
-                                                            InventoryBloc,
-                                                            String?
-                                                          >(
-                                                            (data) =>
-                                                                data.state
-                                                                    is InventoryLoaded
-                                                                ? (data.state
-                                                                          as InventoryLoaded)
-                                                                      .idCabang
-                                                                : "",
-                                                          ),
-                                                    )
-                                                    .map(
-                                                      (map) =>
-                                                          DropdownMenuItem<
-                                                            ModelKategori
-                                                          >(
-                                                            value: map,
-                                                            child: Text(
-                                                              map.getnamaKategori,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 1,
-                                                            ),
-                                                          ),
-                                                    )
-                                                    .toList()
-                                              : [],
-                                          onTap: () {
-                                            if (state.isEmpty) {
-                                              customSnackBar(
-                                                context,
-                                                "Cabang tidak memiliki Kategori",
-                                              );
-                                            }
-                                          },
-                                          onChanged: (value) {
-                                            selectedIdKategori =
-                                                value!.getidKategori;
+                                          dropdownMenuEntries: stateBLoc.$1!
+                                              .where(
+                                                (data) =>
+                                                    data.getidCabang ==
+                                                    idCabang,
+                                              )
+                                              .map(
+                                                (map) =>
+                                                    DropdownMenuEntry<
+                                                      ModelKategori
+                                                    >(
+                                                      value: map,
+                                                      label:
+                                                          map.getnamaKategori,
+                                                    ),
+                                              )
+                                              .toList(),
+                                          onSelected: (value) {
+                                            context.read<InventoryBloc>().add(
+                                              SelectedKategoriItem(
+                                                dataKategoriItem: value!,
+                                              ),
+                                            );
                                           },
                                         );
                                       },
@@ -1196,7 +1174,8 @@ class _UiInventoryState extends State<UiInventory> {
                                     text: context.select<InventoryBloc, String>(
                                       (value) => value.state is InventoryLoaded
                                           ? (value.state as InventoryLoaded)
-                                                .daerahCabang!
+                                                    .daerahCabang ??
+                                                ""
                                           : "",
                                     ),
                                   ),
@@ -1313,13 +1292,17 @@ class _UiInventoryState extends State<UiInventory> {
                       Expanded(
                         flex: 2,
                         child: BlocListener<InventoryBloc, InventoryState>(
+                          listenWhen: (previous, current) =>
+                              previous is InventoryLoaded &&
+                              current is InventoryLoaded &&
+                              previous.dataSelectedKategori !=
+                                  current.dataSelectedKategori,
                           listener: (context, state) {
-                            state is InventoryLoaded
-                                ? namaKategoriController.text =
-                                      state
-                                          .dataSelectedKategori['nama_kategori'] ??
-                                      ""
-                                : "";
+                            if (state is InventoryLoaded &&
+                                state.dataSelectedKategori != null) {
+                              namaKategoriController.text =
+                                  state.dataSelectedKategori!.getnamaKategori;
+                            }
                           },
                           child: customTextField(
                             "Nama Kategori",
@@ -1355,13 +1338,13 @@ class _UiInventoryState extends State<UiInventory> {
                         BlocSelector<
                           InventoryBloc,
                           InventoryState,
-                          Map<String, String>?
+                          ModelKategori?
                         >(
                           selector: (state) {
                             if (state is InventoryLoaded) {
                               return state.dataSelectedKategori;
                             }
-                            return {};
+                            return null;
                           },
                           builder: (context, state) {
                             return ElevatedButton.icon(
@@ -1371,15 +1354,14 @@ class _UiInventoryState extends State<UiInventory> {
                                     .isEmpty) {
                                   customSnackBar(
                                     context,
-                                    "Nama kategori atau cabang belum dipilih",
+                                    "Nama kategori Kosong!",
                                   );
                                   return;
                                 }
                                 String idkategori =
-                                    state!['id_kategori'] ?? const Uuid().v4();
+                                    state?.getidKategori ?? const Uuid().v4();
                                 Map<String, dynamic> pushKategori = {
-                                  "nama_kategori": namaKategoriController.text
-                                      .trim(),
+                                  "nama_kategori": namaKategoriController.text,
                                   "id_kategori": idkategori,
                                   "uid_user": UserSession.ambilUidUser(),
                                   "id_cabang":

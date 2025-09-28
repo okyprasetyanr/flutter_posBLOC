@@ -3,14 +3,14 @@ import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class InventoryEvent {}
 
-class AmbilData extends InventoryEvent {
+class AmbilDataInventoryBloc extends InventoryEvent {
   final String? idCabang;
   final String filter;
   final String status;
   final String filterjenis;
   final String filterIDKategori;
 
-  AmbilData({
+  AmbilDataInventoryBloc({
     required this.filter,
     required this.status,
     required this.idCabang,
@@ -20,9 +20,15 @@ class AmbilData extends InventoryEvent {
 }
 
 class SelectedKategori extends InventoryEvent {
-  final Map<String, String> selectedKategori;
+  final ModelKategori selectedKategori;
 
   SelectedKategori({required this.selectedKategori});
+}
+
+class SelectedKategoriItem extends InventoryEvent {
+  final ModelKategori dataKategoriItem;
+
+  SelectedKategoriItem({required this.dataKategoriItem});
 }
 
 class SelectedItem extends InventoryEvent {

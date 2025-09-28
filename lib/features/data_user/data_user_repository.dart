@@ -4,9 +4,8 @@ import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 
-class InventoryRepository {
+class DataUserRepository {
   final _db = FirebaseFirestore.instance;
-
   Future<List<ModelCabang>> ambilCabang() async {
     final data = await _db
         .collection("users")
@@ -19,7 +18,6 @@ class InventoryRepository {
     final data = await _db
         .collection("items")
         .where("uid_user", isEqualTo: UserSession.uidUser)
-        .where("id_cabang", isEqualTo: idCabang)
         .get();
     return ModelItem.getDataListItem(data);
   }
@@ -28,8 +26,8 @@ class InventoryRepository {
     final data = await _db
         .collection("kategori")
         .where("uid_user", isEqualTo: UserSession.uidUser)
-        .where("id_cabang", isEqualTo: idCabang)
         .get();
+
     return ModelKategori.getDataListKategori(data);
   }
 }
