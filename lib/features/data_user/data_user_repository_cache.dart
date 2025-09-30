@@ -35,11 +35,15 @@ class DataUserRepositoryCache {
     return dataCabang!;
   }
 
-  List<ModelItem> ambilItemg() {
-    return dataItem!;
+  List<ModelItem> ambilItem(String idCabang) {
+    return dataItem!
+        .where((element) => element.getidCabang == idCabang)
+        .toList();
   }
 
-  List<ModelKategori> ambilKategori() {
-    return dataKategori!;
+  List<ModelKategori> ambilKategori(String idCabang) {
+    return dataKategori!
+        .where((element) => element.getidCabang == idCabang)
+        .toList();
   }
 }

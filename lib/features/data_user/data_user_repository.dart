@@ -6,6 +6,7 @@ import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class DataUserRepository {
   final _db = FirebaseFirestore.instance;
+
   Future<List<ModelCabang>> ambilCabang() async {
     final data = await _db
         .collection("users")
@@ -14,7 +15,7 @@ class DataUserRepository {
     return ModelCabang.getDataListCabang(data);
   }
 
-  Future<List<ModelItem>> ambilItem(String idCabang) async {
+  Future<List<ModelItem>> ambilItem() async {
     final data = await _db
         .collection("items")
         .where("uid_user", isEqualTo: UserSession.uidUser)
@@ -22,7 +23,7 @@ class DataUserRepository {
     return ModelItem.getDataListItem(data);
   }
 
-  Future<List<ModelKategori>> ambilKategori(String idCabang) async {
+  Future<List<ModelKategori>> ambilKategori() async {
     final data = await _db
         .collection("kategori")
         .where("uid_user", isEqualTo: UserSession.uidUser)

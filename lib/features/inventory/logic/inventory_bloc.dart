@@ -14,10 +14,8 @@ import 'package:intl/intl.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final DataUserRepositoryCache repoCahce;
-  final InventoryRepositoryCache inventoryRepoCache;
 
-  InventoryBloc(this.repoCahce, this.inventoryRepoCache)
-    : super(InventoryInitial()) {
+  InventoryBloc(this.repoCahce) : super(InventoryInitial()) {
     on<AmbilDataInventoryBloc>(_onAmbilData);
 
     on<FilterItem>(_onFilteredItem);
