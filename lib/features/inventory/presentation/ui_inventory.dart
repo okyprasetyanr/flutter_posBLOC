@@ -18,14 +18,14 @@ import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class UiInventory extends StatefulWidget {
-  const UiInventory({super.key});
+class UIInventory extends StatefulWidget {
+  const UIInventory({super.key});
 
   @override
-  State<UiInventory> createState() => _UiInventoryState();
+  State<UIInventory> createState() => _UIInventoryState();
 }
 
-class _UiInventoryState extends State<UiInventory> {
+class _UIInventoryState extends State<UIInventory> {
   List<String> filters = [
     "A-Z",
     "Z-A",
@@ -574,7 +574,7 @@ class _UiInventoryState extends State<UiInventory> {
                                         InvSelectedItem(
                                           selectedItem: ModelItem(
                                             qtyItem: items[index].getqtyitem,
-                                            uidUser: items[index].getuidUser!,
+                                            uidUser: items[index].getuidUser,
                                             namaItem: items[index].getnamaItem,
                                             idItem: items[index].getidItem,
                                             hargaItem:
@@ -1402,7 +1402,7 @@ class _UiInventoryState extends State<UiInventory> {
     final contentNavGesture = [
       {
         "id": "inventory",
-        "toContext": const UiInventory(),
+        "toContext": const UIInventory(),
         "text_menu": "Inventori",
         "onTap": () {},
       },

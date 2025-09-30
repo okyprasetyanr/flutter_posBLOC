@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 
 class SellBloc extends Bloc<SellEvent, SellState> {
-  DataUserRepositoryCache repo;
+  final DataUserRepositoryCache repo;
 
   SellBloc(this.repo) : super(SellInitial()) {
     on<AmbilDataSellBloc>(_onSellAmbilData);
@@ -31,12 +30,15 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     final listCabang = repo.ambilCabang();
 
     String idCabang = event.idCabang ?? listCabang.first.getidCabang;
-    final listItem = repo.ambilItem(idCabang);
+    final listItem = repo
+        .ambilItem(idCabang)
+        .where((element) => element.getStatusItem)
+        .toList();
     final listKategori = repo.ambilKategori(idCabang);
     emit(
       currentState.copyWith(
         filteredItem: listItem,
-        idCabang: idCabang,
+        selectedIDCabang: idCabang,
         dataCabang: listCabang,
         dataItem: listItem,
         dataKategori: listKategori,
@@ -52,7 +54,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
         ? (state as SellLoaded)
         : SellLoaded();
 
-    if (event.text.isNotEmpty) {
+    if (event.text != "") {
       List<ModelItem> item = List.from(
         currentState.dataItem!
             .where(
@@ -68,15 +70,29 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       List<ModelItem> item = List.from(currentState.dataItem!);
       emit(
         currentState.copyWith(
-          filteredDataItem: _filterItem(
-            list,
-            currentState.selectedStatusItem!,
-            currentState.selectedFilterItem!,
-            currentState.selectedFilterJenisItem!,
-            currentState.selectedFilterIDKategoriItem!,
+          filteredItem: _sellFiilterItem(
+            item,
+            currentState.selectedIDCabang!,
+            currentState.selectedIDKategori!,
           ),
         ),
       );
     }
+  }
+
+  _sellFiilterItem(
+    List<ModelItem> item,
+    String idCabang,
+    String filterIDKategori,
+  ) {
+    List<ModelItem> list = item;
+    if (filterIDKategori != "0") {
+      list = list
+          .where((element) => element.getidKategoriItem == filterIDKategori)
+          .toList();
+    } else {
+      list;
+    }
+    return list;
   }
 }

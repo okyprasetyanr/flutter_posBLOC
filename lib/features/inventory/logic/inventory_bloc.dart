@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/inventory/data/inventory_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
@@ -114,7 +113,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     try {
-      List<ModelItem> item = inventoryRepoCache.cache!.dataItem;
+      List<ModelItem> item = List.from(currentState.dataItem);
       emit(
         currentState.copyWith(
           filteredDataItem: _filterItem(
@@ -172,14 +171,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           selectedFilterIDKategoriItem: event.filterIDKategori,
         );
 
-        inventoryRepoCache.saveCache(loaded);
         emit(loaded);
       } else {
-        List<ModelItem> loadedItem = List.from(
-          inventoryRepoCache.cache!.dataItem,
-        );
+        List<ModelItem> loadedItem = List.from(currentState.dataItem);
         List<ModelKategori> loadedKategori = List.from(
-          inventoryRepoCache.cache!.dataKategori,
+          currentState.dataKategori,
         );
 
         bool cekDataItem = loadedItem.any(
@@ -227,7 +223,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           filteredDataItem: filteredItems,
         );
 
-        inventoryRepoCache.saveCache(copyWithLoaded);
         emit(copyWithLoaded);
       }
     } catch (e) {
@@ -261,8 +256,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       ),
     );
     emit(newState);
-
-    inventoryRepoCache.saveCache(newState);
   }
 
   FutureOr<void> _onUploadKategori(
@@ -283,8 +276,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     final newState = currentState.copyWith(dataKategori: kategori);
     emit(newState);
-
-    inventoryRepoCache.saveCache(newState);
   }
 
   FutureOr<void> _onResetKategoriForm(

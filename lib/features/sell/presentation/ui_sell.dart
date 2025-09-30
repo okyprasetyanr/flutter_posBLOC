@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
@@ -67,7 +66,8 @@ class _UiSellState extends State<UiSell> {
               style: lv05TextStyle,
               controller: searchController,
               decoration: InputDecoration(
-                hint: Text("Search...", style: lv05TextStyle),
+                hintText: "Search...",
+                hintStyle: lv05TextStyle,
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 contentPadding: EdgeInsets.all(0),
                 border: OutlineInputBorder(
@@ -96,7 +96,7 @@ class _UiSellState extends State<UiSell> {
         BlocSelector<SellBloc, SellState, (List<ModelItem>, String? idCabang)>(
           selector: (state) {
             if (state is SellLoaded) {
-              return (state.filteredItem, state.idCabang);
+              return (state.filteredItem!, state.selectedIDCabang);
             }
             return ([], null);
           },
@@ -173,26 +173,6 @@ class _UiSellState extends State<UiSell> {
                                 formatQty(listItem[index].getqtyitem),
                                 style: lv0TextStyleRED,
                                 textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: listItem[index].getstatusCondiment
-                                    ? AppColor.primary
-                                    : Colors.grey.shade600,
-                              ),
-                              child: Text(
-                                listItem[index].getstatusCondiment
-                                    ? "Condiment"
-                                    : "Normal",
-                                style: lv05TextStyleWhite,
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),

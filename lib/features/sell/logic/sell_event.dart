@@ -14,3 +14,9 @@ class SellSelectedItem extends SellEvent {
 
   SellSelectedItem({required this.selectedItem});
 }
+
+class SellSearchItem extends SellEvent {
+  final String text;
+
+  SellSearchItem({this.text = ""});
+}

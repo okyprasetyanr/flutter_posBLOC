@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/presentation/ui_inventory.dart';
+import 'package:flutter_pos/features/sell/presentation/ui_sell.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_UpDown.dart';
@@ -23,6 +26,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
 
   Future<void> initUserSession() async {
     await UserSession.init();
+    DataUserRepositoryCache(DataUserRepository()).initData;
     getNamaPerusahaan();
   }
 
@@ -63,14 +67,14 @@ Widget layoutTop(BuildContext context) {
     children: [
       gridViewMenu(
         () {
-          navUpDownTransition(context, UiInventory(), false);
+          navUpDownTransition(context, UIInventory(), false);
         },
         Icon(Icons.inventory),
         "Inventoryi",
       ),
       gridViewMenu(
         () {
-          navUpDownTransition(context, UiInventory(), false);
+          navUpDownTransition(context, UiSell(), false);
         },
         Icon(Icons.shopping_cart),
         "Transaksi",

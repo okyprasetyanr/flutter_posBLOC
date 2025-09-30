@@ -62,7 +62,7 @@ class CustomDropDownCabang extends StatelessWidget {
               validator: (value) => null,
               keyboardType: TextInputType.none,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             customTextField(
               "Alamat Cabang",
               "Masukkan alamat...",
@@ -70,7 +70,7 @@ class CustomDropDownCabang extends StatelessWidget {
               validator: (value) => null,
               keyboardType: TextInputType.none,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             customTextField(
               "No. Telepon",
               "Masukkan no telepon...",

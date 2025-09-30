@@ -1,4 +1,6 @@
+import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class SellState {}
 
@@ -8,28 +10,35 @@ class SellLoading extends SellState {}
 
 class SellLoaded extends SellState {
   final List<ModelItem>? filteredItem;
-  final List<ModelItem>? listKategori;
-  final List<ModelItem>? listCabang;
-  final String? idCabang;
+  final List<ModelKategori>? dataKategori;
+  final List<ModelCabang>? dataCabang;
+  final List<ModelItem>? dataItem;
+  final String? selectedIDCabang, selectedIDKategori;
 
   SellLoaded({
     this.filteredItem = const [],
-    this.listKategori = const [],
-    this.listCabang = const [],
-    this.idCabang,
+    this.dataItem = const [],
+    this.dataKategori = const [],
+    this.dataCabang = const [],
+    this.selectedIDCabang,
+    this.selectedIDKategori,
   });
 
   SellLoaded copyWith({
     List<ModelItem>? filteredItem,
-    String? idCabang,
-    List<ModelItem>? listKategori,
-    List<ModelItem>? listCabang,
+    List<ModelItem>? dataItem,
+    String? selectedIDCabang,
+    List<ModelKategori>? dataKategori,
+    List<ModelCabang>? dataCabang,
+    selectedIDKategori,
   }) {
     return SellLoaded(
-      listCabang: listCabang ?? this.listCabang,
-      listKategori: listKategori ?? this.listKategori,
+      dataItem: dataItem ?? this.dataItem,
+      dataCabang: dataCabang ?? this.dataCabang,
+      dataKategori: dataKategori ?? this.dataKategori,
       filteredItem: filteredItem ?? this.filteredItem,
-      idCabang: idCabang ?? this.idCabang,
+      selectedIDCabang: selectedIDCabang ?? this.selectedIDCabang,
+      selectedIDKategori: selectedIDKategori ?? this.selectedIDKategori,
     );
   }
 }

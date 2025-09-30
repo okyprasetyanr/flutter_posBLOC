@@ -23,12 +23,9 @@ class LayoutTopBottom extends StatelessWidget {
         child: RefreshIndicator(
           onRefresh: refreshIndicator,
           child: SingleChildScrollView(
-            physics:
-                const AlwaysScrollableScrollPhysics(), // biar bisa tarik meski konten pendek
+            physics: const AlwaysScrollableScrollPhysics(),
             child: SizedBox(
-              height:
-                  MediaQuery.of(context).size.height -
-                  40, // full height biar tetep layout
+              height: MediaQuery.of(context).size.height - 40,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final height = constraints.maxHeight;

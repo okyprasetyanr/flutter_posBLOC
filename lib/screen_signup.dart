@@ -99,11 +99,11 @@ class _ScreenSignupState extends State<ScreenSignup> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Center(
                       child: Text("Form Pendaftaran", style: titleTextStyle),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     // Username
                     SizedBox(
                       width: widthscreen * 0.7,
@@ -115,7 +115,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: widthscreen * 0.7,
                       child: customTextField(
@@ -131,13 +131,13 @@ class _ScreenSignupState extends State<ScreenSignup> {
                         },
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     Text(
                       "Tanggal bergabung",
                       style: GoogleFonts.poppins(fontSize: 20),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         // Tanggal
@@ -174,7 +174,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
 
                         // Bulan
                         Expanded(
@@ -210,7 +210,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
 
                         // Tahun
                         Expanded(
@@ -248,7 +248,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Stack(
                       children: [
                         Container(
@@ -270,7 +270,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                   validator: (value) => null,
                                   keyboardType: TextInputType.none,
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 Row(
                                   children: [
                                     IntrinsicWidth(
@@ -328,7 +328,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 10),
+                                    const SizedBox(width: 10),
                                     Expanded(
                                       child: customTextField(
                                         "No. Telephone",
@@ -340,7 +340,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
 
                                 Column(
                                   children: List.generate(

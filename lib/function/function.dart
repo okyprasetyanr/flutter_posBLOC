@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +30,7 @@ Map<String, dynamic> convertToMap(Widget toContext, String text) {
 }
 
 class UserSession {
+  late final repo = DataUserRepositoryCache(DataUserRepository());
   static String? uidUser;
 
   static Future<void> init() async {
@@ -36,7 +39,11 @@ class UserSession {
   }
 
   static String? ambilUidUser() {
-    return uidUser; // boleh null
+    return uidUser;
+  }
+
+  initData() {
+    repo.initData();
   }
 }
 
