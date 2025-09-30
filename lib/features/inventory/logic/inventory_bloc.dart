@@ -18,15 +18,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   InventoryBloc(this.repoCahce) : super(InventoryInitial()) {
     on<AmbilDataInventoryBloc>(_onAmbilData);
 
-    on<FilterItem>(_onFilteredItem);
+    on<InvFilterItem>(_onFilteredItem);
 
     on<UploadItem>(_onUploadItem);
 
-    on<SelectedKategori>(_onSelectedKategori);
+    on<InvSelectedKategori>(_onSelectedKategori);
 
-    on<SelectedKategoriItem>(_onSelectedKategoriItem);
+    on<InvSelectedKategoriItem>(_onSelectedKategoriItem);
 
-    on<SelectedItem>(_onSelectedItem);
+    on<InvSelectedItem>(_onSelectedItem);
 
     on<UpdateSelectedItem>(
       _onUpdateSelectedItem,
@@ -41,7 +41,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<CondimentForm>(_onCondimentForm);
 
-    on<Searchitem>(
+    on<InvSearchitem>(
       _onSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
@@ -107,7 +107,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   Future<void> _onFilteredItem(
-    FilterItem event,
+    InvFilterItem event,
     Emitter<InventoryState> emit,
   ) async {
     final currentState = state is InventoryLoaded
@@ -298,7 +298,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onSelectedKategori(
-    SelectedKategori event,
+    InvSelectedKategori event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded
@@ -308,7 +308,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onSelectedKategoriItem(
-    SelectedKategoriItem event,
+    InvSelectedKategoriItem event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded
@@ -321,7 +321,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onSelectedItem(
-    SelectedItem event,
+    InvSelectedItem event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded
@@ -352,7 +352,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     );
   }
 
-  FutureOr<void> _onSearchItem(Searchitem event, Emitter<InventoryState> emit) {
+  FutureOr<void> _onSearchItem(
+    InvSearchitem event,
+    Emitter<InventoryState> emit,
+  ) {
     final currentState = state is InventoryLoaded
         ? state as InventoryLoaded
         : InventoryLoaded();

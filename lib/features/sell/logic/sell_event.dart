@@ -1,8 +1,16 @@
+import 'package:flutter_pos/model_data/model_item.dart';
+
 class SellEvent {}
 
 class AmbilDataSellBloc extends SellEvent {
-  final String idCabang;
   final String filterIDKategori;
+  final String? idCabang;
 
-  AmbilDataSellBloc({required this.idCabang, required this.filterIDKategori});
+  AmbilDataSellBloc({required this.filterIDKategori, required this.idCabang});
+}
+
+class SellSelectedItem extends SellEvent {
+  final ModelItem selectedItem;
+
+  SellSelectedItem({required this.selectedItem});
 }

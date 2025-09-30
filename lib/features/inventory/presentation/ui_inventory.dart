@@ -11,7 +11,7 @@ import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/template_responsif/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/widget_navigation_gesture.dart';
 import 'package:flutter_pos/widget/widget_snack_bar.dart';
 import 'package:uuid/uuid.dart';
@@ -151,7 +151,7 @@ class _UiInventoryState extends State<UiInventory> {
         );
 
         bloc.add(
-          SelectedKategoriItem(
+          InvSelectedKategoriItem(
             dataKategoriItem: stateBloc.dataKategori.firstWhere(
               (element) =>
                   element.getidKategori ==
@@ -299,7 +299,7 @@ class _UiInventoryState extends State<UiInventory> {
                             ),
                             onChanged: (value) {
                               context.read<InventoryBloc>().add(
-                                Searchitem(text: value),
+                                InvSearchitem(text: value),
                               );
                             },
                           ),
@@ -409,7 +409,7 @@ class _UiInventoryState extends State<UiInventory> {
                                 selectedFilterItem = value;
                                 final bloc = context.read<InventoryBloc>();
                                 bloc.add(
-                                  FilterItem(
+                                  InvFilterItem(
                                     idCabang:
                                         (context.read<InventoryBloc>().state
                                                 as InventoryLoaded)
@@ -473,7 +473,7 @@ class _UiInventoryState extends State<UiInventory> {
                               },
                               onChanged: (value) {
                                 context.read<InventoryBloc>().add(
-                                  FilterItem(
+                                  InvFilterItem(
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     idCabang:
@@ -515,7 +515,7 @@ class _UiInventoryState extends State<UiInventory> {
                                 selectedStatusItem = value;
                                 final bloc = context.read<InventoryBloc>();
                                 bloc.add(
-                                  FilterItem(
+                                  InvFilterItem(
                                     idCabang:
                                         (context.read<InventoryBloc>().state
                                                 as InventoryLoaded)
@@ -540,29 +540,17 @@ class _UiInventoryState extends State<UiInventory> {
                         BlocSelector<
                           InventoryBloc,
                           InventoryState,
-                          List<ModelItem>
+                          (List<ModelItem>, String? idCabang)
                         >(
                           selector: (state) {
                             if (state is InventoryLoaded) {
-                              return state.filteredDataItem;
+                              return (state.filteredDataItem, state.idCabang);
                             }
-                            return [];
+                            return ([], null);
                           },
                           builder: (contextBloc, state) {
-                            final items = state
-                                .where(
-                                  (data) =>
-                                      data.getidCabang ==
-                                      contextBloc.select<
-                                        InventoryBloc,
-                                        String?
-                                      >((data) {
-                                        return data.state is InventoryLoaded
-                                            ? (data.state as InventoryLoaded)
-                                                  .idCabang
-                                            : "";
-                                      }),
-                                )
+                            final items = state.$1
+                                .where((data) => data.getidCabang == state.$2)
                                 .toList();
                             return GridView.builder(
                               padding: EdgeInsets.all(10),
@@ -583,10 +571,10 @@ class _UiInventoryState extends State<UiInventory> {
                                     borderRadius: BorderRadius.circular(15),
                                     onTap: () {
                                       context.read<InventoryBloc>().add(
-                                        SelectedItem(
+                                        InvSelectedItem(
                                           selectedItem: ModelItem(
                                             qtyItem: items[index].getqtyitem,
-                                            uidUser: UserSession.uidUser!,
+                                            uidUser: items[index].getuidUser!,
                                             namaItem: items[index].getnamaItem,
                                             idItem: items[index].getidItem,
                                             hargaItem:
@@ -796,7 +784,7 @@ class _UiInventoryState extends State<UiInventory> {
                                       child: InkWell(
                                         onTap: () {
                                           context.read<InventoryBloc>().add(
-                                            SelectedKategori(
+                                            InvSelectedKategori(
                                               selectedKategori:
                                                   dataKategori[index],
                                             ),
@@ -902,7 +890,7 @@ class _UiInventoryState extends State<UiInventory> {
                               onChanged: (value) {
                                 selectedFilterJenisItem = value;
                                 context.read<InventoryBloc>().add(
-                                  FilterItem(
+                                  InvFilterItem(
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     idCabang:
@@ -1156,7 +1144,7 @@ class _UiInventoryState extends State<UiInventory> {
                                               .toList(),
                                           onSelected: (value) {
                                             context.read<InventoryBloc>().add(
-                                              SelectedKategoriItem(
+                                              InvSelectedKategoriItem(
                                                 dataKategoriItem: value!,
                                               ),
                                             );
