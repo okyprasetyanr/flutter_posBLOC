@@ -13,7 +13,11 @@ class DataUserRepositoryCache {
   DataUserRepositoryCache(this.repo);
 
   Future<void> initData() async {
-    await Future.wait([initCabang(), initItem(), initKategori()]);
+    await Future.wait([
+      initCabang(),
+      initItem(dataCabang!.first),
+      initKategori(dataCabang!.first),
+    ]);
   }
 
   Future<List<ModelCabang>> initCabang() async {
@@ -21,12 +25,12 @@ class DataUserRepositoryCache {
     return dataCabang!;
   }
 
-  Future<List<ModelItem>> initItem() async {
+  Future<List<ModelItem>> initItem(ModelCabang dataCabang) async {
     dataItem ??= await repo.ambilItem();
     return dataItem!;
   }
 
-  Future<List<ModelKategori>> initKategori() async {
+  Future<List<ModelKategori>> initKategori(ModelCabang dataCabang) async {
     dataKategori ??= await repo.ambilKategori();
     return dataKategori!;
   }
@@ -35,11 +39,15 @@ class DataUserRepositoryCache {
     return dataCabang!;
   }
 
-  List<ModelItem> ambilItemg() {
-    return dataItem!;
+  List<ModelItem> ambilItem(String idCabang) {
+    return dataItem!
+        .where((element) => element.getidCabang == idCabang)
+        .toList();
   }
 
-  List<ModelKategori> ambilKategori() {
-    return dataKategori!;
+  List<ModelKategori> ambilKategori(String idCabang) {
+    return dataKategori!
+        .where((element) => element.getidCabang == idCabang)
+        .toList();
   }
 }

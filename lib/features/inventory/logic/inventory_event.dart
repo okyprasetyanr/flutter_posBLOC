@@ -19,36 +19,36 @@ class AmbilDataInventoryBloc extends InventoryEvent {
   });
 }
 
-class SelectedKategori extends InventoryEvent {
+class InvSelectedKategori extends InventoryEvent {
   final ModelKategori selectedKategori;
 
-  SelectedKategori({required this.selectedKategori});
+  InvSelectedKategori({required this.selectedKategori});
 }
 
-class SelectedKategoriItem extends InventoryEvent {
+class InvSelectedKategoriItem extends InventoryEvent {
   final ModelKategori dataKategoriItem;
 
-  SelectedKategoriItem({required this.dataKategoriItem});
+  InvSelectedKategoriItem({required this.dataKategoriItem});
 }
 
-class SelectedItem extends InventoryEvent {
+class InvSelectedItem extends InventoryEvent {
   final ModelItem selectedItem;
 
-  SelectedItem({required this.selectedItem});
+  InvSelectedItem({required this.selectedItem});
 }
 
 class ResetKategoriForm extends InventoryEvent {}
 
 class ResetItemForm extends InventoryEvent {}
 
-class FilterItem extends InventoryEvent {
+class InvFilterItem extends InventoryEvent {
   final String idCabang;
   final String filter;
   final String status;
   final String filterjenis;
   final String filterIDKategori;
 
-  FilterItem({
+  InvFilterItem({
     required this.filter,
     required this.status,
     required this.idCabang,
@@ -69,10 +69,10 @@ class UploadKategori extends InventoryEvent {
   UploadKategori({required this.data});
 }
 
-class Searchitem extends InventoryEvent {
+class InvSearchitem extends InventoryEvent {
   final String text;
 
-  Searchitem({required this.text});
+  InvSearchitem({required this.text});
 }
 
 class CondimentForm extends InventoryEvent {
