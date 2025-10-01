@@ -8,6 +8,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_UpDown.dart';
 import 'package:flutter_pos/template/layout_top_bottom_main_menu.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ScreenMainMenu extends StatefulWidget {
   const ScreenMainMenu({super.key});
@@ -17,6 +18,7 @@ class ScreenMainMenu extends StatefulWidget {
 }
 
 class _ScreenMainMenuState extends State<ScreenMainMenu> {
+  bool loading = true;
   String? namaPerusahaan;
   @override
   void initState() {
@@ -26,7 +28,6 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
 
   Future<void> initUserSession() async {
     await UserSession.init();
-    DataUserRepositoryCache(DataUserRepository()).initData;
     getNamaPerusahaan();
   }
 
@@ -53,94 +54,99 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
       ),
     );
   }
-}
 
-Widget layoutTop(BuildContext context) {
-  return GridView.count(
-    crossAxisCount: 3,
-    padding: EdgeInsets.all(10),
-    shrinkWrap: true,
-    childAspectRatio: 1,
-    mainAxisSpacing: 10,
-    crossAxisSpacing: 10,
-
-    children: [
-      gridViewMenu(
-        () {
-          navUpDownTransition(context, UIInventory(), false);
-        },
-        Icon(Icons.inventory),
-        "Inventoryi",
-      ),
-      gridViewMenu(
-        () {
-          navUpDownTransition(context, UiSell(), false);
-        },
-        Icon(Icons.shopping_cart),
-        "Transaksi",
-      ),
-      gridViewMenu(() {}, Icon(Icons.assignment_outlined), "Laporan"),
-    ],
-  );
-}
-
-Widget layoutBottom() {
-  return Padding(
-    padding: EdgeInsets.all(20),
-    child: Container(
+  Widget layoutTop(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 3,
       padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 10,
-            color: Colors.black.withValues(alpha: 0.4),
-            offset: Offset(0, 0),
-            spreadRadius: 10,
-            blurStyle: BlurStyle.outer,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Total Penjualan"),
-              Text("Total Diskon"),
-              Text("Total PPN"),
-              Text("Penjualan Bersih"),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [Text("Rp.0"), Text("Rp.0"), Text("Rp.0"), Text("Rp.0")],
-          ),
-        ],
-      ),
-    ),
-  );
-}
+      shrinkWrap: true,
+      childAspectRatio: 1,
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
 
-Widget gridViewMenu(VoidCallback onPressed, Icon icon, String text) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    ),
-    onPressed: onPressed,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        icon,
-        const SizedBox(height: 5),
-        Text(text, style: lv1TextStyle),
+        gridViewMenu(
+          () {
+            navUpDownTransition(context, UIInventory(), false);
+          },
+          Icon(Icons.inventory),
+          "Inventoryi",
+        ),
+        gridViewMenu(
+          () {
+            navUpDownTransition(context, UiSell(), false);
+          },
+          Icon(Icons.shopping_cart),
+          "Transaksi",
+        ),
+        gridViewMenu(() {}, Icon(Icons.assignment_outlined), "Laporan"),
       ],
-    ),
-  );
+    );
+  }
+
+  Widget layoutBottom() {
+    return Padding(
+      padding: EdgeInsets.all(20),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10,
+              color: Colors.black.withValues(alpha: 0.4),
+              offset: Offset(0, 0),
+              spreadRadius: 10,
+              blurStyle: BlurStyle.outer,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Total Penjualan"),
+                Text("Total Diskon"),
+                Text("Total PPN"),
+                Text("Penjualan Bersih"),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text("Rp.0"),
+                Text("Rp.0"),
+                Text("Rp.0"),
+                Text("Rp.0"),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget gridViewMenu(VoidCallback onPressed, Icon icon, String text) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      ),
+      onPressed: onPressed,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          const SizedBox(height: 5),
+          Text(text, style: lv1TextStyle),
+        ],
+      ),
+    );
+  }
 }

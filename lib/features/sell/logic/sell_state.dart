@@ -9,28 +9,29 @@ class SellInitial extends SellState {}
 class SellLoading extends SellState {}
 
 class SellLoaded extends SellState {
+  final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
   final List<ModelKategori>? dataKategori;
   final List<ModelCabang>? dataCabang;
-  final List<ModelItem>? dataItem;
-  final String? selectedIDCabang, selectedIDKategori;
+  final String? selectedIDCabang;
+  final String? selectedIDKategori;
 
   SellLoaded({
     this.filteredItem = const [],
-    this.dataItem = const [],
     this.dataKategori = const [],
     this.dataCabang = const [],
+    this.dataItem = const [],
     this.selectedIDCabang,
     this.selectedIDKategori,
   });
 
   SellLoaded copyWith({
-    List<ModelItem>? filteredItem,
     List<ModelItem>? dataItem,
+    List<ModelItem>? filteredItem,
     String? selectedIDCabang,
+    String? selectedIDKategori,
     List<ModelKategori>? dataKategori,
     List<ModelCabang>? dataCabang,
-    selectedIDKategori,
   }) {
     return SellLoaded(
       dataItem: dataItem ?? this.dataItem,

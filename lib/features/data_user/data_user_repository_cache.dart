@@ -12,31 +12,38 @@ class DataUserRepositoryCache {
 
   DataUserRepositoryCache(this.repo);
 
-  Future<void> initData() async {
-    await Future.wait([
-      initCabang(),
-      initItem(dataCabang!.first),
-      initKategori(dataCabang!.first),
-    ]);
+  Future<bool> initData() async {
+    dataCabang = await initCabang();
+    dataItem = await initItem();
+    dataKategori = await initKategori();
+
+    for (var a in dataCabang!) {
+      print("datanya: $a");
+    }
+    for (var a in dataItem!) {
+      print("datanya item: $a");
+    }
+    for (var a in dataKategori!) {
+      print("datanya kategori: $a");
+    }
+
+    return true;
   }
 
   Future<List<ModelCabang>> initCabang() async {
-    dataCabang ??= await repo.ambilCabang();
-    return dataCabang!;
+    return await repo.ambilCabang();
   }
 
-  Future<List<ModelItem>> initItem(ModelCabang dataCabang) async {
-    dataItem ??= await repo.ambilItem();
-    return dataItem!;
+  Future<List<ModelItem>> initItem() async {
+    return await repo.ambilItem();
   }
 
-  Future<List<ModelKategori>> initKategori(ModelCabang dataCabang) async {
-    dataKategori ??= await repo.ambilKategori();
-    return dataKategori!;
+  Future<List<ModelKategori>> initKategori() async {
+    return await repo.ambilKategori();
   }
 
   List<ModelCabang> ambilCabang() {
-    return dataCabang!;
+    return dataCabang!.toList();
   }
 
   List<ModelItem> ambilItem(String idCabang) {

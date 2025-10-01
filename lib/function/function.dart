@@ -36,6 +36,7 @@ class UserSession {
   static Future<void> init() async {
     final pref = await SharedPreferences.getInstance();
     uidUser = pref.getString("uid_user");
+    await DataUserRepositoryCache(DataUserRepository()).initData();
   }
 
   static String? ambilUidUser() {

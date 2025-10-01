@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class ModelCabang {
+class ModelCabang extends Equatable {
   final String _daerahCabang, _nomorCabang, _alamatCabang, _idCabang;
   ModelCabang({
     required String daerahCabang,
@@ -36,4 +37,12 @@ class ModelCabang {
         )
         .toList();
   }
+
+  @override
+  List<Object?> get props => [
+    _daerahCabang,
+    _nomorCabang,
+    _alamatCabang,
+    _idCabang,
+  ];
 }
