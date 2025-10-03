@@ -18,13 +18,13 @@ class DataUserRepositoryCache {
     dataKategori = await initKategori();
 
     for (var a in dataCabang!) {
-      print("datanya: $a");
+      print("Log DataUserRepositoryCache cabang: $a");
     }
     for (var a in dataItem!) {
-      print("datanya item: $a");
+      print("Log DataUserRepositoryCache item: $a");
     }
     for (var a in dataKategori!) {
-      print("datanya kategori: $a");
+      print("Log DataUserRepositoryCache kategori: $a");
     }
 
     return true;

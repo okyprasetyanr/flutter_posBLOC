@@ -15,6 +15,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final DataUserRepositoryCache repoCahce;
 
   InventoryBloc(this.repoCahce) : super(InventoryInitial()) {
+    print("Log InventoryBloc: Masuk Bloc");
     on<AmbilDataInventoryBloc>(_onAmbilData);
 
     on<InvFilterItem>(_onFilteredItem);
@@ -143,10 +144,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     try {
       if (event.idCabang == null) {
         final cabangs = repoCahce.ambilCabang();
-        if (cabangs.isEmpty) {
-          emit(InventoryError("Error: Tidak ada data cabang yang ditemukan."));
-          return;
-        }
 
         final firstCabang = cabangs.first;
         final items = repoCahce.ambilItem(firstCabang.getidCabang);
@@ -238,7 +235,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .collection("items")
         .doc(event.data.getidItem)
         .set(convertToMapItem(event.data));
-
     final item = repoCahce.ambilItem(event.data.getidCabang);
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
@@ -384,6 +380,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? state as InventoryLoaded
         : InventoryLoaded();
+    print("Log InventoryBloc: ${event.condimentForm}");
     emit(currentState.copyWith(condimentForm: event.condimentForm));
   }
 
@@ -399,7 +396,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     data?.setBarcode = event.barcodeItem ?? "";
     data?.setnamaItem = event.namaItem ?? "";
     data?.sethargaItem = event.hargaItem ?? "";
-    data?.setidKategoriItem = event.kategoriItem ?? "";
 
     currentState.copyWith(updateDataSelectedItem: data);
   }

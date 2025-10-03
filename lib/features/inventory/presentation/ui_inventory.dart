@@ -123,7 +123,9 @@ class _UIInventoryState extends State<UIInventory> {
         kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
         hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
 
-        print("datanya: ${stateBloc.dataSelectedItem!.getidKategoriItem}");
+        print(
+          "Log UIInventory SelectedItem: ${stateBloc.dataSelectedItem!.getidKategoriItem}",
+        );
 
         _setupControllerForm(
           namaItemController,
@@ -134,13 +136,13 @@ class _UIInventoryState extends State<UIInventory> {
         _setupControllerForm(
           hargaItemController,
           (value) => context.read<InventoryBloc>().add(
-            UpdateSelectedItem(namaItem: value),
+            UpdateSelectedItem(hargaItem: value),
           ),
         );
         _setupControllerForm(
           kodeBarcodeController,
           (value) => context.read<InventoryBloc>().add(
-            UpdateSelectedItem(namaItem: value),
+            UpdateSelectedItem(barcodeItem: value),
           ),
         );
 
@@ -1113,12 +1115,10 @@ class _UIInventoryState extends State<UIInventory> {
                                                     stateBLoc.$2!.getidKategori;
                                               })
                                             : null;
-                                        print(
-                                          "dataSelectedItemKategori: ${initselection?.getnamaKategori} ${stateBLoc.$2?.getidKategori}",
-                                        );
                                         return DropdownMenuFormField<
                                           ModelKategori?
                                         >(
+                                          width: double.infinity,
                                           initialSelection: initselection,
                                           textStyle: lv05TextStyle,
                                           label: Text(

@@ -30,21 +30,17 @@ Map<String, dynamic> convertToMap(Widget toContext, String text) {
 }
 
 class UserSession {
-  late final repo = DataUserRepositoryCache(DataUserRepository());
+  static DataUserRepositoryCache? repo;
   static String? uidUser;
 
-  static Future<void> init() async {
+  static Future<void> init(DataUserRepositoryCache repo) async {
     final pref = await SharedPreferences.getInstance();
     uidUser = pref.getString("uid_user");
-    await DataUserRepositoryCache(DataUserRepository()).initData();
+    await repo.initData();
   }
 
   static String? ambilUidUser() {
     return uidUser;
-  }
-
-  initData() {
-    repo.initData();
   }
 }
 

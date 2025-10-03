@@ -20,15 +20,19 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final dataUserRepo = DataUserRepository();
   final repo = DataUserRepositoryCache(dataUserRepo);
+
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => InventoryBloc(repo)),
-        BlocProvider(create: (context) => SellBloc(repo)),
-      ],
-      child: MaterialApp(
-        home: const ScreenLogin(),
-        debugShowCheckedModeBanner: false,
+    RepositoryProvider.value(
+      value: repo,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => InventoryBloc(repo)),
+          BlocProvider(create: (context) => SellBloc(repo)),
+        ],
+        child: MaterialApp(
+          home: const ScreenLogin(),
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     ),
   );
