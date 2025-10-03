@@ -166,14 +166,14 @@ class _UIInventoryState extends State<UIInventory> {
     // });
   }
 
-  void _setupControllerForm(
-    TextEditingController controller,
-    void Function(String) onChanged,
-  ) {
-    return controller.addListener(() {
-      onChanged(controller.text);
-    });
-  }
+  // void _setupControllerForm(
+  //   TextEditingController controller,
+  //   void Function(String) onChanged,
+  // ) {
+  //   return controller.addListener(() {
+  //     onChanged(controller.text);
+  //   });
+  // }
 
   Future<void> _onRefresh() async {
     final bloc = context.read<InventoryBloc>();
@@ -1193,7 +1193,7 @@ class _UIInventoryState extends State<UIInventory> {
                                                 value!.getidKategori;
                                             context.read<InventoryBloc>().add(
                                               InvSelectedKategoriItem(
-                                                dataKategoriItem: value!,
+                                                dataKategoriItem: value,
                                               ),
                                             );
                                           },
