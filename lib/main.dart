@@ -18,26 +18,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final dataUserRepo = DataUserRepository();
+  final repo = DataUserRepositoryCache(dataUserRepo);
 
   runApp(
-    MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (_) => DataUserRepository()),
-        RepositoryProvider(
-          create: (context) =>
-              DataUserRepositoryCache(context.read<DataUserRepository>()),
-        ),
-      ],
+    RepositoryProvider.value(
+      value: repo,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (context) =>
-                InventoryBloc(context.read<DataUserRepositoryCache>()),
-          ),
-          BlocProvider(
-            create: (context) =>
-                SellBloc(context.read<DataUserRepositoryCache>()),
-          ),
+          BlocProvider(create: (context) => InventoryBloc(repo)),
+          BlocProvider(create: (context) => SellBloc(repo)),
         ],
         child: MaterialApp(
           home: const ScreenLogin(),

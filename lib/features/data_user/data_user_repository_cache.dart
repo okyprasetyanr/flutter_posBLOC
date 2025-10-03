@@ -17,6 +17,16 @@ class DataUserRepositoryCache {
     dataItem = await initItem();
     dataKategori = await initKategori();
 
+    for (var a in dataCabang!) {
+      print("Log DataUserRepositoryCache cabang: $a");
+    }
+    for (var a in dataItem!) {
+      print("Log DataUserRepositoryCache item: $a");
+    }
+    for (var a in dataKategori!) {
+      print("Log DataUserRepositoryCache kategori: $a");
+    }
+
     return true;
   }
 
