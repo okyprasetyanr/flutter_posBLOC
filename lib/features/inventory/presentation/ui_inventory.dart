@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
@@ -123,8 +124,6 @@ class _UIInventoryState extends State<UIInventory> {
         kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
         hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
 
-        print("datanya: ${stateBloc.dataSelectedItem!.getidKategoriItem}");
-
         _setupControllerForm(
           namaItemController,
           (value) => context.read<InventoryBloc>().add(
@@ -178,6 +177,8 @@ class _UIInventoryState extends State<UIInventory> {
     bloc.add(ResetKategoriForm());
     _resetItemForm();
     namaKategoriController.clear();
+
+    await context.read<DataUserRepositoryCache>().initData();
     _initData();
   }
 
@@ -1143,6 +1144,8 @@ class _UIInventoryState extends State<UIInventory> {
                                               )
                                               .toList(),
                                           onSelected: (value) {
+                                            selectedIdKategori =
+                                                value!.getidKategori;
                                             context.read<InventoryBloc>().add(
                                               InvSelectedKategoriItem(
                                                 dataKategoriItem: value!,
@@ -1209,6 +1212,7 @@ class _UIInventoryState extends State<UIInventory> {
                                   selectedIdKategori == null) {
                                 customSnackBar(context, "Data belum lengkap!");
                               } else {
+                                print("datanya kategori: $selectedIdKategori");
                                 final bloc = context
                                     .read<InventoryBloc>()
                                     .state;

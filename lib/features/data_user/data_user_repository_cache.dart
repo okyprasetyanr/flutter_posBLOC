@@ -17,16 +17,6 @@ class DataUserRepositoryCache {
     dataItem = await initItem();
     dataKategori = await initKategori();
 
-    for (var a in dataCabang!) {
-      print("datanya: $a");
-    }
-    for (var a in dataItem!) {
-      print("datanya item: $a");
-    }
-    for (var a in dataKategori!) {
-      print("datanya kategori: $a");
-    }
-
     return true;
   }
 

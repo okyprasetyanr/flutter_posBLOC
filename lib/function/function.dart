@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -33,10 +34,11 @@ class UserSession {
   late final repo = DataUserRepositoryCache(DataUserRepository());
   static String? uidUser;
 
-  static Future<void> init() async {
+  static Future<void> init(BuildContext context) async {
     final pref = await SharedPreferences.getInstance();
     uidUser = pref.getString("uid_user");
-    await DataUserRepositoryCache(DataUserRepository()).initData();
+
+    await context.read<DataUserRepositoryCache>().initData();
   }
 
   static String? ambilUidUser() {

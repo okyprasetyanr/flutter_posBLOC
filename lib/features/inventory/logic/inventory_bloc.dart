@@ -147,7 +147,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           emit(InventoryError("Error: Tidak ada data cabang yang ditemukan."));
           return;
         }
-
         final firstCabang = cabangs.first;
         final items = repoCahce.ambilItem(firstCabang.getidCabang);
         final kategori = repoCahce.ambilKategori(firstCabang.getidCabang);
@@ -170,7 +169,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           selectedStatusItem: event.status,
           selectedFilterIDKategoriItem: event.filterIDKategori,
         );
-
         emit(loaded);
       } else {
         List<ModelItem> loadedItem = List.from(currentState.dataItem);
@@ -234,15 +232,19 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     UploadItem event,
     Emitter<InventoryState> emit,
   ) async {
+    add(ResetItemForm());
     await FirebaseFirestore.instance
         .collection("items")
         .doc(event.data.getidItem)
         .set(convertToMapItem(event.data));
 
-    final item = repoCahce.ambilItem(event.data.getidCabang);
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
+    await repoCahce.initItem();
+    print("datanya bloc item: ${event.data}");
+    final item = repoCahce.ambilItem(event.data.getidCabang);
+
     final newState = currentState.copyWith(
       dataSelectedItem: null,
       condimentForm: false,
@@ -255,6 +257,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         currentState.selectedFilterIDKategoriItem!,
       ),
     );
+
     emit(newState);
   }
 
@@ -262,12 +265,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     UploadKategori event,
     Emitter<InventoryState> emit,
   ) async {
-    add(ResetKategoriForm());
     await FirebaseFirestore.instance
         .collection("kategori")
         .doc(event.data['id_kategori'])
         .set(event.data);
 
+    add(ResetKategoriForm());
     final kategori = repoCahce.ambilKategori(event.data['id_cabang']);
     kategori.sort((a, b) => a.getnamaKategori.compareTo(b.getnamaKategori));
     final currentState = state is InventoryLoaded
