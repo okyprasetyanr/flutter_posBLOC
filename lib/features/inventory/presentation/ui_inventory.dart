@@ -118,52 +118,52 @@ class _UIInventoryState extends State<UIInventory> {
       ),
     );
 
-    _inventorySub = context.read<InventoryBloc>().stream.listen((stateBloc) {
-      if (stateBloc is InventoryLoaded && stateBloc.dataSelectedItem != null) {
-        namaItemController.text = stateBloc.dataSelectedItem!.getnamaItem;
-        kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
-        hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
+    // _inventorySub = context.read<InventoryBloc>().stream.listen((stateBloc) {
+    //   if (stateBloc is InventoryLoaded && stateBloc.dataSelectedItem != null) {
+    //     namaItemController.text = stateBloc.dataSelectedItem!.getnamaItem;
+    //     kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
+    //     hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
 
-        print(
-          "Log UIInventory SelectedItem: ${stateBloc.dataSelectedItem!.getidKategoriItem}",
-        );
+    //     print(
+    //       "Log UIInventory SelectedItem: ${stateBloc.dataSelectedItem!.getidKategoriItem}",
+    //     );
 
-        _setupControllerForm(
-          namaItemController,
-          (value) => context.read<InventoryBloc>().add(
-            UpdateSelectedItem(namaItem: value),
-          ),
-        );
-        _setupControllerForm(
-          hargaItemController,
-          (value) => context.read<InventoryBloc>().add(
-            UpdateSelectedItem(hargaItem: value),
-          ),
-        );
-        _setupControllerForm(
-          kodeBarcodeController,
-          (value) => context.read<InventoryBloc>().add(
-            UpdateSelectedItem(barcodeItem: value),
-          ),
-        );
+    //     _setupControllerForm(
+    //       namaItemController,
+    //       (value) => context.read<InventoryBloc>().add(
+    //         UpdateSelectedItem(namaItem: value),
+    //       ),
+    //     );
+    //     _setupControllerForm(
+    //       hargaItemController,
+    //       (value) => context.read<InventoryBloc>().add(
+    //         UpdateSelectedItem(hargaItem: value),
+    //       ),
+    //     );
+    //     _setupControllerForm(
+    //       kodeBarcodeController,
+    //       (value) => context.read<InventoryBloc>().add(
+    //         UpdateSelectedItem(barcodeItem: value),
+    //       ),
+    //     );
 
-        bloc.add(
-          CondimentForm(
-            condimentForm: stateBloc.dataSelectedItem!.getstatusCondiment,
-          ),
-        );
+    //     bloc.add(
+    //       CondimentForm(
+    //         condimentForm: stateBloc.dataSelectedItem!.getstatusCondiment,
+    //       ),
+    //     );
 
-        bloc.add(
-          InvSelectedKategoriItem(
-            dataKategoriItem: stateBloc.dataKategori.firstWhere(
-              (element) =>
-                  element.getidKategori ==
-                  stateBloc.dataSelectedItem!.getidKategoriItem,
-            ),
-          ),
-        );
-      }
-    });
+    //     bloc.add(
+    //       InvSelectedKategoriItem(
+    //         dataKategoriItem: stateBloc.dataKategori.firstWhere(
+    //           (element) =>
+    //               element.getidKategori ==
+    //               stateBloc.dataSelectedItem!.getidKategoriItem,
+    //         ),
+    //       ),
+    //     );
+    //   }
+    // });
   }
 
   void _setupControllerForm(
@@ -934,6 +934,46 @@ class _UIInventoryState extends State<UIInventory> {
                       children: [
                         Column(
                           children: [
+                            BlocListener<InventoryBloc, InventoryState>(
+                              listenWhen: (previous, current) =>
+                                  previous is InventoryLoaded &&
+                                  current is InventoryLoaded &&
+                                  previous.dataSelectedItem !=
+                                      current.dataSelectedItem,
+                              listener: (context, stateBloc) {
+                                if (stateBloc is InventoryLoaded &&
+                                    stateBloc.dataSelectedItem != null) {
+                                  namaItemController.text =
+                                      stateBloc.dataSelectedItem!.getnamaItem;
+                                  kodeBarcodeController.text =
+                                      stateBloc.dataSelectedItem!.getBarcode;
+                                  hargaItemController.text =
+                                      stateBloc.dataSelectedItem!.gethargaItem;
+
+                                  context.read<InventoryBloc>().add(
+                                    CondimentForm(
+                                      condimentForm: stateBloc
+                                          .dataSelectedItem!
+                                          .getstatusCondiment,
+                                    ),
+                                  );
+
+                                  context.read<InventoryBloc>().add(
+                                    InvSelectedKategoriItem(
+                                      dataKategoriItem: stateBloc.dataKategori
+                                          .firstWhere(
+                                            (element) =>
+                                                element.getidKategori ==
+                                                stateBloc
+                                                    .dataSelectedItem!
+                                                    .getidKategoriItem,
+                                          ),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: SizedBox(),
+                            ),
                             customTextField("Nama Item", namaItemController),
                             const SizedBox(height: 10),
                             customTextField(
@@ -1096,6 +1136,9 @@ class _UIInventoryState extends State<UIInventory> {
                                         return (null, null);
                                       },
                                       builder: (contextBloc, stateBLoc) {
+                                        print(
+                                          "Log UIInventory SelectedKategori: ${stateBLoc.$2}",
+                                        );
                                         if (stateBLoc.$1 == null) {
                                           return const SpinKitThreeBounce(
                                             color: Colors.blue,

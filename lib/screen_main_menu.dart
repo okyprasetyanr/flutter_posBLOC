@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/presentation/ui_inventory.dart';
 import 'package:flutter_pos/features/sell/presentation/ui_sell.dart';
@@ -24,7 +23,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      initUserSession(context);
+      initUserSession();
     });
   }
 

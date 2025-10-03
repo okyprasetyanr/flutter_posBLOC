@@ -241,7 +241,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         : InventoryLoaded();
     await repoCahce.initItem();
     print("datanya bloc item: ${event.data}");
-    final item = repoCahce.ambilItem(event.data.getidCabang);
 
     final newState = currentState.copyWith(
       dataSelectedItem: null,
@@ -307,6 +306,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
+    print("Log InventoryBloc SelectedKategori: ${event.dataKategoriItem}");
     emit(
       currentState.copyWith(dataSelectedKategoriItem: event.dataKategoriItem),
     );
