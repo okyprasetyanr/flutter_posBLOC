@@ -16,11 +16,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
   InventoryBloc(this.repoCahce) : super(InventoryInitial()) {
     print("Log InventoryBloc: Masuk Bloc");
-    on<AmbilDataInventoryBloc>(_onAmbilData);
+    on<InvAmbilData>(_onAmbilData);
 
     on<InvFilterItem>(_onFilteredItem);
 
-    on<UploadItem>(_onUploadItem);
+    on<InvUploadItem>(_onUploadItem);
 
     on<InvSelectedKategori>(_onSelectedKategori);
 
@@ -28,18 +28,18 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<InvSelectedItem>(_onSelectedItem);
 
-    on<UpdateSelectedItem>(
+    on<InvUpdateSelectedItem>(
       _onUpdateSelectedItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
 
-    on<UploadKategori>(_onUploadKategori);
+    on<InvUploadKategori>(_onUploadKategori);
 
-    on<ResetKategoriForm>(_onResetKategoriForm);
+    on<InvResetKategoriForm>(_onResetKategoriForm);
 
-    on<ResetItemForm>(_onResetItemForm);
+    on<InvResetItemForm>(_onResetItemForm);
 
-    on<CondimentForm>(_onCondimentForm);
+    on<InvCondimentForm>(_onCondimentForm);
 
     on<InvSearchitem>(
       _onSearchItem,
@@ -132,7 +132,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   Future<void> _onAmbilData(
-    AmbilDataInventoryBloc event,
+    InvAmbilData event,
     Emitter<InventoryState> emit,
   ) async {
     final currentState = state is InventoryLoaded
@@ -227,10 +227,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onUploadItem(
-    UploadItem event,
+    InvUploadItem event,
     Emitter<InventoryState> emit,
   ) async {
-    add(ResetItemForm());
+    add(InvResetItemForm());
     await FirebaseFirestore.instance
         .collection("items")
         .doc(event.data.getidItem)
@@ -259,7 +259,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onUploadKategori(
-    UploadKategori event,
+    InvUploadKategori event,
     Emitter<InventoryState> emit,
   ) async {
     await FirebaseFirestore.instance
@@ -267,7 +267,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .doc(event.data['id_kategori'])
         .set(event.data);
 
-    add(ResetKategoriForm());
+    add(InvResetKategoriForm());
     final kategori = repoCahce.ambilKategori(event.data['id_cabang']);
     kategori.sort((a, b) => a.getnamaKategori.compareTo(b.getnamaKategori));
     final currentState = state is InventoryLoaded
@@ -279,7 +279,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onResetKategoriForm(
-    ResetKategoriForm event,
+    InvResetKategoriForm event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded
@@ -328,7 +328,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onResetItemForm(
-    ResetItemForm event,
+    InvResetItemForm event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded
@@ -379,7 +379,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onCondimentForm(
-    CondimentForm event,
+    InvCondimentForm event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded
@@ -390,7 +390,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onUpdateSelectedItem(
-    UpdateSelectedItem event,
+    InvUpdateSelectedItem event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded

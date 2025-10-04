@@ -109,7 +109,7 @@ class _UIInventoryState extends State<UIInventory> {
 
     final bloc = context.read<InventoryBloc>();
     bloc.add(
-      AmbilDataInventoryBloc(
+      InvAmbilData(
         idCabang: null,
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
@@ -117,68 +117,12 @@ class _UIInventoryState extends State<UIInventory> {
         filterIDKategori: selectedFilterKategoriItem!,
       ),
     );
-
-    // _inventorySub = context.read<InventoryBloc>().stream.listen((stateBloc) {
-    //   if (stateBloc is InventoryLoaded && stateBloc.dataSelectedItem != null) {
-    //     namaItemController.text = stateBloc.dataSelectedItem!.getnamaItem;
-    //     kodeBarcodeController.text = stateBloc.dataSelectedItem!.getBarcode;
-    //     hargaItemController.text = stateBloc.dataSelectedItem!.gethargaItem;
-
-    //     print(
-    //       "Log UIInventory SelectedItem: ${stateBloc.dataSelectedItem!.getidKategoriItem}",
-    //     );
-
-    //     _setupControllerForm(
-    //       namaItemController,
-    //       (value) => context.read<InventoryBloc>().add(
-    //         UpdateSelectedItem(namaItem: value),
-    //       ),
-    //     );
-    //     _setupControllerForm(
-    //       hargaItemController,
-    //       (value) => context.read<InventoryBloc>().add(
-    //         UpdateSelectedItem(hargaItem: value),
-    //       ),
-    //     );
-    //     _setupControllerForm(
-    //       kodeBarcodeController,
-    //       (value) => context.read<InventoryBloc>().add(
-    //         UpdateSelectedItem(barcodeItem: value),
-    //       ),
-    //     );
-
-    //     bloc.add(
-    //       CondimentForm(
-    //         condimentForm: stateBloc.dataSelectedItem!.getstatusCondiment,
-    //       ),
-    //     );
-
-    //     bloc.add(
-    //       InvSelectedKategoriItem(
-    //         dataKategoriItem: stateBloc.dataKategori.firstWhere(
-    //           (element) =>
-    //               element.getidKategori ==
-    //               stateBloc.dataSelectedItem!.getidKategoriItem,
-    //         ),
-    //       ),
-    //     );
-    //   }
-    // });
   }
-
-  // void _setupControllerForm(
-  //   TextEditingController controller,
-  //   void Function(String) onChanged,
-  // ) {
-  //   return controller.addListener(() {
-  //     onChanged(controller.text);
-  //   });
-  // }
 
   Future<void> _onRefresh() async {
     final bloc = context.read<InventoryBloc>();
-    bloc.add(ResetItemForm());
-    bloc.add(ResetKategoriForm());
+    bloc.add(InvResetItemForm());
+    bloc.add(InvResetKategoriForm());
     _resetItemForm();
     namaKategoriController.clear();
 
@@ -360,7 +304,7 @@ class _UIInventoryState extends State<UIInventory> {
                                     onChanged: (value) {
                                       String idCabang = value!.getidCabang;
                                       context.read<InventoryBloc>().add(
-                                        AmbilDataInventoryBloc(
+                                        InvAmbilData(
                                           idCabang: idCabang,
                                           filter: selectedFilterItem!,
                                           status: selectedStatusItem!,
@@ -415,10 +359,6 @@ class _UIInventoryState extends State<UIInventory> {
                                 final bloc = context.read<InventoryBloc>();
                                 bloc.add(
                                   InvFilterItem(
-                                    idCabang:
-                                        (context.read<InventoryBloc>().state
-                                                as InventoryLoaded)
-                                            .idCabang!,
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     filterjenis: selectedFilterJenisItem!,
@@ -481,10 +421,6 @@ class _UIInventoryState extends State<UIInventory> {
                                   InvFilterItem(
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
-                                    idCabang:
-                                        (context.read<InventoryBloc>().state
-                                                as InventoryLoaded)
-                                            .idCabang!,
                                     filterjenis: selectedFilterJenisItem!,
                                     filterIDKategori: value!.getidKategori,
                                   ),
@@ -521,10 +457,6 @@ class _UIInventoryState extends State<UIInventory> {
                                 final bloc = context.read<InventoryBloc>();
                                 bloc.add(
                                   InvFilterItem(
-                                    idCabang:
-                                        (context.read<InventoryBloc>().state
-                                                as InventoryLoaded)
-                                            .idCabang!,
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     filterjenis: selectedFilterJenisItem!,
@@ -715,7 +647,7 @@ class _UIInventoryState extends State<UIInventory> {
                                   .toList(),
                               onChanged: (value) {
                                 context.read<InventoryBloc>().add(
-                                  AmbilDataInventoryBloc(
+                                  InvAmbilData(
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
                                     idCabang: value!.getidCabang,
@@ -846,7 +778,9 @@ class _UIInventoryState extends State<UIInventory> {
                     duration: const Duration(milliseconds: 500),
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        context.read<InventoryBloc>().add(ResetKategoriForm());
+                        context.read<InventoryBloc>().add(
+                          InvResetKategoriForm(),
+                        );
                       },
                       style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Colors.white),
@@ -862,7 +796,7 @@ class _UIInventoryState extends State<UIInventory> {
                     duration: const Duration(milliseconds: 500),
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        context.read<InventoryBloc>().add(ResetItemForm());
+                        context.read<InventoryBloc>().add(InvResetItemForm());
                         _resetItemForm();
                       },
                       style: ButtonStyle(
@@ -898,10 +832,6 @@ class _UIInventoryState extends State<UIInventory> {
                                   InvFilterItem(
                                     filter: selectedFilterItem!,
                                     status: selectedStatusItem!,
-                                    idCabang:
-                                        (context.read<InventoryBloc>().state
-                                                as InventoryLoaded)
-                                            .idCabang!,
                                     filterjenis: selectedFilterJenisItem!,
                                     filterIDKategori:
                                         selectedFilterKategoriItem!,
@@ -951,7 +881,7 @@ class _UIInventoryState extends State<UIInventory> {
                                       stateBloc.dataSelectedItem!.gethargaItem;
 
                                   context.read<InventoryBloc>().add(
-                                    CondimentForm(
+                                    InvCondimentForm(
                                       condimentForm: stateBloc
                                           .dataSelectedItem!
                                           .getstatusCondiment,
@@ -1011,7 +941,7 @@ class _UIInventoryState extends State<UIInventory> {
                                             onTap: () => context
                                                 .read<InventoryBloc>()
                                                 .add(
-                                                  CondimentForm(
+                                                  InvCondimentForm(
                                                     condimentForm: !state,
                                                   ),
                                                 ),
@@ -1128,6 +1058,9 @@ class _UIInventoryState extends State<UIInventory> {
                                     >(
                                       selector: (state) {
                                         if (state is InventoryLoaded) {
+                                          print(
+                                            "Selector dapet: ${state.dataSelectedKategoriItem}",
+                                          );
                                           return (
                                             state.dataKategori,
                                             state.dataSelectedKategoriItem,
@@ -1264,7 +1197,7 @@ class _UIInventoryState extends State<UIInventory> {
                                 if (bloc is InventoryLoaded) {
                                   if (bloc.dataSelectedItem != null) {
                                     context.read<InventoryBloc>().add(
-                                      UploadItem(
+                                      InvUploadItem(
                                         data: bloc.updateDataSelectedItem!,
                                       ),
                                     );
@@ -1286,7 +1219,7 @@ class _UIInventoryState extends State<UIInventory> {
                                       ).format(DateTime.now()),
                                     );
                                     context.read<InventoryBloc>().add(
-                                      UploadItem(data: data),
+                                      InvUploadItem(data: data),
                                     );
                                   }
                                   _resetItemForm();
@@ -1407,7 +1340,7 @@ class _UIInventoryState extends State<UIInventory> {
                                           .idCabang,
                                 };
                                 context.read<InventoryBloc>().add(
-                                  UploadKategori(data: pushKategori),
+                                  InvUploadKategori(data: pushKategori),
                                 );
 
                                 namaKategoriController.clear();
@@ -1488,7 +1421,7 @@ class _UIInventoryState extends State<UIInventory> {
   }
 
   void _resetItemForm() {
-    context.read<InventoryBloc>().add(ResetItemForm());
+    context.read<InventoryBloc>().add(InvResetItemForm());
     namaItemController.clear();
     hargaItemController.clear();
     kodeBarcodeController.clear();

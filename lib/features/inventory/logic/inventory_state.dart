@@ -105,6 +105,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     dataKategori,
     filteredDataItem,
     dataSelectedKategori,
+    dataSelectedKategoriItem,
     dataSelectedItem,
     updateDataSelectedItem,
   ];

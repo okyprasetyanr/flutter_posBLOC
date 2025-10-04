@@ -3,14 +3,14 @@ import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class InventoryEvent {}
 
-class AmbilDataInventoryBloc extends InventoryEvent {
+class InvAmbilData extends InventoryEvent {
   final String? idCabang;
   final String filter;
   final String status;
   final String filterjenis;
   final String filterIDKategori;
 
-  AmbilDataInventoryBloc({
+  InvAmbilData({
     required this.filter,
     required this.status,
     required this.idCabang,
@@ -37,12 +37,11 @@ class InvSelectedItem extends InventoryEvent {
   InvSelectedItem({required this.selectedItem});
 }
 
-class ResetKategoriForm extends InventoryEvent {}
+class InvResetKategoriForm extends InventoryEvent {}
 
-class ResetItemForm extends InventoryEvent {}
+class InvResetItemForm extends InventoryEvent {}
 
 class InvFilterItem extends InventoryEvent {
-  final String idCabang;
   final String filter;
   final String status;
   final String filterjenis;
@@ -51,22 +50,21 @@ class InvFilterItem extends InventoryEvent {
   InvFilterItem({
     required this.filter,
     required this.status,
-    required this.idCabang,
     required this.filterjenis,
     required this.filterIDKategori,
   });
 }
 
-class UploadItem extends InventoryEvent {
+class InvUploadItem extends InventoryEvent {
   final ModelItem data;
 
-  UploadItem({required this.data});
+  InvUploadItem({required this.data});
 }
 
-class UploadKategori extends InventoryEvent {
+class InvUploadKategori extends InventoryEvent {
   final Map<String, dynamic> data;
 
-  UploadKategori({required this.data});
+  InvUploadKategori({required this.data});
 }
 
 class InvSearchitem extends InventoryEvent {
@@ -75,20 +73,20 @@ class InvSearchitem extends InventoryEvent {
   InvSearchitem({required this.text});
 }
 
-class CondimentForm extends InventoryEvent {
+class InvCondimentForm extends InventoryEvent {
   final bool condimentForm;
 
-  CondimentForm({required this.condimentForm});
+  InvCondimentForm({required this.condimentForm});
 }
 
-class UpdateSelectedItem extends InventoryEvent {
+class InvUpdateSelectedItem extends InventoryEvent {
   final String? namaItem;
   final String? barcodeItem;
   final String? hargaItem;
   final String? kategoriItem;
   final bool? condimentForm;
 
-  UpdateSelectedItem({
+  InvUpdateSelectedItem({
     this.namaItem,
     this.barcodeItem,
     this.hargaItem,

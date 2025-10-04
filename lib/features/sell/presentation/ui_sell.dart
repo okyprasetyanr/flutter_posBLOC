@@ -9,6 +9,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/widget/widget_navigation_gesture.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UiSell extends StatefulWidget {
@@ -20,22 +21,15 @@ class UiSell extends StatefulWidget {
 
 class _UiSellState extends State<UiSell> {
   TextEditingController searchController = TextEditingController();
-  List<ModelKategori> filterkategori = [
-    ModelKategori(namaKategori: "All", idkategori: "0", idCabang: "0"),
-  ];
-  String? selectedIdKategori;
   @override
   void initState() {
     super.initState();
-    selectedIdKategori = filterkategori.first.getidKategori;
     initData();
   }
 
   Future<void> initData() async {
     final bloc = context.read<SellBloc>();
-    bloc.add(
-      AmbilDataSellBloc(filterIDKategori: selectedIdKategori!, idCabang: null),
-    );
+    bloc.add(AmbilDataSellBloc(filterIDKategori: null, idCabang: null));
   }
 
   @override
@@ -51,16 +45,17 @@ class _UiSellState extends State<UiSell> {
   Widget layoutTop() {
     return Column(
       children: [
-        Text("Penjualan", style: labelTextStyle),
-        const SizedBox(height: 10),
         Row(
           children: [
             ElevatedButton.icon(
               onPressed: () {
                 setState(() {});
               },
-              label: Text("Menu", style: lv1TextStyle),
+              label: Text("Menu", style: lv1TextStyleWhite),
               icon: Icon(Icons.menu_rounded, color: Colors.white),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -81,30 +76,113 @@ class _UiSellState extends State<UiSell> {
                     context.read<SellBloc>().add(SellSearchItem(text: value)),
               ),
             ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 40,
-              height: 40,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  setState(() {});
-                },
-                label: Text("QR", style: lv1TextStyle),
-                icon: Icon(Icons.qr_code_2_rounded, color: Colors.white),
-              ),
-            ),
 
             const SizedBox(width: 10),
-            SizedBox(
-              width: 40,
-              height: 40,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  setState(() {});
-                },
-                label: Text("Bag", style: lv1TextStyle),
-                icon: Icon(Icons.shopping_bag_rounded, color: Colors.white),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text("Penjualan", style: titleTextStyle),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 100,
+                child: BlocSelector<SellBloc, SellState, List<ModelKategori>?>(
+                  selector: (state) {
+                    if (state is SellLoaded) {
+                      return state.dataKategori;
+                    }
+                    return null;
+                  },
+                  builder: (context, state) {
+                    if (state == null) {
+                      return const SpinKitThreeBounce(
+                        color: Colors.blue,
+                        size: 30.0,
+                      );
+                    }
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.length,
+                      itemBuilder: (context, index) {
+                        final kategori = state[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  context.read<SellBloc>().add(
+                                    SellSelectedKategoriItem(
+                                      selectedKategori: kategori,
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color:
+                                        (context.read<SellBloc>().state
+                                                    as SellLoaded)
+                                                .selectedIDKategori ==
+                                            kategori.getidKategori
+                                        ? AppColor.primary
+                                        : Colors.grey.shade300,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    kategori.getnamaKategori,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
+            ),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ElevatedButton(
+                  style: ButtonStyle(
+                    padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                    backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+                  ),
+                  onPressed: () {},
+                  child: Icon(
+                    Icons.shopping_bag_rounded,
+                    size: 24,
+                    color: Colors.white,
+                  ),
+                ),
+                Positioned(
+                  right: 14,
+                  top: 4,
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      "0",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -234,9 +312,25 @@ class _UiSellState extends State<UiSell> {
   }
 
   Widget navigationGesture() {
-    return Column(children: [
-      
-    ],);
+    final contentNavGesture = [
+      {
+        "id": "sell",
+        "toContext": const UiSell(),
+        "text_menu": "Sell",
+        "onTap": () {},
+      },
+    ];
+
+    return NavigationGesture(
+      currentPage: "inventory",
+      attContent: contentNavGesture,
+      isOpen: false,
+      close: () {
+        setState(() {
+          false;
+        });
+      },
+    );
   }
 
   Future<void> _onRefresh() async {}

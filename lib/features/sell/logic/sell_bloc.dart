@@ -6,6 +6,7 @@ import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class SellBloc extends Bloc<SellEvent, SellState> {
   final DataUserRepositoryCache repo;
@@ -16,6 +17,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       _onSellSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
+    on<SellSelectedKategoriItem>(_onSelectedKategoriItem);
   }
 
   Future<void> _onSellAmbilData(
@@ -34,11 +36,15 @@ class SellBloc extends Bloc<SellEvent, SellState> {
         .ambilItem(idCabang)
         .where((element) => element.getStatusItem)
         .toList();
-    final listKategori = repo.ambilKategori(idCabang);
+    List<ModelKategori> listKategori = [
+      ModelKategori(namaKategori: "All", idkategori: "0", idCabang: "0"),
+      ...repo.ambilKategori(idCabang),
+    ];
     emit(
       currentState.copyWith(
         filteredItem: listItem,
         selectedIDCabang: idCabang,
+        selectedIDKategori: listKategori.first.getidKategori,
         dataCabang: listCabang,
         dataItem: listItem,
         dataKategori: listKategori,
@@ -50,49 +56,57 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     SellSearchItem event,
     Emitter<SellState> emit,
   ) {
-    final currentState = state is SellLoaded
-        ? (state as SellLoaded)
-        : SellLoaded();
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      if (event.text != "") {
+        List<ModelItem> item = List.from(
+          currentState.dataItem!
+              .where(
+                (element) =>
+                    element.getidCabang == currentState.selectedIDCabang,
+              )
+              .where(
+                (item) => item.getnamaItem.toLowerCase().contains(
+                  event.text.toLowerCase(),
+                ),
+              )
+              .toList(),
+        );
 
-    if (event.text != "") {
-      List<ModelItem> item = List.from(
-        currentState.dataItem!
-            .where(
-              (item) => item.getnamaItem.toLowerCase().contains(
-                event.text.toLowerCase(),
-              ),
-            )
-            .toList(),
-      );
-
-      emit(currentState.copyWith(filteredItem: item));
-    } else {
-      List<ModelItem> item = List.from(currentState.dataItem!);
-      emit(
-        currentState.copyWith(
-          filteredItem: _sellFiilterItem(
-            item,
-            currentState.selectedIDCabang!,
-            currentState.selectedIDKategori!,
-          ),
-        ),
-      );
+        emit(currentState.copyWith(filteredItem: item));
+      } else {
+        emit(currentState.copyWith(filteredItem: _sellFilterItem()));
+      }
     }
   }
 
-  _sellFiilterItem(
-    List<ModelItem> item,
-    String idCabang,
-    String filterIDKategori,
-  ) {
-    List<ModelItem> list = item;
-    if (filterIDKategori != "0") {
-      list = list
-          .where((element) => element.getidKategoriItem == filterIDKategori)
-          .toList();
-    } else {
-      list;
+  _sellFilterItem() {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      List<ModelItem> list = List.from(
+        currentState.dataItem!.where(
+          (element) => element.getidCabang == currentState.selectedIDCabang,
+        ),
+      );
+      String idkategori = currentState.selectedIDKategori!;
+      if (idkategori != "0") {
+        list = list
+            .where((element) => element.getidKategoriItem == idkategori)
+            .toList();
+      } else {
+        list;
+      }
+      return list;
     }
-    return list;
+  }
+
+  FutureOr<void> _onSelectedKategoriItem(
+    SellSelectedKategoriItem event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      emit(currentState.copyWith(filteredItem: _sellFilterItem()));
+    }
   }
 }
