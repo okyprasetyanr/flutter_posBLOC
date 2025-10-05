@@ -107,7 +107,16 @@ class _UIInventoryState extends State<UIInventory> {
     selectedFilterJenisItem = filterjenis.first;
     selectedFilterKategoriItem = filterkategori.first.getidKategori;
 
+    InventoryLoaded? prevState;
     final bloc = context.read<InventoryBloc>();
+    bloc.add(
+      InvFilterItem(
+        filter: selectedFilterItem!,
+        status: selectedStatusItem!,
+        filterjenis: selectedFilterJenisItem!,
+        filterIDKategori: selectedFilterKategoriItem!,
+      ),
+    );
     bloc.add(
       InvAmbilData(
         idCabang: null,
@@ -117,6 +126,32 @@ class _UIInventoryState extends State<UIInventory> {
         filterIDKategori: selectedFilterKategoriItem!,
       ),
     );
+    bloc.stream.listen((state) {
+      if (state is InventoryLoaded) {
+        if (state.dataSelectedItem != null) {
+          namaItemController.text = state.dataSelectedItem!.getnamaItem;
+          kodeBarcodeController.text = state.dataSelectedItem!.getBarcode;
+          hargaItemController.text = state.dataSelectedItem!.gethargaItem;
+
+          bloc.add(
+            InvCondimentForm(
+              condimentForm: state.dataSelectedItem!.getstatusCondiment,
+            ),
+          );
+
+          bloc.add(
+            InvSelectedKategoriItem(
+              dataKategoriItem: state.dataKategori.firstWhere(
+                (element) =>
+                    element.getidKategori ==
+                    state.dataSelectedItem!.getidKategoriItem,
+              ),
+            ),
+          );
+        }
+        prevState = state;
+      }
+    });
   }
 
   Future<void> _onRefresh() async {
@@ -778,9 +813,7 @@ class _UIInventoryState extends State<UIInventory> {
                     duration: const Duration(milliseconds: 500),
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        context.read<InventoryBloc>().add(
-                          InvResetKategoriForm(),
-                        );
+                        _resetKategoriForm();
                       },
                       style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Colors.white),
@@ -864,46 +897,6 @@ class _UIInventoryState extends State<UIInventory> {
                       children: [
                         Column(
                           children: [
-                            BlocListener<InventoryBloc, InventoryState>(
-                              listenWhen: (previous, current) =>
-                                  previous is InventoryLoaded &&
-                                  current is InventoryLoaded &&
-                                  previous.dataSelectedItem !=
-                                      current.dataSelectedItem,
-                              listener: (context, stateBloc) {
-                                if (stateBloc is InventoryLoaded &&
-                                    stateBloc.dataSelectedItem != null) {
-                                  namaItemController.text =
-                                      stateBloc.dataSelectedItem!.getnamaItem;
-                                  kodeBarcodeController.text =
-                                      stateBloc.dataSelectedItem!.getBarcode;
-                                  hargaItemController.text =
-                                      stateBloc.dataSelectedItem!.gethargaItem;
-
-                                  context.read<InventoryBloc>().add(
-                                    InvCondimentForm(
-                                      condimentForm: stateBloc
-                                          .dataSelectedItem!
-                                          .getstatusCondiment,
-                                    ),
-                                  );
-
-                                  context.read<InventoryBloc>().add(
-                                    InvSelectedKategoriItem(
-                                      dataKategoriItem: stateBloc.dataKategori
-                                          .firstWhere(
-                                            (element) =>
-                                                element.getidKategori ==
-                                                stateBloc
-                                                    .dataSelectedItem!
-                                                    .getidKategoriItem,
-                                          ),
-                                    ),
-                                  );
-                                }
-                              },
-                              child: SizedBox(),
-                            ),
                             customTextField("Nama Item", namaItemController),
                             const SizedBox(height: 10),
                             customTextField(
@@ -1058,9 +1051,6 @@ class _UIInventoryState extends State<UIInventory> {
                                     >(
                                       selector: (state) {
                                         if (state is InventoryLoaded) {
-                                          print(
-                                            "Selector dapet: ${state.dataSelectedKategoriItem}",
-                                          );
                                           return (
                                             state.dataKategori,
                                             state.dataSelectedKategoriItem,
@@ -1069,9 +1059,6 @@ class _UIInventoryState extends State<UIInventory> {
                                         return (null, null);
                                       },
                                       builder: (contextBloc, stateBLoc) {
-                                        print(
-                                          "Log UIInventory SelectedKategori: ${stateBLoc.$2}",
-                                        );
                                         if (stateBLoc.$1 == null) {
                                           return const SpinKitThreeBounce(
                                             color: Colors.blue,
@@ -1094,9 +1081,18 @@ class _UIInventoryState extends State<UIInventory> {
                                                     stateBLoc.$2!.getidKategori;
                                               })
                                             : null;
+
+                                        selectedIdKategori =
+                                            initselection != null
+                                            ? stateBLoc.$2!.getidKategori
+                                            : null;
+                                        print(
+                                          "Log UIInventory initselection: $initselection",
+                                        );
                                         return DropdownMenuFormField<
                                           ModelKategori?
                                         >(
+                                          key: ValueKey(initselection),
                                           width: double.infinity,
                                           initialSelection: initselection,
                                           textStyle: lv05TextStyle,
@@ -1195,49 +1191,46 @@ class _UIInventoryState extends State<UIInventory> {
                                     .read<InventoryBloc>()
                                     .state;
                                 if (bloc is InventoryLoaded) {
-                                  if (bloc.dataSelectedItem != null) {
-                                    context.read<InventoryBloc>().add(
-                                      InvUploadItem(
-                                        data: bloc.updateDataSelectedItem!,
-                                      ),
-                                    );
-                                  } else {
-                                    final data = ModelItem(
-                                      qtyItem: 0,
-                                      uidUser: UserSession.uidUser!,
-                                      namaItem: namaItemController.text,
-                                      idItem: Uuid().v4(),
-                                      hargaItem: hargaItemController.text,
-                                      idKategoriItem: selectedIdKategori!,
-                                      statusCondiment: bloc.condimentForm!,
-                                      urlGambar: "",
-                                      idCabang: bloc.idCabang!,
-                                      barcode: kodeBarcodeController.text,
-                                      statusItem: true,
-                                      tanggalItem: DateFormat(
-                                        'yyyy-MM-dd',
-                                      ).format(DateTime.now()),
-                                    );
-                                    context.read<InventoryBloc>().add(
-                                      InvUploadItem(data: data),
-                                    );
-                                  }
+                                  String idUser = bloc.dataSelectedItem == null
+                                      ? Uuid().v4()
+                                      : bloc.dataSelectedItem!.getidItem;
+                                  final data = ModelItem(
+                                    qtyItem: 0,
+                                    uidUser: UserSession.uidUser!,
+                                    namaItem: namaItemController.text,
+                                    idItem: idUser,
+                                    hargaItem: hargaItemController.text,
+                                    idKategoriItem: selectedIdKategori!,
+                                    statusCondiment: bloc.condimentForm!,
+                                    urlGambar: "",
+                                    idCabang: bloc.idCabang!,
+                                    barcode: kodeBarcodeController.text,
+                                    statusItem: true,
+                                    tanggalItem: DateFormat(
+                                      'yyyy-MM-dd',
+                                    ).format(DateTime.now()),
+                                  );
+                                  context.read<InventoryBloc>().add(
+                                    InvUploadItem(data: data),
+                                  );
+
                                   _resetItemForm();
                                 }
                               }
                             },
                             label: Text(
-                              context.select<InventoryBloc, bool>((bloc) {
-                                    final state = bloc.state;
-                                    if (state is InventoryLoaded) {
-                                      return state.dataSelectedItem != null
-                                          ? true
-                                          : false;
-                                    }
-                                    return false;
-                                  })
-                                  ? "Edit"
-                                  : "Simpan",
+                              context.select<InventoryBloc, String>((value) {
+                                final bloc = value.state;
+                                if (bloc is InventoryLoaded) {
+                                  print(
+                                    "Log UIInventory TextTombolSImpan: datanya ${bloc.dataSelectedItem}",
+                                  );
+                                  return bloc.dataSelectedItem != null
+                                      ? "Edit"
+                                      : "Simpan";
+                                }
+                                return "Simpan";
+                              }),
                               style: lv1TextStyleWhite,
                             ),
                             icon: Icon(Icons.save, color: Colors.white),
@@ -1343,7 +1336,7 @@ class _UIInventoryState extends State<UIInventory> {
                                   InvUploadKategori(data: pushKategori),
                                 );
 
-                                namaKategoriController.clear();
+                                _resetKategoriForm();
                               },
                               style: ElevatedButton.styleFrom(
                                 iconColor: Colors.white,
@@ -1421,10 +1414,16 @@ class _UIInventoryState extends State<UIInventory> {
   }
 
   void _resetItemForm() {
-    context.read<InventoryBloc>().add(InvResetItemForm());
+    final bloc = context.read<InventoryBloc>();
+    bloc.add(InvResetItemForm());
     namaItemController.clear();
     hargaItemController.clear();
     kodeBarcodeController.clear();
     selectedIdKategori = null;
+  }
+
+  void _resetKategoriForm() {
+    context.read<InventoryBloc>().add(InvResetKategoriForm());
+    namaKategoriController.clear();
   }
 }

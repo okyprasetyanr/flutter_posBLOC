@@ -26,7 +26,7 @@ class InvSelectedKategori extends InventoryEvent {
 }
 
 class InvSelectedKategoriItem extends InventoryEvent {
-  final ModelKategori dataKategoriItem;
+  final ModelKategori? dataKategoriItem;
 
   InvSelectedKategoriItem({required this.dataKategoriItem});
 }
@@ -77,20 +77,4 @@ class InvCondimentForm extends InventoryEvent {
   final bool condimentForm;
 
   InvCondimentForm({required this.condimentForm});
-}
-
-class InvUpdateSelectedItem extends InventoryEvent {
-  final String? namaItem;
-  final String? barcodeItem;
-  final String? hargaItem;
-  final String? kategoriItem;
-  final bool? condimentForm;
-
-  InvUpdateSelectedItem({
-    this.namaItem,
-    this.barcodeItem,
-    this.hargaItem,
-    this.kategoriItem,
-    this.condimentForm,
-  });
 }

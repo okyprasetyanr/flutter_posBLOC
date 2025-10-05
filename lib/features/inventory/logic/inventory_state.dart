@@ -31,7 +31,6 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   final ModelKategori? dataSelectedKategori;
   final ModelItem? dataSelectedItem;
   final ModelKategori? dataSelectedKategoriItem;
-  final ModelItem? updateDataSelectedItem;
 
   InventoryLoaded({
     this.dataSelectedKategoriItem,
@@ -42,7 +41,6 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     this.condimentForm,
     this.dataSelectedKategori,
     this.dataSelectedItem,
-    this.updateDataSelectedItem,
     this.idCabang,
     this.daerahCabang,
     this.datacabang = const [],
@@ -66,7 +64,6 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     ModelKategori? dataSelectedKategoriItem,
     ModelKategori? dataSelectedKategori,
     ModelItem? dataSelectedItem,
-    ModelItem? updateDataSelectedItem,
   }) {
     return InventoryLoaded(
       selectedFilterIDKategoriItem:
@@ -82,12 +79,9 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
       dataItem: dataItem ?? this.dataItem,
       dataKategori: dataKategori ?? this.dataKategori,
       filteredDataItem: filteredDataItem ?? this.filteredDataItem,
-      dataSelectedKategori: dataSelectedKategori ?? this.dataSelectedKategori,
-      dataSelectedKategoriItem:
-          dataSelectedKategoriItem ?? this.dataSelectedKategoriItem,
-      dataSelectedItem: dataSelectedItem ?? this.dataSelectedItem,
-      updateDataSelectedItem:
-          updateDataSelectedItem ?? this.updateDataSelectedItem,
+      dataSelectedKategori: dataSelectedKategori,
+      dataSelectedKategoriItem: dataSelectedKategoriItem,
+      dataSelectedItem: dataSelectedItem,
     );
   }
 
@@ -104,9 +98,8 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     dataItem,
     dataKategori,
     filteredDataItem,
-    dataSelectedKategori,
     dataSelectedKategoriItem,
+    dataSelectedKategori,
     dataSelectedItem,
-    updateDataSelectedItem,
   ];
 }

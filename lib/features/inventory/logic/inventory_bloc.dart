@@ -28,11 +28,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<InvSelectedItem>(_onSelectedItem);
 
-    on<InvUpdateSelectedItem>(
-      _onUpdateSelectedItem,
-      transformer: debounceRestartable(const Duration(milliseconds: 400)),
-    );
-
     on<InvUploadKategori>(_onUploadKategori);
 
     on<InvResetKategoriForm>(_onResetKategoriForm);
@@ -48,62 +43,66 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   List<ModelItem> _filterItem(
-    List<ModelItem> item,
     String status,
     String filter,
     String filterjenis,
     String filterIDKategori,
   ) {
-    List<ModelItem> list = item.where((element) {
-      final isActive = element.getStatusItem;
-      if (status == "Active") return isActive;
-      if (status == "Deactive") return !isActive;
-      return true;
-    }).toList();
+    final currentState = state;
+    if (currentState is InventoryLoaded) {
+      List<ModelItem> item = List.from(currentState.dataItem);
+      List<ModelItem> list = item.where((element) {
+        final isActive = element.getStatusItem;
+        if (status == "Active") return isActive;
+        if (status == "Deactive") return !isActive;
+        return true;
+      }).toList();
 
-    if (filterIDKategori != "0") {
-      list = list
-          .where((element) => element.getidKategoriItem == filterIDKategori)
-          .toList();
-    } else {
-      list;
+      if (filterIDKategori != "0") {
+        list = list
+            .where((element) => element.getidKategoriItem == filterIDKategori)
+            .toList();
+      } else {
+        list;
+      }
+
+      var formatter = DateFormat('dd-MM-yyyy');
+      switch (filter) {
+        case "A-Z":
+          list.sort((a, b) => a.getnamaItem.compareTo(b.getnamaItem));
+          break;
+        case "Z-A":
+          list.sort((a, b) => b.getnamaItem.compareTo(a.getnamaItem));
+          break;
+        case "Stock +":
+          list.sort((a, b) => a.getqtyitem.compareTo(b.getqtyitem));
+          break;
+        case "Stock -":
+          list.sort((a, b) => b.getqtyitem.compareTo(a.getqtyitem));
+          break;
+        case "Terbaru":
+          list.sort(
+            (a, b) => formatter
+                .parse(b.getTanggalItem)
+                .compareTo(formatter.parse(a.getTanggalItem)),
+          );
+          break;
+        case "Terlama":
+          list.sort(
+            (a, b) => formatter
+                .parse(a.getTanggalItem)
+                .compareTo(formatter.parse(b.getTanggalItem)),
+          );
+          break;
+      }
+
+      return switch (filterjenis) {
+        "Condiment" => list.where((e) => e.getstatusCondiment).toList(),
+        "Normal" => list.where((e) => !e.getstatusCondiment).toList(),
+        _ => list,
+      };
     }
-
-    var formatter = DateFormat('dd-MM-yyyy');
-    switch (filter) {
-      case "A-Z":
-        list.sort((a, b) => a.getnamaItem.compareTo(b.getnamaItem));
-        break;
-      case "Z-A":
-        list.sort((a, b) => b.getnamaItem.compareTo(a.getnamaItem));
-        break;
-      case "Stock +":
-        list.sort((a, b) => a.getqtyitem.compareTo(b.getqtyitem));
-        break;
-      case "Stock -":
-        list.sort((a, b) => b.getqtyitem.compareTo(a.getqtyitem));
-        break;
-      case "Terbaru":
-        list.sort(
-          (a, b) => formatter
-              .parse(b.getTanggalItem)
-              .compareTo(formatter.parse(a.getTanggalItem)),
-        );
-        break;
-      case "Terlama":
-        list.sort(
-          (a, b) => formatter
-              .parse(a.getTanggalItem)
-              .compareTo(formatter.parse(b.getTanggalItem)),
-        );
-        break;
-    }
-
-    return switch (filterjenis) {
-      "Condiment" => list.where((e) => e.getstatusCondiment).toList(),
-      "Normal" => list.where((e) => !e.getstatusCondiment).toList(),
-      _ => list,
-    };
+    return [];
   }
 
   Future<void> _onFilteredItem(
@@ -114,16 +113,18 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     try {
-      List<ModelItem> item = List.from(currentState.dataItem);
       emit(
         currentState.copyWith(
           filteredDataItem: _filterItem(
-            item,
             event.status,
             event.filter,
             event.filterjenis,
             event.filterIDKategori,
           ),
+          selectedStatusItem: event.status,
+          selectedFilterItem: event.filter,
+          selectedFilterJenisItem: event.filterjenis,
+          selectedFilterIDKategoriItem: event.filterIDKategori,
         ),
       );
     } catch (e) {
@@ -155,13 +156,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           datacabang: cabangs,
           dataItem: items,
           dataKategori: kategori,
-          filteredDataItem: _filterItem(
-            items,
-            event.status,
-            event.filter,
-            event.filterjenis,
-            event.filterIDKategori,
-          ),
           selectedFilterItem: event.filter,
           selectedFilterJenisItem: event.filterjenis,
           selectedStatusItem: event.status,
@@ -194,18 +188,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
             .firstWhere((data) => data.getidCabang == event.idCabang)
             .getdaerahCabang;
 
-        final loadedItembyCabang = loadedItem
-            .where((item) => item.getidCabang == event.idCabang)
-            .toList();
-
-        final filteredItems = _filterItem(
-          loadedItembyCabang,
-          event.status,
-          event.filter,
-          event.filterjenis,
-          event.filterIDKategori,
-        );
-
         loadedKategori.sort(
           (a, b) => a.getnamaKategori.compareTo(b.getnamaKategori),
         );
@@ -216,11 +198,18 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           daerahCabang: daerahCabang,
           dataItem: loadedItem,
           dataKategori: loadedKategori,
-          filteredDataItem: filteredItems,
         );
 
         emit(copyWithLoaded);
       }
+      add(
+        InvFilterItem(
+          filter: currentState.selectedFilterItem!,
+          status: currentState.selectedStatusItem!,
+          filterjenis: currentState.selectedFilterJenisItem!,
+          filterIDKategori: currentState.selectedFilterIDKategoriItem!,
+        ),
+      );
     } catch (e) {
       emit(InventoryError("Error: Terjadi kesalahan saat memuat data, $e"));
     }
@@ -240,14 +229,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
     await repoCahce.initItem();
-    print("datanya bloc item: ${event.data}");
 
     final newState = currentState.copyWith(
       dataSelectedItem: null,
       condimentForm: false,
       dataItem: item,
       filteredDataItem: _filterItem(
-        item,
         currentState.selectedStatusItem!,
         currentState.selectedFilterItem!,
         currentState.selectedFilterJenisItem!,
@@ -306,7 +293,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    print("Log InventoryBloc SelectedKategori: ${event.dataKategoriItem}");
+    print("Log InventoryBloc SelectedKategoriItem: ${event.dataKategoriItem}");
     emit(
       currentState.copyWith(dataSelectedKategoriItem: event.dataKategoriItem),
     );
@@ -319,12 +306,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
-    emit(
-      currentState.copyWith(
-        dataSelectedItem: event.selectedItem,
-        updateDataSelectedItem: event.selectedItem,
-      ),
-    );
+    print("Log InventoryBloc SelectedItem: ${event.selectedItem}");
+    emit(currentState.copyWith(dataSelectedItem: event.selectedItem));
   }
 
   FutureOr<void> _onResetItemForm(
@@ -334,12 +317,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
+
     emit(
       currentState.copyWith(
         dataSelectedItem: null,
         condimentForm: false,
-        dataSelectedKategori: null,
-        updateDataSelectedItem: null,
+        dataSelectedKategoriItem: null,
       ),
     );
   }
@@ -363,11 +346,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
       emit(currentState.copyWith(filteredDataItem: filtered));
     } else {
-      List<ModelItem> list = List.from(currentState.dataItem);
       emit(
         currentState.copyWith(
           filteredDataItem: _filterItem(
-            list,
             currentState.selectedStatusItem!,
             currentState.selectedFilterItem!,
             currentState.selectedFilterJenisItem!,
@@ -385,23 +366,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? state as InventoryLoaded
         : InventoryLoaded();
-    print("Log InventoryBloc: ${event.condimentForm}");
+    print("Log InventoryBloc CondimentForm: ${event.condimentForm}");
     emit(currentState.copyWith(condimentForm: event.condimentForm));
-  }
-
-  FutureOr<void> _onUpdateSelectedItem(
-    InvUpdateSelectedItem event,
-    Emitter<InventoryState> emit,
-  ) {
-    final currentState = state is InventoryLoaded
-        ? state as InventoryLoaded
-        : InventoryLoaded();
-
-    final data = currentState.updateDataSelectedItem;
-    data?.setBarcode = event.barcodeItem ?? "";
-    data?.setnamaItem = event.namaItem ?? "";
-    data?.sethargaItem = event.hargaItem ?? "";
-
-    currentState.copyWith(updateDataSelectedItem: data);
   }
 }
