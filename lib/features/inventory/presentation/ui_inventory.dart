@@ -107,7 +107,6 @@ class _UIInventoryState extends State<UIInventory> {
     selectedFilterJenisItem = filterjenis.first;
     selectedFilterKategoriItem = filterkategori.first.getidKategori;
 
-    InventoryLoaded? prevState;
     final bloc = context.read<InventoryBloc>();
     bloc.add(
       InvFilterItem(
@@ -149,7 +148,6 @@ class _UIInventoryState extends State<UIInventory> {
             ),
           );
         }
-        prevState = state;
       }
     });
   }

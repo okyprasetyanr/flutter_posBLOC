@@ -41,13 +41,13 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       ...repo.ambilKategori(idCabang),
     ];
 
-    String selectedIdKategori =
-        currentState.selectedIDKategori ?? listKategori.first.getidKategori;
+    ModelKategori selectedIdKategori =
+        currentState.selectedKategori ?? listKategori.first;
     emit(
       currentState.copyWith(
         filteredItem: listItem,
         selectedIDCabang: idCabang,
-        selectedIDKategori: selectedIdKategori,
+        selectedKategori: selectedIdKategori,
         dataCabang: listCabang,
         dataItem: listItem,
         dataKategori: listKategori,
@@ -78,12 +78,12 @@ class SellBloc extends Bloc<SellEvent, SellState> {
 
         emit(currentState.copyWith(filteredItem: item));
       } else {
-        emit(currentState.copyWith(filteredItem: _sellFilterItem()));
+        emit(currentState.copyWith(filteredItem: _sellFilterItem(null)));
       }
     }
   }
 
-  _sellFilterItem() {
+  _sellFilterItem(String? idkategori) {
     final currentState = state;
     if (currentState is SellLoaded) {
       List<ModelItem> list = List.from(
@@ -91,10 +91,11 @@ class SellBloc extends Bloc<SellEvent, SellState> {
           (element) => element.getidCabang == currentState.selectedIDCabang,
         ),
       );
-      String idkategori = currentState.selectedIDKategori!;
-      if (idkategori != "0") {
+      String finalidkategori =
+          idkategori ?? currentState.selectedKategori!.getidKategori;
+      if (finalidkategori != "0") {
         list = list
-            .where((element) => element.getidKategoriItem == idkategori)
+            .where((element) => element.getidKategoriItem == finalidkategori)
             .toList();
       } else {
         list;
@@ -109,7 +110,12 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   ) {
     final currentState = state;
     if (currentState is SellLoaded) {
-      emit(currentState.copyWith(filteredItem: _sellFilterItem()));
+      emit(
+        currentState.copyWith(
+          selectedKategori: event.selectedKategori,
+          filteredItem: _sellFilterItem(event.selectedKategori.getidKategori),
+        ),
+      );
     }
   }
 }

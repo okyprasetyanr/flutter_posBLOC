@@ -14,7 +14,7 @@ class SellLoaded extends SellState {
   final List<ModelKategori>? dataKategori;
   final List<ModelCabang>? dataCabang;
   final String? selectedIDCabang;
-  final String? selectedIDKategori;
+  final ModelKategori? selectedKategori;
 
   SellLoaded({
     this.filteredItem = const [],
@@ -22,14 +22,14 @@ class SellLoaded extends SellState {
     this.dataCabang = const [],
     this.dataItem = const [],
     this.selectedIDCabang,
-    this.selectedIDKategori,
+    this.selectedKategori,
   });
 
   SellLoaded copyWith({
     List<ModelItem>? dataItem,
     List<ModelItem>? filteredItem,
     String? selectedIDCabang,
-    String? selectedIDKategori,
+    ModelKategori? selectedKategori,
     List<ModelKategori>? dataKategori,
     List<ModelCabang>? dataCabang,
   }) {
@@ -39,7 +39,7 @@ class SellLoaded extends SellState {
       dataKategori: dataKategori ?? this.dataKategori,
       filteredItem: filteredItem ?? this.filteredItem,
       selectedIDCabang: selectedIDCabang ?? this.selectedIDCabang,
-      selectedIDKategori: selectedIDKategori ?? this.selectedIDKategori,
+      selectedKategori: selectedKategori ?? this.selectedKategori,
     );
   }
 }
