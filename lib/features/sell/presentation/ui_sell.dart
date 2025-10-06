@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -29,7 +30,7 @@ class _UiSellState extends State<UiSell> {
 
   Future<void> initData() async {
     final bloc = context.read<SellBloc>();
-    bloc.add(AmbilDataSellBloc(filterIDKategori: null, idCabang: null));
+    bloc.add(AmbilDataSellBloc(idCabang: null));
   }
 
   @override
@@ -89,7 +90,7 @@ class _UiSellState extends State<UiSell> {
           children: [
             Expanded(
               child: SizedBox(
-                height: 100,
+                height: 50,
                 child: BlocSelector<SellBloc, SellState, List<ModelKategori>?>(
                   selector: (state) {
                     if (state is SellLoaded) {
@@ -148,6 +149,45 @@ class _UiSellState extends State<UiSell> {
                 ),
               ),
             ),
+            Flexible(
+              fit: FlexFit.loose,
+              child: BlocSelector<SellBloc, SellState, List<ModelCabang>?>(
+                selector: (state) {
+                  if (state is SellLoaded) {
+                    return state.dataCabang;
+                  }
+                  return [];
+                },
+                builder: (context, state) {
+                  if (state == null && state!.isEmpty) {
+                    return const SpinKitThreeBounce(
+                      color: Colors.blue,
+                      size: 30.0,
+                    );
+                  }
+                  return DropdownButtonFormField<ModelCabang>(
+                    style: lv05TextStyle,
+                    initialValue: state.first,
+                    items: state
+                        .map(
+                          (map) => DropdownMenuItem(
+                            value: map,
+                            child: Text(
+                              map.getdaerahCabang,
+                              style: lv05TextStyle,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      context.read<SellBloc>().add(
+                        AmbilDataSellBloc(idCabang: value!.getidCabang),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -185,6 +225,115 @@ class _UiSellState extends State<UiSell> {
               ],
             ),
           ],
+        ),
+        Expanded(
+          child: BlocSelector<SellBloc, SellState, List<ModelItem>>(
+            selector: (state) {
+              if (state is SellLoaded) {
+                return state.filteredItem!;
+              }
+              return [];
+            },
+            builder: (context, items) {
+              return GridView.builder(
+                padding: EdgeInsets.all(10),
+                itemCount: items!.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 4,
+                ),
+                itemBuilder: (context, index) {
+                  return Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    elevation: 4,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        // context.read<SellBloc>().add(
+                        //   InvSelectedItem(
+                        //     selectedItem: ModelItem(
+                        //       qtyItem: items[index].getqtyitem,
+                        //       uidUser: items[index].getuidUser,
+                        //       namaItem: items[index].getnamaItem,
+                        //       idItem: items[index].getidItem,
+                        //       hargaItem: items[index].gethargaItem,
+                        //       idKategoriItem: items[index].getidKategoriItem,
+                        //       statusCondiment:
+                        //           items[index].getstatusCondiment,
+                        //       urlGambar: "",
+                        //       idCabang: items[index].getidCabang,
+                        //       barcode: items[index].getBarcode,
+                        //       statusItem: true,
+                        //       tanggalItem: items[index].getTanggalItem,
+                        //     ),
+                        //   ),
+                        // );
+                      },
+                      child: Padding(
+                        padding: EdgeInsetsGeometry.all(3),
+                        child: Column(
+                          children: [
+                            Image.asset("assets/logo.png", height: 50),
+                            const SizedBox(height: 5),
+                            Text(
+                              items[index].getnamaItem,
+                              style: lv05TextStyle,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                formatUang(items[index].gethargaItem),
+                                style: textStyleHarga,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 5),
+                                child: Text(
+                                  formatQty(items[index].getqtyitem),
+                                  style: lv0TextStyleRED,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: items[index].getstatusCondiment
+                                      ? AppColor.primary
+                                      : Colors.grey.shade600,
+                                ),
+                                child: Text(
+                                  items[index].getstatusCondiment
+                                      ? "Condiment"
+                                      : "Normal",
+                                  style: lv05TextStyleWhite,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
         Expanded(
           child: BlocSelector<SellBloc, SellState, (List<ModelItem>, String?)>(

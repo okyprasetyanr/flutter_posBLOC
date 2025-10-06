@@ -40,11 +40,14 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       ModelKategori(namaKategori: "All", idkategori: "0", idCabang: "0"),
       ...repo.ambilKategori(idCabang),
     ];
+
+    String selectedIdKategori =
+        currentState.selectedIDKategori ?? listKategori.first.getidKategori;
     emit(
       currentState.copyWith(
         filteredItem: listItem,
         selectedIDCabang: idCabang,
-        selectedIDKategori: listKategori.first.getidKategori,
+        selectedIDKategori: selectedIdKategori,
         dataCabang: listCabang,
         dataItem: listItem,
         dataKategori: listKategori,

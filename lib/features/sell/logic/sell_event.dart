@@ -4,10 +4,9 @@ import 'package:flutter_pos/model_data/model_kategori.dart';
 class SellEvent {}
 
 class AmbilDataSellBloc extends SellEvent {
-  final String? filterIDKategori;
   final String? idCabang;
 
-  AmbilDataSellBloc({required this.filterIDKategori, required this.idCabang});
+  AmbilDataSellBloc({required this.idCabang});
 }
 
 class SellSelectedItem extends SellEvent {

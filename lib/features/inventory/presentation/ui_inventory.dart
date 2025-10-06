@@ -1218,21 +1218,28 @@ class _UIInventoryState extends State<UIInventory> {
                                 }
                               }
                             },
-                            label: Text(
-                              context.select<InventoryBloc, String>((value) {
-                                final bloc = value.state;
-                                if (bloc is InventoryLoaded) {
-                                  print(
-                                    "Log UIInventory TextTombolSImpan: datanya ${bloc.dataSelectedItem}",
-                                  );
-                                  return bloc.dataSelectedItem != null
-                                      ? "Edit"
-                                      : "Simpan";
-                                }
-                                return "Simpan";
-                              }),
-                              style: lv1TextStyleWhite,
-                            ),
+                            label:
+                                BlocSelector<
+                                  InventoryBloc,
+                                  InventoryState,
+                                  String?
+                                >(
+                                  selector: (state) {
+                                    if (state is InventoryLoaded) {
+                                      return state.dataSelectedItem != null
+                                          ? "Edit"
+                                          : "Simpan";
+                                    }
+                                    return "Simpan";
+                                  },
+                                  builder: (context, state) {
+                                    return Text(
+                                      state!,
+                                      style: lv1TextStyleWhite,
+                                    );
+                                  },
+                                ),
+
                             icon: Icon(Icons.save, color: Colors.white),
                             style: ElevatedButton.styleFrom(
                               elevation: 4,
