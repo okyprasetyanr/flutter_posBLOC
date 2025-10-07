@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/widget_sign_up.dart';
-import 'package:flutter_pos/widget/widget_snack_bar.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 
@@ -107,7 +107,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                     // Username
                     SizedBox(
                       width: widthscreen * 0.7,
-                      child: customTextField(
+                      child: customTextFieldSignUp(
                         "E-mail",
                         "email@...",
                         emailperusahaan,
@@ -118,7 +118,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                     const SizedBox(height: 20),
                     SizedBox(
                       width: widthscreen * 0.7,
-                      child: customTextField(
+                      child: customTextFieldSignUp(
                         "Password",
                         "Password...",
                         password,
@@ -263,7 +263,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                customTextField(
+                                customTextFieldSignUp(
                                   "Nama Perusahaan",
                                   "Perusahaan...",
                                   namaperusahaan,
@@ -330,7 +330,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
-                                      child: customTextField(
+                                      child: customTextFieldSignUp(
                                         "No. Telephone",
                                         "08...",
                                         notelephoneperusahaan,

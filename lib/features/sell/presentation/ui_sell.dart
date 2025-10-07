@@ -10,7 +10,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
-import 'package:flutter_pos/widget/widget_navigation_gesture.dart';
+import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UiSell extends StatefulWidget {

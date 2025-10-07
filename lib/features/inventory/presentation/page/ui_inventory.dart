@@ -7,21 +7,22 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/condiment_switch.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/button_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_kategori_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/form_field_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/filters_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/grid_view_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/top_page/list_view_kategori.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
-import 'package:flutter_pos/widget/widget_navigation_gesture.dart';
-import 'package:flutter_pos/widget/widget_snack_bar.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:uuid/uuid.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIInventory extends StatefulWidget {
@@ -48,7 +49,6 @@ class _UIInventoryState extends State<UIInventory> {
 
   String? selectedFilterItem;
   String? selectedStatusItem;
-  String? selectedIdKategori;
   String? selectedFilterJenisItem;
   String? selectedFilterKategoriItem;
   double ratioGridView = 0;
@@ -62,17 +62,22 @@ class _UIInventoryState extends State<UIInventory> {
   PageController pageControllerTop = PageController();
   PageController pageControllerBottom = PageController();
 
-  // @override
-  // void dispose() {
-  //   namaItemController.dispose();
-  //   cabangItemController.dispose();
-  //   hargaItemController.dispose();
-  //   kodeBarcodeController.dispose();
-  //   namaKategoriController.dispose();
-  //   pageControllerTop.dispose();
-  //   pageControllerBottom.dispose();
-  //   super.dispose();
-  // }
+  late final StreamSubscription _inventorySub;
+
+  @override
+  void dispose() {
+    if (mounted) {
+      _inventorySub.cancel();
+      namaItemController.dispose();
+      cabangItemController.dispose();
+      hargaItemController.dispose();
+      kodeBarcodeController.dispose();
+      namaKategoriController.dispose();
+      pageControllerTop.dispose();
+      pageControllerBottom.dispose();
+    }
+    super.dispose();
+  }
 
   bool currentPage = true;
 
@@ -128,7 +133,7 @@ class _UIInventoryState extends State<UIInventory> {
         filterIDKategori: selectedFilterKategoriItem!,
       ),
     );
-    bloc.stream.listen((state) {
+    _inventorySub = bloc.stream.listen((state) {
       if (state is InventoryLoaded) {
         if (state.dataSelectedItem != null) {
           namaItemController.text = state.dataSelectedItem!.getnamaItem;
@@ -177,14 +182,6 @@ class _UIInventoryState extends State<UIInventory> {
         if (dataKategori != null) ...dataKategori,
       ];
     });
-
-    selectedIdKategori = context.select<InventoryBloc, String?>(
-      (bloc) => bloc.state is InventoryLoaded
-          ? (bloc.state as InventoryLoaded)
-                .dataSelectedKategoriItem
-                ?.getidKategori
-          : null,
-    );
 
     final orientasi = MediaQuery.of(context).orientation;
     ratioGridView = orientasi == Orientation.portrait ? 8 / 12 : 6 / 10;
@@ -267,104 +264,15 @@ class _UIInventoryState extends State<UIInventory> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  Padding(
-                    padding: EdgeInsets.only(right: 5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: TextFormField(
-                            style: lv1TextStyle,
-                            decoration: InputDecoration(
-                              labelText: "Search...",
-                              hintText: "...",
-                              labelStyle: lv1TextStyle,
-                              hintStyle: lv1TextStyle,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              contentPadding: EdgeInsets.only(
-                                left: 10,
-                                right: 10,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              context.read<InventoryBloc>().add(
-                                InvSearchitem(text: value),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          flex: 1,
-                          child:
-                              BlocSelector<
-                                InventoryBloc,
-                                InventoryState,
-                                (
-                                  List<ModelCabang> data,
-                                  String? selectedIDCabang,
-                                )
-                              >(
-                                selector: (state) {
-                                  if (state is InventoryLoaded) {
-                                    return (state.datacabang, state.idCabang);
-                                  }
-                                  return ([], "");
-                                },
-                                builder: (context, state) {
-                                  if (state.$1.isEmpty) {
-                                    return const SpinKitThreeBounce(
-                                      color: Colors.blue,
-                                      size: 30.0,
-                                    );
-                                  }
-                                  return DropdownButtonFormField<ModelCabang>(
-                                    decoration: InputDecoration(
-                                      label: Text(
-                                        "Pilih Cabang",
-                                        style: lv1TextStyle,
-                                      ),
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.always,
-                                    ),
-                                    initialValue: state.$1.firstWhere(
-                                      (data) => data.getidCabang == state.$2,
-                                    ),
-                                    items: state.$1
-                                        .map(
-                                          (map) => DropdownMenuItem(
-                                            value: map,
-                                            child: Text(
-                                              map.getdaerahCabang,
-                                              style: lv05TextStyle,
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                    onChanged: (value) {
-                                      String idCabang = value!.getidCabang;
-                                      context.read<InventoryBloc>().add(
-                                        InvAmbilData(
-                                          idCabang: idCabang,
-                                          filter: selectedFilterItem!,
-                                          status: selectedStatusItem!,
-                                          filterjenis: selectedFilterJenisItem!,
-                                          filterIDKategori:
-                                              selectedFilterKategoriItem!,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                        ),
-                      ],
-                    ),
+
+                  UIInventorySearchAndCabang(
+                    selectedFilterItem: selectedFilterItem,
+                    selectedStatusItem: selectedStatusItem,
+                    selectedFilterJenisItem: selectedFilterJenisItem,
+                    selectedFilterKategoriItem: selectedFilterKategoriItem,
                   ),
+
+                  const SizedBox(height: 10),
 
                   UIFiltersItem(
                     filters: filters,
@@ -397,8 +305,14 @@ class _UIInventoryState extends State<UIInventory> {
                           );
                         },
                   ),
+
                   const SizedBox(height: 10),
-                  Expanded(child: GridViewItem(ratioGridView: ratioGridView)),
+
+                  Expanded(
+                    child: UIInventoryGridViewItem(
+                      ratioGridView: ratioGridView,
+                    ),
+                  ),
                 ],
               ),
               Column(
@@ -568,33 +482,10 @@ class _UIInventoryState extends State<UIInventory> {
                     child: ListView(
                       padding: EdgeInsets.all(10),
                       children: [
-                        Column(
-                          children: [
-                            customTextField("Nama Item", namaItemController),
-                            const SizedBox(height: 10),
-                            customTextField(
-                              "Kode/Barcode",
-                              kodeBarcodeController,
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: customTextField(
-                                    "Harga",
-                                    hargaItemController,
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Flexible(
-                                  flex: 1,
-                                  fit: FlexFit.loose,
-                                  child: CondimentSwitch(),
-                                ),
-                              ],
-                            ),
-                          ],
+                        UIInventoryFormFieldItem(
+                          namaItemController: namaItemController,
+                          kodeBarcodeController: kodeBarcodeController,
+                          hargaItemController: hargaItemController,
                         ),
 
                         const SizedBox(height: 10),
@@ -640,88 +531,13 @@ class _UIInventoryState extends State<UIInventory> {
                   Flexible(
                     flex: 1,
                     fit: FlexFit.loose,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            label: Text("Hapus", style: lv0TextStyleRED),
-                            icon: Icon(Icons.delete, color: Colors.white),
-                            style: ElevatedButton.styleFrom(elevation: 4),
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              if (namaItemController.text.isEmpty ||
-                                  hargaItemController.text.isEmpty ||
-                                  kodeBarcodeController.text.isEmpty ||
-                                  selectedIdKategori == null) {
-                                customSnackBar(context, "Data belum lengkap!");
-                              } else {
-                                print("datanya kategori: $selectedIdKategori");
-                                final bloc = context
-                                    .read<InventoryBloc>()
-                                    .state;
-                                if (bloc is InventoryLoaded) {
-                                  String idUser = bloc.dataSelectedItem == null
-                                      ? Uuid().v4()
-                                      : bloc.dataSelectedItem!.getidItem;
-                                  final data = ModelItem(
-                                    qtyItem: 0,
-                                    uidUser: UserSession.uidUser!,
-                                    namaItem: namaItemController.text,
-                                    idItem: idUser,
-                                    hargaItem: hargaItemController.text,
-                                    idKategoriItem: selectedIdKategori!,
-                                    statusCondiment: bloc.condimentForm!,
-                                    urlGambar: "",
-                                    idCabang: bloc.idCabang!,
-                                    barcode: kodeBarcodeController.text,
-                                    statusItem: true,
-                                    tanggalItem: DateFormat(
-                                      'yyyy-MM-dd',
-                                    ).format(DateTime.now()),
-                                  );
-                                  context.read<InventoryBloc>().add(
-                                    InvUploadItem(data: data),
-                                  );
-
-                                  _resetItemForm();
-                                }
-                              }
-                            },
-                            label:
-                                BlocSelector<
-                                  InventoryBloc,
-                                  InventoryState,
-                                  String?
-                                >(
-                                  selector: (state) {
-                                    if (state is InventoryLoaded) {
-                                      return state.dataSelectedItem != null
-                                          ? "Edit"
-                                          : "Simpan";
-                                    }
-                                    return "Simpan";
-                                  },
-                                  builder: (context, state) {
-                                    return Text(
-                                      state!,
-                                      style: lv1TextStyleWhite,
-                                    );
-                                  },
-                                ),
-
-                            icon: Icon(Icons.save, color: Colors.white),
-                            style: ElevatedButton.styleFrom(
-                              elevation: 4,
-                              backgroundColor: AppColor.primary,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: UIInventoryButtonItem(
+                      namaItemController: namaItemController,
+                      hargaItemController: hargaItemController,
+                      kodeBarcodeController: kodeBarcodeController,
+                      resetItemForm: () {
+                        _resetItemForm();
+                      },
                     ),
                   ),
                 ],
@@ -880,27 +696,12 @@ class _UIInventoryState extends State<UIInventory> {
     return Row(children: [iconContent, textCOntent]);
   }
 
-  Widget customTextField(String text, TextEditingController controller) {
-    return TextFormField(
-      controller: controller,
-      style: lv05TextStyle,
-      decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        label: Text(text, style: lv1TextStyle),
-        hint: Text("$text...", style: lv05TextStyle),
-        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
   void _resetItemForm() {
     final bloc = context.read<InventoryBloc>();
     bloc.add(InvResetItemForm());
     namaItemController.clear();
     hargaItemController.clear();
     kodeBarcodeController.clear();
-    selectedIdKategori = null;
   }
 
   void _resetKategoriForm() {

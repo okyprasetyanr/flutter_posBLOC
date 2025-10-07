@@ -2,32 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget customTextField(
-  String label,
-  String hint,
-  TextEditingController controller, {
-  required TextInputType keyboardType,
-  required String? Function(dynamic value) validator,
-}) {
-  return Material(
-    elevation: 4,
-    shadowColor: Colors.black,
-    borderRadius: BorderRadius.circular(15),
-    child: TextFormField(
-      validator: validator,
-      keyboardType: keyboardType,
-      controller: controller,
-      decoration: InputDecoration(
-        labelStyle: labelTextStyle,
-        labelText: label,
-        hintStyle: hintTextStyle,
-        hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-      ),
-    ),
-  );
-}
-
 class CustomDropDownCabang extends StatelessWidget {
   final int i;
   final TextEditingController daerahcabang;
@@ -55,7 +29,7 @@ class CustomDropDownCabang extends StatelessWidget {
         child: Column(
           children: [
             Text("Cabang $i", style: GoogleFonts.poppins(fontSize: 20)),
-            customTextField(
+            customTextFieldSignUp(
               "Daerah Cabang",
               "Masukkan daerah...",
               daerahcabang,
@@ -63,7 +37,7 @@ class CustomDropDownCabang extends StatelessWidget {
               keyboardType: TextInputType.none,
             ),
             const SizedBox(height: 10),
-            customTextField(
+            customTextFieldSignUp(
               "Alamat Cabang",
               "Masukkan alamat...",
               alamatcabang,
@@ -71,7 +45,7 @@ class CustomDropDownCabang extends StatelessWidget {
               keyboardType: TextInputType.none,
             ),
             const SizedBox(height: 10),
-            customTextField(
+            customTextFieldSignUp(
               "No. Telepon",
               "Masukkan no telepon...",
               notelephone,
@@ -83,4 +57,30 @@ class CustomDropDownCabang extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget customTextFieldSignUp(
+  String label,
+  String hint,
+  TextEditingController controller, {
+  required TextInputType keyboardType,
+  required String? Function(dynamic value) validator,
+}) {
+  return Material(
+    elevation: 4,
+    shadowColor: Colors.black,
+    borderRadius: BorderRadius.circular(15),
+    child: TextFormField(
+      validator: validator,
+      keyboardType: keyboardType,
+      controller: controller,
+      decoration: InputDecoration(
+        labelStyle: labelTextStyle,
+        labelText: label,
+        hintStyle: hintTextStyle,
+        hintText: hint,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+      ),
+    ),
+  );
 }

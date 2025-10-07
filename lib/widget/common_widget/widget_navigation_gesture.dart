@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_UpDown.dart';
-import 'package:flutter_pos/widget/widget_snack_bar.dart';
-
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 class NavigationGesture extends StatefulWidget {
   final List<Map<String, dynamic>> attContent;

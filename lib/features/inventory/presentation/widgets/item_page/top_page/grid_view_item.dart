@@ -8,9 +8,9 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
-class GridViewItem extends StatelessWidget {
+class UIInventoryGridViewItem extends StatelessWidget {
   final double ratioGridView;
-  const GridViewItem({super.key, required this.ratioGridView});
+  const UIInventoryGridViewItem({super.key, required this.ratioGridView});
 
   @override
   Widget build(BuildContext context) {
