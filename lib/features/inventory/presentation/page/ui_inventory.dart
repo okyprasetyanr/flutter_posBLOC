@@ -10,9 +10,11 @@ import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/button_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_kategori_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/form_field_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/dropdown_cabang.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/filters_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/button_kategori.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/top_page/list_view_kategori.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
@@ -322,53 +324,12 @@ class _UIInventoryState extends State<UIInventory> {
                   Container(
                     padding: EdgeInsets.only(left: 10),
                     width: 150,
-                    child:
-                        BlocSelector<
-                          InventoryBloc,
-                          InventoryState,
-                          (List<ModelCabang> data, String? selectedIDCabang)
-                        >(
-                          selector: (state) {
-                            if (state is InventoryLoaded) {
-                              return (state.datacabang, state.idCabang);
-                            }
-                            return ([], "");
-                          },
-                          builder: (context, state) {
-                            if (state.$1.isEmpty) {
-                              return const SpinKitThreeBounce(
-                                color: Colors.blue,
-                                size: 30.0,
-                              );
-                            }
-                            return DropdownButtonFormField<ModelCabang>(
-                              style: lv1TextStyle,
-                              initialValue: state.$1.firstWhere(
-                                (data) => data.getidCabang == state.$2,
-                              ),
-                              items: state.$1
-                                  .map(
-                                    (map) => DropdownMenuItem(
-                                      value: map,
-                                      child: Text(map.getdaerahCabang),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) {
-                                context.read<InventoryBloc>().add(
-                                  InvAmbilData(
-                                    filter: selectedFilterItem!,
-                                    status: selectedStatusItem!,
-                                    idCabang: value!.getidCabang,
-                                    filterjenis: selectedFilterJenisItem!,
-                                    filterIDKategori:
-                                        selectedFilterKategoriItem!,
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
+                    child: UIInventoryDropdownCabang(
+                      selectedFilterItem: selectedFilterItem!,
+                      selectedStatusItem: selectedStatusItem!,
+                      selectedFilterJenisItem: selectedFilterJenisItem!,
+                      selectedFilterKategoriItem: selectedFilterKategoriItem!,
+                    ),
                   ),
                   Expanded(child: ListViewKategori()),
                 ],
@@ -594,59 +555,10 @@ class _UIInventoryState extends State<UIInventory> {
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
-                    child:
-                        BlocSelector<
-                          InventoryBloc,
-                          InventoryState,
-                          ModelKategori?
-                        >(
-                          selector: (state) {
-                            if (state is InventoryLoaded) {
-                              return state.dataSelectedKategori;
-                            }
-                            return null;
-                          },
-                          builder: (context, state) {
-                            return ElevatedButton.icon(
-                              onPressed: () async {
-                                if (namaKategoriController.text
-                                    .trim()
-                                    .isEmpty) {
-                                  customSnackBar(
-                                    context,
-                                    "Nama kategori Kosong!",
-                                  );
-                                  return;
-                                }
-                                String idkategori =
-                                    state?.getidKategori ?? const Uuid().v4();
-                                Map<String, dynamic> pushKategori = {
-                                  "nama_kategori": namaKategoriController.text,
-                                  "id_kategori": idkategori,
-                                  "uid_user": UserSession.ambilUidUser(),
-                                  "id_cabang":
-                                      (context.read<InventoryBloc>().state
-                                              as InventoryLoaded)
-                                          .idCabang,
-                                };
-                                context.read<InventoryBloc>().add(
-                                  InvUploadKategori(data: pushKategori),
-                                );
-
-                                _resetKategoriForm();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                iconColor: Colors.white,
-                                backgroundColor: AppColor.primary,
-                              ),
-                              icon: const Icon(Icons.check),
-                              label: Text(
-                                state == null ? "Simpan" : "Edit",
-                                style: lv1TextStyleWhite,
-                              ),
-                            );
-                          },
-                        ),
+                    child: UIKategoriButtonKategori(
+                      namaKategoriController: namaKategoriController,
+                      resetKategoriForm: () => _resetKategoriForm(),
+                    ),
                   ),
                   const Spacer(),
                   Align(
