@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -36,25 +37,23 @@ class UISellGridViewItem extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  // context.read<SellBloc>().add(
-                  //   InvSelectedItem(
-                  //     selectedItem: ModelItem(
-                  //       qtyItem: items[index].getqtyitem,
-                  //       uidUser: items[index].getuidUser,
-                  //       namaItem: items[index].getnamaItem,
-                  //       idItem: items[index].getidItem,
-                  //       hargaItem: items[index].gethargaItem,
-                  //       idKategoriItem: items[index].getidKategoriItem,
-                  //       statusCondiment:
-                  //           items[index].getstatusCondiment,
-                  //       urlGambar: "",
-                  //       idCabang: items[index].getidCabang,
-                  //       barcode: items[index].getBarcode,
-                  //       statusItem: true,
-                  //       tanggalItem: items[index].getTanggalItem,
-                  //     ),
-                  //   ),
-                  // );
+                  ModelItem selectedItem = ModelItem(
+                    qtyItem: items[index].getqtyitem,
+                    uidUser: items[index].getuidUser,
+                    namaItem: items[index].getnamaItem,
+                    idItem: items[index].getidItem,
+                    hargaItem: items[index].gethargaItem,
+                    idKategoriItem: items[index].getidKategoriItem,
+                    statusCondiment: items[index].getstatusCondiment,
+                    urlGambar: "",
+                    idCabang: items[index].getidCabang,
+                    barcode: items[index].getBarcode,
+                    statusItem: true,
+                    tanggalItem: items[index].getTanggalItem,
+                  );
+                  context.read<SellBloc>().add(
+                    SellSelectedItem(selectedItem: selectedItem),
+                  );
                 },
                 child: Padding(
                   padding: EdgeInsetsGeometry.all(3),

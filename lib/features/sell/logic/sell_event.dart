@@ -9,6 +9,8 @@ class AmbilDataSellBloc extends SellEvent {
   AmbilDataSellBloc({required this.idCabang});
 }
 
+class SellResetSelectedItem extends SellEvent {}
+
 class SellSelectedItem extends SellEvent {
   final ModelItem selectedItem;
 

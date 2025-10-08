@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
@@ -16,16 +15,11 @@ import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/to
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/button_kategori.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/top_page/list_view_kategori.dart';
-import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:uuid/uuid.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIInventory extends StatefulWidget {
   const UIInventory({super.key});

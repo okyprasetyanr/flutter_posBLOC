@@ -18,6 +18,8 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
     on<SellSelectedKategoriItem>(_onSelectedKategoriItem);
+    on<SellSelectedItem>(_onSelectedItem);
+    on<SellResetSelectedItem>(_onResetSelectedItem);
   }
 
   Future<void> _onSellAmbilData(
@@ -116,6 +118,27 @@ class SellBloc extends Bloc<SellEvent, SellState> {
           filteredItem: _sellFilterItem(event.selectedKategori.getidKategori),
         ),
       );
+    }
+  }
+
+  FutureOr<void> _onSelectedItem(
+    SellSelectedItem event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      emit(currentState.copyWith(selectedItem: event.selectedItem));
+    }
+  }
+
+  FutureOr<void> _onResetSelectedItem(
+    SellResetSelectedItem event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      print("Log SellBloc _onResetSelectedItem: masuk");
+      emit(currentState.copyWith(selectedItem: null));
     }
   }
 }

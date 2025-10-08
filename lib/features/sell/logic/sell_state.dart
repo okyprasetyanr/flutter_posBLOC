@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
@@ -8,15 +9,17 @@ class SellInitial extends SellState {}
 
 class SellLoading extends SellState {}
 
-class SellLoaded extends SellState {
+class SellLoaded extends SellState with EquatableMixin {
   final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
   final List<ModelKategori>? dataKategori;
   final List<ModelCabang>? dataCabang;
   final String? selectedIDCabang;
   final ModelKategori? selectedKategori;
+  final ModelItem? selectedItem;
 
   SellLoaded({
+    this.selectedItem,
     this.filteredItem = const [],
     this.dataKategori = const [],
     this.dataCabang = const [],
@@ -32,8 +35,10 @@ class SellLoaded extends SellState {
     ModelKategori? selectedKategori,
     List<ModelKategori>? dataKategori,
     List<ModelCabang>? dataCabang,
+    ModelItem? selectedItem,
   }) {
     return SellLoaded(
+      selectedItem: selectedItem,
       dataItem: dataItem ?? this.dataItem,
       dataCabang: dataCabang ?? this.dataCabang,
       dataKategori: dataKategori ?? this.dataKategori,
@@ -42,4 +47,15 @@ class SellLoaded extends SellState {
       selectedKategori: selectedKategori ?? this.selectedKategori,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    dataItem,
+    filteredItem,
+    selectedIDCabang,
+    selectedKategori,
+    dataKategori,
+    dataCabang,
+    selectedItem,
+  ];
 }

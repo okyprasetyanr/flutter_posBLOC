@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/condiment_switch.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/widget/widget_sign_up.dart';
 
 class UIInventoryFormFieldItem extends StatelessWidget {
   final TextEditingController namaItemController;
