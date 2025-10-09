@@ -10,6 +10,7 @@ import 'package:flutter_pos/features/sell/presentation/widgets/top_page/popup_it
 import 'package:flutter_pos/features/sell/presentation/widgets/top_page/saved_cart.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/bottom_page/list_view_ordered_item.dart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
 class UiSell extends StatefulWidget {
@@ -117,9 +118,7 @@ class _UiSellState extends State<UiSell> {
   }
 
   Widget layoutBottom() {
-    return Column(children: [
-      
-    ],);
+    return Column(children: [Expanded(child: SellListViewOrderedItem())]);
   }
 
   Widget navigationGesture() {

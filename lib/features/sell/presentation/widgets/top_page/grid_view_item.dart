@@ -5,7 +5,9 @@ import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_pesanan.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:uuid/uuid.dart';
 
 class UISellGridViewItem extends StatelessWidget {
   const UISellGridViewItem({super.key});
@@ -37,20 +39,21 @@ class UISellGridViewItem extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  ModelItem selectedItem = ModelItem(
-                    qtyItem: items[index].getqtyitem,
-                    uidUser: items[index].getuidUser,
+                  ModelItemPesanan selectedItem = ModelItemPesanan(
+                    idCabang: items[index].getidCabang,
                     namaItem: items[index].getnamaItem,
                     idItem: items[index].getidItem,
+                    idPesanan: Uuid().v4(),
+                    qtyItem: 1,
                     hargaItem: items[index].gethargaItem,
+                    diskonItem: "0",
                     idKategoriItem: items[index].getidKategoriItem,
-                    statusCondiment: items[index].getstatusCondiment,
-                    urlGambar: "",
-                    idCabang: items[index].getidCabang,
-                    barcode: items[index].getBarcode,
-                    statusItem: true,
-                    tanggalItem: items[index].getTanggalItem,
+                    idCondimen: "0",
+                    catatan: "",
+                    urlGambar: items[index].geturlGambar,
+                    condiment: [],
                   );
+
                   context.read<SellBloc>().add(
                     SellSelectedItem(selectedItem: selectedItem),
                   );

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_cabang.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_pesanan.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class SellState {}
@@ -16,7 +17,8 @@ class SellLoaded extends SellState with EquatableMixin {
   final List<ModelCabang>? dataCabang;
   final String? selectedIDCabang;
   final ModelKategori? selectedKategori;
-  final ModelItem? selectedItem;
+  final ModelItemPesanan? selectedItem;
+  final List<ModelItemPesanan>? itemPesanan;
 
   SellLoaded({
     this.selectedItem,
@@ -24,6 +26,7 @@ class SellLoaded extends SellState with EquatableMixin {
     this.dataKategori = const [],
     this.dataCabang = const [],
     this.dataItem = const [],
+    this.itemPesanan = const [],
     this.selectedIDCabang,
     this.selectedKategori,
   });
@@ -35,9 +38,11 @@ class SellLoaded extends SellState with EquatableMixin {
     ModelKategori? selectedKategori,
     List<ModelKategori>? dataKategori,
     List<ModelCabang>? dataCabang,
-    ModelItem? selectedItem,
+    ModelItemPesanan? selectedItem,
+    List<ModelItemPesanan>? itemPesanan,
   }) {
     return SellLoaded(
+      itemPesanan: itemPesanan,
       selectedItem: selectedItem,
       dataItem: dataItem ?? this.dataItem,
       dataCabang: dataCabang ?? this.dataCabang,
