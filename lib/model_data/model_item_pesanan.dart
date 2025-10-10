@@ -1,4 +1,6 @@
-class ModelItemPesanan {
+import 'package:equatable/equatable.dart';
+
+class ModelItemPesanan extends Equatable {
   final String _namaItem,
       _idCabang,
       _idItem,
@@ -63,4 +65,20 @@ class ModelItemPesanan {
   set setcatatan(String value) => _catatan;
   set seturlGambar(String value) => _urlGambar;
   set setCondiment(List<ModelItemPesanan> value) => _condiment;
+
+  @override
+  List<Object?> get props => [
+    _namaItem,
+    _idCabang,
+    _idItem,
+    _idPesanan,
+    _hargaItem,
+    _diskonItem,
+    _idKategoriItem,
+    _idCondimen,
+    _catatan,
+    _urlGambar,
+    _qtyItem,
+    _condiment,
+  ];
 }

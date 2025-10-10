@@ -65,7 +65,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     if (currentState is SellLoaded) {
       if (event.text != "") {
         List<ModelItem> item = List.from(
-          currentState.dataItem!
+          currentState.filteredItem!
               .where(
                 (element) =>
                     element.getidCabang == currentState.selectedIDCabang,

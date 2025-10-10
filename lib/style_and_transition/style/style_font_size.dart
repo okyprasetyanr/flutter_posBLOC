@@ -32,6 +32,12 @@ final lv05TextStyle = GoogleFonts.poppins(
   fontSize: 12,
 );
 
+final lv05TextStyleRed = GoogleFonts.poppins(
+  color: Colors.red,
+  fontWeight: FontWeight.w300,
+  fontSize: 12,
+);
+
 final lv05TextStyleWhite = GoogleFonts.poppins(
   color: Colors.white,
   fontWeight: FontWeight.w300,
