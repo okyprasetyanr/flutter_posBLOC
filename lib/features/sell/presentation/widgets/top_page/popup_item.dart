@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_pesanan.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 class UISellPopUpItem extends StatefulWidget {
   const UISellPopUpItem({super.key});
@@ -19,12 +21,13 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
   ValueNotifier<bool> popup = ValueNotifier(false);
   ValueNotifier<bool> editharga = ValueNotifier(false);
   ValueNotifier<double> jumlah = ValueNotifier<double>(0);
-  ValueNotifier<double> hargaItemSelected = ValueNotifier<double>(0);
+  ValueNotifier<int> hargaItemSelected = ValueNotifier<int>(0);
   ValueNotifier<int> diskonItemSelected = ValueNotifier<int>(0);
   ModelItemPesanan? dataselected;
   List<ModelItemPesanan> condiment = [];
   TextEditingController catatanController = TextEditingController();
   TextEditingController hargaController = TextEditingController();
+  TextEditingController customDiscountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,170 +78,372 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                     flex: 3,
                     child: Column(
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child:
-                                  BlocSelector<
-                                    SellBloc,
-                                    SellState,
-                                    ModelItemPesanan?
-                                  >(
-                                    selector: (stateNama) {
-                                      if (stateNama is SellLoaded) {
-                                        return stateNama.selectedItem;
-                                      }
-                                      return null;
-                                    },
-                                    builder: (context, stateNama) {
-                                      return Text(
-                                        stateNama?.getnamaItem ?? "",
-                                        style: lv1TextStyle,
-                                      );
-                                    },
-                                  ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text("Quantity:", style: lv1TextStyle),
-                                  ValueListenableBuilder<double>(
-                                    valueListenable: jumlah,
-                                    builder: (context, value, child) {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          IconButton(
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              jumlah.value--;
-                                            },
-                                            icon: Icon(Icons.remove, size: 20),
-                                          ),
-                                          Text(
-                                            formatQty(value),
-                                            style: lv1TextStyle,
-                                          ),
-                                          IconButton(
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              jumlah.value++;
-                                            },
-                                            icon: Icon(Icons.add, size: 20),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ],
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child:
+                                    BlocSelector<
+                                      SellBloc,
+                                      SellState,
+                                      ModelItemPesanan?
+                                    >(
+                                      selector: (stateNama) {
+                                        if (stateNama is SellLoaded) {
+                                          return stateNama.selectedItem;
+                                        }
+                                        return null;
+                                      },
+                                      builder: (context, stateNama) {
+                                        return Text(
+                                          stateNama?.getnamaItem ?? "",
+                                          style: lv1TextStyle,
+                                        );
+                                      },
+                                    ),
                               ),
-                            ),
-                          ],
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text("Quantity:", style: lv1TextStyle),
+                                    ValueListenableBuilder<double>(
+                                      valueListenable: jumlah,
+                                      builder: (context, value, child) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              onPressed: () {
+                                                jumlah.value--;
+                                              },
+                                              icon: Icon(
+                                                Icons.remove,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              formatQty(value),
+                                              style: lv2TextStyle,
+                                            ),
+                                            SizedBox(width: 10),
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              onPressed: () {
+                                                jumlah.value++;
+                                              },
+                                              icon: Icon(Icons.add, size: 20),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-
+                        SizedBox(height: 10),
                         Expanded(
                           child: ValueListenableBuilder<int>(
                             valueListenable: diskonItemSelected,
                             builder: (context, valueDiskon, child) {
-                              return ValueListenableBuilder<double>(
+                              return ValueListenableBuilder<int>(
                                 valueListenable: hargaItemSelected,
                                 builder: (context, valueHarga, child) {
                                   double hargafinal = valueHarga == 0
-                                      ? (double.tryParse(
-                                              dataselected?.gethargaItem ?? "0",
-                                            ) ??
-                                            0.0)
+                                      ? ((double.tryParse(
+                                                  dataselected?.gethargaItem ??
+                                                      "0",
+                                                ) ??
+                                                0.0) *
+                                            (100 - valueDiskon) /
+                                            100)
                                       : (valueHarga *
                                             (100 - valueDiskon) /
                                             100);
-                                  ;
-                                  return Column(
+                                  return Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text("Price: ", style: lv05TextStyle),
-                                          ElevatedButton.icon(
-                                            icon: Icon(Icons.edit),
-                                            onPressed: () {
-                                              editharga.value = !false;
-                                            },
-                                            label: Text(
-                                              formatUang(hargafinal.toString()),
+                                      Expanded(
+                                        child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
                                             ),
                                           ),
-                                          Expanded(
-                                            child: SizedBox(
-                                              // TAMBAHKAN WIDGET INI
-                                              height: 50,
-                                              child: Stack(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Price: ",
+                                                style: lv1TextStyle,
+                                              ),
+                                              Column(
                                                 children: [
-                                                  ValueListenableBuilder<bool>(
-                                                    valueListenable: editharga,
-                                                    builder:
-                                                        (
-                                                          context,
-                                                          valueEditHarga,
-                                                          child,
-                                                        ) {
-                                                          return AnimatedPositioned(
-                                                            left: valueEditHarga
-                                                                ? 0
-                                                                : -200,
-                                                            right: 0,
-                                                            duration: Duration(
-                                                              milliseconds: 800,
+                                                  SizedBox(
+                                                    width: 180,
+                                                    child: ElevatedButton.icon(
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            WidgetStatePropertyAll(
+                                                              Colors.white,
                                                             ),
-                                                            child: TextField(
-                                                              controller:
-                                                                  hargaController,
-                                                              keyboardType:
-                                                                  TextInputType
-                                                                      .number,
-                                                              onChanged: (value) {
-                                                                hargaItemSelected
-                                                                        .value =
-                                                                    double.tryParse(
-                                                                      value.isEmpty
-                                                                          ? "0"
-                                                                          : value,
-                                                                    ) ??
-                                                                    0.0;
+                                                        padding:
+                                                            WidgetStatePropertyAll(
+                                                              EdgeInsets.zero,
+                                                            ),
+                                                      ),
+                                                      iconAlignment:
+                                                          IconAlignment.end,
+                                                      icon: Icon(Icons.edit),
+                                                      onPressed: () {
+                                                        editharga.value =
+                                                            !editharga.value;
+                                                      },
+                                                      label: Text(
+                                                        formatUang(
+                                                          hargafinal.toString(),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 40,
+                                                    width: 150,
+                                                    child: Stack(
+                                                      children: [
+                                                        ValueListenableBuilder<
+                                                          bool
+                                                        >(
+                                                          valueListenable:
+                                                              editharga,
+                                                          builder:
+                                                              (
+                                                                context,
+                                                                valueEditHarga,
+                                                                child,
+                                                              ) {
+                                                                return AnimatedPositioned(
+                                                                  bottom: 0,
+                                                                  top:
+                                                                      valueEditHarga
+                                                                      ? 0
+                                                                      : -80,
+                                                                  left: 0,
+                                                                  right: 0,
+                                                                  duration:
+                                                                      Duration(
+                                                                        milliseconds:
+                                                                            800,
+                                                                      ),
+                                                                  child: SizedBox(
+                                                                    width: 200,
+                                                                    child: TextField(
+                                                                      decoration: InputDecoration(
+                                                                        labelText:
+                                                                            "Edit Harga:",
+                                                                        labelStyle:
+                                                                            lv1TextStyle,
+                                                                        hintText:
+                                                                            "Rp...",
+                                                                        hintStyle:
+                                                                            lv1TextStyle,
+                                                                      ),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .right,
+                                                                      controller:
+                                                                          hargaController,
+                                                                      keyboardType:
+                                                                          TextInputType
+                                                                              .number,
+                                                                      onChanged: (value) {
+                                                                        hargaItemSelected.value =
+                                                                            int.tryParse(
+                                                                              value.isEmpty
+                                                                                  ? "0"
+                                                                                  : value,
+                                                                            ) ??
+                                                                            0;
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                );
                                                               },
-                                                            ),
-                                                          );
-                                                        },
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
+                                              SizedBox(
+                                                child: TextField(
+                                                  controller:
+                                                      customDiscountController,
+                                                  textAlign: TextAlign.right,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  style: lv1TextStyle,
+                                                  decoration: InputDecoration(
+                                                    suffixText: "%",
+                                                    floatingLabelBehavior:
+                                                        FloatingLabelBehavior
+                                                            .always,
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            5,
+                                                          ),
+                                                    ),
+                                                    labelText: "Custom Disc",
+                                                    labelStyle: lv1TextStyle,
+                                                  ),
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly,
+                                                    TextInputFormatter.withFunction((
+                                                      oldValue,
+                                                      newValue,
+                                                    ) {
+                                                      final text =
+                                                          newValue.text;
+                                                      final intValue =
+                                                          int.tryParse(
+                                                            text.isEmpty
+                                                                ? "0"
+                                                                : text,
+                                                          ) ??
+                                                          0;
+
+                                                      if (intValue > 100) {
+                                                        customSnackBar(
+                                                          context,
+                                                          "Jumlah melebihi 100%",
+                                                        );
+                                                        return oldValue;
+                                                      }
+
+                                                      if (text.isEmpty) {
+                                                        diskonItemSelected
+                                                                .value =
+                                                            0;
+                                                        return newValue;
+                                                      }
+
+                                                      diskonItemSelected.value =
+                                                          intValue;
+                                                      return newValue;
+                                                    }),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 20),
+                                      Expanded(
+                                        child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Diskon:",
+                                                style: lv1TextStyle,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              ValueListenableBuilder<int>(
+                                                valueListenable:
+                                                    diskonItemSelected,
+                                                builder: (context, selectedValue, _) {
+                                                  final diskonList = [
+                                                    10,
+                                                    20,
+                                                    30,
+                                                  ];
 
-                                      Expanded(
-                                        child: SegmentedButton<int>(
-                                          segments: const [
-                                            ButtonSegment(
-                                              value: 10,
-                                              label: Text('10%'),
-                                            ),
-                                            ButtonSegment(
-                                              value: 50,
-                                              label: Text('50%'),
-                                            ),
-                                            ButtonSegment(
-                                              value: 100,
-                                              label: Text('100%'),
-                                            ),
-                                          ],
-                                          selected: {valueDiskon},
-                                          onSelectionChanged: (value) {
-                                            diskonItemSelected.value =
-                                                value.first;
-                                          },
+                                                  return Column(
+                                                    children: diskonList.map((
+                                                      diskon,
+                                                    ) {
+                                                      final isSelected =
+                                                          selectedValue ==
+                                                          diskon;
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                              bottom: 6,
+                                                            ),
+                                                        child: ElevatedButton.icon(
+                                                          onPressed: () {
+                                                            diskonItemSelected
+                                                                    .value =
+                                                                isSelected
+                                                                ? 0
+                                                                : diskon;
+                                                          },
+                                                          icon: const Icon(
+                                                            Icons.check_rounded,
+                                                          ),
+                                                          label: Text(
+                                                            "$diskon%",
+                                                            style: isSelected
+                                                                ? lv1TextStyleWhite
+                                                                : lv1TextStyle,
+                                                          ),
+                                                          style: ButtonStyle(
+                                                            backgroundColor:
+                                                                WidgetStatePropertyAll(
+                                                                  isSelected
+                                                                      ? AppColor
+                                                                            .primary
+                                                                      : Colors
+                                                                            .white,
+                                                                ),
+                                                            iconColor:
+                                                                WidgetStatePropertyAll(
+                                                                  isSelected
+                                                                      ? Colors
+                                                                            .white
+                                                                      : Colors
+                                                                            .black,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -264,6 +469,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                       ],
                     ),
                   ),
+                  SizedBox(width: 10),
                   Expanded(
                     flex: 1,
                     child: Column(
