@@ -118,7 +118,12 @@ class _UiSellState extends State<UiSell> {
   }
 
   Widget layoutBottom() {
-    return Column(children: [Expanded(child: SellListViewOrderedItem())]);
+    return Column(
+      children: [
+        Expanded(child: SellListViewOrderedItem()),
+        Text("data"),
+      ],
+    );
   }
 
   Widget navigationGesture() {

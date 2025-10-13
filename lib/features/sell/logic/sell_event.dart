@@ -17,6 +17,12 @@ class SellSelectedItem extends SellEvent {
   SellSelectedItem({required this.selectedItem});
 }
 
+class SellSelectedCondiment extends SellEvent {
+  final ModelItemPesanan selectedCondiment;
+
+  SellSelectedCondiment({required this.selectedCondiment});
+}
+
 class SellSearchItem extends SellEvent {
   final String text;
 
@@ -33,4 +39,10 @@ class SellUpdateOrderedItem extends SellEvent {
   final ModelItemPesanan updatedItem;
 
   SellUpdateOrderedItem({required this.updatedItem});
+}
+
+class SellAddOrderedItem extends SellEvent {
+  final ModelItemPesanan orderedItem;
+
+  SellAddOrderedItem({required this.orderedItem});
 }

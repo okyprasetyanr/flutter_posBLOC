@@ -16,7 +16,6 @@ class SellLoaded extends SellState with EquatableMixin {
   final List<ModelKategori>? dataKategori;
   final List<ModelCabang>? dataCabang;
   final String? selectedIDCabang;
-  final List<ModelItemPesanan>? selectedItemCondiment;
   final ModelKategori? selectedKategori;
   final ModelItemPesanan? selectedItem;
   final List<ModelItemPesanan>? itemPesanan;
@@ -24,7 +23,6 @@ class SellLoaded extends SellState with EquatableMixin {
   SellLoaded({
     this.selectedItem,
     this.filteredItem = const [],
-    this.selectedItemCondiment = const [],
     this.dataKategori = const [],
     this.dataCabang = const [],
     this.dataItem = const [],
@@ -42,11 +40,9 @@ class SellLoaded extends SellState with EquatableMixin {
     List<ModelCabang>? dataCabang,
     ModelItemPesanan? selectedItem,
     List<ModelItemPesanan>? itemPesanan,
-    List<ModelItemPesanan>? selectedItemCondiment,
   }) {
     return SellLoaded(
-      selectedItemCondiment: selectedItemCondiment ?? selectedItemCondiment,
-      itemPesanan: itemPesanan,
+      itemPesanan: itemPesanan ?? this.itemPesanan,
       selectedItem: selectedItem,
       dataItem: dataItem ?? this.dataItem,
       dataCabang: dataCabang ?? this.dataCabang,
@@ -59,7 +55,6 @@ class SellLoaded extends SellState with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    selectedItemCondiment,
     dataItem,
     filteredItem,
     selectedIDCabang,

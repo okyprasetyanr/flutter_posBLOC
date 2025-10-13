@@ -19,45 +19,61 @@ class SellListViewOrderedItem extends StatelessWidget {
         return [];
       },
       builder: (context, state) {
-        return ListView.builder(
-          itemCount: state.length,
-          itemBuilder: (context, index) {
-            final item = state[index];
-            return Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "${item.getqtyItem}x ${item.getnamaItem}",
-                      style: lv05TextStyle,
-                    ),
-                    Text(formatUang(item.gethargaItem), style: lv05TextStyle),
-                  ],
-                ),
-                ListView.builder(
-                  itemCount: item.getCondiment.length,
-                  itemBuilder: (context, index) {
-                    final condiment = item.getCondiment[index];
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${condiment.getqtyItem}x ${condiment.getnamaItem}",
-                          style: lv05TextStyle,
-                        ),
-                        Text(
-                          formatUang(condiment.gethargaItem),
-                          style: lv05TextStyle,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        if (state.isEmpty) {
+          return Text("Belum ada Pesanan!", style: lv1TextStyle);
+        } else {
+          return ListView.builder(
+            itemCount: state.length,
+            itemBuilder: (context, index) {
+              final item = state[index];
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset("assets/logo.png", height: 50),
+                          const SizedBox(width: 10),
+                          Text(
+                            "${item.getqtyItem}x ${item.getnamaItem}",
+                            style: lv05TextStyle,
+                          ),
+                        ],
+                      ),
+                      Text(formatUang(item.gethargaItem), style: lv05TextStyle),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: item.getCondiment.length,
+                    itemBuilder: (context, index) {
+                      final condiment = item.getCondiment![index];
+                      if (item.getCondiment.isEmpty) {
+                        return const SizedBox.shrink();
+                      }
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${condiment.getqtyItem}x ${condiment.getnamaItem}",
+                            style: lv05TextStyle,
+                          ),
+                          Text(
+                            formatUang(condiment.gethargaItem),
+                            style: lv05TextStyle,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
       },
     );
   }

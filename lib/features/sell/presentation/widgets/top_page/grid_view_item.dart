@@ -14,6 +14,7 @@ class UISellGridViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String idPesananNota = Uuid().v1();
     return BlocSelector<SellBloc, SellState, List<ModelItem>>(
       selector: (state) {
         if (state is SellLoaded) {
@@ -43,12 +44,12 @@ class UISellGridViewItem extends StatelessWidget {
                     idCabang: items[index].getidCabang,
                     namaItem: items[index].getnamaItem,
                     idItem: items[index].getidItem,
-                    idPesanan: Uuid().v4(),
+                    idPesanan: idPesananNota,
                     qtyItem: 1,
                     hargaItem: items[index].gethargaItem,
                     diskonItem: "0",
                     idKategoriItem: items[index].getidKategoriItem,
-                    idCondimen: "0",
+                    idCondimen: Uuid().v4(),
                     catatan: "",
                     urlGambar: items[index].geturlGambar,
                     condiment: [],

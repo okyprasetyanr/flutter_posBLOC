@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_pesanan.dart';
 import 'package:flutter_pos/model_data/model_kategori.dart';
 
 class SellBloc extends Bloc<SellEvent, SellState> {
@@ -19,7 +21,9 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     );
     on<SellSelectedKategoriItem>(_onSelectedKategoriItem);
     on<SellSelectedItem>(_onSelectedItem);
+    on<SellSelectedCondiment>(_onSelectedCondiment);
     on<SellResetSelectedItem>(_onResetSelectedItem);
+    on<SellAddOrderedItem>(_onAddOrderedItem);
   }
 
   Future<void> _onSellAmbilData(
@@ -139,6 +143,67 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     if (currentState is SellLoaded) {
       print("Log SellBloc _onResetSelectedItem: masuk");
       emit(currentState.copyWith(selectedItem: null));
+    }
+  }
+
+  FutureOr<void> _onSelectedCondiment(
+    SellSelectedCondiment event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      final data = currentState.selectedItem!.copyWith();
+
+      final condimentList = List<ModelItemPesanan>.from(
+        data.getCondiment ?? [],
+      );
+
+      final existingCondiment = condimentList.firstWhereOrNull(
+        (e) => e.getidItem == event.selectedCondiment.getidItem,
+      );
+
+      if (existingCondiment != null) {
+        final updatedCondiment = existingCondiment.copyWith(
+          qtyItem: existingCondiment.getqtyItem + 1,
+        );
+
+        final updatedList = condimentList
+            .map(
+              (e) => e.getidItem == updatedCondiment.getidItem
+                  ? updatedCondiment
+                  : e,
+            )
+            .toList();
+
+        emit(
+          currentState.copyWith(
+            selectedItem: data.copyWith(condiment: updatedList),
+          ),
+        );
+      } else {
+        final updatedList = [...condimentList, event.selectedCondiment];
+        emit(
+          currentState.copyWith(
+            selectedItem: data.copyWith(condiment: updatedList),
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onAddOrderedItem(
+    SellAddOrderedItem event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      final itemPesanan = List.from(currentState.itemPesanan ?? []);
+      emit(
+        currentState.copyWith(
+          itemPesanan: [...itemPesanan, event.orderedItem],
+          selectedItem: null,
+        ),
+      );
     }
   }
 }

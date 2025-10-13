@@ -53,18 +53,35 @@ class ModelItemPesanan extends Equatable {
   String get geturlGambar => _urlGambar;
   List<ModelItemPesanan> get getCondiment => _condiment;
 
-  set setnamaItem(String value) => _namaItem;
-  set setidItem(String value) => _idItem;
-  set idCabang(String value) => _idCabang;
-  set setidPesanan(String value) => _idPesanan;
-  set setqtyItem(double value) => _qtyItem;
-  set sethargaItem(String value) => _hargaItem;
-  set setdiskonItem(String value) => _diskonItem;
-  set setidKategoriItem(String value) => _idKategoriItem;
-  set setidCondimen(String value) => _idCondimen;
-  set setcatatan(String value) => _catatan;
-  set seturlGambar(String value) => _urlGambar;
-  set setCondiment(List<ModelItemPesanan> value) => _condiment;
+  ModelItemPesanan copyWith({
+    String? namaItem,
+    String? idItem,
+    String? idCabang,
+    String? idPesanan,
+    double? qtyItem,
+    String? hargaItem,
+    String? diskonItem,
+    String? idKategoriItem,
+    String? idCondimen,
+    String? catatan,
+    String? urlGambar,
+    List<ModelItemPesanan>? condiment,
+  }) {
+    return ModelItemPesanan(
+      namaItem: namaItem ?? _namaItem,
+      idItem: idItem ?? _idItem,
+      idCabang: idCabang ?? _idCabang,
+      idPesanan: idPesanan ?? _idPesanan,
+      qtyItem: qtyItem ?? _qtyItem,
+      hargaItem: hargaItem ?? _hargaItem,
+      diskonItem: diskonItem ?? _diskonItem,
+      idKategoriItem: idKategoriItem ?? _idKategoriItem,
+      idCondimen: idCondimen ?? _idCondimen,
+      catatan: catatan ?? _catatan,
+      urlGambar: urlGambar ?? _urlGambar,
+      condiment: condiment ?? _condiment,
+    );
+  }
 
   @override
   List<Object?> get props => [
