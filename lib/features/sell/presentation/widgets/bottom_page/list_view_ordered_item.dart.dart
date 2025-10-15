@@ -50,7 +50,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: item.getCondiment.length,
                     itemBuilder: (context, index) {
-                      final condiment = item.getCondiment![index];
+                      final condiment = item.getCondiment[index];
                       if (item.getCondiment.isEmpty) {
                         return const SizedBox.shrink();
                       }

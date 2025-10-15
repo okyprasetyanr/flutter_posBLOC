@@ -64,7 +64,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                     uidUser: UserSession.uidUser!,
                     namaItem: namaItemController.text,
                     idItem: idUser,
-                    hargaItem: hargaItemController.text,
+                    hargaItem: double.tryParse(hargaItemController.text)!,
                     idKategoriItem: selectedKategori,
                     statusCondiment: bloc.condimentForm!,
                     urlGambar: "",

@@ -5,13 +5,12 @@ class ModelItemPesanan extends Equatable {
       _idCabang,
       _idItem,
       _idPesanan,
-      _hargaItem,
       _diskonItem,
       _idKategoriItem,
       _idCondimen,
       _catatan,
       _urlGambar;
-  final double _qtyItem;
+  final double _qtyItem, _hargaItem;
   final List<ModelItemPesanan> _condiment;
 
   ModelItemPesanan({
@@ -20,7 +19,7 @@ class ModelItemPesanan extends Equatable {
     required String idCabang,
     required String idPesanan,
     required double qtyItem,
-    required String hargaItem,
+    required double hargaItem,
     required String diskonItem,
     required String idKategoriItem,
     required String idCondimen,
@@ -45,7 +44,7 @@ class ModelItemPesanan extends Equatable {
   String get getidCabang => _idCabang;
   String get getidPesanan => _idPesanan;
   double get getqtyItem => _qtyItem;
-  String get gethargaItem => _hargaItem;
+  double get gethargaItem => _hargaItem;
   String get getdiskonItem => _diskonItem;
   String get getidKategoriItem => _idKategoriItem;
   String get getidCondimen => _idCondimen;
@@ -59,7 +58,7 @@ class ModelItemPesanan extends Equatable {
     String? idCabang,
     String? idPesanan,
     double? qtyItem,
-    String? hargaItem,
+    double? hargaItem,
     String? diskonItem,
     String? idKategoriItem,
     String? idCondimen,

@@ -41,8 +41,10 @@ class SellUpdateOrderedItem extends SellEvent {
   SellUpdateOrderedItem({required this.updatedItem});
 }
 
-class SellAddOrderedItem extends SellEvent {
-  final ModelItemPesanan orderedItem;
+class SellAddOrderedItem extends SellEvent {}
 
-  SellAddOrderedItem({required this.orderedItem});
+class SellAdjustQtyItem extends SellEvent {
+  final bool mode;
+
+  SellAdjustQtyItem({required this.mode});
 }

@@ -134,7 +134,7 @@ class _UIInventoryState extends State<UIInventory> {
         if (state.dataSelectedItem != null) {
           namaItemController.text = state.dataSelectedItem!.getnamaItem;
           kodeBarcodeController.text = state.dataSelectedItem!.getBarcode;
-          hargaItemController.text = state.dataSelectedItem!.gethargaItem;
+          hargaItemController.text = "${state.dataSelectedItem!.gethargaItem}";
 
           bloc.add(
             InvCondimentForm(

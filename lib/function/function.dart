@@ -4,8 +4,8 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String formatUang(String nominal) {
-  final nominalfinal = nominal
+String formatUang(double nominal) {
+  final nominalfinal = "${nominal}"
       .replaceAll("R", "")
       .replaceAll(".", "")
       .replaceAll(",", "")

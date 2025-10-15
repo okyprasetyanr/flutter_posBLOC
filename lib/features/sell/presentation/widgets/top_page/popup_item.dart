@@ -10,7 +10,6 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_pesanan.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:collection/collection.dart';
 
 class UISellPopUpItem extends StatefulWidget {
   const UISellPopUpItem({super.key});
@@ -156,9 +155,24 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                             "Quantity:",
                                             style: lv05TextStyle,
                                           ),
-                                          ValueListenableBuilder<double>(
-                                            valueListenable: jumlah,
-                                            builder: (context, value, child) {
+
+                                          BlocSelector<
+                                            SellBloc,
+                                            SellState,
+                                            double?
+                                          >(
+                                            selector: (state) {
+                                              if (state is SellLoaded) {
+                                                return state
+                                                    .selectedItem
+                                                    ?.getqtyItem;
+                                              }
+                                              return null;
+                                            },
+                                            builder: (context, state) {
+                                              if (state == null) {
+                                                return Spacer();
+                                              }
                                               return Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -166,7 +180,13 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                                   IconButton(
                                                     padding: EdgeInsets.zero,
                                                     onPressed: () {
-                                                      jumlah.value--;
+                                                      context
+                                                          .read<SellBloc>()
+                                                          .add(
+                                                            SellAdjustQtyItem(
+                                                              mode: false,
+                                                            ),
+                                                          );
                                                     },
                                                     icon: Icon(
                                                       Icons.remove,
@@ -175,14 +195,20 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                                   ),
                                                   SizedBox(width: 10),
                                                   Text(
-                                                    formatQty(value),
+                                                    formatQty(state),
                                                     style: lv1TextStyle,
                                                   ),
                                                   SizedBox(width: 10),
                                                   IconButton(
                                                     padding: EdgeInsets.zero,
                                                     onPressed: () {
-                                                      jumlah.value++;
+                                                      context
+                                                          .read<SellBloc>()
+                                                          .add(
+                                                            SellAdjustQtyItem(
+                                                              mode: true,
+                                                            ),
+                                                          );
                                                     },
                                                     icon: Icon(
                                                       Icons.add,
@@ -224,11 +250,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                     valueListenable: hargaItemSelected,
                                     builder: (context, valueHarga, child) {
                                       hargafinal = valueHarga == 0
-                                          ? ((double.tryParse(
-                                                      dataselected
-                                                              ?.gethargaItem ??
-                                                          "0",
-                                                    ) ??
+                                          ? ((dataselected?.gethargaItem ??
                                                     0.0) *
                                                 (100 - valueDiskon) /
                                                 100)
@@ -287,8 +309,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                                           },
                                                           label: Text(
                                                             formatUang(
-                                                              hargafinal
-                                                                  .toString(),
+                                                              hargafinal,
                                                             ),
                                                             style:
                                                                 lv05TextStyle,
@@ -560,32 +581,34 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                           SellBloc,
                                           SellState,
                                           (
-                                            String,
-                                            List<ModelItemPesanan>,
-                                            String,
+                                            String?,
+                                            List<ModelItemPesanan>?,
+                                            String?,
                                           )
                                         >(
                                           selector: (state) {
                                             if (state is SellLoaded) {
                                               return (
                                                 state
-                                                    .selectedItem!
-                                                    .getidPesanan,
+                                                    .selectedItem
+                                                    ?.getidPesanan,
                                                 state
-                                                        .selectedItem
-                                                        ?.getCondiment ??
-                                                    [],
+                                                    .selectedItem
+                                                    ?.getCondiment,
                                                 state
-                                                    .selectedItem!
-                                                    .getidCondimen,
+                                                    .selectedItem
+                                                    ?.getidCondimen,
                                               );
                                             }
                                             return ("", [], "");
                                           },
-                                          builder: (context, stateCondiemnt) {
+                                          builder: (context, stateCondiment) {
+                                            if (stateCondiment.$1 == null) {
+                                              return Spacer();
+                                            }
                                             double qtyitem = 0;
-                                            bool? cekCondiment = stateCondiemnt
-                                                .$2
+                                            bool? cekCondiment = stateCondiment
+                                                .$2!
                                                 .any(
                                                   (element) =>
                                                       state[index].getidItem ==
@@ -593,7 +616,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                                 );
 
                                             if (cekCondiment) {
-                                              qtyitem = stateCondiemnt.$2
+                                              qtyitem = stateCondiment.$2!
                                                   .firstWhere(
                                                     (element) =>
                                                         state[index]
@@ -620,7 +643,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                                         idItem: state[index]
                                                             .getidItem,
                                                         idPesanan:
-                                                            stateCondiemnt.$1,
+                                                            stateCondiment.$1!,
                                                         qtyItem: qtyitem + 1,
                                                         hargaItem: state[index]
                                                             .gethargaItem,
@@ -629,7 +652,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                                             state[index]
                                                                 .getidKategoriItem,
                                                         idCondimen:
-                                                            stateCondiemnt.$3,
+                                                            stateCondiment.$3!,
                                                         catatan: "",
                                                         urlGambar: "",
                                                         condiment: [],
@@ -805,25 +828,10 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                 size: 20,
                               ),
                               onPressed: () {
-                                final orderedItem = ModelItemPesanan(
-                                  idCabang: dataselected!.getidCabang,
-                                  namaItem: dataselected!.getnamaItem,
-                                  idItem: dataselected!.getidItem,
-                                  idPesanan: dataselected!.getidPesanan,
-                                  qtyItem: jumlah.value,
-                                  hargaItem: hargafinal.toString(),
-                                  diskonItem: diskonItemSelected.value
-                                      .toString(),
-                                  idKategoriItem: dataselected!.getnamaItem,
-                                  idCondimen: dataselected!.getidCondimen,
-                                  catatan: catatanController.text,
-                                  urlGambar: dataselected!.geturlGambar,
-                                  condiment: condiment,
-                                );
-                                print("UISell ConfirmOrder: $orderedItem");
+                                ;
                                 popup.value = !isVisible;
                                 context.read<SellBloc>().add(
-                                  SellAddOrderedItem(orderedItem: orderedItem),
+                                  SellAddOrderedItem(),
                                 );
                               },
                             ),

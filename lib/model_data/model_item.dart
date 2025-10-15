@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/function/function.dart';
 
 class ModelItem extends Equatable {
   final String _uidUser,
       _namaItem,
       _idItem,
-      _hargaItem,
       _idKategoriItem,
       _urlGambar,
       _idCabang,
       _tanggalItem,
       _barcode;
-  final double _qtyItem;
+  final double _hargaItem, _qtyItem;
   final bool _statusCondiment, _statusItem;
 
   ModelItem({
@@ -19,7 +19,7 @@ class ModelItem extends Equatable {
     required String uidUser,
     required String namaItem,
     required String idItem,
-    required String hargaItem,
+    required double hargaItem,
     required String idKategoriItem,
     required bool statusCondiment,
     required String urlGambar,
@@ -43,7 +43,7 @@ class ModelItem extends Equatable {
   String get getuidUser => _uidUser;
   String get getnamaItem => _namaItem;
   String get getidItem => _idItem;
-  String get gethargaItem => _hargaItem;
+  double get gethargaItem => _hargaItem;
   String get getidKategoriItem => _idKategoriItem;
   bool get getstatusCondiment => _statusCondiment;
   String get geturlGambar => _urlGambar;
@@ -73,7 +73,7 @@ class ModelItem extends Equatable {
         uidUser: dataItem['uid_user'],
         namaItem: dataItem['nama_item'],
         idItem: dataItem['id_item'],
-        hargaItem: dataItem['harga_item'],
+        hargaItem: dataItem['harga_item'].toDouble(),
         idKategoriItem: dataItem['id_kategori'],
         statusCondiment: dataItem['status_condiment'],
         urlGambar: dataItem['url_gambar'],

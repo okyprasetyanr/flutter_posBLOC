@@ -24,6 +24,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     on<SellSelectedCondiment>(_onSelectedCondiment);
     on<SellResetSelectedItem>(_onResetSelectedItem);
     on<SellAddOrderedItem>(_onAddOrderedItem);
+    on<SellAdjustQtyItem>(_onAdjustQtyItem);
   }
 
   Future<void> _onSellAmbilData(
@@ -154,9 +155,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     if (currentState is SellLoaded) {
       final data = currentState.selectedItem!.copyWith();
 
-      final condimentList = List<ModelItemPesanan>.from(
-        data.getCondiment ?? [],
-      );
+      final condimentList = List<ModelItemPesanan>.from(data.getCondiment);
 
       final existingCondiment = condimentList.firstWhereOrNull(
         (e) => e.getidItem == event.selectedCondiment.getidItem,
@@ -200,8 +199,30 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       final itemPesanan = List.from(currentState.itemPesanan ?? []);
       emit(
         currentState.copyWith(
-          itemPesanan: [...itemPesanan, event.orderedItem],
+          itemPesanan: [...itemPesanan, currentState.selectedItem!],
           selectedItem: null,
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _onAdjustQtyItem(
+    SellAdjustQtyItem event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      final selectedItem = currentState.selectedItem!;
+      double qty = selectedItem.getqtyItem;
+      if (event.mode) {
+        qty = qty++;
+      } else {
+        qty = qty--;
+      }
+      double harga = selectedItem.gethargaItem * qty;
+      emit(
+        currentState.copyWith(
+          selectedItem: selectedItem.copyWith(qtyItem: qty, hargaItem: harga),
         ),
       );
     }
