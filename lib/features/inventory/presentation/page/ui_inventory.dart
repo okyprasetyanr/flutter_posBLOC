@@ -58,12 +58,12 @@ class _UIInventoryState extends State<UIInventory> {
   PageController pageControllerTop = PageController();
   PageController pageControllerBottom = PageController();
 
-  late final StreamSubscription _inventorySub;
+  StreamSubscription? _inventorySub;
 
   @override
   void dispose() {
     if (mounted) {
-      _inventorySub.cancel();
+      _inventorySub?.cancel();
       namaItemController.dispose();
       cabangItemController.dispose();
       hargaItemController.dispose();
@@ -105,7 +105,7 @@ class _UIInventoryState extends State<UIInventory> {
     _initData();
   }
 
-  void _initData() {
+  Future<void> _initData() async {
     selectedFilterItem = filters.first;
     selectedStatusItem = statusItem.first;
     selectedFilterJenisItem = filterjenis.first;
@@ -129,6 +129,8 @@ class _UIInventoryState extends State<UIInventory> {
         filterIDKategori: selectedFilterKategoriItem!,
       ),
     );
+
+    await _inventorySub?.cancel();
     _inventorySub = bloc.stream.listen((state) {
       if (state is InventoryLoaded) {
         if (state.dataSelectedItem != null) {

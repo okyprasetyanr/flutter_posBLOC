@@ -155,7 +155,6 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                             "Quantity:",
                                             style: lv05TextStyle,
                                           ),
-
                                           BlocSelector<
                                             SellBloc,
                                             SellState,
@@ -171,7 +170,8 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                             },
                                             builder: (context, state) {
                                               if (state == null) {
-                                                return Spacer();
+                                                return SizedBox.shrink();
+                                                ;
                                               }
                                               return Row(
                                                 mainAxisAlignment:

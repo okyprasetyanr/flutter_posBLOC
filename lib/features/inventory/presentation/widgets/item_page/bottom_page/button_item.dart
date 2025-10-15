@@ -66,7 +66,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                     idItem: idUser,
                     hargaItem: double.tryParse(hargaItemController.text)!,
                     idKategoriItem: selectedKategori,
-                    statusCondiment: bloc.condimentForm!,
+                    statusCondiment: bloc.condimentForm,
                     urlGambar: "",
                     idCabang: bloc.idCabang!,
                     barcode: kodeBarcodeController.text,
@@ -77,7 +77,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                   );
                   context.read<InventoryBloc>().add(InvUploadItem(data: data));
 
-                  resetItemForm;
+                  resetItemForm();
                 }
               }
             },

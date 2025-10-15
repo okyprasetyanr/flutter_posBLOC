@@ -23,7 +23,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   final String? selectedStatusItem;
   final String? selectedFilterJenisItem;
   final String? selectedFilterIDKategoriItem;
-  final bool? condimentForm;
+  final bool condimentForm;
   final List<ModelCabang> datacabang;
   final List<ModelItem> dataItem;
   final List<ModelKategori> dataKategori;
@@ -38,7 +38,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     this.selectedFilterJenisItem,
     this.selectedFilterItem,
     this.selectedStatusItem,
-    this.condimentForm,
+    this.condimentForm = false,
     this.dataSelectedKategori,
     this.dataSelectedItem,
     this.idCabang,

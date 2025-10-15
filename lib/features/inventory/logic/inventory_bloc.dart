@@ -224,6 +224,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .collection("items")
         .doc(event.data.getidItem)
         .set(convertToMapItem(event.data));
+
+    print("InvBloc UploadItem: ${event.data}");
+
     final item = repoCahce.ambilItem(event.data.getidCabang);
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)

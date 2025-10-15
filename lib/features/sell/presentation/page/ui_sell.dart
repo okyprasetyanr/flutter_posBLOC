@@ -119,9 +119,12 @@ class _UiSellState extends State<UiSell> {
 
   Widget layoutBottom() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        Text(" Daftar Pesanan", style: titleTextStyle),
+        Divider(color: Colors.grey.shade300, thickness: 2),
         Expanded(child: SellListViewOrderedItem()),
-        Text("data"),
       ],
     );
   }

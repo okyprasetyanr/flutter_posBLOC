@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
 
 class ModelItem extends Equatable {
   final String _uidUser,

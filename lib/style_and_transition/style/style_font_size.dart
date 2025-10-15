@@ -32,6 +32,13 @@ final lv05TextStyle = GoogleFonts.poppins(
   fontSize: 12,
 );
 
+final lv05TextStyleItalic = GoogleFonts.poppins(
+  fontStyle: FontStyle.italic,
+  color: Colors.black,
+  fontWeight: FontWeight.w300,
+  fontSize: 12,
+);
+
 final lv05TextStyleRed = GoogleFonts.poppins(
   color: Colors.red,
   fontWeight: FontWeight.w300,
@@ -71,7 +78,13 @@ final textStyleHarga = GoogleFonts.poppins(
 final lv1TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 14,
+  fontSize: 12,
+);
+
+final lv05textStyleHarga = GoogleFonts.poppins(
+  color: AppColor.primary,
+  fontWeight: FontWeight.w600,
+  fontSize: 12,
 );
 
 final lv1TextStyleDisable = GoogleFonts.poppins(
