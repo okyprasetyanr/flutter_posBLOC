@@ -3,84 +3,84 @@ import 'package:equatable/equatable.dart';
 
 class ModelItem extends Equatable {
   final String _uidUser,
-      _namaItem,
+      _nameItem,
       _idItem,
-      _idKategoriItem,
-      _urlGambar,
-      _idCabang,
-      _tanggalItem,
+      _idCategoryItem,
+      _urlImage,
+      _idBranch,
+      _dateItem,
       _barcode;
-  final double _hargaItem, _qtyItem;
+  final double _priceItem, _qtyItem;
   final bool _statusCondiment, _statusItem;
 
   ModelItem({
     required double qtyItem,
     required String uidUser,
-    required String namaItem,
+    required String nameItem,
     required String idItem,
-    required double hargaItem,
-    required String idKategoriItem,
+    required double priceItem,
+    required String idCategoryItem,
     required bool statusCondiment,
-    required String urlGambar,
-    required String idCabang,
+    required String urlImage,
+    required String idBranch,
     required String barcode,
     required bool statusItem,
-    required String tanggalItem,
+    required String dateItem,
   }) : _uidUser = uidUser,
-       _namaItem = namaItem,
+       _nameItem = nameItem,
        _idItem = idItem,
-       _hargaItem = hargaItem,
-       _idKategoriItem = idKategoriItem,
+       _priceItem = priceItem,
+       _idCategoryItem = idCategoryItem,
        _statusCondiment = statusCondiment,
-       _urlGambar = urlGambar,
-       _idCabang = idCabang,
+       _urlImage = urlImage,
+       _idBranch = idBranch,
        _barcode = barcode,
        _qtyItem = qtyItem,
        _statusItem = statusItem,
-       _tanggalItem = tanggalItem;
+       _dateItem = dateItem;
 
   String get getuidUser => _uidUser;
-  String get getnamaItem => _namaItem;
+  String get getnameItem => _nameItem;
   String get getidItem => _idItem;
-  double get gethargaItem => _hargaItem;
-  String get getidKategoriItem => _idKategoriItem;
+  double get getpriceItem => _priceItem;
+  String get getidCategoryiItem => _idCategoryItem;
   bool get getstatusCondiment => _statusCondiment;
-  String get geturlGambar => _urlGambar;
+  String get geturlImage => _urlImage;
   double get getqtyitem => _qtyItem;
-  String get getidCabang => _idCabang;
+  String get getidBranch => _idBranch;
   String get getBarcode => _barcode;
   bool get getStatusItem => _statusItem;
-  String get getTanggalItem => _tanggalItem;
+  String get getDateItem => _dateItem;
 
   set setuidUser(String value) => _uidUser;
-  set setnamaItem(String value) => _namaItem;
+  set setnameItem(String value) => _nameItem;
   set setidItem(String value) => _idItem;
-  set sethargaItem(String value) => _hargaItem;
-  set setidKategoriItem(String value) => _idKategoriItem;
+  set setpriceItem(String value) => _priceItem;
+  set setidCategoryItem(String value) => _idCategoryItem;
   set setstatusCondiment(bool value) => _statusCondiment;
-  set seturlGambar(String value) => _urlGambar;
+  set seturlImage(String value) => _urlImage;
   set setqtyItem(double value) => _qtyItem;
-  set setidCabng(String value) => _idCabang;
+  set setidBranch(String value) => _idBranch;
   set setBarcode(String value) => _barcode;
   set setStatusItem(bool value) => _statusItem;
-  set setTanggalItem(String value) => _tanggalItem;
+  set setDateItem(String value) => _dateItem;
 
   static List<ModelItem> getDataListItem(QuerySnapshot data) {
     return data.docs.map((map) {
       final dataItem = map.data() as Map<String, dynamic>;
       return ModelItem(
         uidUser: dataItem['uid_user'],
-        namaItem: dataItem['nama_item'],
+        nameItem: dataItem['nama_item'],
         idItem: dataItem['id_item'],
-        hargaItem: dataItem['harga_item'].toDouble(),
-        idKategoriItem: dataItem['id_kategori'],
+        priceItem: dataItem['harga_item'].toDouble(),
+        idCategoryItem: dataItem['id_kategori'],
         statusCondiment: dataItem['status_condiment'],
-        urlGambar: dataItem['url_gambar'],
+        urlImage: dataItem['url_gambar'],
         qtyItem: dataItem['qty_item'].toDouble(),
-        idCabang: dataItem['id_cabang'],
+        idBranch: dataItem['id_cabang'],
         barcode: dataItem['barcode'],
         statusItem: dataItem['status_item'],
-        tanggalItem: dataItem['tanggal_item'],
+        dateItem: dataItem['tanggal_item'],
       );
     }).toList();
   }
@@ -88,16 +88,16 @@ class ModelItem extends Equatable {
   @override
   List<Object?> get props => [
     _uidUser,
-    _namaItem,
+    _nameItem,
     _idItem,
-    _hargaItem,
-    _idKategoriItem,
+    _priceItem,
+    _idCategoryItem,
     _statusCondiment,
-    _urlGambar,
-    _idCabang,
+    _urlImage,
+    _idBranch,
     _barcode,
     _qtyItem,
     _statusItem,
-    _tanggalItem,
+    _dateItem,
   ];
 }

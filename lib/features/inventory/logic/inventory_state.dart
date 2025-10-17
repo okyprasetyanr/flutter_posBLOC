@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/model_data/model_cabang.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 
 class InventoryState {}
 

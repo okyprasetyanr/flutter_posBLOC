@@ -10,7 +10,7 @@ import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/screen_main_menu.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_UpDown.dart';
+import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_cabang.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 
 class DataUserRepository {
   final _db = FirebaseFirestore.instance;
 
-  Future<List<ModelCabang>> ambilCabang() async {
+  Future<List<ModelCabang>> getBranch() async {
     final data = await _db
         .collection("users")
         .doc(UserSession.ambilUidUser())
@@ -15,7 +15,7 @@ class DataUserRepository {
     return ModelCabang.getDataListCabang(data);
   }
 
-  Future<List<ModelItem>> ambilItem() async {
+  Future<List<ModelItem>> getItem() async {
     final data = await _db
         .collection("items")
         .where("uid_user", isEqualTo: UserSession.uidUser)
@@ -23,7 +23,7 @@ class DataUserRepository {
     return ModelItem.getDataListItem(data);
   }
 
-  Future<List<ModelKategori>> ambilKategori() async {
+  Future<List<ModelKategori>> getCategory() async {
     final data = await _db
         .collection("kategori")
         .where("uid_user", isEqualTo: UserSession.uidUser)

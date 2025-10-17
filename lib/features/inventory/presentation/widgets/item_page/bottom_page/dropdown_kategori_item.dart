@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -31,7 +31,7 @@ class DropdownKategoriItem extends StatelessWidget {
         final idCabang = blocState is InventoryLoaded ? blocState.idCabang : "";
         final initselection = stateBLoc.$2 != null
             ? stateBLoc.$1!.firstWhere((element) {
-                return element.getidKategori == stateBLoc.$2!.getidKategori;
+                return element.getidCategory == stateBLoc.$2!.getidCategory;
               })
             : null;
         print("Log UIInventory initselection: $initselection");
@@ -42,11 +42,11 @@ class DropdownKategoriItem extends StatelessWidget {
           textStyle: lv05TextStyle,
           label: Text("Kategori...", style: lv05TextStyle),
           dropdownMenuEntries: stateBLoc.$1!
-              .where((data) => data.getidCabang == idCabang)
+              .where((data) => data.getidBranch == idCabang)
               .map(
                 (map) => DropdownMenuEntry<ModelKategori>(
                   value: map,
-                  label: map.getnamaKategori,
+                  label: map.getnameCategory,
                 ),
               )
               .toList(),

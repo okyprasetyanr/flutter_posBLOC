@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
@@ -91,14 +91,14 @@ class UIFiltersItem extends StatelessWidget {
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
               initialValue: filterkategori.firstWhere(
-                (data) => data.getidKategori == selectedFilterKategoriItem,
+                (data) => data.getidCategory == selectedFilterKategoriItem,
                 orElse: () => filterkategori.first,
               ),
               items: filterkategori
                   .where(
                     (data) =>
-                        data.getidCabang == "0" ||
-                        data.getidCabang ==
+                        data.getidBranch == "0" ||
+                        data.getidBranch ==
                             (context.read<InventoryBloc>().state
                                     as InventoryLoaded)
                                 .idCabang,
@@ -107,7 +107,7 @@ class UIFiltersItem extends StatelessWidget {
                     (map) => DropdownMenuItem<ModelKategori>(
                       value: map,
                       child: Text(
-                        map.getnamaKategori,
+                        map.getnameCategory,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -125,7 +125,7 @@ class UIFiltersItem extends StatelessWidget {
                   filter: selectedFilterItem ?? "",
                   status: selectedStatusItem ?? "",
                   filterjenis: selectedFilterJenisItem ?? "",
-                  filterIDKategori: value.getidKategori,
+                  filterIDKategori: value.getidCategory,
                 );
               },
             ),

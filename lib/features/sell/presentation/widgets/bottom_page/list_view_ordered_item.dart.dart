@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_item_pesanan.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class SellListViewOrderedItem extends StatelessWidget {
@@ -51,10 +52,17 @@ class SellListViewOrderedItem extends StatelessWidget {
                             blendMode: BlendMode.dstIn,
                             child: Material(
                               color: index % 2 == 0
-                                  ? const Color.fromARGB(255, 235, 235, 235)
-                                  : const Color.fromARGB(255, 221, 221, 221),
+                                  ? Colors.white
+                                  : const Color.fromARGB(255, 235, 235, 235),
                               child: InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  context.read<SellBloc>().add(
+                                    SellSelectedItem(
+                                      selectedItem: item,
+                                      edit: true,
+                                    ),
+                                  );
+                                },
                                 child: Padding(
                                   padding: EdgeInsets.only(
                                     left: 15,
@@ -62,7 +70,6 @@ class SellListViewOrderedItem extends StatelessWidget {
                                     top: 5,
                                     bottom: 5,
                                   ),
-
                                   child: Row(
                                     children: [
                                       Image.asset(
@@ -81,11 +88,11 @@ class SellListViewOrderedItem extends StatelessWidget {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  "${formatQty(item.getqtyItem)}x ${item.getnamaItem}",
+                                                  "${formatQty(item.getqtyItem)}x ${item.getnameItem}",
                                                   style: lv05TextStyle,
                                                 ),
                                                 Text(
-                                                  formatUang(item.gethargaItem),
+                                                  formatUang(item.getpriceItem),
                                                   style: lv05textStyleHarga,
                                                 ),
                                               ],
@@ -100,12 +107,12 @@ class SellListViewOrderedItem extends StatelessWidget {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(
-                                                      "${formatQty(condiment.getqtyItem)}x ${condiment.getnamaItem}",
+                                                      "${formatQty(condiment.getqtyItem)}x ${condiment.getnameItem}",
                                                       style: lv05TextStyle,
                                                     ),
                                                     Text(
                                                       formatUang(
-                                                        condiment.gethargaItem,
+                                                        condiment.getpriceItem,
                                                       ),
                                                       style: lv05TextStyle,
                                                     ),

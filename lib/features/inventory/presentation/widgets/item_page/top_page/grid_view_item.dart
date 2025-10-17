@@ -27,7 +27,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
       },
       builder: (contextBloc, state) {
         final items = state.$1
-            .where((data) => data.getidCabang == state.$2)
+            .where((data) => data.getidBranch == state.$2)
             .toList();
         return GridView.builder(
           padding: EdgeInsets.all(10),
@@ -51,16 +51,16 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       selectedItem: ModelItem(
                         qtyItem: items[index].getqtyitem,
                         uidUser: items[index].getuidUser,
-                        namaItem: items[index].getnamaItem,
+                        nameItem: items[index].getnameItem,
                         idItem: items[index].getidItem,
-                        hargaItem: items[index].gethargaItem,
-                        idKategoriItem: items[index].getidKategoriItem,
+                        priceItem: items[index].getpriceItem,
+                        idCategoryItem: items[index].getidCategoryiItem,
                         statusCondiment: items[index].getstatusCondiment,
-                        urlGambar: "",
-                        idCabang: items[index].getidCabang,
+                        urlImage: "",
+                        idBranch: items[index].getidBranch,
                         barcode: items[index].getBarcode,
                         statusItem: true,
-                        tanggalItem: items[index].getTanggalItem,
+                        dateItem: items[index].getDateItem,
                       ),
                     ),
                   );
@@ -72,7 +72,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       Image.asset("assets/logo.png", height: 50),
                       const SizedBox(height: 5),
                       Text(
-                        items[index].getnamaItem,
+                        items[index].getnameItem,
                         style: lv05TextStyle,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -81,7 +81,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          formatUang(items[index].gethargaItem),
+                          formatUang(items[index].getpriceItem),
                           style: textStyleHarga,
                           textAlign: TextAlign.left,
                         ),

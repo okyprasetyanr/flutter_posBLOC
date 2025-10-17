@@ -1,60 +1,60 @@
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
-import 'package:flutter_pos/model_data/model_cabang.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 
 class DataUserRepositoryCache {
-  List<ModelCabang>? dataCabang;
+  List<ModelCabang>? dataBranch;
   List<ModelItem>? dataItem;
-  List<ModelKategori>? dataKategori;
+  List<ModelKategori>? dataCategory;
 
   final DataUserRepository repo;
 
   DataUserRepositoryCache(this.repo);
 
   Future<bool> initData() async {
-    dataCabang = await initCabang();
+    dataBranch = await initBranch();
     dataItem = await initItem();
-    dataKategori = await initKategori();
+    dataCategory = await initCategory();
 
-    for (var a in dataCabang!) {
+    for (var a in dataBranch!) {
       print("Log DataUserRepositoryCache cabang: $a");
     }
     for (var a in dataItem!) {
       print("Log DataUserRepositoryCache item: $a");
     }
-    for (var a in dataKategori!) {
+    for (var a in dataCategory!) {
       print("Log DataUserRepositoryCache kategori: $a");
     }
 
     return true;
   }
 
-  Future<List<ModelCabang>> initCabang() async {
-    return await repo.ambilCabang();
+  Future<List<ModelCabang>> initBranch() async {
+    return await repo.getBranch();
   }
 
   Future<List<ModelItem>> initItem() async {
-    return await repo.ambilItem();
+    return await repo.getItem();
   }
 
-  Future<List<ModelKategori>> initKategori() async {
-    return await repo.ambilKategori();
+  Future<List<ModelKategori>> initCategory() async {
+    return await repo.getCategory();
   }
 
-  List<ModelCabang> ambilCabang() {
-    return dataCabang!.toList();
+  List<ModelCabang> getBranch() {
+    return dataBranch!.toList();
   }
 
-  List<ModelItem> ambilItem(String idCabang) {
+  List<ModelItem> getItem(String idCabang) {
     return dataItem!
-        .where((element) => element.getidCabang == idCabang)
+        .where((element) => element.getidBranch == idCabang)
         .toList();
   }
 
-  List<ModelKategori> ambilKategori(String idCabang) {
-    return dataKategori!
-        .where((element) => element.getidCabang == idCabang)
+  List<ModelKategori> getCategory(String idCabang) {
+    return dataCategory!
+        .where((element) => element.getidBranch == idCabang)
         .toList();
   }
 }

@@ -1,5 +1,5 @@
-import 'package:flutter_pos/model_data/model_item_pesanan.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 
 class SellEvent {}
 
@@ -13,8 +13,9 @@ class SellResetSelectedItem extends SellEvent {}
 
 class SellSelectedItem extends SellEvent {
   final ModelItemPesanan selectedItem;
+  final bool edit;
 
-  SellSelectedItem({required this.selectedItem});
+  SellSelectedItem({required this.edit, required this.selectedItem});
 }
 
 class SellSelectedCondiment extends SellEvent {
@@ -43,8 +44,11 @@ class SellUpdateOrderedItem extends SellEvent {
 
 class SellAddOrderedItem extends SellEvent {}
 
-class SellAdjustQtyItem extends SellEvent {
-  final bool mode;
+class SellAdjustItem extends SellEvent {
+  bool? mode;
+  double? qty;
+  int? discount;
+  double? customprice;
 
-  SellAdjustQtyItem({required this.mode});
+  SellAdjustItem({this.mode, this.qty, this.discount, this.customprice});
 }

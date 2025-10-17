@@ -8,7 +8,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:intl/intl.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
@@ -60,7 +60,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
       if (filterIDKategori != "0") {
         list = list
-            .where((element) => element.getidKategoriItem == filterIDKategori)
+            .where((element) => element.getidCategoryiItem == filterIDKategori)
             .toList();
       } else {
         list;
@@ -69,10 +69,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       var formatter = DateFormat('dd-MM-yyyy');
       switch (filter) {
         case "A-Z":
-          list.sort((a, b) => a.getnamaItem.compareTo(b.getnamaItem));
+          list.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
           break;
         case "Z-A":
-          list.sort((a, b) => b.getnamaItem.compareTo(a.getnamaItem));
+          list.sort((a, b) => b.getnameItem.compareTo(a.getnameItem));
           break;
         case "Stock +":
           list.sort((a, b) => a.getqtyitem.compareTo(b.getqtyitem));
@@ -83,15 +83,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         case "Terbaru":
           list.sort(
             (a, b) => formatter
-                .parse(b.getTanggalItem)
-                .compareTo(formatter.parse(a.getTanggalItem)),
+                .parse(b.getDateItem)
+                .compareTo(formatter.parse(a.getDateItem)),
           );
           break;
         case "Terlama":
           list.sort(
             (a, b) => formatter
-                .parse(a.getTanggalItem)
-                .compareTo(formatter.parse(b.getTanggalItem)),
+                .parse(a.getDateItem)
+                .compareTo(formatter.parse(b.getDateItem)),
           );
           break;
       }
@@ -144,15 +144,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     try {
       if (event.idCabang == null) {
-        final cabangs = repoCahce.ambilCabang();
+        final cabangs = repoCahce.getBranch();
 
         final firstCabang = cabangs.first;
-        final items = repoCahce.ambilItem(firstCabang.getidCabang);
-        final kategori = repoCahce.ambilKategori(firstCabang.getidCabang);
-        kategori.sort((a, b) => a.getnamaKategori.compareTo(b.getnamaKategori));
+        final items = repoCahce.getItem(firstCabang.getidBranch);
+        final kategori = repoCahce.getCategory(firstCabang.getidBranch);
+        kategori.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
         final loaded = InventoryLoaded(
-          idCabang: firstCabang.getidCabang,
-          daerahCabang: firstCabang.getdaerahCabang,
+          idCabang: firstCabang.getidBranch,
+          daerahCabang: firstCabang.getareaBranch,
           datacabang: cabangs,
           dataItem: items,
           dataKategori: kategori,
@@ -169,12 +169,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         );
 
         bool cekDataItem = loadedItem.any(
-          (item) => item.getidCabang == event.idCabang,
+          (item) => item.getidBranch == event.idCabang,
         );
 
         if (!cekDataItem) {
-          final newItems = repoCahce.ambilItem(event.idCabang!);
-          final newKategori = repoCahce.ambilKategori(event.idCabang!);
+          final newItems = repoCahce.getItem(event.idCabang!);
+          final newKategori = repoCahce.getCategory(event.idCabang!);
           if (newItems.isNotEmpty) {
             loadedItem.addAll(newItems);
           }
@@ -185,11 +185,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         }
 
         final daerahCabang = currentState.datacabang
-            .firstWhere((data) => data.getidCabang == event.idCabang)
-            .getdaerahCabang;
+            .firstWhere((data) => data.getidBranch == event.idCabang)
+            .getareaBranch;
 
         loadedKategori.sort(
-          (a, b) => a.getnamaKategori.compareTo(b.getnamaKategori),
+          (a, b) => a.getnameCategory.compareTo(b.getnameCategory),
         );
         final copyWithLoaded = currentState.copyWith(
           selectedFilterItem: event.filter,
@@ -227,7 +227,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     print("InvBloc UploadItem: ${event.data}");
 
-    final item = repoCahce.ambilItem(event.data.getidCabang);
+    final item = repoCahce.getItem(event.data.getidBranch);
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
@@ -258,8 +258,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         .set(event.data);
 
     add(InvResetKategoriForm());
-    final kategori = repoCahce.ambilKategori(event.data['id_cabang']);
-    kategori.sort((a, b) => a.getnamaKategori.compareTo(b.getnamaKategori));
+    final kategori = repoCahce.getCategory(event.data['id_cabang']);
+    kategori.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
@@ -341,7 +341,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     if (event.text.isNotEmpty) {
       final filtered = currentState.dataItem
           .where(
-            (item) => item.getnamaItem.toLowerCase().contains(
+            (item) => item.getnameItem.toLowerCase().contains(
               event.text.toLowerCase(),
             ),
           )

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/model_data/model_cabang.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -74,21 +74,21 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
                       initialValue: state.$1.firstWhere(
-                        (data) => data.getidCabang == state.$2,
+                        (data) => data.getidBranch == state.$2,
                       ),
                       items: state.$1
                           .map(
                             (map) => DropdownMenuItem(
                               value: map,
                               child: Text(
-                                map.getdaerahCabang,
+                                map.getareaBranch,
                                 style: lv05TextStyle,
                               ),
                             ),
                           )
                           .toList(),
                       onChanged: (value) {
-                        String idCabang = value!.getidCabang;
+                        String idCabang = value!.getidBranch;
                         context.read<InventoryBloc>().add(
                           InvAmbilData(
                             idCabang: idCabang,

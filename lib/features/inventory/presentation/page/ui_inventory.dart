@@ -15,7 +15,7 @@ import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/to
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/button_kategori.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/top_page/list_view_kategori.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
@@ -40,7 +40,7 @@ class _UIInventoryState extends State<UIInventory> {
   List<String> statusItem = ["Active", "Deactive"];
   List<String> filterjenis = ["All", "Condiment", "Normal"];
   List<ModelKategori> filterkategori = [
-    ModelKategori(namaKategori: "All", idkategori: "0", idCabang: "0"),
+    ModelKategori(nameCategory: "All", idCategory: "0", idBranch: "0"),
   ];
 
   String? selectedFilterItem;
@@ -109,7 +109,7 @@ class _UIInventoryState extends State<UIInventory> {
     selectedFilterItem = filters.first;
     selectedStatusItem = statusItem.first;
     selectedFilterJenisItem = filterjenis.first;
-    selectedFilterKategoriItem = filterkategori.first.getidKategori;
+    selectedFilterKategoriItem = filterkategori.first.getidCategory;
 
     final bloc = context.read<InventoryBloc>();
     bloc.add(
@@ -134,9 +134,9 @@ class _UIInventoryState extends State<UIInventory> {
     _inventorySub = bloc.stream.listen((state) {
       if (state is InventoryLoaded) {
         if (state.dataSelectedItem != null) {
-          namaItemController.text = state.dataSelectedItem!.getnamaItem;
+          namaItemController.text = state.dataSelectedItem!.getnameItem;
           kodeBarcodeController.text = state.dataSelectedItem!.getBarcode;
-          hargaItemController.text = "${state.dataSelectedItem!.gethargaItem}";
+          hargaItemController.text = "${state.dataSelectedItem!.getpriceItem}";
 
           bloc.add(
             InvCondimentForm(
@@ -148,8 +148,8 @@ class _UIInventoryState extends State<UIInventory> {
             InvSelectedKategoriItem(
               dataKategoriItem: state.dataKategori.firstWhere(
                 (element) =>
-                    element.getidKategori ==
-                    state.dataSelectedItem!.getidKategoriItem,
+                    element.getidCategory ==
+                    state.dataSelectedItem!.getidCategoryiItem,
               ),
             ),
           );
@@ -518,7 +518,7 @@ class _UIInventoryState extends State<UIInventory> {
                             if (state is InventoryLoaded &&
                                 state.dataSelectedKategori != null) {
                               namaKategoriController.text =
-                                  state.dataSelectedKategori!.getnamaKategori;
+                                  state.dataSelectedKategori!.getnameCategory;
                             }
                           },
                           child: customTextField(

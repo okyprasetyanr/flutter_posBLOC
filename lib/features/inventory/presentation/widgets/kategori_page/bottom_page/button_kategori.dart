@@ -5,7 +5,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:uuid/uuid.dart';
@@ -35,7 +35,7 @@ class UIKategoriButtonKategori extends StatelessWidget {
               customSnackBar(context, "Nama kategori Kosong!");
               return;
             }
-            String idkategori = state?.getidKategori ?? const Uuid().v4();
+            String idkategori = state?.getidCategory ?? const Uuid().v4();
             Map<String, dynamic> pushKategori = {
               "nama_kategori": namaKategoriController.text,
               "id_kategori": idkategori,

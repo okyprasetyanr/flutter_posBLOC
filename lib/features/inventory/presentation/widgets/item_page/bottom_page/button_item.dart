@@ -30,7 +30,7 @@ class UIInventoryButtonItem extends StatelessWidget {
       (bloc) => bloc.state is InventoryLoaded
           ? (bloc.state as InventoryLoaded)
                 .dataSelectedKategoriItem
-                ?.getidKategori
+                ?.getidCategory
           : null,
     );
 
@@ -62,18 +62,16 @@ class UIInventoryButtonItem extends StatelessWidget {
                   final data = ModelItem(
                     qtyItem: 0,
                     uidUser: UserSession.uidUser!,
-                    namaItem: namaItemController.text,
+                    nameItem: namaItemController.text,
                     idItem: idUser,
-                    hargaItem: double.tryParse(hargaItemController.text)!,
-                    idKategoriItem: selectedKategori,
+                    priceItem: double.tryParse(hargaItemController.text)!,
+                    idCategoryItem: selectedKategori,
                     statusCondiment: bloc.condimentForm,
-                    urlGambar: "",
-                    idCabang: bloc.idCabang!,
+                    urlImage: "",
+                    idBranch: bloc.idCabang!,
                     barcode: kodeBarcodeController.text,
                     statusItem: true,
-                    tanggalItem: DateFormat(
-                      'yyyy-MM-dd',
-                    ).format(DateTime.now()),
+                    dateItem: DateFormat('yyyy-MM-dd').format(DateTime.now()),
                   );
                   context.read<InventoryBloc>().add(InvUploadItem(data: data));
 

@@ -4,7 +4,7 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -73,8 +73,8 @@ class UISellListViewKategori extends StatelessWidget {
                           }
 
                           final validasiSelected =
-                              kategori.getidKategori ==
-                              stateSelected.getidKategori;
+                              kategori.getidCategory ==
+                              stateSelected.getidCategory;
                           final backgroundColor = validasiSelected
                               ? AppColor.primary
                               : Colors.grey.shade200;
@@ -89,7 +89,7 @@ class UISellListViewKategori extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsetsGeometry.all(5),
                               child: Text(
-                                kategori.getnamaKategori,
+                                kategori.getnameCategory,
                                 style: textColor,
                               ),
                             ),

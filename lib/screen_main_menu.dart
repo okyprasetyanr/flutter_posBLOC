@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/inventory/presentation/page/ui_inventory.da
 import 'package:flutter_pos/features/sell/presentation/page/ui_sell.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_UpDown.dart';
+import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_main_menu.dart';
 
 class ScreenMainMenu extends StatefulWidget {

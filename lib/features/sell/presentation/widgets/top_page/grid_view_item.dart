@@ -5,7 +5,7 @@ import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_item_pesanan.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:uuid/uuid.dart';
 
@@ -41,22 +41,23 @@ class UISellGridViewItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
                   ModelItemPesanan selectedItem = ModelItemPesanan(
-                    idCabang: items[index].getidCabang,
-                    namaItem: items[index].getnamaItem,
+                    subTotal: items[index].getpriceItem,
+                    idCabang: items[index].getidBranch,
+                    namaItem: items[index].getnameItem,
                     idItem: items[index].getidItem,
                     idPesanan: idPesananNota,
                     qtyItem: 1,
-                    hargaItem: items[index].gethargaItem,
-                    diskonItem: "0",
-                    idKategoriItem: items[index].getidKategoriItem,
+                    hargaItem: items[index].getpriceItem,
+                    diskonItem: 0,
+                    idKategoriItem: items[index].getidCategoryiItem,
                     idCondimen: Uuid().v4(),
                     catatan: "",
-                    urlGambar: items[index].geturlGambar,
+                    urlGambar: items[index].geturlImage,
                     condiment: [],
                   );
 
                   context.read<SellBloc>().add(
-                    SellSelectedItem(selectedItem: selectedItem),
+                    SellSelectedItem(selectedItem: selectedItem, edit: false),
                   );
                 },
                 child: Padding(
@@ -66,7 +67,7 @@ class UISellGridViewItem extends StatelessWidget {
                       Image.asset("assets/logo.png", height: 50),
                       const SizedBox(height: 5),
                       Text(
-                        items[index].getnamaItem,
+                        items[index].getnameItem,
                         style: lv05TextStyle,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -75,7 +76,7 @@ class UISellGridViewItem extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          formatUang(items[index].gethargaItem),
+                          formatUang(items[index].getpriceItem),
                           style: textStyleHarga,
                           textAlign: TextAlign.left,
                         ),

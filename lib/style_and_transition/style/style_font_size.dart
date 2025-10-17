@@ -5,19 +5,19 @@ import 'package:google_fonts/google_fonts.dart';
 final labelTextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w500,
-  fontSize: 13,
+  fontSize: 11,
 );
 
 final hintTextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w100,
-  fontSize: 13,
+  fontSize: 11,
 );
 
 final titleTextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w900,
-  fontSize: 20,
+  fontSize: 17,
 );
 
 final buttonTextStyle = GoogleFonts.poppins(
@@ -29,26 +29,26 @@ final buttonTextStyle = GoogleFonts.poppins(
 final lv05TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 final lv05TextStyleItalic = GoogleFonts.poppins(
   fontStyle: FontStyle.italic,
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 final lv05TextStyleRed = GoogleFonts.poppins(
   color: Colors.red,
   fontWeight: FontWeight.w300,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 final lv05TextStyleWhite = GoogleFonts.poppins(
   color: Colors.white,
   fontWeight: FontWeight.w300,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 final textStyleItemCondiment = GoogleFonts.poppins(
@@ -56,7 +56,7 @@ final textStyleItemCondiment = GoogleFonts.poppins(
     backgroundColor: Colors.grey.shade600,
     color: Colors.white,
     fontWeight: FontWeight.w400,
-    fontSize: 12,
+    fontSize: 10,
   ),
 );
 
@@ -65,7 +65,7 @@ final textStyleItemNormal = GoogleFonts.poppins(
     backgroundColor: AppColor.primary,
     color: Colors.white,
     fontWeight: FontWeight.w400,
-    fontSize: 12,
+    fontSize: 10,
   ),
 );
 
@@ -78,25 +78,25 @@ final textStyleHarga = GoogleFonts.poppins(
 final lv1TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 final lv05textStyleHarga = GoogleFonts.poppins(
   color: AppColor.primary,
   fontWeight: FontWeight.w600,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 final lv1TextStyleDisable = GoogleFonts.poppins(
   color: const Color.fromARGB(255, 117, 117, 117),
   fontWeight: FontWeight.w300,
-  fontSize: 14,
+  fontSize: 12,
 );
 
 final lv1TextStyleWhite = GoogleFonts.poppins(
   color: Colors.white,
   fontWeight: FontWeight.w300,
-  fontSize: 14,
+  fontSize: 12,
 );
 
 final lv0TextStyle = GoogleFonts.poppins(
@@ -114,17 +114,17 @@ final lv0TextStyleRED = GoogleFonts.poppins(
 final lv2TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 18,
+  fontSize: 16,
 );
 
 final lv3TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 18,
+  fontSize: 16,
 );
 
 final lv4TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w600,
-  fontSize: 18,
+  fontSize: 16,
 );

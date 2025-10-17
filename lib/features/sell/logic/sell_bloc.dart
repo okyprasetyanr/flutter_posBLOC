@@ -7,8 +7,8 @@ import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_item_pesanan.dart';
-import 'package:flutter_pos/model_data/model_kategori.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 
 class SellBloc extends Bloc<SellEvent, SellState> {
   final DataUserRepositoryCache repo;
@@ -24,7 +24,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     on<SellSelectedCondiment>(_onSelectedCondiment);
     on<SellResetSelectedItem>(_onResetSelectedItem);
     on<SellAddOrderedItem>(_onAddOrderedItem);
-    on<SellAdjustQtyItem>(_onAdjustQtyItem);
+    on<SellAdjustItem>(_onAdjustItem);
   }
 
   Future<void> _onSellAmbilData(
@@ -36,16 +36,16 @@ class SellBloc extends Bloc<SellEvent, SellState> {
         : SellLoaded();
     emit(SellLoading());
 
-    final listCabang = repo.ambilCabang();
+    final listCabang = repo.getBranch();
 
-    String idCabang = event.idCabang ?? listCabang.first.getidCabang;
+    String idCabang = event.idCabang ?? listCabang.first.getidBranch;
     final listItem = repo
-        .ambilItem(idCabang)
+        .getItem(idCabang)
         .where((element) => element.getStatusItem)
         .toList();
     List<ModelKategori> listKategori = [
-      ModelKategori(namaKategori: "All", idkategori: "0", idCabang: "0"),
-      ...repo.ambilKategori(idCabang),
+      ModelKategori(nameCategory: "All", idCategory: "0", idBranch: "0"),
+      ...repo.getCategory(idCabang),
     ];
 
     ModelKategori selectedIdKategori =
@@ -73,10 +73,10 @@ class SellBloc extends Bloc<SellEvent, SellState> {
           currentState.filteredItem!
               .where(
                 (element) =>
-                    element.getidCabang == currentState.selectedIDCabang,
+                    element.getidBranch == currentState.selectedIDCabang,
               )
               .where(
-                (item) => item.getnamaItem.toLowerCase().contains(
+                (item) => item.getnameItem.toLowerCase().contains(
                   event.text.toLowerCase(),
                 ),
               )
@@ -95,14 +95,14 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     if (currentState is SellLoaded) {
       List<ModelItem> list = List.from(
         currentState.dataItem!.where(
-          (element) => element.getidCabang == currentState.selectedIDCabang,
+          (element) => element.getidBranch == currentState.selectedIDCabang,
         ),
       );
       String finalidkategori =
-          idkategori ?? currentState.selectedKategori!.getidKategori;
+          idkategori ?? currentState.selectedKategori!.getidCategory;
       if (finalidkategori != "0") {
         list = list
-            .where((element) => element.getidKategoriItem == finalidkategori)
+            .where((element) => element.getidCategoryiItem == finalidkategori)
             .toList();
       } else {
         list;
@@ -120,7 +120,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       emit(
         currentState.copyWith(
           selectedKategori: event.selectedKategori,
-          filteredItem: _sellFilterItem(event.selectedKategori.getidKategori),
+          filteredItem: _sellFilterItem(event.selectedKategori.getidCategory),
         ),
       );
     }
@@ -132,7 +132,12 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   ) {
     final currentState = state;
     if (currentState is SellLoaded) {
-      emit(currentState.copyWith(selectedItem: event.selectedItem));
+      emit(
+        currentState.copyWith(
+          selectedItem: event.selectedItem,
+          editSelectedItem: event.edit,
+        ),
+      );
     }
   }
 
@@ -143,7 +148,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     final currentState = state;
     if (currentState is SellLoaded) {
       print("Log SellBloc _onResetSelectedItem: masuk");
-      emit(currentState.copyWith(selectedItem: null));
+      emit(currentState.copyWith(selectedItem: null, editSelectedItem: false));
     }
   }
 
@@ -154,39 +159,35 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     final currentState = state;
     if (currentState is SellLoaded) {
       final data = currentState.selectedItem!.copyWith();
-
       final condimentList = List<ModelItemPesanan>.from(data.getCondiment);
+      List<ModelItemPesanan>? updatedList = [];
 
       final existingCondiment = condimentList.firstWhereOrNull(
         (e) => e.getidItem == event.selectedCondiment.getidItem,
       );
 
       if (existingCondiment != null) {
+        final qty = existingCondiment.getqtyItem + 1;
+        final subTotal = existingCondiment.getpriceItem * qty;
         final updatedCondiment = existingCondiment.copyWith(
-          qtyItem: existingCondiment.getqtyItem + 1,
+          qtyItem: qty,
+          subTotal: subTotal,
         );
-
-        final updatedList = condimentList
+        updatedList = condimentList
             .map(
               (e) => e.getidItem == updatedCondiment.getidItem
                   ? updatedCondiment
                   : e,
             )
             .toList();
-
-        emit(
-          currentState.copyWith(
-            selectedItem: data.copyWith(condiment: updatedList),
-          ),
-        );
       } else {
-        final updatedList = [...condimentList, event.selectedCondiment];
-        emit(
-          currentState.copyWith(
-            selectedItem: data.copyWith(condiment: updatedList),
-          ),
-        );
+        updatedList = [...condimentList, event.selectedCondiment];
       }
+      emit(
+        currentState.copyWith(
+          selectedItem: data.copyWith(condiment: updatedList),
+        ),
+      );
     }
   }
 
@@ -196,33 +197,61 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   ) {
     final currentState = state;
     if (currentState is SellLoaded) {
-      final itemPesanan = List.from(currentState.itemPesanan ?? []);
-      emit(
-        currentState.copyWith(
-          itemPesanan: [...itemPesanan, currentState.selectedItem!],
-          selectedItem: null,
-        ),
+      List<ModelItemPesanan> itemPesanan = List<ModelItemPesanan>.from(
+        currentState.itemPesanan ?? [],
       );
+      final selected = currentState.selectedItem!;
+      if (currentState.editSelectedItem) {
+        final index = itemPesanan.indexWhere(
+          (element) => element.getidOrdered == selected.getidOrdered,
+        );
+        if (index != -1) {
+          itemPesanan[index] = selected.copyWith();
+          emit(currentState.copyWith(itemPesanan: itemPesanan));
+        }
+      } else {
+        emit(
+          currentState.copyWith(
+            itemPesanan: [...itemPesanan, selected],
+            selectedItem: null,
+          ),
+        );
+      }
     }
   }
 
-  FutureOr<void> _onAdjustQtyItem(
-    SellAdjustQtyItem event,
-    Emitter<SellState> emit,
-  ) {
+  FutureOr<void> _onAdjustItem(SellAdjustItem event, Emitter<SellState> emit) {
     final currentState = state;
     if (currentState is SellLoaded) {
-      final selectedItem = currentState.selectedItem!;
+      final selectedItem = currentState.selectedItem!.copyWith();
       double qty = selectedItem.getqtyItem;
-      if (event.mode) {
-        qty = qty++;
+      int discount = selectedItem.getdiscountItem;
+      double price = selectedItem.getpriceItem;
+
+      if (event.mode != null) {
+        qty++;
       } else {
-        qty = qty--;
+        qty--;
       }
-      double harga = selectedItem.gethargaItem * qty;
+      if (event.customprice != null && event.customprice != 0) {
+        price = event.customprice!;
+      }
+      if (event.discount != null) {
+        discount = event.discount!;
+      }
+      if (event.qty != null) {
+        qty = event.qty!;
+      }
+
+      double subTotal = price * qty;
       emit(
         currentState.copyWith(
-          selectedItem: selectedItem.copyWith(qtyItem: qty, hargaItem: harga),
+          selectedItem: selectedItem.copyWith(
+            qtyItem: qty,
+            subTotal: subTotal,
+            priceItem: price,
+            dicountItem: discount,
+          ),
         ),
       );
     }

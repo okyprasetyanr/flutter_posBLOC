@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/top_page/dropdown_cabang.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/top_page/list_view_kategori.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/popup_item.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/top_page/pop_item/main_page/popup_item.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/top_page/saved_cart.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
