@@ -11,36 +11,38 @@ class ModelItemPesanan extends Equatable {
       _urlImage;
 
   final int _discountItem;
-  final double _qtyItem, _priceItem, _subTotal;
+  final double _qtyItem, _priceItem, _subTotal, _priceItemCustom;
   final List<ModelItemPesanan> _condiment;
 
   ModelItemPesanan({
+    required double priceItemCustom,
     required double subTotal,
     required String namaItem,
     required String idItem,
-    required String idCabang,
-    required String idPesanan,
+    required String idBranch,
+    required String idOrdered,
     required double qtyItem,
-    required double hargaItem,
-    required int diskonItem,
-    required String idKategoriItem,
-    required String idCondimen,
-    required String catatan,
-    required String urlGambar,
+    required double priceItem,
+    required int discountItem,
+    required String idCategoryItem,
+    required String idCondiment,
+    required String note,
+    required String urlImage,
     required List<ModelItemPesanan> condiment,
   }) : _namaItem = namaItem,
        _idItem = idItem,
        _subTotal = subTotal,
-       _idBranch = idCabang,
-       _idOrdered = idPesanan,
+       _idBranch = idBranch,
+       _idOrdered = idOrdered,
        _qtyItem = qtyItem,
-       _priceItem = hargaItem,
-       _discountItem = diskonItem,
-       _idCategoryItem = idKategoriItem,
-       _idCondimen = idCondimen,
-       _note = catatan,
-       _urlImage = urlGambar,
-       _condiment = condiment;
+       _priceItem = priceItem,
+       _discountItem = discountItem,
+       _idCategoryItem = idCategoryItem,
+       _idCondimen = idCondiment,
+       _note = note,
+       _urlImage = urlImage,
+       _condiment = condiment,
+       _priceItemCustom = priceItemCustom;
 
   String get getnameItem => _namaItem;
   String get getidItem => _idItem;
@@ -49,6 +51,7 @@ class ModelItemPesanan extends Equatable {
   double get getsubTotal => _subTotal;
   double get getqtyItem => _qtyItem;
   double get getpriceItem => _priceItem;
+  double get getpriceItemCustom => _priceItemCustom;
   int get getdiscountItem => _discountItem;
   String get getidCategoryItem => _idCategoryItem;
   String get getidCondimen => _idCondimen;
@@ -63,6 +66,7 @@ class ModelItemPesanan extends Equatable {
     String? idOrdered,
     double? qtyItem,
     double? priceItem,
+    double? priceItemCustom,
     int? dicountItem,
     String? idCategoryItem,
     String? idCondimen,
@@ -75,15 +79,16 @@ class ModelItemPesanan extends Equatable {
       subTotal: subTotal ?? _subTotal,
       namaItem: nameItem ?? _namaItem,
       idItem: idItem ?? _idItem,
-      idCabang: idBranch ?? _idBranch,
-      idPesanan: idOrdered ?? _idOrdered,
+      idBranch: idBranch ?? _idBranch,
+      idOrdered: idOrdered ?? _idOrdered,
       qtyItem: qtyItem ?? _qtyItem,
-      hargaItem: priceItem ?? _priceItem,
-      diskonItem: dicountItem ?? _discountItem,
-      idKategoriItem: idCategoryItem ?? _idCategoryItem,
-      idCondimen: idCondimen ?? _idCondimen,
-      catatan: note ?? _note,
-      urlGambar: urlImage ?? _urlImage,
+      priceItemCustom: priceItemCustom ?? _priceItemCustom,
+      priceItem: priceItem ?? _priceItem,
+      discountItem: dicountItem ?? _discountItem,
+      idCategoryItem: idCategoryItem ?? _idCategoryItem,
+      idCondiment: idCondimen ?? _idCondimen,
+      note: note ?? _note,
+      urlImage: urlImage ?? _urlImage,
       condiment: condiment ?? _condiment,
     );
   }
@@ -95,6 +100,7 @@ class ModelItemPesanan extends Equatable {
     _idItem,
     _idOrdered,
     _priceItem,
+    _priceItemCustom,
     _discountItem,
     _idCategoryItem,
     _idCondimen,
@@ -102,5 +108,6 @@ class ModelItemPesanan extends Equatable {
     _urlImage,
     _qtyItem,
     _condiment,
+    _subTotal,
   ];
 }

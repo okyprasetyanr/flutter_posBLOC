@@ -13,23 +13,23 @@ class SellLoading extends SellState {}
 class SellLoaded extends SellState with EquatableMixin {
   final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
-  final List<ModelKategori>? dataKategori;
-  final List<ModelCabang>? dataCabang;
-  final String? selectedIDCabang;
+  final List<ModelKategori>? dataCategory;
+  final List<ModelCabang>? dataBranch;
+  final String? selectedIDBranch;
   final ModelKategori? selectedKategori;
   final ModelItemPesanan? selectedItem;
   final bool editSelectedItem;
-  final List<ModelItemPesanan>? itemPesanan;
+  final List<ModelItemPesanan>? itemOrdered;
 
   SellLoaded({
     this.selectedItem,
     this.editSelectedItem = false,
     this.filteredItem = const [],
-    this.dataKategori = const [],
-    this.dataCabang = const [],
+    this.dataCategory = const [],
+    this.dataBranch = const [],
     this.dataItem = const [],
-    this.itemPesanan = const [],
-    this.selectedIDCabang,
+    this.itemOrdered = const [],
+    this.selectedIDBranch,
     this.selectedKategori,
   });
 
@@ -46,13 +46,13 @@ class SellLoaded extends SellState with EquatableMixin {
   }) {
     return SellLoaded(
       editSelectedItem: editSelectedItem ?? this.editSelectedItem,
-      itemPesanan: itemPesanan ?? this.itemPesanan,
+      itemOrdered: itemPesanan ?? this.itemOrdered,
       selectedItem: selectedItem,
       dataItem: dataItem ?? this.dataItem,
-      dataCabang: dataCabang ?? this.dataCabang,
-      dataKategori: dataKategori ?? this.dataKategori,
+      dataBranch: dataCabang ?? this.dataBranch,
+      dataCategory: dataKategori ?? this.dataCategory,
       filteredItem: filteredItem ?? this.filteredItem,
-      selectedIDCabang: selectedIDCabang ?? this.selectedIDCabang,
+      selectedIDBranch: selectedIDCabang ?? this.selectedIDBranch,
       selectedKategori: selectedKategori ?? this.selectedKategori,
     );
   }
@@ -61,10 +61,12 @@ class SellLoaded extends SellState with EquatableMixin {
   List<Object?> get props => [
     dataItem,
     filteredItem,
-    selectedIDCabang,
+    dataCategory,
+    dataBranch,
+    selectedIDBranch,
     selectedKategori,
-    dataKategori,
-    dataCabang,
     selectedItem,
+    editSelectedItem,
+    itemOrdered,
   ];
 }

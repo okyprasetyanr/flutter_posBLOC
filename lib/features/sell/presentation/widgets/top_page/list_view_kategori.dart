@@ -16,7 +16,7 @@ class UISellListViewKategori extends StatelessWidget {
     return BlocSelector<SellBloc, SellState, List<ModelKategori>?>(
       selector: (state) {
         if (state is SellLoaded) {
-          return (state.dataKategori);
+          return (state.dataCategory);
         }
         return null;
       },

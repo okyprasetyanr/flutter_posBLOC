@@ -45,12 +45,13 @@ class _SellPopUpPriceAndCustomPriceState
             label: BlocSelector<SellBloc, SellState, double>(
               selector: (state) {
                 if (state is SellLoaded && state.selectedItem != null) {
-                  return state.selectedItem!.getpriceItem;
+                  return state.selectedItem!.getpriceItemCustom;
                 }
                 return 0;
               },
               builder: (context, state) {
-                return Text(formatQty(state), style: lv05TextStyle);
+                print("Log UISell: BlocSelector Harga value: $state");
+                return Text(formatUang(state), style: lv05TextStyle);
               },
             ),
           ),
@@ -79,6 +80,7 @@ class _SellPopUpPriceAndCustomPriceState
                     child: SizedBox(
                       width: 200,
                       child: TextField(
+                        style: lv05TextStyle,
                         decoration: InputDecoration(
                           labelText: "Ubah Harga:",
                           labelStyle: lv05TextStyle,
@@ -89,6 +91,7 @@ class _SellPopUpPriceAndCustomPriceState
                         controller: priceController,
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
+                          print("Log UISell: cek BlocSelector Harga");
                           context.read<SellBloc>().add(
                             SellAdjustItem(customprice: double.tryParse(value)),
                           );

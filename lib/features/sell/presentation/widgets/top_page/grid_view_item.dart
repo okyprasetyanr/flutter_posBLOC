@@ -41,18 +41,19 @@ class UISellGridViewItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
                   ModelItemPesanan selectedItem = ModelItemPesanan(
+                    priceItemCustom: items[index].getpriceItem,
                     subTotal: items[index].getpriceItem,
-                    idCabang: items[index].getidBranch,
+                    idBranch: items[index].getidBranch,
                     namaItem: items[index].getnameItem,
                     idItem: items[index].getidItem,
-                    idPesanan: idPesananNota,
+                    idOrdered: idPesananNota,
                     qtyItem: 1,
-                    hargaItem: items[index].getpriceItem,
-                    diskonItem: 0,
-                    idKategoriItem: items[index].getidCategoryiItem,
-                    idCondimen: Uuid().v4(),
-                    catatan: "",
-                    urlGambar: items[index].geturlImage,
+                    priceItem: items[index].getpriceItem,
+                    discountItem: 0,
+                    idCategoryItem: items[index].getidCategoryiItem,
+                    idCondiment: Uuid().v4(),
+                    note: "",
+                    urlImage: items[index].geturlImage,
                     condiment: [],
                   );
 

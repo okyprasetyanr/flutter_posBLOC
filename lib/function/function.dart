@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String formatUang(double nominal) {
-  final nominalfinal = "${nominal}"
+  final nominalfinal = "${formatQty(nominal)}"
       .replaceAll("R", "")
       .replaceAll(".", "")
       .replaceAll(",", "")

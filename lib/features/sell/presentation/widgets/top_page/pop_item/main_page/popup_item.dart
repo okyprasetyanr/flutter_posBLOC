@@ -5,12 +5,9 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/top_page/pop_item/page_condiment/page_condiment.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/top_page/pop_item/page_item/page/page_item.dart';
-import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 class UISellPopUpItem extends StatefulWidget {
   const UISellPopUpItem({super.key});
@@ -82,7 +79,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
             duration: Duration(milliseconds: 500),
             child: Container(
               margin: EdgeInsets.only(left: 8, right: 8),
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(top: 5, bottom: 0, right: 5, left: 5),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -99,158 +96,169 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                   ),
                 ],
               ),
-              child: Row(
+              child: Stack(
                 children: [
-                  Expanded(
-                    flex: 5,
-                    child: PageView(
-                      controller: pageController,
-                      children: [
-                        SellPopUpPageItem(
-                          noteController: noteController,
-                          priceController: priceController,
-                          customDiscountController: customDiscountController,
-                        ),
-                        SizedBox(
-                          width: 60,
-                          height: 260,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      padding: WidgetStatePropertyAll(
-                                        EdgeInsets.all(10),
-                                      ),
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        const Color.fromARGB(255, 255, 154, 72),
-                                      ),
-                                      shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadiusGeometry.circular(15),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.fastfood_rounded,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    onPressed: () {
-                                      _gotoPage(!currentPage);
-                                    },
-                                  ),
-                                ),
-                              ),
+                  PageView(
+                    controller: pageController,
+                    children: [
+                      SellPopUpPageItem(
+                        noteController: noteController,
+                        priceController: priceController,
+                        customDiscountController: customDiscountController,
+                      ),
+                      SellPopUpPageCondiment(),
+                    ],
+                  ),
 
-                              SizedBox(height: 10),
-                              Expanded(
-                                flex: 1,
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      padding: WidgetStatePropertyAll(
-                                        EdgeInsets.all(10),
-                                      ),
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        const Color.fromARGB(255, 255, 89, 78),
-                                      ),
-                                      shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadiusGeometry.circular(15),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.delete_forever_rounded,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    onPressed: () {
-                                      popup.value = !isVisible;
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Expanded(
-                                flex: 1,
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      padding: WidgetStatePropertyAll(
-                                        EdgeInsets.all(10),
-                                      ),
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        Colors.red,
-                                      ),
-                                      shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadiusGeometry.circular(15),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.close_rounded,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    onPressed: () {
-                                      popup.value = false;
-                                      context.read<SellBloc>().add(
-                                        SellResetSelectedItem(),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Expanded(
-                                flex: 1,
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        AppColor.primary,
-                                      ),
-                                      padding: WidgetStatePropertyAll(
-                                        EdgeInsets.all(10),
-                                      ),
-                                      shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadiusGeometry.circular(15),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.shopping_cart_outlined,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    onPressed: () {
-                                      ;
-                                      popup.value = !isVisible;
-                                      context.read<SellBloc>().add(
-                                        SellAddOrderedItem(),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                  Positioned(
+                    bottom: 0,
+                    left: 20,
+                    right: 20,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade600,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(18),
+                          topRight: Radius.circular(18),
                         ),
-                      ],
+                      ),
+                      padding: EdgeInsets.only(top: 1, left: 5, right: 5),
+                      width: 300,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.all(10),
+                                  ),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    const Color.fromARGB(255, 255, 154, 72),
+                                  ),
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadiusGeometry.circular(15),
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.fastfood_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  _gotoPage(!currentPage);
+                                },
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(width: 10),
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.all(10),
+                                  ),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    const Color.fromARGB(255, 255, 89, 78),
+                                  ),
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadiusGeometry.circular(15),
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.delete_forever_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  popup.value = !isVisible;
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.all(10),
+                                  ),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    Colors.red,
+                                  ),
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadiusGeometry.circular(15),
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  popup.value = false;
+                                  context.read<SellBloc>().add(
+                                    SellResetSelectedItem(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    AppColor.primary,
+                                  ),
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.all(10),
+                                  ),
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadiusGeometry.circular(15),
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.shopping_cart_outlined,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  ;
+                                  popup.value = !isVisible;
+                                  context.read<SellBloc>().add(
+                                    SellAddOrderedItem(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

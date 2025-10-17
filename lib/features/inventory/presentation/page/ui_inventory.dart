@@ -7,7 +7,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/button_item.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_kategori_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_category_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/form_field_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/dropdown_cabang.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/filters_item.dart';

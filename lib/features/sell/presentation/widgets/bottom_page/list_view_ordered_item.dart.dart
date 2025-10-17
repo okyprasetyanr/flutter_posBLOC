@@ -19,7 +19,7 @@ class SellListViewOrderedItem extends StatelessWidget {
           child: BlocSelector<SellBloc, SellState, List<ModelItemPesanan>>(
             selector: (state) {
               if (state is SellLoaded) {
-                return state.itemPesanan ?? [];
+                return state.itemOrdered ?? [];
               }
               return [];
             },
@@ -92,7 +92,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                                                   style: lv05TextStyle,
                                                 ),
                                                 Text(
-                                                  formatUang(item.getpriceItem),
+                                                  formatUang(item.getsubTotal),
                                                   style: lv05textStyleHarga,
                                                 ),
                                               ],
@@ -112,9 +112,10 @@ class SellListViewOrderedItem extends StatelessWidget {
                                                     ),
                                                     Text(
                                                       formatUang(
-                                                        condiment.getpriceItem,
+                                                        condiment.getsubTotal,
                                                       ),
-                                                      style: lv05TextStyle,
+                                                      style:
+                                                          lv05textStyleHargaCondiment,
                                                     ),
                                                   ],
                                                 );
@@ -138,6 +139,46 @@ class SellListViewOrderedItem extends StatelessWidget {
             },
           ),
         ),
+        Padding(
+          padding: EdgeInsetsGeometry.all(10),
+          child: BlocSelector<SellBloc, SellState, (int, double)>(
+            selector: (state) {
+              if (state is SellLoaded && state.itemOrdered != null) {
+                final itemOrdered = state.itemOrdered!;
+                int itemcount = 0;
+                double subTotal = 0;
+                for (int i = 0; i < itemOrdered.length; i++) {
+                  subTotal += itemOrdered[i].getsubTotal;
+                  itemcount++;
+                  if (itemOrdered[i].getCondiment.isNotEmpty) {
+                    for (
+                      int u = 0;
+                      u < itemOrdered[i].getCondiment.length;
+                      u++
+                    ) {
+                      itemcount++;
+                      subTotal += itemOrdered[i].getCondiment[u].getsubTotal;
+                    }
+                  }
+                }
+                return (itemcount, subTotal);
+              }
+              return (0, 0);
+            },
+            builder: (context, state) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    "${state.$1}x : ${formatUang(state.$2)}",
+                    style: lv05TextStyleRed,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+
         Row(
           children: [
             Expanded(

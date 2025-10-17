@@ -14,7 +14,7 @@ class CondimentSwitch extends StatelessWidget {
     return BlocSelector<InventoryBloc, InventoryState, bool>(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return state.condimentForm ?? false;
+          return state.condimentForm;
         }
         return false;
       },

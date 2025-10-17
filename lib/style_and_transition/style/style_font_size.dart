@@ -87,6 +87,12 @@ final lv05textStyleHarga = GoogleFonts.poppins(
   fontSize: 10,
 );
 
+final lv05textStyleHargaCondiment = GoogleFonts.poppins(
+  color: Colors.orange,
+  fontWeight: FontWeight.w600,
+  fontSize: 10,
+);
+
 final lv1TextStyleDisable = GoogleFonts.poppins(
   color: const Color.fromARGB(255, 117, 117, 117),
   fontWeight: FontWeight.w300,

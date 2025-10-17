@@ -15,7 +15,7 @@ class UISellDropDownCabang extends StatelessWidget {
     return BlocSelector<SellBloc, SellState, (List<ModelCabang>?, String?)>(
       selector: (state) {
         if (state is SellLoaded) {
-          return (state.dataCabang, state.selectedIDCabang);
+          return (state.dataBranch, state.selectedIDBranch);
         }
         return ([], "");
       },

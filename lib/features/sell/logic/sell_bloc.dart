@@ -73,7 +73,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
           currentState.filteredItem!
               .where(
                 (element) =>
-                    element.getidBranch == currentState.selectedIDCabang,
+                    element.getidBranch == currentState.selectedIDBranch,
               )
               .where(
                 (item) => item.getnameItem.toLowerCase().contains(
@@ -95,7 +95,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     if (currentState is SellLoaded) {
       List<ModelItem> list = List.from(
         currentState.dataItem!.where(
-          (element) => element.getidBranch == currentState.selectedIDCabang,
+          (element) => element.getidBranch == currentState.selectedIDBranch,
         ),
       );
       String finalidkategori =
@@ -198,7 +198,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     final currentState = state;
     if (currentState is SellLoaded) {
       List<ModelItemPesanan> itemPesanan = List<ModelItemPesanan>.from(
-        currentState.itemPesanan ?? [],
+        currentState.itemOrdered ?? [],
       );
       final selected = currentState.selectedItem!;
       if (currentState.editSelectedItem) {
@@ -222,34 +222,40 @@ class SellBloc extends Bloc<SellEvent, SellState> {
 
   FutureOr<void> _onAdjustItem(SellAdjustItem event, Emitter<SellState> emit) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is SellLoaded && currentState.selectedItem != null) {
       final selectedItem = currentState.selectedItem!.copyWith();
       double qty = selectedItem.getqtyItem;
       int discount = selectedItem.getdiscountItem;
-      double price = selectedItem.getpriceItem;
+      double price = event.customprice == 0
+          ? selectedItem.getpriceItem
+          : selectedItem.getpriceItemCustom;
 
       if (event.mode != null) {
-        qty++;
-      } else {
-        qty--;
+        if (event.mode!) {
+          qty++;
+        } else {
+          qty--;
+        }
       }
       if (event.customprice != null && event.customprice != 0) {
+        print("Log SellBloc: test Nominal");
         price = event.customprice!;
       }
       if (event.discount != null) {
         discount = event.discount!;
+        print("Log SellBloc: Diskon value: $discount");
       }
       if (event.qty != null) {
         qty = event.qty!;
       }
 
-      double subTotal = price * qty;
+      double subTotal = price * qty - (price * qty * discount / 100);
       emit(
         currentState.copyWith(
           selectedItem: selectedItem.copyWith(
             qtyItem: qty,
             subTotal: subTotal,
-            priceItem: price,
+            priceItemCustom: price,
             dicountItem: discount,
           ),
         ),
