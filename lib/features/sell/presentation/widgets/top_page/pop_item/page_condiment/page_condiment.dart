@@ -26,7 +26,12 @@ class SellPopUpPageCondiment extends StatelessWidget {
         selector: (state) {
           if (state is SellLoaded) {
             return state.dataItem
-                    ?.where((element) => element.getstatusCondiment)
+                    ?.where(
+                      (element) =>
+                          element.getstatusCondiment &&
+                          element.getidCategoryiItem ==
+                              state.selectedItem?.getidCategoryItem,
+                    )
                     .toList() ??
                 [];
           }
@@ -70,7 +75,10 @@ class SellPopUpPageCondiment extends StatelessWidget {
                         }
 
                         double qtyitem = 0;
-                        if (stateCondiment.$2!.isNotEmpty) {
+                        if (stateCondiment.$2!.any(
+                          (element) =>
+                              state[index].getidItem == element.getidItem,
+                        )) {
                           qtyitem = stateCondiment.$2!
                               .firstWhere(
                                 (element) =>
@@ -132,6 +140,7 @@ class SellPopUpPageCondiment extends StatelessWidget {
                   },
                 ),
               ),
+              const SizedBox(height: 60),
             ],
           );
         },

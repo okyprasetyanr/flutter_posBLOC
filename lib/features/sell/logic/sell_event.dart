@@ -49,6 +49,13 @@ class SellAdjustItem extends SellEvent {
   double? qty;
   int? discount;
   double? customprice;
+  String? note;
 
-  SellAdjustItem({this.mode, this.qty, this.discount, this.customprice});
+  SellAdjustItem({
+    this.mode,
+    this.qty,
+    this.discount,
+    this.customprice,
+    this.note,
+  });
 }

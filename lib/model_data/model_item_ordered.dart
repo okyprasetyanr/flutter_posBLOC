@@ -55,7 +55,7 @@ class ModelItemPesanan extends Equatable {
   int get getdiscountItem => _discountItem;
   String get getidCategoryItem => _idCategoryItem;
   String get getidCondimen => _idCondimen;
-  String get getnote => _note;
+  String get getNote => _note;
   String get geturlImage => _urlImage;
   List<ModelItemPesanan> get getCondiment => _condiment;
 

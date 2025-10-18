@@ -70,59 +70,86 @@ class SellListViewOrderedItem extends StatelessWidget {
                                     top: 5,
                                     bottom: 5,
                                   ),
-                                  child: Row(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Image.asset(
-                                        "assets/logo.png",
-                                        height: 45,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            "assets/logo.png",
+                                            height: 45,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  "${formatQty(item.getqtyItem)}x ${item.getnameItem}",
-                                                  style: lv05TextStyle,
-                                                ),
-                                                Text(
-                                                  formatUang(item.getsubTotal),
-                                                  style: lv05textStyleHarga,
-                                                ),
-                                              ],
-                                            ),
-                                            Column(
-                                              children: item.getCondiment.map((
-                                                condiment,
-                                              ) {
-                                                return Row(
+                                                Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
                                                     Text(
-                                                      "${formatQty(condiment.getqtyItem)}x ${condiment.getnameItem}",
-                                                      style: lv05TextStyle,
+                                                      "${formatQty(item.getqtyItem)}x ${item.getnameItem}",
+                                                      style:
+                                                          lv05TextStyleOrderedItem,
                                                     ),
                                                     Text(
                                                       formatUang(
-                                                        condiment.getsubTotal,
+                                                        item.getsubTotal,
                                                       ),
-                                                      style:
-                                                          lv05textStyleHargaCondiment,
+                                                      style: lv05textStyleHarga,
                                                     ),
                                                   ],
-                                                );
-                                              }).toList(),
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        AppColor.primarylight,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          5,
+                                                        ),
+                                                  ),
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Column(
+                                                    children: item.getCondiment.map((
+                                                      condiment,
+                                                    ) {
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            "${formatQty(condiment.getqtyItem)}x ${condiment.getnameItem}",
+                                                            style:
+                                                                lv05TextStyle,
+                                                          ),
+                                                          Text(
+                                                            formatUang(
+                                                              condiment
+                                                                  .getsubTotal,
+                                                            ),
+                                                            style:
+                                                                lv05textStyleHargaCondiment,
+                                                          ),
+                                                        ],
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        "Catatan: ${item.getNote}",
+                                        style: lv05TextStyle,
                                       ),
                                     ],
                                   ),

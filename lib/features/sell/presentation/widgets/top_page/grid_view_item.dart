@@ -18,7 +18,9 @@ class UISellGridViewItem extends StatelessWidget {
     return BlocSelector<SellBloc, SellState, List<ModelItem>>(
       selector: (state) {
         if (state is SellLoaded) {
-          return state.filteredItem!;
+          return state.filteredItem!
+              .where((element) => !element.getstatusCondiment)
+              .toList();
         }
         return [];
       },

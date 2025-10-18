@@ -32,6 +32,12 @@ final lv05TextStyle = GoogleFonts.poppins(
   fontSize: 10,
 );
 
+final lv05TextStyleOrderedItem = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w400,
+  fontSize: 10,
+);
+
 final lv05TextStyleItalic = GoogleFonts.poppins(
   fontStyle: FontStyle.italic,
   color: Colors.black,

@@ -18,19 +18,12 @@ class UISellPopUpItem extends StatefulWidget {
 
 class _UISellPopUpItemState extends State<UISellPopUpItem> {
   ValueNotifier<bool> popup = ValueNotifier(false);
-  ModelItemPesanan? dataselected;
-  List<ModelItemPesanan> condiment = [];
-  TextEditingController noteController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController customDiscountController = TextEditingController();
   PageController pageController = PageController();
-  bool currentPage = true;
-  double finalprice = 0;
-  List<ModelItemPesanan> itemCondiment = [];
+  ModelItemPesanan? dataselected;
+  ValueNotifier<bool> currentPage = ValueNotifier(true);
 
   void _gotoPage(bool page) {
     int goto = page ? 0 : 1;
-
     if (pageController.hasClients) {
       pageController.animateToPage(
         goto,
@@ -38,18 +31,12 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
         curve: Curves.easeInOut,
       );
     }
-
-    setState(() {
-      currentPage = page;
-    });
+    currentPage.value = page;
   }
 
   @override
   void dispose() {
     popup.dispose();
-    noteController.dispose();
-    priceController.dispose();
-    customDiscountController.dispose();
     pageController.dispose();
     super.dispose();
   }
@@ -63,7 +50,6 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
             return;
           }
           final data = state.selectedItem;
-          dataselected = data;
           popup.value = data != null ? true : false;
         }
       },
@@ -100,14 +86,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                 children: [
                   PageView(
                     controller: pageController,
-                    children: [
-                      SellPopUpPageItem(
-                        noteController: noteController,
-                        priceController: priceController,
-                        customDiscountController: customDiscountController,
-                      ),
-                      SellPopUpPageCondiment(),
-                    ],
+                    children: [SellPopUpPageItem(), SellPopUpPageCondiment()],
                   ),
 
                   Positioned(
@@ -151,7 +130,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                   size: 20,
                                 ),
                                 onPressed: () {
-                                  _gotoPage(!currentPage);
+                                  _gotoPage(!currentPage.value);
                                 },
                               ),
                             ),

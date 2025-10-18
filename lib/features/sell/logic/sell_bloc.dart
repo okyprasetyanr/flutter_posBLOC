@@ -237,6 +237,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
           qty--;
         }
       }
+      print("Log SellBloc: AdjustItem value: ${event.note}");
       if (event.customprice != null && event.customprice != 0) {
         print("Log SellBloc: test Nominal");
         price = event.customprice!;
@@ -257,6 +258,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
             subTotal: subTotal,
             priceItemCustom: price,
             dicountItem: discount,
+            note: event.note,
           ),
         ),
       );

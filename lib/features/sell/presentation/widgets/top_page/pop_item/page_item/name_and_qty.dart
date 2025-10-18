@@ -62,9 +62,9 @@ class SellPopUpNameAndQty extends StatelessWidget {
                           },
                           icon: Icon(Icons.remove, size: 20),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(formatQty(state), style: lv1TextStyle),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         IconButton(
                           padding: EdgeInsets.zero,
                           onPressed: () {
