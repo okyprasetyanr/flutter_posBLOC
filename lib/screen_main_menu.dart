@@ -61,7 +61,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   Widget layoutTop(BuildContext context) {
     return GridView.count(
       crossAxisCount: 3,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       shrinkWrap: true,
       childAspectRatio: 1,
       mainAxisSpacing: 10,
@@ -89,9 +89,9 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
 
   Widget layoutBottom() {
     return Padding(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           boxShadow: [

@@ -29,7 +29,7 @@ class _SellPopUpDiscountAndCustomDiscountState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(8),
@@ -71,7 +71,7 @@ class _SellPopUpDiscountAndCustomDiscountState
                       style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
                     ),
                     style: ButtonStyle(
-                      padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                      padding: const WidgetStatePropertyAll(EdgeInsets.zero),
                       backgroundColor: WidgetStatePropertyAll(
                         isSelected ? AppColor.primary : Colors.white,
                       ),

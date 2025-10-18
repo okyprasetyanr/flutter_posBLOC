@@ -72,7 +72,7 @@ class _UiSellState extends State<UiSell> {
                       hintText: "Search...",
                       hintStyle: lv05TextStyle,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      contentPadding: EdgeInsets.all(0),
+                      contentPadding: const EdgeInsets.all(0),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),

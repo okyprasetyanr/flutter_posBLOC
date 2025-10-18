@@ -318,7 +318,7 @@ class _UIInventoryState extends State<UIInventory> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10),
                     width: 150,
                     child: UIInventoryDropdownCabang(
                       selectedFilterItem: selectedFilterItem!,
@@ -437,7 +437,7 @@ class _UIInventoryState extends State<UIInventory> {
                   Expanded(
                     flex: 4,
                     child: ListView(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       children: [
                         UIInventoryFormFieldItem(
                           namaItemController: namaItemController,
@@ -448,7 +448,7 @@ class _UIInventoryState extends State<UIInventory> {
                         const SizedBox(height: 10),
 
                         Padding(
-                          padding: EdgeInsetsGeometry.only(left: 10, right: 10),
+                          padding: const EdgeInsets.only(left: 10, right: 10),
                           child: Row(
                             children: [
                               Expanded(child: DropdownKategoriItem()),

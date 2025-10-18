@@ -23,7 +23,7 @@ class ListViewKategori extends StatelessWidget {
       builder: (context, state) {
         if (state.$1 == null) {
           return Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: const SpinKitThreeBounce(color: Colors.blue, size: 30.0),
           );
         }
@@ -31,7 +31,7 @@ class ListViewKategori extends StatelessWidget {
             .where((data) => data.getidBranch == state.$2)
             .toList();
         return Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 10),
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: ListView.builder(
             itemCount: dataKategori.length,
             itemBuilder: (context, index) {
@@ -63,7 +63,7 @@ class ListViewKategori extends StatelessWidget {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         left: 5,
                         right: 5,
                         top: 10,

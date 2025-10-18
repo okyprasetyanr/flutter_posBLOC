@@ -12,14 +12,14 @@ class AmbilDataSellBloc extends SellEvent {
 class SellResetSelectedItem extends SellEvent {}
 
 class SellSelectedItem extends SellEvent {
-  final ModelItemPesanan selectedItem;
+  final ModelItemOrdered selectedItem;
   final bool edit;
 
   SellSelectedItem({required this.edit, required this.selectedItem});
 }
 
 class SellSelectedCondiment extends SellEvent {
-  final ModelItemPesanan selectedCondiment;
+  final ModelItemOrdered selectedCondiment;
 
   SellSelectedCondiment({required this.selectedCondiment});
 }
@@ -37,7 +37,7 @@ class SellSelectedKategoriItem extends SellEvent {
 }
 
 class SellUpdateOrderedItem extends SellEvent {
-  final ModelItemPesanan updatedItem;
+  final ModelItemOrdered updatedItem;
 
   SellUpdateOrderedItem({required this.updatedItem});
 }
@@ -59,3 +59,5 @@ class SellAdjustItem extends SellEvent {
     this.note,
   });
 }
+
+class SellDeleteItemOrdered extends SellEvent {}

@@ -166,7 +166,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                   vertical: 8,
                                 ),
@@ -202,7 +202,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                   vertical: 8,
                                 ),
@@ -238,7 +238,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                   vertical: 8,
                                 ),
@@ -258,7 +258,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,

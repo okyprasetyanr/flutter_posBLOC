@@ -26,7 +26,7 @@ class UISellGridViewItem extends StatelessWidget {
       },
       builder: (context, items) {
         return GridView.builder(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           itemCount: items.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
@@ -42,11 +42,11 @@ class UISellGridViewItem extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  ModelItemPesanan selectedItem = ModelItemPesanan(
+                  ModelItemOrdered selectedItem = ModelItemOrdered(
                     priceItemCustom: items[index].getpriceItem,
                     subTotal: items[index].getpriceItem,
                     idBranch: items[index].getidBranch,
-                    namaItem: items[index].getnameItem,
+                    nameItem: items[index].getnameItem,
                     idItem: items[index].getidItem,
                     idOrdered: idPesananNota,
                     qtyItem: 1,
@@ -64,7 +64,7 @@ class UISellGridViewItem extends StatelessWidget {
                   );
                 },
                 child: Padding(
-                  padding: EdgeInsetsGeometry.all(3),
+                  padding: const EdgeInsetsGeometry.all(3),
                   child: Column(
                     children: [
                       Image.asset("assets/logo.png", height: 50),
@@ -88,7 +88,7 @@ class UISellGridViewItem extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: EdgeInsets.only(right: 5),
+                          padding: const EdgeInsets.only(right: 5),
                           child: Text(
                             formatQty(items[index].getqtyitem),
                             style: lv0TextStyleRED,

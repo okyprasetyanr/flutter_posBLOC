@@ -23,7 +23,7 @@ class UIInventorySearchAndCabang extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: 5),
+      padding: const EdgeInsets.only(right: 5),
       child: Row(
         children: [
           Expanded(
@@ -36,7 +36,7 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                 labelStyle: lv1TextStyle,
                 hintStyle: lv1TextStyle,
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: EdgeInsets.only(left: 10, right: 10),
+                contentPadding: const EdgeInsets.only(left: 10, right: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),

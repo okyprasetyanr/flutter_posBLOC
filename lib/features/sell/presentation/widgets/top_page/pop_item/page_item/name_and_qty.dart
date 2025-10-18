@@ -13,7 +13,7 @@ class SellPopUpNameAndQty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(8),
@@ -23,7 +23,7 @@ class SellPopUpNameAndQty extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            child: BlocSelector<SellBloc, SellState, ModelItemPesanan?>(
+            child: BlocSelector<SellBloc, SellState, ModelItemOrdered?>(
               selector: (stateNama) {
                 if (stateNama is SellLoaded) {
                   return stateNama.selectedItem;

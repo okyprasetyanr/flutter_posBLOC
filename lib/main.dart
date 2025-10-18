@@ -221,7 +221,7 @@ class _MainAppState extends State<ScreenLogin> {
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColor.primary,
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                       horizontal: 30,
                                       vertical: 10,
                                     ),
@@ -260,7 +260,7 @@ class _MainAppState extends State<ScreenLogin> {
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColor.primary,
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                       horizontal: 30,
                                       vertical: 10,
                                     ),

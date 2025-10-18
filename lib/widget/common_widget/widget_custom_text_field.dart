@@ -9,7 +9,7 @@ Widget customTextField(String text, TextEditingController controller) {
       floatingLabelBehavior: FloatingLabelBehavior.always,
       label: Text(text, style: lv1TextStyle),
       hint: Text("$text...", style: lv05TextStyle),
-      contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     ),
   );

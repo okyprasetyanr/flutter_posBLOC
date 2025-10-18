@@ -14,7 +14,7 @@ class SellPopUpPageCondiment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       width: double.infinity,
       height: 400,
       decoration: BoxDecoration(
@@ -55,7 +55,7 @@ class SellPopUpPageCondiment extends StatelessWidget {
                     return BlocSelector<
                       SellBloc,
                       SellState,
-                      (String?, List<ModelItemPesanan>?, String?)
+                      (String?, List<ModelItemOrdered>?, String?)
                     >(
                       selector: (state) {
                         if (state is SellLoaded) {
@@ -93,12 +93,12 @@ class SellPopUpPageCondiment extends StatelessWidget {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(15),
                             onTap: () {
-                              ModelItemPesanan selectedItemCondiment =
-                                  ModelItemPesanan(
+                              ModelItemOrdered selectedItemCondiment =
+                                  ModelItemOrdered(
                                     priceItemCustom: state[index].getpriceItem,
                                     subTotal: state[index].getpriceItem,
                                     idBranch: state[index].getidBranch,
-                                    namaItem: state[index].getnameItem,
+                                    nameItem: state[index].getnameItem,
                                     idItem: state[index].getidItem,
                                     idOrdered: stateCondiment.$1!,
                                     qtyItem: qtyitem + 1,
@@ -118,14 +118,14 @@ class SellPopUpPageCondiment extends StatelessWidget {
                               );
                             },
                             child: Padding(
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               child: Row(
                                 children: [
                                   Text(
                                     state[index].getnameItem,
                                     style: lv05TextStyle,
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Text(
                                     "${formatQty(qtyitem)}x",
                                     style: lv05TextStyleRed,

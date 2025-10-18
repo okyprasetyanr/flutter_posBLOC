@@ -25,7 +25,7 @@ class UISellDropDownCabang extends StatelessWidget {
         }
 
         return DropdownButtonFormField<ModelCabang>(
-          padding: EdgeInsets.only(right: 5, left: 5),
+          padding: const EdgeInsets.only(right: 5, left: 5),
           style: lv05TextStyle,
           initialValue: state.$1!.firstWhere(
             (data) => data.getidBranch == state.$2,

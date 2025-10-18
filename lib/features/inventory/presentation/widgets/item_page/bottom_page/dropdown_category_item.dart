@@ -34,7 +34,7 @@ class DropdownKategoriItem extends StatelessWidget {
                 return element.getidCategory == stateBLoc.$2!.getidCategory;
               })
             : null;
-        print("Log UIInventory initselection: $initselection");
+        debugPrint("Log UIInventory initselection: $initselection");
         return DropdownMenuFormField<ModelKategori?>(
           key: ValueKey(initselection),
           width: double.infinity,

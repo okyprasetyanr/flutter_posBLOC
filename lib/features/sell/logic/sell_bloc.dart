@@ -25,6 +25,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     on<SellResetSelectedItem>(_onResetSelectedItem);
     on<SellAddOrderedItem>(_onAddOrderedItem);
     on<SellAdjustItem>(_onAdjustItem);
+    on<SellDeleteItemOrdered>(_onSellDeleteItemOrdered);
   }
 
   Future<void> _onSellAmbilData(
@@ -159,8 +160,8 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     final currentState = state;
     if (currentState is SellLoaded) {
       final data = currentState.selectedItem!.copyWith();
-      final condimentList = List<ModelItemPesanan>.from(data.getCondiment);
-      List<ModelItemPesanan>? updatedList = [];
+      final condimentList = List<ModelItemOrdered>.from(data.getCondiment);
+      List<ModelItemOrdered>? updatedList = [];
 
       final existingCondiment = condimentList.firstWhereOrNull(
         (e) => e.getidItem == event.selectedCondiment.getidItem,
@@ -197,7 +198,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   ) {
     final currentState = state;
     if (currentState is SellLoaded) {
-      List<ModelItemPesanan> itemPesanan = List<ModelItemPesanan>.from(
+      List<ModelItemOrdered> itemPesanan = List<ModelItemOrdered>.from(
         currentState.itemOrdered ?? [],
       );
       final selected = currentState.selectedItem!;
@@ -207,16 +208,12 @@ class SellBloc extends Bloc<SellEvent, SellState> {
         );
         if (index != -1) {
           itemPesanan[index] = selected.copyWith();
-          emit(currentState.copyWith(itemPesanan: itemPesanan));
+          emit(currentState.copyWith(itemOrdered: itemPesanan));
         }
       } else {
-        emit(
-          currentState.copyWith(
-            itemPesanan: [...itemPesanan, selected],
-            selectedItem: null,
-          ),
-        );
+        emit(currentState.copyWith(itemOrdered: [...itemPesanan, selected]));
       }
+      add(SellResetSelectedItem());
     }
   }
 
@@ -262,6 +259,24 @@ class SellBloc extends Bloc<SellEvent, SellState> {
           ),
         ),
       );
+    }
+  }
+
+  FutureOr<void> _onSellDeleteItemOrdered(
+    SellDeleteItemOrdered event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      List<ModelItemOrdered> listItemOrdered = List.from(
+        currentState.itemOrdered!,
+      );
+      listItemOrdered.removeWhere(
+        (element) =>
+            element.getidOrdered == currentState.selectedItem!.getidOrdered,
+      );
+      add(SellResetSelectedItem());
+      emit(currentState.copyWith(itemOrdered: listItemOrdered));
     }
   }
 }

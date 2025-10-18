@@ -87,7 +87,7 @@ class UISellListViewKategori extends StatelessWidget {
                             color: backgroundColor,
 
                             child: Padding(
-                              padding: EdgeInsetsGeometry.all(5),
+                              padding: const EdgeInsetsGeometry.all(5),
                               child: Text(
                                 kategori.getnameCategory,
                                 style: textColor,

@@ -19,7 +19,7 @@ class UISellPopUpItem extends StatefulWidget {
 class _UISellPopUpItemState extends State<UISellPopUpItem> {
   ValueNotifier<bool> popup = ValueNotifier(false);
   PageController pageController = PageController();
-  ModelItemPesanan? dataselected;
+  ModelItemOrdered? dataselected;
   ValueNotifier<bool> currentPage = ValueNotifier(true);
 
   void _gotoPage(bool page) {
@@ -64,8 +64,13 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
             curve: Curves.easeInOut,
             duration: Duration(milliseconds: 500),
             child: Container(
-              margin: EdgeInsets.only(left: 8, right: 8),
-              padding: EdgeInsets.only(top: 5, bottom: 0, right: 5, left: 5),
+              margin: const EdgeInsets.only(left: 8, right: 8),
+              padding: const EdgeInsets.only(
+                top: 5,
+                bottom: 0,
+                right: 5,
+                left: 5,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -101,7 +106,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                           topRight: Radius.circular(18),
                         ),
                       ),
-                      padding: EdgeInsets.only(top: 1, left: 5, right: 5),
+                      padding: const EdgeInsets.only(top: 1, left: 5, right: 5),
                       width: 300,
                       child: Row(
                         children: [
@@ -111,7 +116,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ButtonStyle(
-                                  padding: WidgetStatePropertyAll(
+                                  padding: const WidgetStatePropertyAll(
                                     EdgeInsets.all(10),
                                   ),
                                   backgroundColor: WidgetStatePropertyAll(
@@ -143,7 +148,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ButtonStyle(
-                                  padding: WidgetStatePropertyAll(
+                                  padding: const WidgetStatePropertyAll(
                                     EdgeInsets.all(10),
                                   ),
                                   backgroundColor: WidgetStatePropertyAll(
@@ -163,6 +168,9 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                 ),
                                 onPressed: () {
                                   popup.value = !isVisible;
+                                  context.read<SellBloc>().add(
+                                    SellDeleteItemOrdered(),
+                                  );
                                 },
                               ),
                             ),
@@ -174,7 +182,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ButtonStyle(
-                                  padding: WidgetStatePropertyAll(
+                                  padding: const WidgetStatePropertyAll(
                                     EdgeInsets.all(10),
                                   ),
                                   backgroundColor: WidgetStatePropertyAll(
@@ -208,10 +216,10 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ButtonStyle(
-                                  backgroundColor: WidgetStatePropertyAll(
+                                  backgroundColor: const WidgetStatePropertyAll(
                                     AppColor.primary,
                                   ),
-                                  padding: WidgetStatePropertyAll(
+                                  padding: const WidgetStatePropertyAll(
                                     EdgeInsets.all(10),
                                   ),
                                   shape: WidgetStatePropertyAll(

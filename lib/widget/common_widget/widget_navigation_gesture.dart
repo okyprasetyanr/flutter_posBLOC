@@ -47,7 +47,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
           ],
         ),
         width: 250,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +87,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
 
   Widget _navContent(String id, Widget toContext, String text) {
     return Container(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       width: double.infinity,
       color: Colors.transparent,
       child: Material(
@@ -103,7 +103,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
           },
           borderRadius: BorderRadius.circular(10),
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Text(text, style: lv2TextStyle),
           ),
         ),

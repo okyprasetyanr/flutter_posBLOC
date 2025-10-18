@@ -16,7 +16,7 @@ class SellListViewOrderedItem extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: BlocSelector<SellBloc, SellState, List<ModelItemPesanan>>(
+          child: BlocSelector<SellBloc, SellState, List<ModelItemOrdered>>(
             selector: (state) {
               if (state is SellLoaded) {
                 return state.itemOrdered ?? [];
@@ -64,7 +64,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                                   );
                                 },
                                 child: Padding(
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                     left: 15,
                                     right: 15,
                                     top: 5,
@@ -113,7 +113,9 @@ class SellListViewOrderedItem extends StatelessWidget {
                                                           5,
                                                         ),
                                                   ),
-                                                  padding: EdgeInsets.all(5),
+                                                  padding: const EdgeInsets.all(
+                                                    5,
+                                                  ),
                                                   child: Column(
                                                     children: item.getCondiment.map((
                                                       condiment,
@@ -167,7 +169,7 @@ class SellListViewOrderedItem extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsetsGeometry.all(10),
+          padding: const EdgeInsetsGeometry.all(10),
           child: BlocSelector<SellBloc, SellState, (int, double)>(
             selector: (state) {
               if (state is SellLoaded && state.itemOrdered != null) {

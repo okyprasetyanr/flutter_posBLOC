@@ -11,7 +11,7 @@ class UISellSavedCart extends StatelessWidget {
       children: [
         ElevatedButton(
           style: ButtonStyle(
-            padding: WidgetStatePropertyAll(EdgeInsets.zero),
+            padding: const WidgetStatePropertyAll(EdgeInsets.zero),
             backgroundColor: WidgetStatePropertyAll(AppColor.primary),
           ),
           onPressed: () {},
@@ -25,7 +25,7 @@ class UISellSavedCart extends StatelessWidget {
           right: 14,
           top: 4,
           child: Container(
-            padding: EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: Colors.red,
               shape: BoxShape.circle,

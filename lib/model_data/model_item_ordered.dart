@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class ModelItemPesanan extends Equatable {
+class ModelItemOrdered extends Equatable {
   final String _namaItem,
       _idBranch,
       _idItem,
@@ -12,12 +12,12 @@ class ModelItemPesanan extends Equatable {
 
   final int _discountItem;
   final double _qtyItem, _priceItem, _subTotal, _priceItemCustom;
-  final List<ModelItemPesanan> _condiment;
+  final List<ModelItemOrdered> _condiment;
 
-  ModelItemPesanan({
+  ModelItemOrdered({
     required double priceItemCustom,
     required double subTotal,
-    required String namaItem,
+    required String nameItem,
     required String idItem,
     required String idBranch,
     required String idOrdered,
@@ -28,8 +28,8 @@ class ModelItemPesanan extends Equatable {
     required String idCondiment,
     required String note,
     required String urlImage,
-    required List<ModelItemPesanan> condiment,
-  }) : _namaItem = namaItem,
+    required List<ModelItemOrdered> condiment,
+  }) : _namaItem = nameItem,
        _idItem = idItem,
        _subTotal = subTotal,
        _idBranch = idBranch,
@@ -57,9 +57,9 @@ class ModelItemPesanan extends Equatable {
   String get getidCondimen => _idCondimen;
   String get getNote => _note;
   String get geturlImage => _urlImage;
-  List<ModelItemPesanan> get getCondiment => _condiment;
+  List<ModelItemOrdered> get getCondiment => _condiment;
 
-  ModelItemPesanan copyWith({
+  ModelItemOrdered copyWith({
     String? nameItem,
     String? idItem,
     String? idBranch,
@@ -73,11 +73,11 @@ class ModelItemPesanan extends Equatable {
     String? note,
     String? urlImage,
     double? subTotal,
-    List<ModelItemPesanan>? condiment,
+    List<ModelItemOrdered>? condiment,
   }) {
-    return ModelItemPesanan(
+    return ModelItemOrdered(
       subTotal: subTotal ?? _subTotal,
-      namaItem: nameItem ?? _namaItem,
+      nameItem: nameItem ?? _namaItem,
       idItem: idItem ?? _idItem,
       idBranch: idBranch ?? _idBranch,
       idOrdered: idOrdered ?? _idOrdered,

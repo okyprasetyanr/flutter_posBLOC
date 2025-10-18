@@ -26,7 +26,7 @@ class CondimentSwitch extends StatelessWidget {
           child: AnimatedContainer(
             duration: Duration(milliseconds: 500),
             width: 135,
-            padding: EdgeInsets.only(top: 5, bottom: 5),
+            padding: const EdgeInsets.only(top: 5, bottom: 5),
             height: 35,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),

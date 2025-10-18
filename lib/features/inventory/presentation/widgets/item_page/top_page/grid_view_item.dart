@@ -30,7 +30,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
             .where((data) => data.getidBranch == state.$2)
             .toList();
         return GridView.builder(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           itemCount: items.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
@@ -66,7 +66,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                   );
                 },
                 child: Padding(
-                  padding: EdgeInsetsGeometry.all(3),
+                  padding: const EdgeInsetsGeometry.all(3),
                   child: Column(
                     children: [
                       Image.asset("assets/logo.png", height: 50),
@@ -90,7 +90,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: EdgeInsets.only(right: 5),
+                          padding: const EdgeInsets.only(right: 5),
                           child: Text(
                             formatQty(items[index].getqtyitem),
                             style: lv0TextStyleRED,
@@ -103,7 +103,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                         alignment: Alignment.bottomCenter,
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             color: items[index].getstatusCondiment
                                 ? AppColor.primary

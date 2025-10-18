@@ -16,8 +16,8 @@ class SellPopUpPriceAndCustomPrice extends StatefulWidget {
 
 class _SellPopUpPriceAndCustomPriceState
     extends State<SellPopUpPriceAndCustomPrice> {
-  TextEditingController priceController = TextEditingController();
-  ValueNotifier<bool> editprice = ValueNotifier(false);
+  final priceController = TextEditingController();
+  final editprice = ValueNotifier(false);
 
   @override
   void dispose() {
@@ -27,9 +27,20 @@ class _SellPopUpPriceAndCustomPriceState
   }
 
   @override
+  void initState() {
+    super.initState();
+    editprice.addListener(() {
+      if (!editprice.value) {
+        context.read<SellBloc>().add(SellAdjustItem(customprice: 0));
+        priceController.clear();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(8),
@@ -46,7 +57,7 @@ class _SellPopUpPriceAndCustomPriceState
                 child: ElevatedButton.icon(
                   style: ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.white),
-                    padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                    padding: const WidgetStatePropertyAll(EdgeInsets.zero),
                   ),
                   iconAlignment: IconAlignment.end,
                   icon: Icon(Icons.edit),
@@ -61,7 +72,9 @@ class _SellPopUpPriceAndCustomPriceState
                       return 0;
                     },
                     builder: (context, state) {
-                      print("Log UISell: BlocSelector Harga value: $state");
+                      debugPrint(
+                        "Log UISell: BlocSelector Harga value: $state",
+                      );
                       return Text(formatUang(state), style: lv05TextStyle);
                     },
                   ),
@@ -75,13 +88,6 @@ class _SellPopUpPriceAndCustomPriceState
                     ValueListenableBuilder<bool>(
                       valueListenable: editprice,
                       builder: (context, valueEditHarga, child) {
-                        if (!valueEditHarga) {
-                          context.read<SellBloc>().add(
-                            SellAdjustItem(customprice: 0),
-                          );
-                          priceController.clear();
-                        }
-
                         return AnimatedPositioned(
                           bottom: 0,
                           top: valueEditHarga ? 0 : -80,
@@ -90,27 +96,41 @@ class _SellPopUpPriceAndCustomPriceState
                           duration: Duration(milliseconds: 500),
                           child: SizedBox(
                             width: 200,
-                            child: TextField(
-                              style: lv05TextStyle,
-                              decoration: InputDecoration(
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.always,
-                                labelText: "Ubah Harga:",
-                                labelStyle: lv05TextStyle,
-                                hintText: "Rp...",
-                                hintStyle: lv05TextStyle,
-                              ),
-                              textAlign: TextAlign.right,
-                              controller: priceController,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                print("Log UISell: cek BlocSelector Harga");
-                                context.read<SellBloc>().add(
-                                  SellAdjustItem(
-                                    customprice: double.tryParse(value),
-                                  ),
-                                );
+                            child: BlocListener<SellBloc, SellState>(
+                              listenWhen: (previous, current) =>
+                                  previous is SellLoaded &&
+                                  current is SellLoaded &&
+                                  previous.selectedItem != current.selectedItem,
+                              listener: (context, state) {
+                                if (state is SellLoaded &&
+                                    state.selectedItem == null) {
+                                  priceController.clear();
+                                }
                               },
+                              child: TextField(
+                                style: lv05TextStyle,
+                                decoration: InputDecoration(
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  labelText: "Ubah Harga:",
+                                  labelStyle: lv05TextStyle,
+                                  hintText: "Rp...",
+                                  hintStyle: lv05TextStyle,
+                                ),
+                                textAlign: TextAlign.right,
+                                controller: priceController,
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  debugPrint(
+                                    "Log UISell: cek BlocSelector Harga",
+                                  );
+                                  context.read<SellBloc>().add(
+                                    SellAdjustItem(
+                                      customprice: double.tryParse(value),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         );

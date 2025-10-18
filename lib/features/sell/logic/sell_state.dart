@@ -17,9 +17,9 @@ class SellLoaded extends SellState with EquatableMixin {
   final List<ModelCabang>? dataBranch;
   final String? selectedIDBranch;
   final ModelKategori? selectedKategori;
-  final ModelItemPesanan? selectedItem;
+  final ModelItemOrdered? selectedItem;
   final bool editSelectedItem;
-  final List<ModelItemPesanan>? itemOrdered;
+  final List<ModelItemOrdered>? itemOrdered;
 
   SellLoaded({
     this.selectedItem,
@@ -40,13 +40,13 @@ class SellLoaded extends SellState with EquatableMixin {
     ModelKategori? selectedKategori,
     List<ModelKategori>? dataKategori,
     List<ModelCabang>? dataCabang,
-    ModelItemPesanan? selectedItem,
-    List<ModelItemPesanan>? itemPesanan,
+    ModelItemOrdered? selectedItem,
+    List<ModelItemOrdered>? itemOrdered,
     bool? editSelectedItem,
   }) {
     return SellLoaded(
       editSelectedItem: editSelectedItem ?? this.editSelectedItem,
-      itemOrdered: itemPesanan ?? this.itemOrdered,
+      itemOrdered: itemOrdered ?? this.itemOrdered,
       selectedItem: selectedItem,
       dataItem: dataItem ?? this.dataItem,
       dataBranch: dataCabang ?? this.dataBranch,
