@@ -11,6 +11,8 @@ class AmbilDataSellBloc extends SellEvent {
 
 class SellResetSelectedItem extends SellEvent {}
 
+class SellResetOrderedItem extends SellEvent {}
+
 class SellSelectedItem extends SellEvent {
   final ModelItemOrdered selectedItem;
   final bool edit;
@@ -20,8 +22,9 @@ class SellSelectedItem extends SellEvent {
 
 class SellSelectedCondiment extends SellEvent {
   final ModelItemOrdered selectedCondiment;
+  final bool add;
 
-  SellSelectedCondiment({required this.selectedCondiment});
+  SellSelectedCondiment({required this.selectedCondiment, required this.add});
 }
 
 class SellSearchItem extends SellEvent {

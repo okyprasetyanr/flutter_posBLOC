@@ -29,7 +29,7 @@ class _SellPopUpDiscountAndCustomDiscountState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(8),
@@ -51,8 +51,8 @@ class _SellPopUpDiscountAndCustomDiscountState
               }
               final diskonList = [10, 25, 50];
               return Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: 5,
+                runSpacing: 5,
                 children: diskonList.map((diskon) {
                   final isSelected = state == diskon;
                   return ElevatedButton.icon(
@@ -65,13 +65,19 @@ class _SellPopUpDiscountAndCustomDiscountState
                         SellAdjustItem(discount: diskon),
                       );
                     },
-                    icon: const Icon(Icons.check_rounded),
+                    icon: const Icon(Icons.check_rounded, size: 15),
                     label: Text(
                       "$diskon%",
                       style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
                     ),
                     style: ButtonStyle(
-                      padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(10),
+                        ),
+                      ),
+                      minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                      padding: const WidgetStatePropertyAll(EdgeInsets.all(7)),
                       backgroundColor: WidgetStatePropertyAll(
                         isSelected ? AppColor.primary : Colors.white,
                       ),
@@ -86,41 +92,60 @@ class _SellPopUpDiscountAndCustomDiscountState
           ),
           const SizedBox(height: 5),
           SizedBox(
-            child: TextField(
-              controller: customDiscountController,
-              textAlign: TextAlign.right,
-              keyboardType: TextInputType.number,
-              style: lv05TextStyle,
-              decoration: InputDecoration(
-                suffixText: "%",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                labelText: "Custom Disc",
-                labelStyle: lv05TextStyle,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                TextInputFormatter.withFunction((oldValue, newValue) {
-                  final customDiscount = newValue.text;
-                  final intValue =
-                      int.tryParse(
-                        customDiscount.isEmpty ? "0" : customDiscount,
-                      ) ??
-                      0;
-                  if (intValue > 100) {
-                    customSnackBar(context, "Jumlah melebihi 100%");
-                    return oldValue;
+            child: BlocListener<SellBloc, SellState>(
+              listenWhen: (previous, current) =>
+                  previous is SellLoaded &&
+                  current is SellLoaded &&
+                  previous.selectedItem?.getdiscountItem !=
+                      current.selectedItem?.getdiscountItem,
+              listener: (context, state) {
+                if (state is SellLoaded) {
+                  if (state.selectedItem == null) {
+                    customDiscountController.clear();
+                  } else {
+                    customDiscountController.text =
+                        "${state.selectedItem!.getdiscountItem}";
                   }
-                  context.read<SellBloc>().add(
-                    SellAdjustItem(
-                      discount: customDiscount.isEmpty ? 0 : intValue,
-                    ),
-                  );
-                  return newValue;
-                }),
-              ],
+                }
+              },
+              child: TextField(
+                controller: customDiscountController,
+                textAlign: TextAlign.right,
+                keyboardType: TextInputType.number,
+                style: lv05TextStyle,
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: EdgeInsets.all(10),
+                  suffixText: "%",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  labelText: "Ubah Diskon",
+                  labelStyle: lv05TextStyle,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  TextInputFormatter.withFunction((oldValue, newValue) {
+                    final customDiscount = newValue.text;
+                    final intValue =
+                        int.tryParse(
+                          customDiscount.isEmpty ? "0" : customDiscount,
+                        ) ??
+                        0;
+                    if (intValue > 100) {
+                      customSnackBar(context, "Jumlah melebihi 100%");
+                      return oldValue;
+                    }
+                    context.read<SellBloc>().add(
+                      SellAdjustItem(
+                        discount: customDiscount.isEmpty ? 0 : intValue,
+                      ),
+                    );
+                    return newValue;
+                  }),
+                ],
+              ),
             ),
           ),
         ],

@@ -32,6 +32,12 @@ final lv05TextStyle = GoogleFonts.poppins(
   fontSize: 10,
 );
 
+final lv05TextStyleDisable = GoogleFonts.poppins(
+  color: const Color.fromARGB(255, 117, 117, 117),
+  fontWeight: FontWeight.w300,
+  fontSize: 10,
+);
+
 final lv05TextStyleOrderedItem = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w400,

@@ -23,22 +23,26 @@ class UIInventorySearchAndCabang extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 5),
+      padding: const EdgeInsets.only(right: 5, top: 5),
       child: Row(
         children: [
           Expanded(
-            flex: 2,
-            child: TextFormField(
+            flex: 3,
+            child: TextField(
               style: lv1TextStyle,
               decoration: InputDecoration(
+                isDense: true,
                 labelText: "Search...",
                 hintText: "...",
                 labelStyle: lv1TextStyle,
                 hintStyle: lv1TextStyle,
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(left: 10, right: 10),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 8,
+                ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               onChanged: (value) {
@@ -48,7 +52,7 @@ class UIInventorySearchAndCabang extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            flex: 1,
+            flex: 2,
             child:
                 BlocSelector<
                   InventoryBloc,
@@ -69,7 +73,13 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                       );
                     }
                     return DropdownButtonFormField<ModelCabang>(
+                      style: lv05TextStyle,
                       decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
                         label: Text("Pilih Cabang", style: lv1TextStyle),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
@@ -83,6 +93,7 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                               child: Text(
                                 map.getareaBranch,
                                 style: lv05TextStyle,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           )

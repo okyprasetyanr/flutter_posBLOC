@@ -56,9 +56,18 @@ class _UiSellState extends State<UiSell> {
                   onPressed: () {
                     setState(() {});
                   },
-                  label: Text("Menu", style: lv1TextStyleWhite),
-                  icon: Icon(Icons.menu_rounded, color: Colors.white),
+                  label: Text("Menu", style: lv05TextStyleWhite),
+                  icon: Icon(Icons.menu_rounded, color: Colors.white, size: 20),
                   style: ButtonStyle(
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(10),
+                      ),
+                    ),
+                    minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
+                    padding: const WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    ),
                     backgroundColor: WidgetStatePropertyAll(AppColor.primary),
                   ),
                 ),
@@ -69,10 +78,14 @@ class _UiSellState extends State<UiSell> {
                     style: lv05TextStyle,
                     controller: searchController,
                     decoration: InputDecoration(
+                      isDense: true,
                       hintText: "Search...",
                       hintStyle: lv05TextStyle,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      contentPadding: const EdgeInsets.all(0),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 10,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -90,25 +103,23 @@ class _UiSellState extends State<UiSell> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(width: 10),
+                const SizedBox(width: 5),
                 Expanded(
                   child: SizedBox(height: 27, child: UISellListViewKategori()),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 5),
                 SizedBox(width: 140, child: UISellDropDownCabang()),
 
-                const SizedBox(width: 10),
+                const SizedBox(width: 5),
 
                 UISellSavedCart(),
-                const SizedBox(width: 10),
+                const SizedBox(width: 5),
               ],
             ),
-            const SizedBox(height: 10),
             Expanded(child: UISellGridViewItem()),
           ],
         ),
@@ -123,7 +134,7 @@ class _UiSellState extends State<UiSell> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(" Daftar Pesanan", style: titleTextStyle),
-        Divider(color: Colors.grey.shade300, thickness: 2),
+        Divider(color: Colors.grey[400], thickness: 1),
         Expanded(child: SellListViewOrderedItem()),
       ],
     );

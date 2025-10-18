@@ -23,6 +23,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     on<SellSelectedItem>(_onSelectedItem);
     on<SellSelectedCondiment>(_onSelectedCondiment);
     on<SellResetSelectedItem>(_onResetSelectedItem);
+    on<SellResetOrderedItem>(_onResetOrderedItem);
     on<SellAddOrderedItem>(_onAddOrderedItem);
     on<SellAdjustItem>(_onAdjustItem);
     on<SellDeleteItemOrdered>(_onSellDeleteItemOrdered);
@@ -168,7 +169,12 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       );
 
       if (existingCondiment != null) {
-        final qty = existingCondiment.getqtyItem + 1;
+        double qty = existingCondiment.getqtyItem;
+        if (event.add) {
+          qty++;
+        } else {
+          qty--;
+        }
         final subTotal = existingCondiment.getpriceItem * qty;
         final updatedCondiment = existingCondiment.copyWith(
           qtyItem: qty,
@@ -277,6 +283,23 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       );
       add(SellResetSelectedItem());
       emit(currentState.copyWith(itemOrdered: listItemOrdered));
+    }
+  }
+
+  FutureOr<void> _onResetOrderedItem(
+    SellResetOrderedItem event,
+    Emitter<SellState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is SellLoaded) {
+      print("Log SellBloc: ResetOrderedItem");
+      emit(
+        currentState.copyWith(
+          selectedItem: null,
+          editSelectedItem: false,
+          itemOrdered: [],
+        ),
+      );
     }
   }
 }

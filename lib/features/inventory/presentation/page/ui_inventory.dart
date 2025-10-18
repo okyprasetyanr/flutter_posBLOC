@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
@@ -47,7 +48,6 @@ class _UIInventoryState extends State<UIInventory> {
   String? selectedStatusItem;
   String? selectedFilterJenisItem;
   String? selectedFilterKategoriItem;
-  double ratioGridView = 0;
   TextEditingController namaItemController = TextEditingController();
   TextEditingController cabangItemController = TextEditingController();
   TextEditingController hargaItemController = TextEditingController();
@@ -180,9 +180,6 @@ class _UIInventoryState extends State<UIInventory> {
         if (dataKategori != null) ...dataKategori,
       ];
     });
-
-    final orientasi = MediaQuery.of(context).orientation;
-    ratioGridView = orientasi == Orientation.portrait ? 8 / 12 : 6 / 10;
     return LayoutTopBottom(
       refreshIndicator: _onRefresh,
       widgetTop: topLayout(),
@@ -206,47 +203,57 @@ class _UIInventoryState extends State<UIInventory> {
                   isOpen = !isOpen;
                 });
               },
-              label: Text("Menu", style: lv1TextStyle),
-              icon: Icon(Icons.menu_rounded),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: () {
-                  _gotoPage(!currentPage);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
-                  width: 150,
-                  padding: const EdgeInsets.only(top: 5, bottom: 5),
-                  height: 55,
-                  child: Stack(
-                    children: [
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        left: currentPage ? -200 : 18,
-                        top: 4,
-                        duration: const Duration(milliseconds: 500),
-                        child: rowContentAnim(
-                          const Icon(Icons.swap_horiz_rounded, size: 35),
-                          Text("Kategori", style: titleTextStyle),
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        left: currentPage ? 0 : 300,
-                        top: 4,
-                        duration: const Duration(milliseconds: 500),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: rowContentAnim(
-                            const Icon(Icons.swap_horiz_rounded, size: 35),
-                            Text("Inventori", style: titleTextStyle),
-                          ),
-                        ),
-                      ),
-                    ],
+              label: Text("Menu", style: lv05TextStyleWhite),
+              icon: Icon(Icons.menu_rounded, color: Colors.white, size: 20),
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(10),
                   ),
+                ),
+                minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
+                padding: const WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                ),
+                backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+              ),
+            ),
+
+            GestureDetector(
+              onTap: () {
+                _gotoPage(!currentPage);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                width: 150,
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                height: 40,
+                child: Stack(
+                  children: [
+                    AnimatedPositioned(
+                      curve: Curves.easeInOut,
+                      left: currentPage ? -200 : 40,
+                      top: 4,
+                      duration: const Duration(milliseconds: 500),
+                      child: rowContentAnim(
+                        const Icon(Icons.swap_horiz_rounded, size: 25),
+                        Text("Kategori", style: titleTextStyle),
+                      ),
+                    ),
+                    AnimatedPositioned(
+                      curve: Curves.easeInOut,
+                      left: currentPage ? 35 : 300,
+                      top: 4,
+                      duration: const Duration(milliseconds: 500),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: rowContentAnim(
+                          const Icon(Icons.swap_horiz_rounded, size: 25),
+                          Text("Inventori", style: titleTextStyle),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -261,8 +268,6 @@ class _UIInventoryState extends State<UIInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
-
                   UIInventorySearchAndCabang(
                     selectedFilterItem: selectedFilterItem,
                     selectedStatusItem: selectedStatusItem,
@@ -306,11 +311,7 @@ class _UIInventoryState extends State<UIInventory> {
 
                   const SizedBox(height: 10),
 
-                  Expanded(
-                    child: UIInventoryGridViewItem(
-                      ratioGridView: ratioGridView,
-                    ),
-                  ),
+                  Expanded(child: UIInventoryGridViewItem()),
                 ],
               ),
               Column(
@@ -346,9 +347,9 @@ class _UIInventoryState extends State<UIInventory> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 500),
               width: 250,
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
-              height: 60,
+              height: 35,
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
                   AnimatedPositioned(
                     curve: Curves.easeInOut,
@@ -360,16 +361,17 @@ class _UIInventoryState extends State<UIInventory> {
                         _resetKategoriForm();
                       },
                       style: ButtonStyle(
+                        minimumSize: WidgetStatePropertyAll(Size(0, 30)),
                         backgroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
-                      icon: const Icon(Icons.restart_alt_rounded, size: 25),
+                      icon: const Icon(Icons.restart_alt_rounded, size: 20),
                       label: Text("Detail Kategori", style: titleTextStyle),
                     ),
                   ),
                   AnimatedPositioned(
                     curve: Curves.easeInOut,
                     right: currentPage ? 0 : 500,
-                    top: 4,
+                    top: 0,
                     duration: const Duration(milliseconds: 500),
                     child: ElevatedButton.icon(
                       onPressed: () {
@@ -377,15 +379,21 @@ class _UIInventoryState extends State<UIInventory> {
                         _resetItemForm();
                       },
                       style: ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const WidgetStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                        ),
+                        minimumSize: const WidgetStatePropertyAll(Size(0, 30)),
                         backgroundColor: WidgetStatePropertyAll(Colors.white),
                       ),
-                      icon: const Icon(Icons.restart_alt_rounded, size: 25),
+                      icon: const Icon(Icons.restart_alt_rounded, size: 20),
                       label: Text("Detail Item", style: titleTextStyle),
                     ),
                   ),
                   AnimatedPositioned(
+                    top: 0,
                     curve: Curves.easeInOut,
-                    left: currentPage ? 10 : -250,
+                    left: currentPage ? 0 : -250,
                     duration: const Duration(milliseconds: 500),
                     child: SizedBox(
                       width: 250,
@@ -394,6 +402,19 @@ class _UIInventoryState extends State<UIInventory> {
                           SizedBox(
                             width: 100,
                             child: DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                label: Text("Jenis Item", style: lv1TextStyle),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                              ),
+                              style: lv05TextStyle,
                               initialValue: filterjenis.first,
                               items: filterjenis
                                   .map(
@@ -426,6 +447,7 @@ class _UIInventoryState extends State<UIInventory> {
             ),
           ),
         ),
+        const SizedBox(height: 5),
         Expanded(
           child: PageView(
             physics: NeverScrollableScrollPhysics(),
@@ -437,54 +459,42 @@ class _UIInventoryState extends State<UIInventory> {
                   Expanded(
                     flex: 4,
                     child: ListView(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 5,
+                      ),
                       children: [
                         UIInventoryFormFieldItem(
                           namaItemController: namaItemController,
                           kodeBarcodeController: kodeBarcodeController,
                           hargaItemController: hargaItemController,
                         ),
-
                         const SizedBox(height: 10),
-
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: Row(
-                            children: [
-                              Expanded(child: DropdownKategoriItem()),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  style: lv1TextStyleDisable,
-                                  enabled: false,
-                                  controller: TextEditingController(
-                                    text: context.select<InventoryBloc, String>(
-                                      (value) => value.state is InventoryLoaded
-                                          ? (value.state as InventoryLoaded)
-                                                    .daerahCabang ??
-                                                ""
-                                          : "",
-                                    ),
-                                  ),
-                                  decoration: InputDecoration(
-                                    label: Text(
-                                      "Cabang",
-                                      style: lv05TextStyle,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
+                        Row(
+                          children: [
+                            Expanded(child: DropdownKategoriItem()),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: customTextField(
+                                "Kode/Barcode",
+                                TextEditingController(
+                                  text: context.select<InventoryBloc, String>(
+                                    (value) => value.state is InventoryLoaded
+                                        ? (value.state as InventoryLoaded)
+                                                  .daerahCabang ??
+                                              ""
+                                        : "",
                                   ),
                                 ),
+                                false,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Flexible(
                     flex: 1,
                     fit: FlexFit.loose,
@@ -524,6 +534,7 @@ class _UIInventoryState extends State<UIInventory> {
                           child: customTextField(
                             "Nama Kategori",
                             namaKategoriController,
+                            true,
                           ),
                         ),
                       ),

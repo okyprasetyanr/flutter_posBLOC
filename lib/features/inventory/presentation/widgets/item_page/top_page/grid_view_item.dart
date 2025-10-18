@@ -9,8 +9,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UIInventoryGridViewItem extends StatelessWidget {
-  final double ratioGridView;
-  const UIInventoryGridViewItem({super.key, required this.ratioGridView});
+  const UIInventoryGridViewItem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,97 +29,97 @@ class UIInventoryGridViewItem extends StatelessWidget {
             .where((data) => data.getidBranch == state.$2)
             .toList();
         return GridView.builder(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
           itemCount: items.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
+            mainAxisExtent: 110,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
-            childAspectRatio: ratioGridView,
+            childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
             return Material(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(8),
               elevation: 4,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(15),
-                onTap: () {
-                  context.read<InventoryBloc>().add(
-                    InvSelectedItem(
-                      selectedItem: ModelItem(
-                        qtyItem: items[index].getqtyitem,
-                        uidUser: items[index].getuidUser,
-                        nameItem: items[index].getnameItem,
-                        idItem: items[index].getidItem,
-                        priceItem: items[index].getpriceItem,
-                        idCategoryItem: items[index].getidCategoryiItem,
-                        statusCondiment: items[index].getstatusCondiment,
-                        urlImage: "",
-                        idBranch: items[index].getidBranch,
-                        barcode: items[index].getBarcode,
-                        statusItem: true,
-                        dateItem: items[index].getDateItem,
+              child: Stack(
+                clipBehavior: Clip.hardEdge,
+                children: [
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      context.read<InventoryBloc>().add(
+                        InvSelectedItem(
+                          selectedItem: ModelItem(
+                            qtyItem: items[index].getqtyitem,
+                            uidUser: items[index].getuidUser,
+                            nameItem: items[index].getnameItem,
+                            idItem: items[index].getidItem,
+                            priceItem: items[index].getpriceItem,
+                            idCategoryItem: items[index].getidCategoryiItem,
+                            statusCondiment: items[index].getstatusCondiment,
+                            urlImage: "",
+                            idBranch: items[index].getidBranch,
+                            barcode: items[index].getBarcode,
+                            statusItem: true,
+                            dateItem: items[index].getDateItem,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(3),
+                      child: Column(
+                        children: [
+                          Image.asset("assets/logo.png", height: 50),
+                          const SizedBox(height: 5),
+                          Text(
+                            items[index].getnameItem,
+                            style: lv05TextStyle,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              formatUang(items[index].getpriceItem),
+                              style: textStyleHarga,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Text(
+                                formatQty(items[index].getqtyitem),
+                                style: lv0TextStyleRED,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsetsGeometry.all(3),
-                  child: Column(
-                    children: [
-                      Image.asset("assets/logo.png", height: 50),
-                      const SizedBox(height: 5),
-                      Text(
-                        items[index].getnameItem,
-                        style: lv05TextStyle,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          formatUang(items[index].getpriceItem),
-                          style: textStyleHarga,
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Text(
-                            formatQty(items[index].getqtyitem),
-                            style: lv0TextStyleRED,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: items[index].getstatusCondiment
-                                ? AppColor.primary
-                                : Colors.grey.shade600,
-                          ),
-                          child: Text(
-                            items[index].getstatusCondiment
-                                ? "Condiment"
-                                : "Normal",
-                            style: lv05TextStyleWhite,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
-                ),
+
+                  if (items[index].getstatusCondiment)
+                    Positioned(
+                      top: -5,
+                      right: -15,
+                      child: Transform.rotate(
+                        angle: 0.8,
+                        child: Container(
+                          width: 40,
+                          height: 20,
+                          color: AppColor.primary,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             );
           },

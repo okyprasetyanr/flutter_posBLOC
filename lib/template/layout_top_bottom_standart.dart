@@ -19,13 +19,13 @@ class LayoutTopBottom extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.only(top: 40, left: 5, right: 5),
+        padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
         child: RefreshIndicator(
           onRefresh: refreshIndicator,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height - 40,
+              height: MediaQuery.of(context).size.height - 20,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final height = constraints.maxHeight;
@@ -37,16 +37,18 @@ class LayoutTopBottom extends StatelessWidget {
                           children: [
                             Positioned(
                               top: 0,
+                              right: 0,
                               child: SizedBox(
-                                height: height / 2,
+                                height: height * 0.6,
                                 width: width,
                                 child: widgetTop,
                               ),
                             ),
                             Positioned(
-                              top: height / 2,
+                              top: height * 0.615,
+                              bottom: 0,
                               child: SizedBox(
-                                height: height / 2,
+                                height: height / 0.55,
                                 width: width,
                                 child: widgetBottom,
                               ),
@@ -60,15 +62,27 @@ class LayoutTopBottom extends StatelessWidget {
                             Positioned(
                               left: 0,
                               child: SizedBox(
-                                width: width / 2,
+                                width: width * 0.55,
                                 height: height,
                                 child: widgetTop,
                               ),
                             ),
                             Positioned(
-                              left: width / 2,
+                              top: 0,
+                              left: width * 0.56,
+                              bottom: 0,
+                              child: Container(
+                                width: 1, // biar sepanjang parent
+                                height: 200, // ketebalan garis
+                                color: Colors.grey[400],
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                              ),
+                            ),
+                            Positioned(
+                              top: 10,
+                              left: width * 0.57,
+                              right: 0,
                               child: SizedBox(
-                                width: width / 2,
                                 height: height,
                                 child: widgetBottom,
                               ),

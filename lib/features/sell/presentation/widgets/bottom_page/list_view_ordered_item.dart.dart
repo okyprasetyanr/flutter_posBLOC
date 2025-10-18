@@ -212,22 +212,33 @@ class SellListViewOrderedItem extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<SellBloc>().add(SellResetOrderedItem());
+                },
                 label: Text("Hapus", style: lv0TextStyleRED),
                 icon: Icon(Icons.delete, color: Colors.white),
-                style: ElevatedButton.styleFrom(elevation: 4),
+                style: ButtonStyle(
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(10),
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 20),
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {},
-                label: Text("Simpan", style: lv1TextStyleWhite),
-
-                icon: Icon(Icons.save, color: Colors.white),
-                style: ElevatedButton.styleFrom(
-                  elevation: 4,
-                  backgroundColor: AppColor.primary,
+                label: Text("Bayar", style: lv1TextStyleWhite),
+                icon: Icon(Icons.attach_money_rounded, color: Colors.white),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(10),
+                    ),
+                  ),
                 ),
               ),
             ),

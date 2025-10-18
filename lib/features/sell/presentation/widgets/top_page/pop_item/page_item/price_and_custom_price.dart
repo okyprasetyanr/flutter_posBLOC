@@ -40,7 +40,7 @@ class _SellPopUpPriceAndCustomPriceState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(8),
@@ -56,8 +56,14 @@ class _SellPopUpPriceAndCustomPriceState
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   style: ButtonStyle(
+                    minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                    padding: const WidgetStatePropertyAll(EdgeInsets.all(7)),
                     backgroundColor: WidgetStatePropertyAll(Colors.white),
-                    padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(10),
+                      ),
+                    ),
                   ),
                   iconAlignment: IconAlignment.end,
                   icon: Icon(Icons.edit),
@@ -110,6 +116,14 @@ class _SellPopUpPriceAndCustomPriceState
                               child: TextField(
                                 style: lv05TextStyle,
                                 decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 5,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
                                   floatingLabelBehavior:
                                       FloatingLabelBehavior.always,
                                   labelText: "Ubah Harga:",
@@ -141,7 +155,6 @@ class _SellPopUpPriceAndCustomPriceState
               ),
             ],
           ),
-          const SizedBox(height: 20),
         ],
       ),
     );

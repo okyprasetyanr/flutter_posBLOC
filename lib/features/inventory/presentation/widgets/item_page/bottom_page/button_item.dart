@@ -34,71 +34,86 @@ class UIInventoryButtonItem extends StatelessWidget {
           : null,
     );
 
-    return Row(
-      children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () {},
-            label: Text("Hapus", style: lv0TextStyleRED),
-            icon: Icon(Icons.delete, color: Colors.white),
-            style: ElevatedButton.styleFrom(elevation: 4),
-          ),
-        ),
-        const SizedBox(width: 20),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () {
-              if (namaItemController.text.isEmpty ||
-                  hargaItemController.text.isEmpty ||
-                  kodeBarcodeController.text.isEmpty ||
-                  selectedKategori == null) {
-                customSnackBar(context, "Data belum lengkap!");
-              } else {
-                final bloc = context.read<InventoryBloc>().state;
-                if (bloc is InventoryLoaded) {
-                  String idUser = bloc.dataSelectedItem == null
-                      ? Uuid().v4()
-                      : bloc.dataSelectedItem!.getidItem;
-                  final data = ModelItem(
-                    qtyItem: 0,
-                    uidUser: UserSession.uidUser!,
-                    nameItem: namaItemController.text,
-                    idItem: idUser,
-                    priceItem: double.tryParse(hargaItemController.text)!,
-                    idCategoryItem: selectedKategori,
-                    statusCondiment: bloc.condimentForm,
-                    urlImage: "",
-                    idBranch: bloc.idCabang!,
-                    barcode: kodeBarcodeController.text,
-                    statusItem: true,
-                    dateItem: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                  );
-                  context.read<InventoryBloc>().add(InvUploadItem(data: data));
-
-                  resetItemForm();
-                }
-              }
-            },
-            label: BlocSelector<InventoryBloc, InventoryState, String?>(
-              selector: (state) {
-                if (state is InventoryLoaded) {
-                  return state.dataSelectedItem != null ? "Edit" : "Simpan";
-                }
-                return "Simpan";
-              },
-              builder: (context, state) {
-                return Text(state!, style: lv1TextStyleWhite);
-              },
-            ),
-
-            icon: Icon(Icons.save, color: Colors.white),
-            style: ElevatedButton.styleFrom(
-              elevation: 4,
-              backgroundColor: AppColor.primary,
+    return Padding(
+      padding: EdgeInsetsGeometry.only(bottom: 5),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {},
+              label: Text("Hapus", style: lv0TextStyleRED),
+              icon: Icon(Icons.delete, color: Colors.white),
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(10),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-      ],
+          const SizedBox(width: 20),
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                if (namaItemController.text.isEmpty ||
+                    hargaItemController.text.isEmpty ||
+                    kodeBarcodeController.text.isEmpty ||
+                    selectedKategori == null) {
+                  customSnackBar(context, "Data belum lengkap!");
+                } else {
+                  final bloc = context.read<InventoryBloc>().state;
+                  if (bloc is InventoryLoaded) {
+                    String idUser = bloc.dataSelectedItem == null
+                        ? Uuid().v4()
+                        : bloc.dataSelectedItem!.getidItem;
+                    final data = ModelItem(
+                      qtyItem: 0,
+                      uidUser: UserSession.uidUser!,
+                      nameItem: namaItemController.text,
+                      idItem: idUser,
+                      priceItem: double.tryParse(hargaItemController.text)!,
+                      idCategoryItem: selectedKategori,
+                      statusCondiment: bloc.condimentForm,
+                      urlImage: "",
+                      idBranch: bloc.idCabang!,
+                      barcode: kodeBarcodeController.text,
+                      statusItem: true,
+                      dateItem: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                    );
+                    context.read<InventoryBloc>().add(
+                      InvUploadItem(data: data),
+                    );
+
+                    resetItemForm();
+                  }
+                }
+              },
+              label: BlocSelector<InventoryBloc, InventoryState, String?>(
+                selector: (state) {
+                  if (state is InventoryLoaded) {
+                    return state.dataSelectedItem != null ? "Edit" : "Simpan";
+                  }
+                  return "Simpan";
+                },
+                builder: (context, state) {
+                  return Text(state!, style: lv1TextStyleWhite);
+                },
+              ),
+
+              icon: Icon(Icons.save, color: Colors.white),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(10),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

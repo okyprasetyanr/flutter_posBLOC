@@ -28,28 +28,47 @@ class _SellPopUpNoteAndSubTotalState extends State<SellPopUpNoteAndSubTotal> {
     return Row(
       children: [
         Flexible(
-          child: TextField(
-            style: lv05TextStyle,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
+          child: BlocListener<SellBloc, SellState>(
+            listenWhen: (previous, current) =>
+                previous is SellLoaded &&
+                current is SellLoaded &&
+                previous.selectedItem?.getNote != current.selectedItem?.getNote,
+            listener: (context, state) {
+              if (state is SellLoaded) {
+                if (state.selectedItem == null) {
+                  noteController.clear();
+                } else {
+                  noteController.text = state.selectedItem!.getNote;
+                }
+              }
+            },
+            child: TextField(
+              style: lv05TextStyle,
+              decoration: InputDecoration(
+                labelText: "Catatan",
+                labelStyle: lv05TextStyle,
+                hintText: "Catatan...",
+                hintStyle: lv05TextStyle,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 5,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
-              labelText: "Catatan",
-              labelStyle: lv05TextStyle,
-              contentPadding: EdgeInsets.zero,
-              hintText: "Catatan...",
-              hintStyle: lv05TextStyle,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
+              controller: noteController,
+              onChanged: (value) =>
+                  context.read<SellBloc>().add(SellAdjustItem(note: value)),
             ),
-            controller: noteController,
-            onChanged: (value) =>
-                context.read<SellBloc>().add(SellAdjustItem(note: value)),
           ),
         ),
         const SizedBox(width: 20),
         Flexible(
           child: TextField(
-            style: lv1TextStyleDisable,
+            style: lv05TextStyleDisable,
             enabled: false,
             controller: TextEditingController(
               text:
@@ -62,6 +81,14 @@ class _SellPopUpNoteAndSubTotalState extends State<SellPopUpNoteAndSubTotal> {
                   })!)}",
             ),
             decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 5,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
               label: Text(
                 "Sub Total:",
                 style: lv05TextStyle,

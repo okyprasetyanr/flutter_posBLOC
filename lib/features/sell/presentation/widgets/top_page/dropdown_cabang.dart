@@ -25,6 +25,13 @@ class UISellDropDownCabang extends StatelessWidget {
         }
 
         return DropdownButtonFormField<ModelCabang>(
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(vertical: 4),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+            label: Text("Pilih Cabang", style: lv1TextStyle),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+          ),
           padding: const EdgeInsets.only(right: 5, left: 5),
           style: lv05TextStyle,
           initialValue: state.$1!.firstWhere(

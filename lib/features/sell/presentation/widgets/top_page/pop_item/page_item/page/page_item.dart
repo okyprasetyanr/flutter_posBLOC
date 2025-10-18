@@ -20,9 +20,9 @@ class SellPopUpPageItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(flex: 3, child: SellPopUpPriceAndCustomPrice()),
-              const SizedBox(width: 10),
-              Expanded(flex: 4, child: SellPopUpDiscountAndCustomDiscount()),
+              Expanded(flex: 4, child: SellPopUpPriceAndCustomPrice()),
+              const SizedBox(width: 5),
+              Expanded(flex: 6, child: SellPopUpDiscountAndCustomDiscount()),
             ],
           ),
           const SizedBox(height: 60),

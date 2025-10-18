@@ -35,22 +35,29 @@ class DropdownKategoriItem extends StatelessWidget {
               })
             : null;
         debugPrint("Log UIInventory initselection: $initselection");
-        return DropdownMenuFormField<ModelKategori?>(
-          key: ValueKey(initselection),
-          width: double.infinity,
-          initialSelection: initselection,
-          textStyle: lv05TextStyle,
-          label: Text("Kategori...", style: lv05TextStyle),
-          dropdownMenuEntries: stateBLoc.$1!
+        return DropdownButtonFormField<ModelKategori?>(
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 4,
+              horizontal: 5,
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+            label: Text("Pilih Status", style: lv1TextStyle),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+          ),
+          initialValue: initselection,
+          hint: Text("Kategori...", style: lv05TextStyle),
+          items: stateBLoc.$1!
               .where((data) => data.getidBranch == idCabang)
               .map(
-                (map) => DropdownMenuEntry<ModelKategori>(
+                (map) => DropdownMenuItem<ModelKategori>(
                   value: map,
-                  label: map.getnameCategory,
+                  child: Text(map.getnameCategory, style: lv05TextStyle),
                 ),
               )
               .toList(),
-          onSelected: (value) {
+          onChanged: (value) {
             context.read<InventoryBloc>().add(
               InvSelectedKategoriItem(dataKategoriItem: value),
             );

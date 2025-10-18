@@ -11,19 +11,25 @@ class UISellSavedCart extends StatelessWidget {
       children: [
         ElevatedButton(
           style: ButtonStyle(
-            padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(10),
+              ),
+            ),
+            minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+            padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
             backgroundColor: WidgetStatePropertyAll(AppColor.primary),
           ),
           onPressed: () {},
           child: Icon(
             Icons.shopping_bag_rounded,
-            size: 24,
+            size: 20,
             color: Colors.white,
           ),
         ),
         Positioned(
-          right: 14,
-          top: 4,
+          right: 10,
+          top: 8,
           child: Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
@@ -34,7 +40,7 @@ class UISellSavedCart extends StatelessWidget {
               "0",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
             ),

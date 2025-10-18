@@ -13,7 +13,7 @@ class SellPopUpNameAndQty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(8),
@@ -54,7 +54,16 @@ class SellPopUpNameAndQty extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          padding: EdgeInsets.zero,
+                          style: ButtonStyle(
+                            minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                            padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                side: BorderSide(width: 1, color: Colors.grey),
+                                borderRadius: BorderRadiusGeometry.circular(10),
+                              ),
+                            ),
+                          ),
                           onPressed: () {
                             context.read<SellBloc>().add(
                               SellAdjustItem(mode: false),
@@ -62,10 +71,25 @@ class SellPopUpNameAndQty extends StatelessWidget {
                           },
                           icon: Icon(Icons.remove, size: 20),
                         ),
-                        const SizedBox(width: 10),
-                        Text(formatQty(state), style: lv1TextStyle),
-                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 18,
+                          child: Text(
+                            formatQty(state),
+                            style: lv1TextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                         IconButton(
+                          style: ButtonStyle(
+                            minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                            padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                side: BorderSide(width: 1, color: Colors.grey),
+                                borderRadius: BorderRadiusGeometry.circular(10),
+                              ),
+                            ),
+                          ),
                           padding: EdgeInsets.zero,
                           onPressed: () {
                             context.read<SellBloc>().add(

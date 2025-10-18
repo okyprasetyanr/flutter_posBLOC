@@ -17,18 +17,18 @@ class UIInventoryFormFieldItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        customTextField("Nama Item", namaItemController),
+        customTextField("Nama Item", namaItemController, true),
         const SizedBox(height: 10),
-        customTextField("Kode/Barcode", kodeBarcodeController),
+        customTextField("Kode/Barcode", kodeBarcodeController, true),
         const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
-              flex: 2,
-              child: customTextField("Harga", hargaItemController),
+              flex: 3,
+              child: customTextField("Harga", hargaItemController, true),
             ),
-            const SizedBox(width: 20),
-            Flexible(flex: 1, fit: FlexFit.loose, child: CondimentSwitch()),
+            const SizedBox(width: 10),
+            Flexible(flex: 2, fit: FlexFit.loose, child: CondimentSwitch()),
           ],
         ),
       ],

@@ -49,9 +49,15 @@ class UIFiltersItem extends StatelessWidget {
             flex: 1,
             fit: FlexFit.loose,
             child: DropdownButtonFormField<String>(
+              style: lv05TextStyle,
               decoration: InputDecoration(
                 label: Text("Pilih Filter", style: lv1TextStyle),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
               initialValue: selectedFilterItem,
               items: filters
@@ -83,10 +89,15 @@ class UIFiltersItem extends StatelessWidget {
 
           // ===== KATEGORI =====
           SizedBox(
-            width: 140,
+            width: 120,
             child: DropdownButtonFormField<ModelKategori>(
               style: lv05TextStyle,
               decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 label: Text("Pilih Kategori", style: lv1TextStyle),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
@@ -139,6 +150,11 @@ class UIFiltersItem extends StatelessWidget {
             fit: FlexFit.loose,
             child: DropdownButtonFormField<String>(
               decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 label: Text("Pilih Status", style: lv1TextStyle),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),

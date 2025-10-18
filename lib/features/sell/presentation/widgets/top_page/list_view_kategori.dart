@@ -47,7 +47,7 @@ class UISellListViewKategori extends StatelessWidget {
               final kategori = state[index];
 
               return Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 7),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -83,7 +83,7 @@ class UISellListViewKategori extends StatelessWidget {
                               : lv05TextStyle;
 
                           return Material(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(5),
                             color: backgroundColor,
 
                             child: Padding(

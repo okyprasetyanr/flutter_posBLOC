@@ -30,9 +30,10 @@ class UISellGridViewItem extends StatelessWidget {
           itemCount: items.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 9 / 11,
+            mainAxisExtent: 110,
+            crossAxisSpacing: 5,
+            mainAxisSpacing: 5,
+            childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
             return Material(
