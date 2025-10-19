@@ -44,6 +44,8 @@ class UISellGridViewItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
                   ModelItemOrdered selectedItem = ModelItemOrdered(
+                    idCustomer: null,
+                    nameCustomer: null,
                     priceItemCustom: items[index].getpriceItem,
                     subTotal: items[index].getpriceItem,
                     idBranch: items[index].getidBranch,

@@ -5,7 +5,7 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 class NavigationGesture extends StatefulWidget {
   final List<Map<String, dynamic>> attContent;
-  final bool isOpen;
+  final ValueNotifier<bool> isOpen;
   final VoidCallback close;
   final String currentPage;
   const NavigationGesture({
@@ -23,65 +23,70 @@ class NavigationGesture extends StatefulWidget {
 class _NavigationGestureState extends State<NavigationGesture> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedPositioned(
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      left: widget.isOpen ? 0 : -290,
-      top: 0,
-      bottom: 0,
-      child: Container(
-        margin: EdgeInsets.only(top: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-          ),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.4),
-              // offset: Offset(3, 0),
-              blurRadius: 10,
-              blurStyle: BlurStyle.outer,
-            ),
-          ],
-        ),
-        width: 250,
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flexible(
-              fit: FlexFit.loose,
-              child: Material(
-                elevation: 4,
-                borderRadius: BorderRadius.circular(10),
-                child: ListTile(
-                  onTap: widget.close,
-                  leading: Icon(Icons.keyboard_backspace_rounded),
-                  title: Text("Tutup", style: lv2TextStyle),
+    return ValueListenableBuilder(
+      valueListenable: widget.isOpen,
+      builder: (context, value, child) {
+        return AnimatedPositioned(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          left: value ? 0 : -290,
+          top: 0,
+          bottom: 0,
+          child: Container(
+            margin: EdgeInsets.only(top: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  // offset: Offset(3, 0),
+                  blurRadius: 10,
+                  blurStyle: BlurStyle.outer,
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  const SizedBox(height: 10),
-                  for (var menu in widget.attContent)
-                    _navContent(
-                      menu['id'],
-                      menu['toContext'],
-                      menu['text_menu'],
+            width: 250,
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Material(
+                    elevation: 4,
+                    borderRadius: BorderRadius.circular(10),
+                    child: ListTile(
+                      onTap: widget.close,
+                      leading: Icon(Icons.keyboard_backspace_rounded),
+                      title: Text("Tutup", style: lv2TextStyle),
                     ),
-                ],
-              ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      const SizedBox(height: 10),
+                      for (var menu in widget.attContent)
+                        _navContent(
+                          menu['id'],
+                          menu['toContext'],
+                          menu['text_menu'],
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

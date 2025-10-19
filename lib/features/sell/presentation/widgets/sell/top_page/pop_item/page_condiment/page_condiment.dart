@@ -139,6 +139,8 @@ class SellPopUpPageCondiment extends StatelessWidget {
                                           ModelItemOrdered
                                           selectedItemCondiment =
                                               ModelItemOrdered(
+                                                idCustomer: null,
+                                                nameCustomer: null,
                                                 priceItemCustom:
                                                     state[index].getpriceItem,
                                                 subTotal:
@@ -207,6 +209,8 @@ class SellPopUpPageCondiment extends StatelessWidget {
                                           ModelItemOrdered
                                           selectedItemCondiment =
                                               ModelItemOrdered(
+                                                idCustomer: null,
+                                                nameCustomer: null,
                                                 priceItemCustom:
                                                     state[index].getpriceItem,
                                                 subTotal:

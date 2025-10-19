@@ -4,9 +4,11 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
+import 'package:flutter_pos/features/sell/presentation/page/ui_sell_payment.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 
 class SellListViewOrderedItem extends StatelessWidget {
   const SellListViewOrderedItem({super.key});
@@ -78,7 +80,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                                         children: [
                                           Image.asset(
                                             "assets/logo.png",
-                                            height: 45,
+                                            height: 35,
                                           ),
                                           const SizedBox(width: 10),
                                           Expanded(
@@ -168,56 +170,18 @@ class SellListViewOrderedItem extends StatelessWidget {
             },
           ),
         ),
-        Padding(
-          padding: const EdgeInsetsGeometry.all(10),
-          child: BlocSelector<SellBloc, SellState, (int, double)>(
-            selector: (state) {
-              if (state is SellLoaded && state.itemOrdered != null) {
-                final itemOrdered = state.itemOrdered!;
-                int itemcount = 0;
-                double subTotal = 0;
-                for (int i = 0; i < itemOrdered.length; i++) {
-                  subTotal += itemOrdered[i].getsubTotal;
-                  itemcount++;
-                  if (itemOrdered[i].getCondiment.isNotEmpty) {
-                    for (
-                      int u = 0;
-                      u < itemOrdered[i].getCondiment.length;
-                      u++
-                    ) {
-                      itemcount++;
-                      subTotal += itemOrdered[i].getCondiment[u].getsubTotal;
-                    }
-                  }
-                }
-                return (itemcount, subTotal);
-              }
-              return (0, 0);
-            },
-            builder: (context, state) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "${state.$1}x : ${formatUang(state.$2)}",
-                    style: lv05TextStyleRed,
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
 
         Row(
           children: [
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  context.read<SellBloc>().add(SellResetOrderedItem());
+                  navUpDownTransition(context, UISellPayment(), false);
                 },
-                label: Text("Hapus", style: lv0TextStyleRED),
-                icon: Icon(Icons.delete, color: Colors.white),
+                label: Text("Cust.", style: lv1TextStyleWhite),
+                icon: Icon(Icons.contacts_rounded, color: Colors.white),
                 style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(AppColor.primary),
                   shape: WidgetStatePropertyAll(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(10),
@@ -229,7 +193,27 @@ class SellListViewOrderedItem extends StatelessWidget {
             const SizedBox(width: 20),
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<SellBloc>().add(SellResetOrderedItem());
+                },
+                label: Text("Hapus", style: lv0TextStyleRED),
+                icon: Icon(Icons.delete, color: Colors.red),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.white),
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  navUpDownTransition(context, UISellPayment(), false);
+                },
                 label: Text("Bayar", style: lv1TextStyleWhite),
                 icon: Icon(Icons.attach_money_rounded, color: Colors.white),
                 style: ButtonStyle(

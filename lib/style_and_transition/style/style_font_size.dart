@@ -57,6 +57,18 @@ final lv05TextStyleRed = GoogleFonts.poppins(
   fontSize: 10,
 );
 
+final lv05TextStyleRedPrice = GoogleFonts.poppins(
+  color: Colors.red,
+  fontWeight: FontWeight.w800,
+  fontSize: 10,
+);
+
+final lv05TextStylePrice = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w800,
+  fontSize: 10,
+);
+
 final lv05TextStyleWhite = GoogleFonts.poppins(
   color: Colors.white,
   fontWeight: FontWeight.w300,

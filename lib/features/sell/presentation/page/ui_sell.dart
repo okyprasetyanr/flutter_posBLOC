@@ -3,14 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/dropdown_cabang.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/grid_view_item.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/list_view_kategori.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/pop_item/main_page/popup_item.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/saved_cart.dart';
+import 'package:flutter_pos/features/sell/logic/sell_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/dropdown_cabang.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/grid_view_item.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/list_view_kategori.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/pop_item/main_page/popup_item.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/saved_cart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/bottom_page/list_view_ordered_item.dart.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/bottom_page/list_view_ordered_item.dart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
 class UiSell extends StatefulWidget {
@@ -21,9 +23,9 @@ class UiSell extends StatefulWidget {
 }
 
 class _UiSellState extends State<UiSell> {
-  TextEditingController searchController = TextEditingController();
+  final searchController = TextEditingController();
+  final isOpen = ValueNotifier<bool>(false);
   double ratioGridView = 0;
-  ValueNotifier<int> jumlah = ValueNotifier<int>(0);
   @override
   void initState() {
     super.initState();
@@ -38,8 +40,8 @@ class _UiSellState extends State<UiSell> {
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
-      widgetTop: layoutTop(),
-      widgetBottom: layoutBottom(),
+      layoutTop: layoutTop(),
+      layoutBottom: layoutBottom(),
       widgetNavigation: navigationGesture(),
       refreshIndicator: initData,
     );
@@ -109,15 +111,12 @@ class _UiSellState extends State<UiSell> {
               children: [
                 const SizedBox(width: 5),
                 Expanded(
+                  flex: 6,
                   child: SizedBox(height: 27, child: UISellListViewKategori()),
                 ),
                 const SizedBox(width: 5),
                 SizedBox(width: 140, child: UISellDropDownCabang()),
-
-                const SizedBox(width: 5),
-
-                UISellSavedCart(),
-                const SizedBox(width: 5),
+                Expanded(flex: 2, child: UISellSavedCart()),
               ],
             ),
             Expanded(child: UISellGridViewItem()),
@@ -133,7 +132,62 @@ class _UiSellState extends State<UiSell> {
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(" Daftar Pesanan", style: titleTextStyle),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            BlocSelector<SellBloc, SellState, (int, double)>(
+              selector: (state) {
+                if (state is SellLoaded && state.itemOrdered != null) {
+                  final itemOrdered = state.itemOrdered!;
+                  int itemcount = 0;
+                  double subTotal = 0;
+                  for (int i = 0; i < itemOrdered.length; i++) {
+                    subTotal += itemOrdered[i].getsubTotal;
+                    itemcount++;
+                    if (itemOrdered[i].getCondiment.isNotEmpty) {
+                      for (
+                        int u = 0;
+                        u < itemOrdered[i].getCondiment.length;
+                        u++
+                      ) {
+                        itemcount++;
+                        subTotal += itemOrdered[i].getCondiment[u].getsubTotal;
+                      }
+                    }
+                  }
+                  return (itemcount, subTotal);
+                }
+                return (0, 0);
+              },
+              builder: (context, state) {
+                return Material(
+                  elevation: 1,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.all(5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Sub Total:", style: lv05TextStylePrice),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 80,
+                          child: Text(
+                            "${formatUang(state.$2)}",
+                            style: lv05TextStyleRedPrice,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            Text(" Daftar Pesanan", style: titleTextStyle),
+          ],
+        ),
         Divider(color: Colors.grey[400], thickness: 1),
         Expanded(child: SellListViewOrderedItem()),
       ],
@@ -153,11 +207,9 @@ class _UiSellState extends State<UiSell> {
     return NavigationGesture(
       currentPage: "inventory",
       attContent: contentNavGesture,
-      isOpen: false,
+      isOpen: isOpen,
       close: () {
-        setState(() {
-          false;
-        });
+        false;
       },
     );
   }

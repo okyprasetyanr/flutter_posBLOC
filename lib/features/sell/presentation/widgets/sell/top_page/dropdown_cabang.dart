@@ -32,7 +32,7 @@ class UISellDropDownCabang extends StatelessWidget {
             label: Text("Pilih Cabang", style: lv1TextStyle),
             floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
-          padding: const EdgeInsets.only(right: 5, left: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           style: lv05TextStyle,
           initialValue: state.$1!.firstWhere(
             (data) => data.getidBranch == state.$2,
@@ -41,7 +41,12 @@ class UISellDropDownCabang extends StatelessWidget {
               .map(
                 (map) => DropdownMenuItem(
                   value: map,
-                  child: Text(map.getareaBranch, style: lv05TextStyle),
+                  child: Text(
+                    map.getareaBranch,
+                    style: lv05TextStyle,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
                 ),
               )
               .toList(),

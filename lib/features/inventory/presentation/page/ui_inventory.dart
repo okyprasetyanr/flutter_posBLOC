@@ -53,7 +53,7 @@ class _UIInventoryState extends State<UIInventory> {
   TextEditingController hargaItemController = TextEditingController();
   TextEditingController kodeBarcodeController = TextEditingController();
   TextEditingController namaKategoriController = TextEditingController();
-  bool isOpen = false;
+  final isOpen = ValueNotifier<bool>(false);
 
   PageController pageControllerTop = PageController();
   PageController pageControllerBottom = PageController();
@@ -75,13 +75,11 @@ class _UIInventoryState extends State<UIInventory> {
     super.dispose();
   }
 
-  bool currentPage = true;
+  final currentPage = ValueNotifier<bool>(true);
 
   void _gotoPage(bool page) {
     int goto = page ? 0 : 1;
-    setState(() {
-      currentPage = page;
-    });
+    currentPage.value = page;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (pageControllerTop.hasClients && pageControllerBottom.hasClients) {
         pageControllerTop.animateToPage(
@@ -182,8 +180,8 @@ class _UIInventoryState extends State<UIInventory> {
     });
     return LayoutTopBottom(
       refreshIndicator: _onRefresh,
-      widgetTop: topLayout(),
-      widgetBottom: bottomLayout(),
+      layoutTop: topLayout(),
+      layoutBottom: bottomLayout(),
       widgetNavigation: navigationGesture(),
     );
   }
@@ -199,9 +197,7 @@ class _UIInventoryState extends State<UIInventory> {
           children: [
             ElevatedButton.icon(
               onPressed: () {
-                setState(() {
-                  isOpen = !isOpen;
-                });
+                isOpen.value = !isOpen.value;
               },
               label: Text("Menu", style: lv05TextStyleWhite),
               icon: Icon(Icons.menu_rounded, color: Colors.white, size: 20),
@@ -221,39 +217,44 @@ class _UIInventoryState extends State<UIInventory> {
 
             GestureDetector(
               onTap: () {
-                _gotoPage(!currentPage);
+                _gotoPage(!currentPage.value);
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 width: 150,
                 padding: const EdgeInsets.only(top: 5, bottom: 5),
                 height: 40,
-                child: Stack(
-                  children: [
-                    AnimatedPositioned(
-                      curve: Curves.easeInOut,
-                      left: currentPage ? -200 : 40,
-                      top: 4,
-                      duration: const Duration(milliseconds: 500),
-                      child: rowContentAnim(
-                        const Icon(Icons.swap_horiz_rounded, size: 25),
-                        Text("Kategori", style: titleTextStyle),
-                      ),
-                    ),
-                    AnimatedPositioned(
-                      curve: Curves.easeInOut,
-                      left: currentPage ? 35 : 300,
-                      top: 4,
-                      duration: const Duration(milliseconds: 500),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: rowContentAnim(
-                          const Icon(Icons.swap_horiz_rounded, size: 25),
-                          Text("Inventori", style: titleTextStyle),
+                child: ValueListenableBuilder(
+                  valueListenable: currentPage,
+                  builder: (context, value, child) {
+                    return Stack(
+                      children: [
+                        AnimatedPositioned(
+                          curve: Curves.easeInOut,
+                          left: value ? -200 : 40,
+                          top: 4,
+                          duration: const Duration(milliseconds: 500),
+                          child: rowContentAnim(
+                            const Icon(Icons.swap_horiz_rounded, size: 25),
+                            Text("Kategori", style: titleTextStyle),
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
+                        AnimatedPositioned(
+                          curve: Curves.easeInOut,
+                          left: value ? 35 : 300,
+                          top: 4,
+                          duration: const Duration(milliseconds: 500),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: rowContentAnim(
+                              const Icon(Icons.swap_horiz_rounded, size: 25),
+                              Text("Inventori", style: titleTextStyle),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -348,101 +349,120 @@ class _UIInventoryState extends State<UIInventory> {
               duration: const Duration(milliseconds: 500),
               width: 250,
               height: 35,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  AnimatedPositioned(
-                    curve: Curves.easeInOut,
-                    right: currentPage ? -250 : 0,
-                    top: 4,
-                    duration: const Duration(milliseconds: 500),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        _resetKategoriForm();
-                      },
-                      style: ButtonStyle(
-                        minimumSize: WidgetStatePropertyAll(Size(0, 30)),
-                        backgroundColor: WidgetStatePropertyAll(Colors.white),
-                      ),
-                      icon: const Icon(Icons.restart_alt_rounded, size: 20),
-                      label: Text("Detail Kategori", style: titleTextStyle),
-                    ),
-                  ),
-                  AnimatedPositioned(
-                    curve: Curves.easeInOut,
-                    right: currentPage ? 0 : 500,
-                    top: 0,
-                    duration: const Duration(milliseconds: 500),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<InventoryBloc>().add(InvResetItemForm());
-                        _resetItemForm();
-                      },
-                      style: ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: const WidgetStatePropertyAll(
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                        ),
-                        minimumSize: const WidgetStatePropertyAll(Size(0, 30)),
-                        backgroundColor: WidgetStatePropertyAll(Colors.white),
-                      ),
-                      icon: const Icon(Icons.restart_alt_rounded, size: 20),
-                      label: Text("Detail Item", style: titleTextStyle),
-                    ),
-                  ),
-                  AnimatedPositioned(
-                    top: 0,
-                    curve: Curves.easeInOut,
-                    left: currentPage ? 0 : -250,
-                    duration: const Duration(milliseconds: 500),
-                    child: SizedBox(
-                      width: 250,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                label: Text("Jenis Item", style: lv1TextStyle),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.always,
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                              ),
-                              style: lv05TextStyle,
-                              initialValue: filterjenis.first,
-                              items: filterjenis
-                                  .map(
-                                    (map) => DropdownMenuItem(
-                                      value: map,
-                                      child: Text(map, style: lv05TextStyle),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) {
-                                selectedFilterJenisItem = value;
-                                context.read<InventoryBloc>().add(
-                                  InvFilterItem(
-                                    filter: selectedFilterItem!,
-                                    status: selectedStatusItem!,
-                                    filterjenis: selectedFilterJenisItem!,
-                                    filterIDKategori:
-                                        selectedFilterKategoriItem!,
-                                  ),
-                                );
-                              },
+              child: ValueListenableBuilder(
+                valueListenable: currentPage,
+                builder: (context, value, child) {
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        right: value ? -250 : 0,
+                        top: 4,
+                        duration: const Duration(milliseconds: 500),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            _resetKategoriForm();
+                          },
+                          style: ButtonStyle(
+                            minimumSize: WidgetStatePropertyAll(Size(0, 30)),
+                            backgroundColor: WidgetStatePropertyAll(
+                              Colors.white,
                             ),
                           ),
-                        ],
+                          icon: const Icon(Icons.restart_alt_rounded, size: 20),
+                          label: Text("Detail Kategori", style: titleTextStyle),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        right: value ? 0 : 500,
+                        top: 0,
+                        duration: const Duration(milliseconds: 500),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            context.read<InventoryBloc>().add(
+                              InvResetItemForm(),
+                            );
+                            _resetItemForm();
+                          },
+                          style: ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const WidgetStatePropertyAll(
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                            ),
+                            minimumSize: const WidgetStatePropertyAll(
+                              Size(0, 30),
+                            ),
+                            backgroundColor: WidgetStatePropertyAll(
+                              Colors.white,
+                            ),
+                          ),
+                          icon: const Icon(Icons.restart_alt_rounded, size: 20),
+                          label: Text("Detail Item", style: titleTextStyle),
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        top: 0,
+                        curve: Curves.easeInOut,
+                        left: value ? 0 : -250,
+                        duration: const Duration(milliseconds: 500),
+                        child: SizedBox(
+                          width: 250,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    label: Text(
+                                      "Jenis Item",
+                                      style: lv1TextStyle,
+                                    ),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                  ),
+                                  style: lv05TextStyle,
+                                  initialValue: filterjenis.first,
+                                  items: filterjenis
+                                      .map(
+                                        (map) => DropdownMenuItem(
+                                          value: map,
+                                          child: Text(
+                                            map,
+                                            style: lv05TextStyle,
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (value) {
+                                    selectedFilterJenisItem = value;
+                                    context.read<InventoryBloc>().add(
+                                      InvFilterItem(
+                                        filter: selectedFilterItem!,
+                                        status: selectedStatusItem!,
+                                        filterjenis: selectedFilterJenisItem!,
+                                        filterIDKategori:
+                                            selectedFilterKategoriItem!,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -604,9 +624,7 @@ class _UIInventoryState extends State<UIInventory> {
       attContent: contentNavGesture,
       isOpen: isOpen,
       close: () {
-        setState(() {
-          isOpen = false;
-        });
+        isOpen.value = false;
       },
     );
   }

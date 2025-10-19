@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class ModelItemOrdered extends Equatable {
-  final String _namaItem,
+  final String _nameItem,
       _idBranch,
       _idItem,
       _idOrdered,
@@ -9,7 +9,7 @@ class ModelItemOrdered extends Equatable {
       _idCondimen,
       _note,
       _urlImage;
-
+  final String? _nameCustomer, _idCustomer;
   final int _discountItem;
   final double _qtyItem, _priceItem, _subTotal, _priceItemCustom;
   final List<ModelItemOrdered> _condiment;
@@ -19,6 +19,8 @@ class ModelItemOrdered extends Equatable {
     required double subTotal,
     required String nameItem,
     required String idItem,
+    required String? nameCustomer,
+    required String? idCustomer,
     required String idBranch,
     required String idOrdered,
     required double qtyItem,
@@ -29,8 +31,10 @@ class ModelItemOrdered extends Equatable {
     required String note,
     required String urlImage,
     required List<ModelItemOrdered> condiment,
-  }) : _namaItem = nameItem,
+  }) : _nameItem = nameItem,
        _idItem = idItem,
+       _idCustomer = idCustomer,
+       _nameCustomer = nameCustomer,
        _subTotal = subTotal,
        _idBranch = idBranch,
        _idOrdered = idOrdered,
@@ -44,8 +48,10 @@ class ModelItemOrdered extends Equatable {
        _condiment = condiment,
        _priceItemCustom = priceItemCustom;
 
-  String get getnameItem => _namaItem;
+  String get getnameItem => _nameItem;
   String get getidItem => _idItem;
+  String? get getnameCustomer => _nameCustomer;
+  String? get getidCustomer => _idCustomer;
   String get getidBranch => _idBranch;
   String get getidOrdered => _idOrdered;
   double get getsubTotal => _subTotal;
@@ -62,6 +68,8 @@ class ModelItemOrdered extends Equatable {
   ModelItemOrdered copyWith({
     String? nameItem,
     String? idItem,
+    String? idCustomer,
+    String? nameCustomer,
     String? idBranch,
     String? idOrdered,
     double? qtyItem,
@@ -76,8 +84,10 @@ class ModelItemOrdered extends Equatable {
     List<ModelItemOrdered>? condiment,
   }) {
     return ModelItemOrdered(
+      idCustomer: idCustomer ?? _idCustomer,
+      nameCustomer: nameCustomer ?? _nameCustomer,
       subTotal: subTotal ?? _subTotal,
-      nameItem: nameItem ?? _namaItem,
+      nameItem: nameItem ?? _nameItem,
       idItem: idItem ?? _idItem,
       idBranch: idBranch ?? _idBranch,
       idOrdered: idOrdered ?? _idOrdered,
@@ -95,7 +105,7 @@ class ModelItemOrdered extends Equatable {
 
   @override
   List<Object?> get props => [
-    _namaItem,
+    _nameItem,
     _idBranch,
     _idItem,
     _idOrdered,

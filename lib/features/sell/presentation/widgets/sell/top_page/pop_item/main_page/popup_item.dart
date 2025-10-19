@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell_state.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/pop_item/page_condiment/page_condiment.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/top_page/pop_item/page_item/page/page_item.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/pop_item/page_condiment/page_condiment.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/pop_item/page_item/page/page_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 
 class UISellPopUpItem extends StatefulWidget {
