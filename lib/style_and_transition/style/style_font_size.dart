@@ -93,16 +93,10 @@ final textStyleItemNormal = GoogleFonts.poppins(
   ),
 );
 
-final textStyleHarga = GoogleFonts.poppins(
-  color: AppColor.primary,
-  fontWeight: FontWeight.w600,
-  fontSize: 10,
-);
-
 final lv1TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 10,
+  fontSize: 12,
 );
 
 final lv05textStyleHarga = GoogleFonts.poppins(
@@ -145,6 +139,12 @@ final lv2TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
   fontSize: 16,
+);
+
+final lv2textStyleHarga = GoogleFonts.poppins(
+  color: AppColor.primary,
+  fontWeight: FontWeight.w900,
+  fontSize: 12,
 );
 
 final lv3TextStyle = GoogleFonts.poppins(
