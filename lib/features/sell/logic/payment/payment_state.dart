@@ -6,6 +6,8 @@ class PaymentState {}
 
 class PaymentInitial extends PaymentState {}
 
+class PaymentLoading extends PaymentState {}
+
 class PaymentLoaded extends PaymentState with EquatableMixin {
   final List<ModelItemOrdered> itemOrdered;
   final ModelTransactionSell? transaction_sell;

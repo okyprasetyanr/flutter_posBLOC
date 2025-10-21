@@ -57,6 +57,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     PaymentGetItem event,
     Emitter<PaymentState> emit,
   ) async {
+    emit(PaymentLoading());
     if (repo is SellLoaded) {
       final repoState = repo as SellLoaded;
       final currentState = state;
