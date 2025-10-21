@@ -185,7 +185,7 @@ class _UiSellState extends State<UiSell> {
                 );
               },
             ),
-            Text(" Daftar Pesanan", style: titleTextStyle),
+            Text("Pesanan", style: titleTextStyle),
           ],
         ),
         Divider(color: Colors.grey[400], thickness: 1),

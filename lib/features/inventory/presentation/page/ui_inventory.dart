@@ -15,6 +15,7 @@ import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/to
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/button_kategori.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/text_field_and_branch.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/top_page/list_view_kategori.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -365,7 +366,13 @@ class _UIInventoryState extends State<UIInventory> {
                             _resetKategoriForm();
                           },
                           style: ButtonStyle(
-                            minimumSize: WidgetStatePropertyAll(Size(0, 30)),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const WidgetStatePropertyAll(
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                            ),
+                            minimumSize: const WidgetStatePropertyAll(
+                              Size(0, 30),
+                            ),
                             backgroundColor: WidgetStatePropertyAll(
                               Colors.white,
                             ),
@@ -376,7 +383,7 @@ class _UIInventoryState extends State<UIInventory> {
                       ),
                       AnimatedPositioned(
                         curve: Curves.easeInOut,
-                        right: value ? 0 : 500,
+                        right: value ? 0 : -200,
                         top: 0,
                         duration: const Duration(milliseconds: 500),
                         child: ElevatedButton.icon(
@@ -405,7 +412,7 @@ class _UIInventoryState extends State<UIInventory> {
                       AnimatedPositioned(
                         top: 0,
                         curve: Curves.easeInOut,
-                        left: value ? 0 : -250,
+                        left: value ? 0 : 450,
                         duration: const Duration(milliseconds: 500),
                         child: SizedBox(
                           width: 250,
@@ -496,7 +503,7 @@ class _UIInventoryState extends State<UIInventory> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: customTextField(
-                                "Kode/Barcode",
+                                "Cabang",
                                 TextEditingController(
                                   text: context.select<InventoryBloc, String>(
                                     (value) => value.state is InventoryLoaded
@@ -534,50 +541,9 @@ class _UIInventoryState extends State<UIInventory> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: BlocListener<InventoryBloc, InventoryState>(
-                          listenWhen: (previous, current) =>
-                              previous is InventoryLoaded &&
-                              current is InventoryLoaded &&
-                              previous.dataSelectedKategori !=
-                                  current.dataSelectedKategori,
-                          listener: (context, state) {
-                            if (state is InventoryLoaded &&
-                                state.dataSelectedKategori != null) {
-                              namaKategoriController.text =
-                                  state.dataSelectedKategori!.getnameCategory;
-                            }
-                          },
-                          child: customTextField(
-                            "Nama Kategori",
-                            namaKategoriController,
-                            true,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        flex: 1,
-                        child: TextField(
-                          style: lv1TextStyleDisable,
-                          enabled: false,
-                          controller: TextEditingController(
-                            text: context.select<InventoryBloc, String?>(
-                              (data) => data.state is InventoryLoaded
-                                  ? (data.state as InventoryLoaded).daerahCabang
-                                  : "",
-                            ),
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: "Cabang",
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                          ),
-                        ),
-                      ),
-                    ],
+                  UICategoryTextFieldAndBranch(
+                    namaKategoriController: namaKategoriController,
+                    resetKategoriForm: _resetKategoriForm,
                   ),
                   const SizedBox(height: 10),
                   Align(
@@ -591,7 +557,10 @@ class _UIInventoryState extends State<UIInventory> {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
                       child: Text(
                         "PANDUAN:\nUntuk hapus Kategori, silahkan klik dan tahan Kategori yang diinginkan",
                         style: lv05TextStyle,

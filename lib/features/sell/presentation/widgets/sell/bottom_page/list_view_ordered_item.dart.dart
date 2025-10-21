@@ -190,7 +190,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: 10),
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -208,7 +208,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: 10),
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
