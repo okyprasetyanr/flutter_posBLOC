@@ -69,6 +69,12 @@ final lv05TextStylePrice = GoogleFonts.poppins(
   fontSize: 10,
 );
 
+final lv1TextStylePrimaryPrice = GoogleFonts.poppins(
+  color: AppColor.primary,
+  fontWeight: FontWeight.w800,
+  fontSize: 12,
+);
+
 final lv05TextStyleWhite = GoogleFonts.poppins(
   color: Colors.white,
   fontWeight: FontWeight.w300,
@@ -96,6 +102,12 @@ final textStyleItemNormal = GoogleFonts.poppins(
 final lv1TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,
+  fontSize: 12,
+);
+
+final lv1TextStyleBold = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w500,
   fontSize: 12,
 );
 

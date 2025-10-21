@@ -1,11 +1,13 @@
+import 'package:flutter/widgets.dart';
+
 class PaymentEvent {}
 
 class PaymentAdjust extends PaymentEvent {
   final int? discount;
   final int? ppn;
-  final int? paymentMethod;
+  final String? paymentMethod;
   final int? charge;
-  final int? billPaid;
+  final double? billPaid;
 
   PaymentAdjust({
     this.discount,
@@ -16,10 +18,14 @@ class PaymentAdjust extends PaymentEvent {
   });
 }
 
-class PaymentNote {
+class PaymentNote extends PaymentEvent {
   final String note;
 
   PaymentNote({required this.note});
 }
 
-class PaymentGetItem extends PaymentEvent {}
+class PaymentGetItem extends PaymentEvent {
+  final BuildContext context;
+
+  PaymentGetItem({required this.context});
+}

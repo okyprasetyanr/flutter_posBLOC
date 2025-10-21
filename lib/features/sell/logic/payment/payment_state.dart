@@ -9,7 +9,7 @@ class PaymentInitial extends PaymentState {}
 class PaymentLoading extends PaymentState {}
 
 class PaymentLoaded extends PaymentState with EquatableMixin {
-  final List<ModelItemOrdered> itemOrdered;
+  final List<ModelItemOrdered>? itemOrdered;
   final ModelTransactionSell? transaction_sell;
 
   PaymentLoaded({required this.itemOrdered, required this.transaction_sell});
@@ -19,7 +19,7 @@ class PaymentLoaded extends PaymentState with EquatableMixin {
     ModelTransactionSell? transaction_sell,
   }) {
     return PaymentLoaded(
-      itemOrdered: itemOrdered!,
+      itemOrdered: itemOrdered ?? itemOrdered,
       transaction_sell: transaction_sell,
     );
   }

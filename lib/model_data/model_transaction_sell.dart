@@ -8,8 +8,8 @@ class ModelTransactionSell extends Equatable {
       _nameOperator,
       _paymentMethod,
       _idOperator;
-  final int _discount, _ppn, _totalItem;
-  final double _subTotal, _charge, _total;
+  final int _discount, _ppn, _totalItem, _charge;
+  final double _subTotal, _total, _totalPpn, _totalDiscount, _totalCharge;
 
   ModelTransactionSell({
     required String date,
@@ -22,8 +22,11 @@ class ModelTransactionSell extends Equatable {
     required int discount,
     required int ppn,
     required int totalItem,
+    required int charge,
     required double subTotal,
-    required double charge,
+    required double totalCharge,
+    required double totalPpn,
+    required double totalDiscount,
     required double total,
   }) : _date = date,
        _invoice = invoice,
@@ -37,7 +40,10 @@ class ModelTransactionSell extends Equatable {
        _subTotal = subTotal,
        _charge = charge,
        _paymentMethod = paymentMethod,
-       _total = total;
+       _total = total,
+       _totalPpn = totalPpn,
+       _totalDiscount = totalDiscount,
+       _totalCharge = totalCharge;
 
   String get getdate => _date;
   String get getinvoice => _invoice;
@@ -49,9 +55,12 @@ class ModelTransactionSell extends Equatable {
   int get getdiscount => _discount;
   int get getppn => _ppn;
   int get gettotalItem => _totalItem;
-  double get subTotal => _subTotal;
-  double get getcharge => _charge;
+  int get getcharge => _charge;
+  double get getsubTotal => _subTotal;
   double get gettotal => _total;
+  double get gettotalCharge => _totalCharge;
+  double get gettotalDiscount => _totalDiscount;
+  double get gettotalPpn => _totalPpn;
 
   ModelTransactionSell copyWith({
     String? date,
@@ -64,11 +73,17 @@ class ModelTransactionSell extends Equatable {
     int? discount,
     int? ppn,
     int? totalItem,
+    int? charge,
     double? subTotal,
-    double? charge,
     double? total,
+    double? totalCharge,
+    double? totalDiscount,
+    double? totalPpn,
   }) {
     return ModelTransactionSell(
+      totalCharge: totalCharge ?? _totalCharge,
+      totalDiscount: totalDiscount ?? _totalDiscount,
+      totalPpn: totalPpn ?? _totalPpn,
       paymentMethod: paymentMethod ?? _paymentMethod,
       date: date ?? _date,
       invoice: invoice ?? _invoice,
@@ -77,7 +92,7 @@ class ModelTransactionSell extends Equatable {
       nameOperator: nameOperator ?? _nameOperator,
       idOperator: idOperator ?? _idOperator,
       discount: discount ?? _discount,
-      ppn: ppn ?? _discount,
+      ppn: ppn ?? _ppn,
       totalItem: totalItem ?? _totalItem,
       subTotal: subTotal ?? _subTotal,
       charge: charge ?? _charge,
@@ -86,5 +101,22 @@ class ModelTransactionSell extends Equatable {
   }
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [
+    _date,
+    _invoice,
+    _nameCustomer,
+    _idCustomer,
+    _nameOperator,
+    _idOperator,
+    _paymentMethod,
+    _discount,
+    _ppn,
+    _totalItem,
+    _subTotal,
+    _charge,
+    _total,
+    _totalCharge,
+    _totalDiscount,
+    _totalPpn,
+  ];
 }

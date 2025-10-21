@@ -8,7 +8,6 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
 import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/screen_main_menu.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -22,7 +21,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final dataUserRepo = DataUserRepository();
   final repo = DataUserRepositoryCache(dataUserRepo);
-  final repoPayment = SellState();
   runApp(
     RepositoryProvider.value(
       value: repo,
@@ -30,7 +28,7 @@ void main() async {
         providers: [
           BlocProvider(create: (context) => InventoryBloc(repo)),
           BlocProvider(create: (context) => SellBloc(repo)),
-          BlocProvider(create: (context) => PaymentBloc(repoPayment)),
+          BlocProvider(create: (context) => PaymentBloc()),
         ],
         child: MaterialApp(
           home: const ScreenLogin(),
