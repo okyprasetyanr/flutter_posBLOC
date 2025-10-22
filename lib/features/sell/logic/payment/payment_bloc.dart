@@ -33,6 +33,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       int charge = dataTransaction.getcharge;
       int ppn = dataTransaction.getppn;
       String paymentMethod = dataTransaction.getpaymentMethod;
+      double billPaid = dataTransaction.getbillPaid;
       double total = 0;
 
       if (event.charge != null) {}
@@ -49,6 +50,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         paymentMethod = event.paymentMethod!;
       }
 
+      if (event.billPaid != null) {
+        billPaid = event.billPaid!;
+      }
+
       final totalOrdered = dataTransaction.getsubTotal;
       final totalDiscount = totalOrdered * (discount / 100);
       final totalPpn = totalOrdered * (ppn / 100);
@@ -57,6 +62,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       emit(
         currentState.copyWith(
           transaction_sell: dataTransaction.copyWith(
+            billPaid: billPaid,
             discount: discount,
             ppn: ppn,
             charge: charge,
@@ -92,7 +98,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       for (int indexItem = 0; indexItem < itemOrdered.length; indexItem++) {
         final Item = itemOrdered[indexItem];
         itemTotal++;
-        priceTotal += Item.getpriceItemCustom;
+        priceTotal += Item.getsubTotal;
         final condiment = Item.getCondiment;
         for (
           int indexCondiment = 0;
@@ -100,7 +106,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           indexCondiment++
         ) {
           itemTotal++;
-          priceTotal += condiment[indexCondiment].getpriceItemCustom;
+          priceTotal += condiment[indexCondiment].getsubTotal;
         }
       }
 
@@ -108,6 +114,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         PaymentLoaded(
           itemOrdered: itemOrdered,
           transaction_sell: ModelTransactionSell(
+            billPaid: 0,
+            note: "",
             paymentMethod: "Cash",
             date: formattedDate,
             invoice:
@@ -131,8 +139,19 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  FutureOr<void> _onPaymentNote(
-    PaymentNote event,
-    Emitter<PaymentState> emit,
-  ) {}
+  FutureOr<void> _onPaymentNote(PaymentNote event, Emitter<PaymentState> emit) {
+    final currentState = state;
+    if (currentState is PaymentLoaded) {
+      debugPrint(
+        "Log PaymentBloc: Note ${currentState.transaction_sell!.getnote}",
+      );
+      emit(
+        currentState.copyWith(
+          transaction_sell: currentState.transaction_sell!.copyWith(
+            note: event.note,
+          ),
+        ),
+      );
+    }
+  }
 }

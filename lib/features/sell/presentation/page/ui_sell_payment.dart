@@ -5,6 +5,8 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
+import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/quick_pay_widget.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_sell.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -27,6 +29,20 @@ class _UISellPaymentState extends State<UISellPayment> {
   void initState() {
     super.initState();
     context.read<PaymentBloc>().add(PaymentGetItem(context: context));
+  }
+
+  final pageController = PageController();
+
+  void _gotoPage(int page) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (pageController.hasClients) {
+        pageController.animateToPage(
+          page,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   @override
@@ -324,43 +340,71 @@ class _UISellPaymentState extends State<UISellPayment> {
                     Wrap(
                       spacing: 15,
                       runSpacing: 5,
-                      children: ["Cash", "Debit", "E-Wallet", "Split"].map((
-                        paymentMethod,
-                      ) {
-                        final isSelected =
-                            state.getpaymentMethod == paymentMethod;
-                        return ElevatedButton.icon(
-                          onPressed: () {
-                            context.read<PaymentBloc>().add(
-                              PaymentAdjust(paymentMethod: paymentMethod),
-                            );
-                          },
-                          icon: const Icon(Icons.payment_outlined, size: 15),
-                          label: Text(
-                            "$paymentMethod",
-                            style: isSelected
-                                ? lv05TextStyleWhite
-                                : lv05TextStyle,
-                          ),
-                          style: ButtonStyle(
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(10),
+                      children: ["Cash", "Debit", "E-Wallet", "Split"]
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                            final index = entry.key;
+                            final paymentMethod = entry.value;
+                            final isSelected =
+                                state.getpaymentMethod == paymentMethod;
+                            return ElevatedButton.icon(
+                              onPressed: () {
+                                _gotoPage(index);
+                                context.read<PaymentBloc>().add(
+                                  PaymentAdjust(paymentMethod: paymentMethod),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.payment_outlined,
+                                size: 15,
                               ),
-                            ),
-                            minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                            padding: const WidgetStatePropertyAll(
-                              EdgeInsets.all(7),
-                            ),
-                            backgroundColor: WidgetStatePropertyAll(
-                              isSelected ? AppColor.primary : Colors.white,
-                            ),
-                            iconColor: WidgetStatePropertyAll(
-                              isSelected ? Colors.white : Colors.black,
-                            ),
+                              label: Text(
+                                "$paymentMethod",
+                                style: isSelected
+                                    ? lv05TextStyleWhite
+                                    : lv05TextStyle,
+                              ),
+                              style: ButtonStyle(
+                                shape: WidgetStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      10,
+                                    ),
+                                  ),
+                                ),
+                                minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                                padding: const WidgetStatePropertyAll(
+                                  EdgeInsets.all(7),
+                                ),
+                                backgroundColor: WidgetStatePropertyAll(
+                                  isSelected ? AppColor.primary : Colors.white,
+                                ),
+                                iconColor: WidgetStatePropertyAll(
+                                  isSelected ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            );
+                          })
+                          .toList(),
+                    ),
+                    SizedBox(
+                      height: 100,
+                      child: PageView(
+                        controller: pageController,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          QuickPayWidget(
+                            totalTransaksi: state.gettotal,
+                            onQuickPaySelected: (amount) {
+                              print('Uang yang dipilih: $amount');
+                            },
                           ),
-                        );
-                      }).toList(),
+                          Text("Debit"),
+                          Text("E-Wallet"),
+                          Text("Split"),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -429,7 +473,7 @@ class _UISellPaymentState extends State<UISellPayment> {
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
                                   "Nominal Bayar",
-                                  "Rp100.000,00",
+                                  "${formatUang(state.getbillPaid)}",
                                 ),
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
