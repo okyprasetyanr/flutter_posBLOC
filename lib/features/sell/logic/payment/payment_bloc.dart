@@ -33,10 +33,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       int charge = dataTransaction.getcharge;
       int ppn = dataTransaction.getppn;
       String paymentMethod = dataTransaction.getpaymentMethod;
-      double billPaid = dataTransaction.getbillPaid;
+      double billPaid = 0;
       double total = 0;
 
-      if (event.charge != null) {}
+      if (event.charge != null) {
+        charge = event.charge!;
+      }
 
       if (event.discount != null) {
         discount = event.discount!;
@@ -53,6 +55,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       if (event.billPaid != null) {
         billPaid = event.billPaid!;
       }
+
+      debugPrint("Log PaymentBloc: Ajust: $paymentMethod, $charge");
 
       final totalOrdered = dataTransaction.getsubTotal;
       final totalDiscount = totalOrdered * (discount / 100);

@@ -5,7 +5,10 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/date_invoice_cust_operator.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/discount.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/payment_method.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/ppn.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/quick_pay_widget.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_sell.dart';
@@ -24,12 +27,37 @@ class UISellPayment extends StatefulWidget {
 class _UISellPaymentState extends State<UISellPayment> {
   final customDiscountController = TextEditingController();
   final customPPNController = TextEditingController();
+  final chargController = TextEditingController();
+
+  @override
+  void dispose() {
+    customDiscountController.dispose();
+    customPPNController.dispose();
+    chargController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     context.read<PaymentBloc>().add(PaymentGetItem(context: context));
   }
+
+  final listBank = [
+    "BCA",
+    "BRI",
+    "Mandiri",
+    "BNI",
+    "BTN",
+    "CIMB Niaga",
+    "Permata",
+    "Danamon",
+    "BTPN / Jenius",
+    "BNC (Neo Commerce)",
+    "SeaBank",
+    "Bank Jago",
+    "BSI (Syariah Indonesia)",
+  ];
 
   final pageController = PageController();
 
@@ -74,245 +102,11 @@ class _UISellPaymentState extends State<UISellPayment> {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    _rowContent("Tanggal", "${state.getdate}"),
-                    const SizedBox(height: 10),
-                    _rowContent("Nomor Faktur", "${state.getinvoice}"),
-                    const SizedBox(height: 10),
-                    _rowContent("Customer", "${state.getnameCustomer}"),
-                    const SizedBox(height: 10),
-                    _rowContent("Operator", "${state.getnameOperator}"),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text("Diskon", style: lv1TextStyle),
-                        ),
-                        Text(":", style: lv1TextStyle),
-                        Spacer(),
-                        Row(
-                          children: [
-                            Wrap(
-                              spacing: 5,
-                              runSpacing: 5,
-                              children: [10, 25, 50].map((discount) {
-                                final isSelected =
-                                    state.getdiscount == discount;
-                                return ElevatedButton.icon(
-                                  onPressed: () {
-                                    if (customDiscountController
-                                        .text
-                                        .isNotEmpty) {
-                                      customDiscountController.clear();
-                                    }
-                                    context.read<PaymentBloc>().add(
-                                      PaymentAdjust(discount: discount),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.check_rounded,
-                                    size: 15,
-                                  ),
-                                  label: Text(
-                                    "$discount%",
-                                    style: isSelected
-                                        ? lv05TextStyleWhite
-                                        : lv05TextStyle,
-                                  ),
-                                  style: ButtonStyle(
-                                    shape: WidgetStatePropertyAll(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadiusGeometry.circular(10),
-                                      ),
-                                    ),
-                                    minimumSize: WidgetStatePropertyAll(
-                                      Size(0, 0),
-                                    ),
-                                    padding: const WidgetStatePropertyAll(
-                                      EdgeInsets.all(7),
-                                    ),
-                                    backgroundColor: WidgetStatePropertyAll(
-                                      isSelected
-                                          ? AppColor.primary
-                                          : Colors.white,
-                                    ),
-                                    iconColor: WidgetStatePropertyAll(
-                                      isSelected ? Colors.white : Colors.black,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 5),
-                        SizedBox(
-                          width: 50,
-                          child: TextField(
-                            controller: customDiscountController,
-                            textAlign: TextAlign.right,
-                            keyboardType: TextInputType.number,
-                            style: lv05TextStyle,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              suffixText: "%",
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              labelText: "Diskon",
-                              labelStyle: lv05TextStyle,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              TextInputFormatter.withFunction((
-                                oldValue,
-                                newValue,
-                              ) {
-                                final customDiscount = newValue.text;
-                                final intValue =
-                                    int.tryParse(
-                                      customDiscount.isEmpty
-                                          ? "0"
-                                          : customDiscount,
-                                    ) ??
-                                    0;
-                                if (intValue > 100) {
-                                  customSnackBar(
-                                    context,
-                                    "Jumlah melebihi 100%",
-                                  );
-                                  return oldValue;
-                                }
-                                context.read<PaymentBloc>().add(
-                                  PaymentAdjust(discount: intValue),
-                                );
-                                return newValue;
-                              }),
-                            ],
-                          ),
-                        ),
-                      ],
+                    UIPaymentDateInvoiceCustomerOperator(),
+                    UIPaymentDiscount(
+                      customDiscountController: customDiscountController,
                     ),
-
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text("PPN", style: lv1TextStyle),
-                        ),
-                        Text(":", style: lv1TextStyle),
-                        Spacer(),
-                        Row(
-                          children: [
-                            Wrap(
-                              spacing: 5,
-                              runSpacing: 5,
-                              children: [11, 25, 30].map((ppn) {
-                                final isSelected = state.getppn == ppn;
-                                return ElevatedButton.icon(
-                                  onPressed: () {
-                                    if (customPPNController.text.isNotEmpty) {
-                                      customPPNController.clear();
-                                    }
-                                    context.read<PaymentBloc>().add(
-                                      PaymentAdjust(ppn: ppn),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.check_rounded,
-                                    size: 15,
-                                  ),
-                                  label: Text(
-                                    "$ppn%",
-                                    style: isSelected
-                                        ? lv05TextStyleWhite
-                                        : lv05TextStyle,
-                                  ),
-                                  style: ButtonStyle(
-                                    shape: WidgetStatePropertyAll(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadiusGeometry.circular(10),
-                                      ),
-                                    ),
-                                    minimumSize: WidgetStatePropertyAll(
-                                      Size(0, 0),
-                                    ),
-                                    padding: const WidgetStatePropertyAll(
-                                      EdgeInsets.all(7),
-                                    ),
-                                    backgroundColor: WidgetStatePropertyAll(
-                                      isSelected
-                                          ? AppColor.primary
-                                          : Colors.white,
-                                    ),
-                                    iconColor: WidgetStatePropertyAll(
-                                      isSelected ? Colors.white : Colors.black,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 5),
-                        SizedBox(
-                          width: 50,
-                          child: TextField(
-                            controller: customPPNController,
-                            textAlign: TextAlign.right,
-                            keyboardType: TextInputType.number,
-                            style: lv05TextStyle,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              suffixText: "%",
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              labelText: "PPN",
-                              labelStyle: lv05TextStyle,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              TextInputFormatter.withFunction((
-                                oldValue,
-                                newValue,
-                              ) {
-                                final customPpn = newValue.text;
-                                final intValue =
-                                    int.tryParse(
-                                      customPpn.isEmpty ? "0" : customPpn,
-                                    ) ??
-                                    0;
-                                if (intValue > 100) {
-                                  customSnackBar(
-                                    context,
-                                    "Jumlah melebihi 100%",
-                                  );
-                                  return oldValue;
-                                }
-                                context.read<PaymentBloc>().add(
-                                  PaymentAdjust(ppn: intValue),
-                                );
-                                return newValue;
-                              }),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                    UIPaymentPPN(customPPNController: customPPNController),
                     const SizedBox(height: 10),
                     TextField(
                       style: lv05TextStyle,
@@ -337,71 +131,116 @@ class _UISellPaymentState extends State<UISellPayment> {
                     ),
                     const SizedBox(height: 10),
                     Text("Tipe Pembayaran", style: lv1TextStyleBold),
-                    Wrap(
-                      spacing: 15,
-                      runSpacing: 5,
-                      children: ["Cash", "Debit", "E-Wallet", "Split"]
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                            final index = entry.key;
-                            final paymentMethod = entry.value;
-                            final isSelected =
-                                state.getpaymentMethod == paymentMethod;
-                            return ElevatedButton.icon(
-                              onPressed: () {
-                                _gotoPage(index);
-                                context.read<PaymentBloc>().add(
-                                  PaymentAdjust(paymentMethod: paymentMethod),
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.payment_outlined,
-                                size: 15,
-                              ),
-                              label: Text(
-                                "$paymentMethod",
-                                style: isSelected
-                                    ? lv05TextStyleWhite
-                                    : lv05TextStyle,
-                              ),
-                              style: ButtonStyle(
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      10,
-                                    ),
-                                  ),
-                                ),
-                                minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                                padding: const WidgetStatePropertyAll(
-                                  EdgeInsets.all(7),
-                                ),
-                                backgroundColor: WidgetStatePropertyAll(
-                                  isSelected ? AppColor.primary : Colors.white,
-                                ),
-                                iconColor: WidgetStatePropertyAll(
-                                  isSelected ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            );
-                          })
-                          .toList(),
+                    UIPaymentPaymentMethod(
+                      gotoPage: (value) => _gotoPage(value),
                     ),
                     SizedBox(
                       height: 100,
+                      width: 300,
                       child: PageView(
                         controller: pageController,
                         physics: NeverScrollableScrollPhysics(),
                         children: [
-                          QuickPayWidget(
-                            totalTransaksi: state.gettotal,
-                            onQuickPaySelected: (amount) {
-                              print('Uang yang dipilih: $amount');
-                            },
+                          QuicPayWidgetAndCustomPay(),
+
+                          Padding(
+                            padding: EdgeInsetsGeometry.all(5),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: DropdownButtonFormField(
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      label: Text(
+                                        "Daftar Bank",
+                                        style: lv05TextStyle,
+                                      ),
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.always,
+                                    ),
+                                    items: listBank
+                                        .map(
+                                          (map) => DropdownMenuItem(
+                                            value: map,
+                                            child: Text(
+                                              map,
+                                              style: lv05TextStyle,
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (value) {
+                                      context.read<PaymentBloc>().add(
+                                        PaymentAdjust(paymentMethod: value),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  flex: 1,
+                                  child: TextField(
+                                    controller: chargController,
+                                    textAlign: TextAlign.right,
+                                    keyboardType: TextInputType.number,
+                                    style: lv05TextStyle,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                      suffixText: "%",
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.always,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      labelText: "PPN",
+                                      labelStyle: lv05TextStyle,
+                                    ),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      TextInputFormatter.withFunction((
+                                        oldValue,
+                                        newValue,
+                                      ) {
+                                        final customPpn = newValue.text;
+                                        final intValue =
+                                            int.tryParse(
+                                              customPpn.isEmpty
+                                                  ? "0"
+                                                  : customPpn,
+                                            ) ??
+                                            0;
+                                        if (intValue > 100) {
+                                          customSnackBar(
+                                            context,
+                                            "Jumlah melebihi 100%",
+                                          );
+                                          return oldValue;
+                                        }
+                                        context.read<PaymentBloc>().add(
+                                          PaymentAdjust(charge: intValue),
+                                        );
+                                        return newValue;
+                                      }),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          Text("Debit"),
-                          Text("E-Wallet"),
+                          Text("QRIS"),
                           Text("Split"),
                         ],
                       ),
@@ -492,11 +331,26 @@ class _UISellPaymentState extends State<UISellPayment> {
                   flex: 1,
                   child: Column(
                     children: [
-                      _buttonIcon("Tempo", Icon(Icons.timer_outlined)),
+                      _buttonIcon(
+                        "Tempo",
+                        Icon(Icons.timer_outlined, color: Colors.black),
+                        lv05TextStyle,
+                        Colors.white,
+                      ),
                       const SizedBox(height: 10),
-                      _buttonIcon("Batal", Icon(Icons.arrow_back_rounded)),
+                      _buttonIcon(
+                        "Batal",
+                        Icon(Icons.arrow_back_rounded, color: Colors.white),
+                        lv05TextStyleWhite,
+                        Colors.red,
+                      ),
                       const SizedBox(height: 10),
-                      _buttonIcon("Bayar", Icon(Icons.attach_money_rounded)),
+                      _buttonIcon(
+                        "Bayar",
+                        Icon(Icons.attach_money_rounded, color: Colors.white),
+                        lv05TextStyleWhite,
+                        AppColor.primary,
+                      ),
                     ],
                   ),
                 ),
@@ -512,11 +366,17 @@ class _UISellPaymentState extends State<UISellPayment> {
     return;
   }
 
-  Widget _buttonIcon(String text, Icon icon) {
+  Widget _buttonIcon(
+    String text,
+    Icon icon,
+    TextStyle textStyle,
+    Color backgroundColor,
+  ) {
     return SizedBox(
       width: 80,
       child: ElevatedButton.icon(
         style: ButtonStyle(
+          backgroundColor: WidgetStatePropertyAll(backgroundColor),
           minimumSize: WidgetStatePropertyAll(Size(0, 0)),
           padding: WidgetStatePropertyAll(
             EdgeInsets.symmetric(vertical: 15, horizontal: 8),
@@ -528,7 +388,7 @@ class _UISellPaymentState extends State<UISellPayment> {
           ),
         ),
         onPressed: () {},
-        label: Text(text, style: lv05TextStyle),
+        label: Text(text, style: textStyle),
         icon: icon,
       ),
     );
@@ -541,18 +401,6 @@ class _UISellPaymentState extends State<UISellPayment> {
     return Row(
       children: [
         SizedBox(width: 110, child: Text(text, style: textStyle)),
-        Text(":", style: textStyle),
-        const Spacer(),
-        Text(value, style: textStyle),
-      ],
-    );
-  }
-
-  Widget _rowContent(String text, String value) {
-    TextStyle textStyle = text == "Total" ? lv2textStyleHarga : lv1TextStyle;
-    return Row(
-      children: [
-        SizedBox(width: 100, child: Text(text, style: textStyle)),
         Text(":", style: textStyle),
         const Spacer(),
         Text(value, style: textStyle),

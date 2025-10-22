@@ -55,9 +55,7 @@ class _UiSellState extends State<UiSell> {
             Row(
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {});
-                  },
+                  onPressed: () {},
                   label: Text("Menu", style: lv05TextStyleWhite),
                   icon: Icon(Icons.menu_rounded, color: Colors.white, size: 20),
                   style: ButtonStyle(
@@ -116,7 +114,7 @@ class _UiSellState extends State<UiSell> {
                 ),
                 const SizedBox(width: 5),
                 SizedBox(width: 140, child: UISellDropDownCabang()),
-                Expanded(flex: 2, child: UISellSavedCart()),
+                SizedBox(width: 50, child: UISellSavedCart()),
               ],
             ),
             Expanded(child: UISellGridViewItem()),

@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
+import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
-class QuickPayWidget extends StatelessWidget {
-  final double totalTransaksi;
-  final Function(double) onQuickPaySelected;
+class QuicPayWidgetAndCustomPay extends StatefulWidget {
+  const QuicPayWidgetAndCustomPay({super.key});
 
-  const QuickPayWidget({
-    Key? key,
-    required this.totalTransaksi,
-    required this.onQuickPaySelected,
-  }) : super(key: key);
+  @override
+  State<QuicPayWidgetAndCustomPay> createState() =>
+      _QuicPayWidgetAndCustomPayState();
+}
+
+class _QuicPayWidgetAndCustomPayState extends State<QuicPayWidgetAndCustomPay> {
+  final payController = TextEditingController();
+  final selectedAmount = ValueNotifier<double>(0);
 
   List<double> _generateQuickPayOptions(double total) {
     if (total <= 0) return [];
 
     List<double> options = [];
 
-    // 1. Opsi
+    // 1.
     options.add(total);
 
-    // 2. Opsi
+    // 2.
     double roundedUp = (total / 1000).ceil() * 1000;
     if (roundedUp > total && roundedUp <= total + 5000) {
       options.add(roundedUp);
@@ -61,50 +66,132 @@ class QuickPayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<double> quickPayOptions = _generateQuickPayOptions(totalTransaksi);
-    final selectedAmount = ValueNotifier<double>(0);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Uang diterima', style: lv05TextStyle),
-        const SizedBox(height: 10),
-        Wrap(
-          spacing: 5,
-          runSpacing: 5,
-          children: quickPayOptions.map((amount) {
-            return ValueListenableBuilder(
-              valueListenable: selectedAmount,
-              builder: (context, value, child) {
-                return OutlinedButton(
-                  onPressed: () {
-                    selectedAmount.value = amount;
-                    context.read<PaymentBloc>().add(
-                      PaymentAdjust(billPaid: amount),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: value == amount
-                        ? AppColor.primary
-                        : Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 5,
+    return SizedBox(
+      width: 200,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Uang diterima', style: lv05TextStyle),
+          Align(
+            alignment: Alignment.center,
+            child: BlocSelector<PaymentBloc, PaymentState, (double?, double?)>(
+              selector: (state) {
+                if (state is PaymentLoaded) {
+                  return (
+                    state.transaction_sell!.gettotal,
+                    state.transaction_sell!.getbillPaid,
+                  );
+                }
+                return (null, null);
+              },
+              builder: (context, state) {
+                List<double> quickPayOptions = _generateQuickPayOptions(
+                  state.$1!,
+                );
+                selectedAmount.value = state.$2!;
+                payController.text = formatQty(state.$2!);
+                return Column(
+                  children: [
+                    Wrap(
+                      spacing: 5,
+                      runSpacing: 5,
+                      children: quickPayOptions.map((amount) {
+                        return ValueListenableBuilder(
+                          valueListenable: selectedAmount,
+                          builder: (context, value, child) {
+                            return OutlinedButton(
+                              onPressed: () {
+                                selectedAmount.value =
+                                    selectedAmount.value == amount ? 0 : amount;
+                                context.read<PaymentBloc>().add(
+                                  PaymentAdjust(billPaid: selectedAmount.value),
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: value == amount
+                                    ? AppColor.primary
+                                    : Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 5,
+                                ),
+                                side: const BorderSide(
+                                  color: Colors.grey,
+                                  width: 1,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                formatUang(amount),
+                                style: value == amount
+                                    ? lv05TextStyleWhite
+                                    : lv05TextStyle,
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
                     ),
-                    side: const BorderSide(color: Colors.grey, width: 1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text("Sesuaikan Nominal: ", style: lv05TextStyle),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            style: lv05TextStyle,
+                            keyboardType: TextInputType.number,
+                            controller: payController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 5,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              label: Text(
+                                "Nominal Bayar",
+                                style: lv05TextStyle,
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              TextInputFormatter.withFunction((
+                                oldValue,
+                                newValue,
+                              ) {
+                                if (newValue.text.length > 8) {
+                                  customSnackBar(
+                                    context,
+                                    "Jumlah melebihi batas",
+                                  );
+                                  return oldValue;
+                                }
+                                final value =
+                                    double.tryParse(newValue.text) ?? 0;
+                                context.read<PaymentBloc>().add(
+                                  PaymentAdjust(billPaid: value),
+                                );
+                                return newValue;
+                              }),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  child: Text(
-                    formatUang(amount),
-                    style: value == amount ? lv05TextStyleWhite : lv05TextStyle,
-                  ),
+                  ],
                 );
               },
-            );
-          }).toList(),
-        ),
-      ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
