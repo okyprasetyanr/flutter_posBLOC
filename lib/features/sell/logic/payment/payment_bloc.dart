@@ -8,6 +8,7 @@ import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction_sell.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -16,10 +17,26 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
     on<PaymentGetItem>(_oPaymentGetItem);
     on<PaymentAdjust>(_onPaymentAdjust);
+    on<PaymentResetSplit>(_onPaymentResetSplit);
+    on<PaymentResetTransaction>(_onPaymentResetTransaction);
     on<PaymentNote>(
       _onPaymentNote,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
+  }
+
+  FutureOr<void> _onPaymentResetSplit(
+    PaymentResetSplit event,
+    Emitter<PaymentState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is PaymentLoaded) {
+      final dataTransaction = currentState.transaction_sell!.copyWith();
+      dataTransaction.getdataSplit.clear();
+
+      emit(currentState.copyWith(transaction_sell: dataTransaction));
+      debugPrint("Log PaymentBloc: Split data dihapus");
+    }
   }
 
   FutureOr<void> _onPaymentAdjust(
@@ -30,9 +47,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     if (currentState is PaymentLoaded) {
       final dataTransaction = currentState.transaction_sell!.copyWith();
       int discount = dataTransaction.getdiscount;
-      int charge = dataTransaction.getcharge;
+      int charge = 0;
       int ppn = dataTransaction.getppn;
       String paymentMethod = dataTransaction.getpaymentMethod;
+      List<ModelSplit>? dataSplit = dataTransaction.getdataSplit;
+      String? bankName;
       double billPaid = 0;
       double total = 0;
 
@@ -53,12 +72,64 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       }
 
       if (event.billPaid != null) {
-        paymentMethod == "Split"
-            ? billPaid = billPaid + event.billPaid!
-            : billPaid = event.billPaid!;
+        billPaid = event.billPaid!;
       }
 
-      debugPrint("Log PaymentBloc: Ajust: $paymentMethod, $charge");
+      if (event.bankName != null) {
+        bankName = event.bankName;
+      }
+
+      if (paymentMethod == "Split") {
+        final splitPayments = {
+          "Cash": event.billPaidSplitCash,
+          "Debit": event.billPaidSplitDebit,
+        };
+
+        for (final entry in splitPayments.entries) {
+          final name = entry.key;
+          final amount = entry.value;
+          if (amount == null) continue;
+
+          int indexdataSplit = dataSplit.indexWhere(
+            (e) => e.getpaymentName == name,
+          );
+
+          if (indexdataSplit != -1) {
+            dataSplit[indexdataSplit] = dataSplit[indexdataSplit].copyWith(
+              paymentTotal: amount,
+            );
+          } else {
+            dataSplit.add(ModelSplit(paymentName: name, paymentTotal: amount));
+          }
+        }
+        for (final data in dataSplit) {
+          billPaid += data.getpaymentTotal;
+        }
+        if (event.bankName != null) {
+          int indexdataSplit = dataSplit.indexWhere(
+            (e) => e.getpaymentName == "Debit",
+          );
+          if (indexdataSplit != -1) {
+            dataSplit[indexdataSplit] = dataSplit[indexdataSplit].copyWith(
+              paymentDebitName: event.bankName,
+            );
+          } else {
+            dataSplit.add(
+              ModelSplit(
+                paymentName: "Debit",
+                paymentTotal: 0,
+                paymentDebitName: event.bankName,
+              ),
+            );
+          }
+          bankName = null;
+        }
+        debugPrint(
+          "Log PaymentBloc: Ajust Split: ${event.bankName} ${dataSplit}",
+        );
+      }
+
+      debugPrint("Log PaymentBloc: Ajust: $paymentMethod, $bankName");
 
       final totalOrdered = dataTransaction.getsubTotal;
       final totalDiscount = totalOrdered * (discount / 100);
@@ -69,6 +140,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       emit(
         currentState.copyWith(
           transaction_sell: dataTransaction.copyWith(
+            bankName: bankName,
             billPaid: billPaid,
             discount: discount,
             ppn: ppn,
@@ -78,6 +150,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             totalCharge: totalCharge,
             totalDiscount: totalDiscount,
             totalPpn: totalPpn,
+            dataSplit: dataSplit,
           ),
         ),
       );
@@ -121,6 +194,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         PaymentLoaded(
           itemOrdered: itemOrdered,
           transaction_sell: ModelTransactionSell(
+            dataSplit: [],
             billPaid: 0,
             note: "",
             paymentMethod: "Cash",
@@ -159,6 +233,13 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           ),
         ),
       );
+    }
+  }
+
+  FutureOr<void> _onPaymentResetTransaction(event, Emitter<PaymentState> emit) {
+    final currentState = state;
+    if (currentState is PaymentLoaded) {
+      emit(currentState.copyWith(transaction_sell: null));
     }
   }
 }

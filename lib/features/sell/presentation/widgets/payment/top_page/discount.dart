@@ -18,7 +18,7 @@ class UIPaymentDiscount extends StatelessWidget {
     return BlocSelector<PaymentBloc, PaymentState, ModelTransactionSell?>(
       selector: (state) {
         if (state is PaymentLoaded) {
-          return state.transaction_sell!;
+          return state.transaction_sell;
         }
         return null;
       },

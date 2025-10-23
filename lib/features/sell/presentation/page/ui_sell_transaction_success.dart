@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
+import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 
 class UISellTransactionSuccess extends StatelessWidget {
@@ -14,9 +17,12 @@ class UISellTransactionSuccess extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           Navigator.popUntil(context, ModalRoute.withName('/sell'));
-          final bloc = context.read<SellBloc>();
-          bloc.add(SellResetOrderedItem());
-          bloc.add(SellResetSelectedItem());
+          final blocSell = context.read<SellBloc>();
+          blocSell.add(SellResetOrderedItem());
+          blocSell.add(SellResetSelectedItem());
+
+          final blocPayment = context.read<PaymentBloc>();
+          blocPayment.add(PaymentResetTransaction());
         }
       },
       child: LayoutTopBottom(
@@ -29,7 +35,18 @@ class UISellTransactionSuccess extends StatelessWidget {
   }
 
   Widget layoutTop() {
-    return Text("data");
+    return Column(
+      children: [
+        Text("Transaksi Sukses!", style: transactionSuccessTextStyle),
+        Padding(
+          padding: EdgeInsets.all(30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget layoutBottom() {

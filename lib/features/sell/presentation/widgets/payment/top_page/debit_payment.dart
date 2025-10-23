@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
+import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction_sell.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
@@ -11,10 +14,12 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 class UIPaymentDebitPayment extends StatelessWidget {
   final bool split;
   final TextEditingController chargeController;
+  final TextEditingController payDebitController;
   const UIPaymentDebitPayment({
     super.key,
     required this.chargeController,
     required this.split,
+    required this.payDebitController,
   });
 
   @override
@@ -34,16 +39,34 @@ class UIPaymentDebitPayment extends StatelessWidget {
       "Bank Jago",
       "BSI (Syariah Indonesia)",
     ];
-    return BlocSelector<PaymentBloc, PaymentState, ModelTransactionSell?>(
+    return BlocSelector<
+      PaymentBloc,
+      PaymentState,
+      (ModelTransactionSell?, List<ModelSplit>?)
+    >(
       selector: (state) {
         if (state is PaymentLoaded) {
-          return state.transaction_sell!;
+          return (
+            state.transaction_sell,
+            state.transaction_sell?.getdataSplit ?? [],
+          );
         }
-        return null;
+        return (null, []);
       },
       builder: (context, state) {
-        if (state == null) {
+        if (state.$1 == null) {
           return SizedBox.shrink();
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            payDebitController.text = formatQty(
+              state.$2
+                      ?.firstWhereOrNull(
+                        (element) => element.getpaymentName == "Debit",
+                      )
+                      ?.getpaymentTotal ??
+                  0,
+            );
+          });
         }
         return Padding(
           padding: EdgeInsetsGeometry.all(5),
@@ -77,7 +100,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
                           .toList(),
                       onChanged: (value) {
                         context.read<PaymentBloc>().add(
-                          PaymentAdjust(paymentMethod: value),
+                          PaymentAdjust(bankName: value),
                         );
                       },
                     ),
@@ -101,7 +124,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        labelText: "PPN",
+                        labelText: "Charge",
                         labelStyle: lv05TextStyle,
                       ),
                       inputFormatters: [
@@ -137,6 +160,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
                           const SizedBox(width: 5),
                           Expanded(
                             child: TextField(
+                              controller: payDebitController,
                               textAlign: TextAlign.right,
                               style: lv05TextStyle,
                               keyboardType: TextInputType.number,
@@ -172,9 +196,16 @@ class UIPaymentDebitPayment extends StatelessWidget {
                                   }
                                   final value =
                                       double.tryParse(newValue.text) ?? 0;
-                                  context.read<PaymentBloc>().add(
-                                    PaymentAdjust(billPaid: value),
-                                  );
+
+                                  split
+                                      ? context.read<PaymentBloc>().add(
+                                          PaymentAdjust(
+                                            billPaidSplitDebit: value,
+                                          ),
+                                        )
+                                      : context.read<PaymentBloc>().add(
+                                          PaymentAdjust(billPaid: value),
+                                        );
                                   return newValue;
                                 }),
                               ],

@@ -27,15 +27,21 @@ class UISellPayment extends StatefulWidget {
 }
 
 class _UISellPaymentState extends State<UISellPayment> {
+  final payController = TextEditingController();
+  final selectedAmount = ValueNotifier<double>(0);
   final customDiscountController = TextEditingController();
   final customPPNController = TextEditingController();
   final chargeController = TextEditingController();
+  final payDebitController = TextEditingController();
 
   @override
   void dispose() {
+    payDebitController.dispose();
     customDiscountController.dispose();
     customPPNController.dispose();
     chargeController.dispose();
+    payController.dispose();
+    selectedAmount.dispose();
     super.dispose();
   }
 
@@ -48,6 +54,11 @@ class _UISellPaymentState extends State<UISellPayment> {
   final pageController = PageController();
 
   void _gotoPage(int page) {
+    context.read<PaymentBloc>().add(PaymentResetSplit());
+    chargeController.clear();
+    payController.clear();
+    payDebitController.clear();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (pageController.hasClients) {
         pageController.animateToPage(
@@ -77,7 +88,7 @@ class _UISellPaymentState extends State<UISellPayment> {
           child: BlocSelector<PaymentBloc, PaymentState, ModelTransactionSell?>(
             selector: (state) {
               if (state is PaymentLoaded) {
-                return state.transaction_sell!;
+                return state.transaction_sell;
               }
               return null;
             },
@@ -129,11 +140,16 @@ class _UISellPaymentState extends State<UISellPayment> {
                         children: [
                           SingleChildScrollView(
                             scrollDirection: Axis.vertical,
-                            child: UIPaymentCashPayment(split: false),
+                            child: UIPaymentCashPayment(
+                              split: false,
+                              payController: payController,
+                              selectedAmount: selectedAmount,
+                            ),
                           ),
                           UIPaymentDebitPayment(
                             split: false,
                             chargeController: chargeController,
+                            payDebitController: payDebitController,
                           ),
                           Text("QRIS"),
                           SingleChildScrollView(
@@ -153,7 +169,11 @@ class _UISellPaymentState extends State<UISellPayment> {
                                   child: Column(
                                     children: [
                                       Text("Cash", style: lv05TextStyleBold),
-                                      UIPaymentCashPayment(split: true),
+                                      UIPaymentCashPayment(
+                                        split: true,
+                                        payController: payController,
+                                        selectedAmount: selectedAmount,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -173,6 +193,7 @@ class _UISellPaymentState extends State<UISellPayment> {
                                       UIPaymentDebitPayment(
                                         split: true,
                                         chargeController: chargeController,
+                                        payDebitController: payDebitController,
                                       ),
                                     ],
                                   ),
@@ -214,7 +235,7 @@ class _UISellPaymentState extends State<UISellPayment> {
                         >(
                           selector: (state) {
                             if (state is PaymentLoaded) {
-                              return state.transaction_sell!;
+                              return state.transaction_sell;
                             }
                             return null;
                           },
@@ -283,7 +304,14 @@ class _UISellPaymentState extends State<UISellPayment> {
                         Icon(Icons.arrow_back_rounded, color: Colors.white),
                         lv05TextStyleWhite,
                         Colors.red,
-                        () {},
+                        () {
+                          Navigator.popUntil(
+                            context,
+                            ModalRoute.withName('/sell'),
+                          );
+                          final blocPayment = context.read<PaymentBloc>();
+                          blocPayment.add(PaymentResetTransaction());
+                        },
                       ),
                       const SizedBox(height: 10),
                       _buttonIcon(
@@ -292,14 +320,15 @@ class _UISellPaymentState extends State<UISellPayment> {
                         lv05TextStyleWhite,
                         AppColor.primary,
                         () {
-                          if ((context.read<PaymentBloc>().state
+                          final billPaid =
+                              (context.read<PaymentBloc>().state
                                       as PaymentLoaded)
-                                  .transaction_sell!
-                                  .getbillPaid ==
-                              0) {
+                                  .transaction_sell!;
+                          if (billPaid.getbillPaid == 0 ||
+                              billPaid.getbillPaid < billPaid.gettotal) {
                             return customSnackBar(
                               context,
-                              "Nominal Pembayaran masih Kosong!",
+                              "Nominal Pembayaran tidak Sesuai!",
                             );
                           }
                           navUpDownTransition(

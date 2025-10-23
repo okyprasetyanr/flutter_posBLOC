@@ -20,6 +20,12 @@ final titleTextStyle = GoogleFonts.poppins(
   fontSize: 17,
 );
 
+final transactionSuccessTextStyle = GoogleFonts.poppins(
+  color: AppColor.primary,
+  fontWeight: FontWeight.w900,
+  fontSize: 20,
+);
+
 final buttonTextStyle = GoogleFonts.poppins(
   color: Colors.white,
   fontWeight: FontWeight.w600,

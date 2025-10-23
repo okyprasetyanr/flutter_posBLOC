@@ -3,18 +3,24 @@ import 'package:flutter/widgets.dart';
 class PaymentEvent {}
 
 class PaymentAdjust extends PaymentEvent {
+  final String? bankName;
   final int? discount;
   final int? ppn;
   final String? paymentMethod;
   final int? charge;
   final double? billPaid;
+  final double? billPaidSplitCash;
+  final double? billPaidSplitDebit;
 
   PaymentAdjust({
+    this.billPaidSplitCash,
+    this.billPaidSplitDebit,
     this.discount,
     this.ppn,
     this.paymentMethod,
     this.charge,
     this.billPaid,
+    this.bankName,
   });
 }
 
@@ -29,3 +35,7 @@ class PaymentGetItem extends PaymentEvent {
 
   PaymentGetItem({required this.context});
 }
+
+class PaymentResetSplit extends PaymentEvent {}
+
+class PaymentResetTransaction extends PaymentEvent {}
