@@ -4,7 +4,6 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
-import 'package:flutter_pos/features/sell/presentation/page/ui_sell_payment.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -110,7 +109,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                                                 Container(
                                                   decoration: BoxDecoration(
                                                     color:
-                                                        AppColor.primarylight,
+                                                        AppColor.primarylight3,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           5,

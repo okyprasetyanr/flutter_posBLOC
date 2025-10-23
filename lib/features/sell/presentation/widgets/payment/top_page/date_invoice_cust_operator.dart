@@ -4,6 +4,7 @@ import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
 import 'package:flutter_pos/model_data/model_transaction_sell.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/row_content.dart';
 
 class UIPaymentDateInvoiceCustomerOperator extends StatelessWidget {
   const UIPaymentDateInvoiceCustomerOperator({super.key});
@@ -23,28 +24,16 @@ class UIPaymentDateInvoiceCustomerOperator extends StatelessWidget {
         }
         return Column(
           children: [
-            _rowContent("Tanggal", "${state.getdate}"),
+            rowContent("Tanggal", "${state.getdate}"),
             const SizedBox(height: 10),
-            _rowContent("Nomor Faktur", "${state.getinvoice}"),
+            rowContent("Nomor Faktur", "${state.getinvoice}"),
             const SizedBox(height: 10),
-            _rowContent("Customer", "${state.getnameCustomer}"),
+            rowContent("Customer", "${state.getnameCustomer}"),
             const SizedBox(height: 10),
-            _rowContent("Operator", "${state.getnameOperator}"),
+            rowContent("Operator", "${state.getnameOperator}"),
           ],
         );
       },
-    );
-  }
-
-  Widget _rowContent(String text, String value) {
-    TextStyle textStyle = text == "Total" ? lv2textStyleHarga : lv1TextStyle;
-    return Row(
-      children: [
-        SizedBox(width: 100, child: Text(text, style: textStyle)),
-        Text(":", style: textStyle),
-        const Spacer(),
-        Text(value, style: textStyle),
-      ],
     );
   }
 }

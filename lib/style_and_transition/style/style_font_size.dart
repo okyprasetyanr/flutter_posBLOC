@@ -22,8 +22,28 @@ final titleTextStyle = GoogleFonts.poppins(
 
 final transactionSuccessTextStyle = GoogleFonts.poppins(
   color: AppColor.primary,
-  fontWeight: FontWeight.w900,
+  fontWeight: FontWeight.w700,
   fontSize: 20,
+  shadows: [
+    Shadow(
+      offset: Offset(2, 2),
+      blurRadius: 4,
+      color: Colors.black.withValues(alpha: 0.2),
+    ),
+  ],
+);
+
+final transactionSuccessPaidTextStyle = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w600,
+  fontSize: 12,
+  shadows: [
+    Shadow(
+      offset: Offset(2, 2),
+      blurRadius: 4,
+      color: AppColor.primary.withValues(alpha: 0.4),
+    ),
+  ],
 );
 
 final buttonTextStyle = GoogleFonts.poppins(
