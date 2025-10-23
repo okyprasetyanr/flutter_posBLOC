@@ -9,10 +9,12 @@ import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/
 import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/discount.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/payment_method.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/ppn.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/quick_pay_widget.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/cash_payment.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/debit_payment.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_sell.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -27,13 +29,13 @@ class UISellPayment extends StatefulWidget {
 class _UISellPaymentState extends State<UISellPayment> {
   final customDiscountController = TextEditingController();
   final customPPNController = TextEditingController();
-  final chargController = TextEditingController();
+  final chargeController = TextEditingController();
 
   @override
   void dispose() {
     customDiscountController.dispose();
     customPPNController.dispose();
-    chargController.dispose();
+    chargeController.dispose();
     super.dispose();
   }
 
@@ -42,22 +44,6 @@ class _UISellPaymentState extends State<UISellPayment> {
     super.initState();
     context.read<PaymentBloc>().add(PaymentGetItem(context: context));
   }
-
-  final listBank = [
-    "BCA",
-    "BRI",
-    "Mandiri",
-    "BNI",
-    "BTN",
-    "CIMB Niaga",
-    "Permata",
-    "Danamon",
-    "BTPN / Jenius",
-    "BNC (Neo Commerce)",
-    "SeaBank",
-    "Bank Jago",
-    "BSI (Syariah Indonesia)",
-  ];
 
   final pageController = PageController();
 
@@ -135,116 +121,69 @@ class _UISellPaymentState extends State<UISellPayment> {
                       gotoPage: (value) => _gotoPage(value),
                     ),
                     SizedBox(
-                      height: 100,
-                      width: 300,
+                      height: 150,
+                      width: 340,
                       child: PageView(
                         controller: pageController,
                         physics: NeverScrollableScrollPhysics(),
                         children: [
-                          QuicPayWidgetAndCustomPay(),
-
-                          Padding(
-                            padding: EdgeInsetsGeometry.all(5),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: UIPaymentCashPayment(split: false),
+                          ),
+                          UIPaymentDebitPayment(
+                            split: false,
+                            chargeController: chargeController,
+                          ),
+                          Text("QRIS"),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
                               children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: DropdownButtonFormField(
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 3,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      label: Text(
-                                        "Daftar Bank",
-                                        style: lv05TextStyle,
-                                      ),
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.always,
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColor.primarymorelight,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: BoxBorder.all(
+                                      width: 1,
+                                      color: AppColor.primary,
                                     ),
-                                    items: listBank
-                                        .map(
-                                          (map) => DropdownMenuItem(
-                                            value: map,
-                                            child: Text(
-                                              map,
-                                              style: lv05TextStyle,
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                    onChanged: (value) {
-                                      context.read<PaymentBloc>().add(
-                                        PaymentAdjust(paymentMethod: value),
-                                      );
-                                    },
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text("Cash", style: lv05TextStyleBold),
+                                      UIPaymentCashPayment(split: true),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  flex: 1,
-                                  child: TextField(
-                                    controller: chargController,
-                                    textAlign: TextAlign.right,
-                                    keyboardType: TextInputType.number,
-                                    style: lv05TextStyle,
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 8,
-                                      ),
-                                      suffixText: "%",
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.always,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      labelText: "PPN",
-                                      labelStyle: lv05TextStyle,
+                                const SizedBox(height: 10),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColor.primarymorelight,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: BoxBorder.all(
+                                      width: 1,
+                                      color: AppColor.primary,
                                     ),
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      TextInputFormatter.withFunction((
-                                        oldValue,
-                                        newValue,
-                                      ) {
-                                        final customPpn = newValue.text;
-                                        final intValue =
-                                            int.tryParse(
-                                              customPpn.isEmpty
-                                                  ? "0"
-                                                  : customPpn,
-                                            ) ??
-                                            0;
-                                        if (intValue > 100) {
-                                          customSnackBar(
-                                            context,
-                                            "Jumlah melebihi 100%",
-                                          );
-                                          return oldValue;
-                                        }
-                                        context.read<PaymentBloc>().add(
-                                          PaymentAdjust(charge: intValue),
-                                        );
-                                        return newValue;
-                                      }),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text("Debit", style: lv05TextStyleBold),
+                                      UIPaymentDebitPayment(
+                                        split: true,
+                                        chargeController: chargeController,
+                                      ),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Text("QRIS"),
-                          Text("Split"),
                         ],
                       ),
                     ),
+                    const SizedBox(height: 50),
                   ],
                 ),
               );
@@ -336,6 +275,7 @@ class _UISellPaymentState extends State<UISellPayment> {
                         Icon(Icons.timer_outlined, color: Colors.black),
                         lv05TextStyle,
                         Colors.white,
+                        () {},
                       ),
                       const SizedBox(height: 10),
                       _buttonIcon(
@@ -343,6 +283,7 @@ class _UISellPaymentState extends State<UISellPayment> {
                         Icon(Icons.arrow_back_rounded, color: Colors.white),
                         lv05TextStyleWhite,
                         Colors.red,
+                        () {},
                       ),
                       const SizedBox(height: 10),
                       _buttonIcon(
@@ -350,6 +291,23 @@ class _UISellPaymentState extends State<UISellPayment> {
                         Icon(Icons.attach_money_rounded, color: Colors.white),
                         lv05TextStyleWhite,
                         AppColor.primary,
+                        () {
+                          if ((context.read<PaymentBloc>().state
+                                      as PaymentLoaded)
+                                  .transaction_sell!
+                                  .getbillPaid ==
+                              0) {
+                            return customSnackBar(
+                              context,
+                              "Nominal Pembayaran masih Kosong!",
+                            );
+                          }
+                          navUpDownTransition(
+                            context,
+                            '/selltransactionsuccess',
+                            false,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -371,6 +329,7 @@ class _UISellPaymentState extends State<UISellPayment> {
     Icon icon,
     TextStyle textStyle,
     Color backgroundColor,
+    Function() function,
   ) {
     return SizedBox(
       width: 80,
@@ -387,7 +346,7 @@ class _UISellPaymentState extends State<UISellPayment> {
             ),
           ),
         ),
-        onPressed: () {},
+        onPressed: function,
         label: Text(text, style: textStyle),
         icon: icon,
       ),

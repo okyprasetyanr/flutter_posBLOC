@@ -6,9 +6,14 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/presentation/page/ui_inventory.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
+import 'package:flutter_pos/features/sell/presentation/page/ui_sell.dart';
+import 'package:flutter_pos/features/sell/presentation/page/ui_sell_payment.dart';
+import 'package:flutter_pos/features/sell/presentation/page/ui_sell_transaction_success.dart';
 import 'package:flutter_pos/firebase_options.dart';
+import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/screen_main_menu.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
@@ -31,7 +36,8 @@ void main() async {
           BlocProvider(create: (context) => PaymentBloc()),
         ],
         child: MaterialApp(
-          home: const ScreenLogin(),
+          initialRoute: '/login',
+          routes: routesPage,
           debugShowCheckedModeBanner: false,
         ),
       ),
@@ -243,7 +249,7 @@ class _MainAppState extends State<ScreenLogin> {
                                           if (!mounted) return;
                                           navUpDownTransition(
                                             context,
-                                            ScreenMainMenu(),
+                                            '/mainmenu',
                                             true,
                                           );
                                         })

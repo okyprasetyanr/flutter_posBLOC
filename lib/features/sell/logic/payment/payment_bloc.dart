@@ -53,7 +53,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       }
 
       if (event.billPaid != null) {
-        billPaid = event.billPaid!;
+        paymentMethod == "Split"
+            ? billPaid = billPaid + event.billPaid!
+            : billPaid = event.billPaid!;
       }
 
       debugPrint("Log PaymentBloc: Ajust: $paymentMethod, $charge");
@@ -62,7 +64,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final totalDiscount = totalOrdered * (discount / 100);
       final totalPpn = totalOrdered * (ppn / 100);
       final totalCharge = totalOrdered * (charge / 100);
-      total = totalOrdered - totalDiscount - totalPpn - totalCharge;
+      total = totalOrdered - totalDiscount - totalPpn + totalCharge;
+
       emit(
         currentState.copyWith(
           transaction_sell: dataTransaction.copyWith(

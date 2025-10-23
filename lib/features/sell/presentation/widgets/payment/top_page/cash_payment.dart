@@ -9,15 +9,15 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
-class QuicPayWidgetAndCustomPay extends StatefulWidget {
-  const QuicPayWidgetAndCustomPay({super.key});
+class UIPaymentCashPayment extends StatefulWidget {
+  final bool split;
+  const UIPaymentCashPayment({super.key, required this.split});
 
   @override
-  State<QuicPayWidgetAndCustomPay> createState() =>
-      _QuicPayWidgetAndCustomPayState();
+  State<UIPaymentCashPayment> createState() => _UIPaymentCashPaymentState();
 }
 
-class _QuicPayWidgetAndCustomPayState extends State<QuicPayWidgetAndCustomPay> {
+class _UIPaymentCashPaymentState extends State<UIPaymentCashPayment> {
   final payController = TextEditingController();
   final selectedAmount = ValueNotifier<double>(0);
 
@@ -30,17 +30,12 @@ class _QuicPayWidgetAndCustomPayState extends State<QuicPayWidgetAndCustomPay> {
     options.add(total);
 
     // 2.
-    double roundedUp = (total / 1000).ceil() * 1000;
-    if (roundedUp > total && roundedUp <= total + 5000) {
-      options.add(roundedUp);
-    } else if (roundedUp <= total) {
-      options.add(total + 1000);
+    if (total < 20000 && !options.contains(20000)) {
+      options.add(20000.0);
     }
 
     // 3.
-    if (total < 20000 && !options.contains(20000)) {
-      options.add(20000.0);
-    } else if (total < 50000 && !options.contains(50000)) {
+    if (total < 50000 && !options.contains(50000)) {
       options.add(50000.0);
     } else if (total < 75000 && !options.contains(75000)) {
       options.add(75000.0);
@@ -65,86 +60,98 @@ class _QuicPayWidgetAndCustomPayState extends State<QuicPayWidgetAndCustomPay> {
   }
 
   @override
+  void dispose() {
+    payController.dispose();
+    selectedAmount.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Uang diterima', style: lv05TextStyle),
-          Align(
-            alignment: Alignment.center,
-            child: BlocSelector<PaymentBloc, PaymentState, (double?, double?)>(
-              selector: (state) {
-                if (state is PaymentLoaded) {
-                  return (
-                    state.transaction_sell!.gettotal,
-                    state.transaction_sell!.getbillPaid,
-                  );
-                }
-                return (null, null);
-              },
-              builder: (context, state) {
-                List<double> quickPayOptions = _generateQuickPayOptions(
-                  state.$1!,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Text('Uang diterima:', style: lv05TextStyle),
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: BlocSelector<PaymentBloc, PaymentState, (double?, double?)>(
+            selector: (state) {
+              if (state is PaymentLoaded) {
+                return (
+                  state.transaction_sell!.gettotal,
+                  state.transaction_sell!.getbillPaid,
                 );
+              }
+              return (null, null);
+            },
+            builder: (context, state) {
+              List<double> quickPayOptions = _generateQuickPayOptions(
+                state.$1!,
+              );
+              if (!widget.split) {
                 selectedAmount.value = state.$2!;
                 payController.text = formatQty(state.$2!);
-                return Column(
-                  children: [
-                    Wrap(
-                      spacing: 5,
-                      runSpacing: 5,
-                      children: quickPayOptions.map((amount) {
-                        return ValueListenableBuilder(
-                          valueListenable: selectedAmount,
-                          builder: (context, value, child) {
-                            return OutlinedButton(
-                              onPressed: () {
-                                selectedAmount.value =
-                                    selectedAmount.value == amount ? 0 : amount;
-                                context.read<PaymentBloc>().add(
-                                  PaymentAdjust(billPaid: selectedAmount.value),
-                                );
-                              },
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: value == amount
+              }
+              return Column(
+                children: [
+                  Wrap(
+                    spacing: 5,
+                    children: quickPayOptions.map((amount) {
+                      return ValueListenableBuilder(
+                        valueListenable: selectedAmount,
+                        builder: (context, value, child) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              selectedAmount.value =
+                                  selectedAmount.value == amount ? 0 : amount;
+                              context.read<PaymentBloc>().add(
+                                PaymentAdjust(billPaid: selectedAmount.value),
+                              );
+                            },
+                            style: ButtonStyle(
+                              elevation: WidgetStatePropertyAll(4),
+                              backgroundColor: WidgetStatePropertyAll(
+                                value == amount
                                     ? AppColor.primary
                                     : Colors.white,
-                                padding: const EdgeInsets.symmetric(
+                              ),
+                              minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                              padding: WidgetStatePropertyAll(
+                                const EdgeInsets.symmetric(
                                   horizontal: 8,
-                                  vertical: 5,
-                                ),
-                                side: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 1,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  vertical: 8,
                                 ),
                               ),
-                              child: Text(
-                                formatUang(amount),
-                                style: value == amount
-                                    ? lv05TextStyleWhite
-                                    : lv05TextStyle,
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
+                            ),
+                            child: Text(
+                              formatUang(amount),
+                              style: value == amount
+                                  ? lv05TextStyleWhite
+                                  : lv05TextStyle,
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: 300,
+                    child: Row(
                       children: [
-                        Text("Sesuaikan Nominal: ", style: lv05TextStyle),
-                        const SizedBox(width: 10),
+                        Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
+                        const SizedBox(width: 5),
                         Expanded(
                           child: TextField(
+                            textAlign: TextAlign.right,
                             style: lv05TextStyle,
                             keyboardType: TextInputType.number,
                             controller: payController,
                             decoration: InputDecoration(
+                              suffixText: ",00",
                               isDense: true,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -185,13 +192,13 @@ class _QuicPayWidgetAndCustomPayState extends State<QuicPayWidgetAndCustomPay> {
                         ),
                       ],
                     ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                ],
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

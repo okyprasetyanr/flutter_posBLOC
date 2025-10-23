@@ -167,7 +167,7 @@ class _UiSellState extends State<UiSell> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Sub Total:", style: lv05TextStylePrice),
+                        Text("Sub Total:", style: lv05TextStyleBold),
                         const SizedBox(width: 10),
                         SizedBox(
                           width: 80,
@@ -194,12 +194,7 @@ class _UiSellState extends State<UiSell> {
 
   Widget navigationGesture() {
     final contentNavGesture = [
-      {
-        "id": "sell",
-        "toContext": const UiSell(),
-        "text_menu": "Sell",
-        "onTap": () {},
-      },
+      {"id": "sell", "toContext": '/sell', "text_menu": "Sell", "onTap": () {}},
     ];
 
     return NavigationGesture(

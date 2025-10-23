@@ -1,8 +1,19 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_pos/routes/routes.dart';
 
-Future navUpDownTransition(BuildContext context, Widget page, bool replace) {
+final Map<String, WidgetBuilder> appRoutes = routesPage;
+
+Future navUpDownTransition(
+  BuildContext context,
+  String routeName,
+  bool replace,
+) {
+  final builder = appRoutes[routeName];
+  if (builder == null) throw Exception("Route $routeName tidak ditemukan");
+
   final route = PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => page,
+    settings: RouteSettings(name: routeName),
+    pageBuilder: (context, animation, secondaryAnimation) => builder(context),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
@@ -14,6 +25,7 @@ Future navUpDownTransition(BuildContext context, Widget page, bool replace) {
       return SlideTransition(position: offsetAnimation, child: child);
     },
   );
+
   if (replace) {
     return Navigator.pushReplacement(context, route);
   } else {

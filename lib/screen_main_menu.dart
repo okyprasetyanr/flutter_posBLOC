@@ -70,14 +70,14 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
       children: [
         gridViewMenu(
           () {
-            navUpDownTransition(context, UIInventory(), false);
+            navUpDownTransition(context, '/inventory', false);
           },
           Icon(Icons.inventory),
           "Inventoryi",
         ),
         gridViewMenu(
           () {
-            navUpDownTransition(context, UiSell(), false);
+            navUpDownTransition(context, '/sell', false);
           },
           Icon(Icons.shopping_cart),
           "Transaksi",

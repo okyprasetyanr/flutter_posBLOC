@@ -9,6 +9,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 class SellListViewOrderedItem extends StatelessWidget {
   const SellListViewOrderedItem({super.key});
@@ -176,7 +177,7 @@ class SellListViewOrderedItem extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  navUpDownTransition(context, UISellPayment(), false);
+                  navUpDownTransition(context, '/sellpayment', false);
                 },
                 label: Text("Cust.", style: lv1TextStyleWhite),
                 icon: Icon(Icons.contacts_rounded, color: Colors.white),
@@ -212,7 +213,11 @@ class SellListViewOrderedItem extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  navUpDownTransition(context, UISellPayment(), false);
+                  final bloc = context.read<SellBloc>().state as SellLoaded;
+                  if (bloc.itemOrdered!.isEmpty) {
+                    return customSnackBar(context, "Belum ada Pesanan!");
+                  }
+                  navUpDownTransition(context, '/sellpayment', false);
                 },
                 label: Text("Bayar", style: lv1TextStyleWhite),
                 icon: Icon(Icons.attach_money_rounded, color: Colors.white),

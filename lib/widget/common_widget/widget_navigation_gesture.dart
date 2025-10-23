@@ -90,7 +90,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
     );
   }
 
-  Widget _navContent(String id, Widget toContext, String text) {
+  Widget _navContent(String id, String toRoute, String text) {
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       width: double.infinity,
@@ -103,7 +103,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
             if (widget.currentPage == id) {
               customSnackBar(context, "Anda sudah berada di$text");
             } else {
-              navUpDownTransition(context, toContext, true);
+              navUpDownTransition(context, toRoute, false);
             }
           },
           borderRadius: BorderRadius.circular(10),
