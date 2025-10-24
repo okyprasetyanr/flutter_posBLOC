@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
-class SellPopUpNameAndQty extends StatelessWidget {
-  const SellPopUpNameAndQty({super.key});
+class UITransactionPopUpNameAndQty extends StatelessWidget {
+  const UITransactionPopUpNameAndQty({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,9 @@ class SellPopUpNameAndQty extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            child: BlocSelector<SellBloc, SellState, ModelItemOrdered?>(
+            child: BlocSelector<SellBloc, TransactionState, ModelItemOrdered?>(
               selector: (stateNama) {
-                if (stateNama is SellLoaded) {
+                if (stateNama is TransactionLoaded) {
                   return stateNama.selectedItem;
                 }
                 return null;
@@ -39,9 +39,9 @@ class SellPopUpNameAndQty extends StatelessWidget {
             child: Column(
               children: [
                 Text("Quantity:", style: lv05TextStyle),
-                BlocSelector<SellBloc, SellState, double?>(
+                BlocSelector<SellBloc, TransactionState, double?>(
                   selector: (state) {
-                    if (state is SellLoaded) {
+                    if (state is TransactionLoaded) {
                       return state.selectedItem?.getqtyItem;
                     }
                     return null;
@@ -66,7 +66,7 @@ class SellPopUpNameAndQty extends StatelessWidget {
                           ),
                           onPressed: () {
                             context.read<SellBloc>().add(
-                              SellAdjustItem(mode: false),
+                              TransactionAdjustItem(mode: false),
                             );
                           },
                           icon: Icon(Icons.remove, size: 20),
@@ -93,7 +93,7 @@ class SellPopUpNameAndQty extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           onPressed: () {
                             context.read<SellBloc>().add(
-                              SellAdjustItem(mode: true),
+                              TransactionAdjustItem(mode: true),
                             );
                           },
                           icon: Icon(Icons.add, size: 20),

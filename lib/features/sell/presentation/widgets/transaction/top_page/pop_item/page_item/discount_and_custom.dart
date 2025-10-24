@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
-class SellPopUpDiscountAndCustomDiscount extends StatefulWidget {
-  const SellPopUpDiscountAndCustomDiscount({super.key});
+class UITransactionPopUpDiscountAndCustom extends StatefulWidget {
+  const UITransactionPopUpDiscountAndCustom({super.key});
 
   @override
-  State<SellPopUpDiscountAndCustomDiscount> createState() =>
-      _SellPopUpDiscountAndCustomDiscountState();
+  State<UITransactionPopUpDiscountAndCustom> createState() =>
+      _UITransactionPopUpDiscountAndCustomState();
 }
 
-class _SellPopUpDiscountAndCustomDiscountState
-    extends State<SellPopUpDiscountAndCustomDiscount> {
+class _UITransactionPopUpDiscountAndCustomState
+    extends State<UITransactionPopUpDiscountAndCustom> {
   TextEditingController customDiscountController = TextEditingController();
 
   @override
@@ -38,9 +38,9 @@ class _SellPopUpDiscountAndCustomDiscountState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Diskon:", style: lv05TextStyle),
-          BlocSelector<SellBloc, SellState, int?>(
+          BlocSelector<SellBloc, TransactionState, int?>(
             selector: (state) {
-              if (state is SellLoaded && state.selectedItem != null) {
+              if (state is TransactionLoaded && state.selectedItem != null) {
                 return state.selectedItem!.getdiscountItem;
               }
               return null;
@@ -62,7 +62,7 @@ class _SellPopUpDiscountAndCustomDiscountState
                       }
 
                       context.read<SellBloc>().add(
-                        SellAdjustItem(discount: diskon),
+                        TransactionAdjustItem(discount: diskon),
                       );
                     },
                     icon: const Icon(Icons.check_rounded, size: 15),
@@ -92,14 +92,14 @@ class _SellPopUpDiscountAndCustomDiscountState
           ),
           const SizedBox(height: 5),
           SizedBox(
-            child: BlocListener<SellBloc, SellState>(
+            child: BlocListener<SellBloc, TransactionState>(
               listenWhen: (previous, current) =>
-                  previous is SellLoaded &&
-                  current is SellLoaded &&
+                  previous is TransactionLoaded &&
+                  current is TransactionLoaded &&
                   previous.selectedItem?.getdiscountItem !=
                       current.selectedItem?.getdiscountItem,
               listener: (context, state) {
-                if (state is SellLoaded) {
+                if (state is TransactionLoaded) {
                   if (state.selectedItem == null) {
                     customDiscountController.clear();
                   } else {
@@ -138,7 +138,7 @@ class _SellPopUpDiscountAndCustomDiscountState
                       return oldValue;
                     }
                     context.read<SellBloc>().add(
-                      SellAdjustItem(
+                      TransactionAdjustItem(
                         discount: customDiscount.isEmpty ? 0 : intValue,
                       ),
                     );

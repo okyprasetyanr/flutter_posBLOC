@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
-class ModelTransactionSell extends Equatable {
+class ModelTransaction extends Equatable {
   final String _date,
       _invoice,
       _nameCustomer,
@@ -20,7 +20,7 @@ class ModelTransactionSell extends Equatable {
       _billPaid;
   final List<ModelSplit> _dataSplit;
 
-  ModelTransactionSell({
+  ModelTransaction({
     required List<ModelSplit> dataSplit,
     required String date,
     this.bankName,
@@ -82,7 +82,7 @@ class ModelTransactionSell extends Equatable {
   double get gettotalPpn => _totalPpn;
   List<ModelSplit> get getdataSplit => _dataSplit;
 
-  ModelTransactionSell copyWith({
+  ModelTransaction copyWith({
     String? bankName,
     String? date,
     String? note,
@@ -104,7 +104,7 @@ class ModelTransactionSell extends Equatable {
     double? totalPpn,
     List<ModelSplit>? dataSplit,
   }) {
-    return ModelTransactionSell(
+    return ModelTransaction(
       bankName: bankName,
       dataSplit: dataSplit ?? _dataSplit,
       billPaid: billPaid ?? _billPaid,

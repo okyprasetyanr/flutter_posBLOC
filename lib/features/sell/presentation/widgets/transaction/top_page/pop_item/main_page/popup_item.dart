@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/pop_item/page_condiment/page_condiment.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/pop_item/page_item/page/page_item.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/pop_item/page_condiment/page_condiment.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/pop_item/page_item/page/page_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 
-class UISellPopUpItem extends StatefulWidget {
-  const UISellPopUpItem({super.key});
+class UITransactionPopUpItem extends StatefulWidget {
+  const UITransactionPopUpItem({super.key});
 
   @override
-  State<UISellPopUpItem> createState() => _UISellPopUpItemState();
+  State<UITransactionPopUpItem> createState() => _UITransactionPopUpItemState();
 }
 
-class _UISellPopUpItemState extends State<UISellPopUpItem> {
+class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
   ValueNotifier<bool> popup = ValueNotifier(false);
   PageController pageController = PageController();
   ModelItemOrdered? dataselected;
@@ -42,12 +42,9 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SellBloc, SellState>(
+    return BlocListener<SellBloc, TransactionState>(
       listener: (context, state) {
-        if (state is SellLoaded) {
-          if (state.selectedItem == null) {
-            return;
-          }
+        if (state is TransactionLoaded) {
           final data = state.selectedItem;
           popup.value = data != null ? true : false;
         }
@@ -90,7 +87,10 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                 children: [
                   PageView(
                     controller: pageController,
-                    children: [SellPopUpPageItem(), SellPopUpPageCondiment()],
+                    children: [
+                      SellPopUpPageItem(),
+                      UITransactionPopUpPageCondiment(),
+                    ],
                   ),
 
                   Positioned(
@@ -168,7 +168,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                 onPressed: () {
                                   popup.value = !isVisible;
                                   context.read<SellBloc>().add(
-                                    SellDeleteItemOrdered(),
+                                    TransactionDeleteItemOrdered(),
                                   );
                                 },
                               ),
@@ -202,7 +202,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                 onPressed: () {
                                   popup.value = false;
                                   context.read<SellBloc>().add(
-                                    SellResetSelectedItem(),
+                                    TransactionResetSelectedItem(),
                                   );
                                 },
                               ),
@@ -237,7 +237,7 @@ class _UISellPopUpItemState extends State<UISellPopUpItem> {
                                   ;
                                   popup.value = !isVisible;
                                   context.read<SellBloc>().add(
-                                    SellAddOrderedItem(),
+                                    TransactionAddOrderedItem(),
                                   );
                                 },
                               ),

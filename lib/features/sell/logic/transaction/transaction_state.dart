@@ -4,13 +4,14 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 
-class SellState {}
+class TransactionState {}
 
-class SellInitial extends SellState {}
+class TransactionInitial extends TransactionState {}
 
-class SellLoading extends SellState {}
+class TransactionLoading extends TransactionState {}
 
-class SellLoaded extends SellState with EquatableMixin {
+class TransactionLoaded extends TransactionState with EquatableMixin {
+  final bool sell;
   final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
   final List<ModelKategori>? dataCategory;
@@ -21,7 +22,8 @@ class SellLoaded extends SellState with EquatableMixin {
   final bool editSelectedItem;
   final List<ModelItemOrdered>? itemOrdered;
 
-  SellLoaded({
+  TransactionLoaded({
+    this.sell = true,
     this.selectedItem,
     this.editSelectedItem = false,
     this.filteredItem = const [],
@@ -33,7 +35,8 @@ class SellLoaded extends SellState with EquatableMixin {
     this.selectedKategori,
   });
 
-  SellLoaded copyWith({
+  TransactionLoaded copyWith({
+    bool? sell,
     List<ModelItem>? dataItem,
     List<ModelItem>? filteredItem,
     String? selectedIDCabang,
@@ -44,7 +47,8 @@ class SellLoaded extends SellState with EquatableMixin {
     List<ModelItemOrdered>? itemOrdered,
     bool? editSelectedItem,
   }) {
-    return SellLoaded(
+    return TransactionLoaded(
+      sell: sell ?? this.sell,
       editSelectedItem: editSelectedItem ?? this.editSelectedItem,
       itemOrdered: itemOrdered ?? this.itemOrdered,
       selectedItem: selectedItem,
@@ -59,6 +63,7 @@ class SellLoaded extends SellState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    sell,
     dataItem,
     filteredItem,
     dataCategory,

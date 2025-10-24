@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
 
-class UISellSavedCart extends StatelessWidget {
-  const UISellSavedCart({super.key});
+class UITransactionSavedCart extends StatelessWidget {
+  const UITransactionSavedCart({super.key});
 
   @override
   Widget build(BuildContext context) {

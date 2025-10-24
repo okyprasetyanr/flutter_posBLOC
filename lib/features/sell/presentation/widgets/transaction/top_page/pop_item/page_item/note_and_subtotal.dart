@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
-class SellPopUpNoteAndSubTotal extends StatefulWidget {
-  const SellPopUpNoteAndSubTotal({super.key});
+class UITransactionPopUpNoteAndSubTotal extends StatefulWidget {
+  const UITransactionPopUpNoteAndSubTotal({super.key});
 
   @override
-  State<SellPopUpNoteAndSubTotal> createState() =>
-      _SellPopUpNoteAndSubTotalState();
+  State<UITransactionPopUpNoteAndSubTotal> createState() =>
+      _UITransactionPopUpNoteAndSubTotalState();
 }
 
-class _SellPopUpNoteAndSubTotalState extends State<SellPopUpNoteAndSubTotal> {
+class _UITransactionPopUpNoteAndSubTotalState
+    extends State<UITransactionPopUpNoteAndSubTotal> {
   TextEditingController noteController = TextEditingController();
 
   @override
@@ -28,13 +29,13 @@ class _SellPopUpNoteAndSubTotalState extends State<SellPopUpNoteAndSubTotal> {
     return Row(
       children: [
         Flexible(
-          child: BlocListener<SellBloc, SellState>(
+          child: BlocListener<SellBloc, TransactionState>(
             listenWhen: (previous, current) =>
-                previous is SellLoaded &&
-                current is SellLoaded &&
+                previous is TransactionLoaded &&
+                current is TransactionLoaded &&
                 previous.selectedItem?.getNote != current.selectedItem?.getNote,
             listener: (context, state) {
-              if (state is SellLoaded) {
+              if (state is TransactionLoaded) {
                 if (state.selectedItem == null) {
                   noteController.clear();
                 } else {
@@ -60,8 +61,9 @@ class _SellPopUpNoteAndSubTotalState extends State<SellPopUpNoteAndSubTotal> {
                 ),
               ),
               controller: noteController,
-              onChanged: (value) =>
-                  context.read<SellBloc>().add(SellAdjustItem(note: value)),
+              onChanged: (value) => context.read<SellBloc>().add(
+                TransactionAdjustItem(note: value),
+              ),
             ),
           ),
         ),
@@ -74,7 +76,7 @@ class _SellPopUpNoteAndSubTotalState extends State<SellPopUpNoteAndSubTotal> {
               text:
                   "${formatUang(context.select<SellBloc, double?>((value) {
                     final state = value.state;
-                    if (state is SellLoaded && state.selectedItem != null) {
+                    if (state is TransactionLoaded && state.selectedItem != null) {
                       return state.selectedItem!.getsubTotal;
                     }
                     return 0;

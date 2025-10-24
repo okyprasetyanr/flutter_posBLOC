@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
-class SellPopUpPageCondiment extends StatelessWidget {
-  const SellPopUpPageCondiment({super.key});
+class UITransactionPopUpPageCondiment extends StatelessWidget {
+  const UITransactionPopUpPageCondiment({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +24,9 @@ class SellPopUpPageCondiment extends StatelessWidget {
 
         color: Colors.grey.shade200,
       ),
-      child: BlocSelector<SellBloc, SellState, List<ModelItem>>(
+      child: BlocSelector<SellBloc, TransactionState, List<ModelItem>>(
         selector: (state) {
-          if (state is SellLoaded) {
+          if (state is TransactionLoaded) {
             return state.dataItem
                     ?.where(
                       (element) =>
@@ -63,11 +63,11 @@ class SellPopUpPageCondiment extends StatelessWidget {
                       child:
                           BlocSelector<
                             SellBloc,
-                            SellState,
+                            TransactionState,
                             (String?, List<ModelItemOrdered>?, String?)
                           >(
                             selector: (state) {
-                              if (state is SellLoaded) {
+                              if (state is TransactionLoaded) {
                                 return (
                                   state.selectedItem?.getidOrdered,
                                   state.selectedItem?.getCondiment,
@@ -163,7 +163,7 @@ class SellPopUpPageCondiment extends StatelessWidget {
                                                 condiment: [],
                                               );
                                           context.read<SellBloc>().add(
-                                            SellSelectedCondiment(
+                                            TransactionSelectedCondiment(
                                               add: false,
                                               selectedCondiment:
                                                   selectedItemCondiment,
@@ -233,7 +233,7 @@ class SellPopUpPageCondiment extends StatelessWidget {
                                                 condiment: [],
                                               );
                                           context.read<SellBloc>().add(
-                                            SellSelectedCondiment(
+                                            TransactionSelectedCondiment(
                                               add: true,
                                               selectedCondiment:
                                                   selectedItemCondiment,

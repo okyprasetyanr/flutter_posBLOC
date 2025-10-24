@@ -12,21 +12,21 @@ import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/
 import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/cash_payment.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/payment/top_page/debit_payment.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_transaction_sell.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class UISellPayment extends StatefulWidget {
-  const UISellPayment({super.key});
+class UITransactionPayment extends StatefulWidget {
+  const UITransactionPayment({super.key});
 
   @override
-  State<UISellPayment> createState() => _UISellPaymentState();
+  State<UITransactionPayment> createState() => _UITransactionPaymentState();
 }
 
-class _UISellPaymentState extends State<UISellPayment> {
+class _UITransactionPaymentState extends State<UITransactionPayment> {
   final payController = TextEditingController();
   final selectedAmount = ValueNotifier<double>(0);
   final customDiscountController = TextEditingController();
@@ -85,7 +85,7 @@ class _UISellPaymentState extends State<UISellPayment> {
       children: [
         Text("Pembayaran", style: titleTextStyle),
         Expanded(
-          child: BlocSelector<PaymentBloc, PaymentState, ModelTransactionSell?>(
+          child: BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
             selector: (state) {
               if (state is PaymentLoaded) {
                 return state.transaction_sell;
@@ -231,7 +231,7 @@ class _UISellPaymentState extends State<UISellPayment> {
                         BlocSelector<
                           PaymentBloc,
                           PaymentState,
-                          ModelTransactionSell?
+                          ModelTransaction?
                         >(
                           selector: (state) {
                             if (state is PaymentLoaded) {

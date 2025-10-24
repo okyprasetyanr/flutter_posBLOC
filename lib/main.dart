@@ -7,7 +7,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';

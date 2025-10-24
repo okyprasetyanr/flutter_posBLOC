@@ -4,17 +4,16 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_item_ordered.dart';
-import 'package:flutter_pos/model_data/model_transaction_sell.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/row_content.dart';
 
-class UISellTransactionSuccess extends StatelessWidget {
-  const UISellTransactionSuccess({super.key});
+class UITransactionSuccess extends StatelessWidget {
+  const UITransactionSuccess({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +23,8 @@ class UISellTransactionSuccess extends StatelessWidget {
         if (!didPop) {
           Navigator.popUntil(context, ModalRoute.withName('/sell'));
           final blocSell = context.read<SellBloc>();
-          blocSell.add(SellResetOrderedItem());
-          blocSell.add(SellResetSelectedItem());
+          blocSell.add(TransactionResetOrderedItem());
+          blocSell.add(TransactionResetSelectedItem());
 
           final blocPayment = context.read<PaymentBloc>();
           blocPayment.add(PaymentResetTransaction());
@@ -111,7 +110,7 @@ class UISellTransactionSuccess extends StatelessWidget {
           topRight: Radius.circular(15),
         ),
       ),
-      child: BlocSelector<PaymentBloc, PaymentState, ModelTransactionSell?>(
+      child: BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
         selector: (state) {
           if (state is PaymentLoaded) {
             return state.transaction_sell;

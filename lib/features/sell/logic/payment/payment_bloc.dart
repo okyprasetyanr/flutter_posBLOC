@@ -4,12 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
-import 'package:flutter_pos/model_data/model_transaction_sell.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
@@ -162,7 +162,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Emitter<PaymentState> emit,
   ) async {
     final sellState = event.context.read<SellBloc>().state;
-    if (sellState is SellLoaded) {
+    if (sellState is TransactionLoaded) {
       debugPrint("Log PaymentBloc: cek SellState");
 
       debugPrint("Log PaymentBloc: cek Faktur");
@@ -193,7 +193,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       emit(
         PaymentLoaded(
           itemOrdered: itemOrdered,
-          transaction_sell: ModelTransactionSell(
+          transaction_sell: ModelTransaction(
             dataSplit: [],
             billPaid: 0,
             note: "",

@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class UISellDropDownCabang extends StatelessWidget {
-  const UISellDropDownCabang({super.key});
+class UITransactionDropDownCabang extends StatelessWidget {
+  const UITransactionDropDownCabang({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SellBloc, SellState, (List<ModelCabang>?, String?)>(
+    return BlocSelector<
+      SellBloc,
+      TransactionState,
+      (List<ModelCabang>?, String?)
+    >(
       selector: (state) {
-        if (state is SellLoaded) {
+        if (state is TransactionLoaded) {
           return (state.dataBranch, state.selectedIDBranch);
         }
         return ([], "");
@@ -52,7 +56,7 @@ class UISellDropDownCabang extends StatelessWidget {
               .toList(),
           onChanged: (value) {
             context.read<SellBloc>().add(
-              AmbilDataSellBloc(idCabang: value!.getidBranch),
+              TransactionAmbilDataSellBloc(idCabang: value!.getidBranch),
             );
           },
         );

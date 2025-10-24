@@ -3,40 +3,41 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 
-class SellBloc extends Bloc<SellEvent, SellState> {
+class SellBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
 
-  SellBloc(this.repo) : super(SellInitial()) {
-    on<AmbilDataSellBloc>(_onSellAmbilData);
-    on<SellSearchItem>(
+  SellBloc(this.repo) : super(TransactionInitial()) {
+    on<TransactionAmbilDataSellBloc>(_onAmbilData);
+    on<TransactionSearchItem>(
       _onSellSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
-    on<SellSelectedKategoriItem>(_onSelectedKategoriItem);
-    on<SellSelectedItem>(_onSelectedItem);
-    on<SellSelectedCondiment>(_onSelectedCondiment);
-    on<SellResetSelectedItem>(_onResetSelectedItem);
-    on<SellResetOrderedItem>(_onResetOrderedItem);
-    on<SellAddOrderedItem>(_onAddOrderedItem);
-    on<SellAdjustItem>(_onAdjustItem);
-    on<SellDeleteItemOrdered>(_onSellDeleteItemOrdered);
+    on<TransactionSelectedKategoriItem>(_onSelectedKategoriItem);
+    on<TransactionSelectedItem>(_onSelectedItem);
+    on<TransactionSelectedCondiment>(_onSelectedCondiment);
+    on<TransactionResetSelectedItem>(_onResetSelectedItem);
+    on<TransactionResetOrderedItem>(_onResetOrderedItem);
+    on<TransactionAddOrderedItem>(_onAddOrderedItem);
+    on<TransactionAdjustItem>(_onAdjustItem);
+    on<TransactionDeleteItemOrdered>(_onDeleteItemOrdered);
+    on<TransactionStatusTransaction>(_onStatusTransaction);
   }
 
-  Future<void> _onSellAmbilData(
-    AmbilDataSellBloc event,
-    Emitter<SellState> emit,
+  Future<void> _onAmbilData(
+    TransactionAmbilDataSellBloc event,
+    Emitter<TransactionState> emit,
   ) async {
-    final currentState = state is SellLoaded
-        ? (state as SellLoaded)
-        : SellLoaded();
-    emit(SellLoading());
+    final currentState = state is TransactionLoaded
+        ? (state as TransactionLoaded)
+        : TransactionLoaded();
+    emit(TransactionLoading());
 
     final listCabang = repo.getBranch();
 
@@ -54,7 +55,9 @@ class SellBloc extends Bloc<SellEvent, SellState> {
         currentState.selectedKategori ?? listKategori.first;
     emit(
       currentState.copyWith(
-        filteredItem: listItem,
+        filteredItem: currentState.sell
+            ? listItem.where((element) => !element.getstatusCondiment).toList()
+            : listItem,
         selectedIDCabang: idCabang,
         selectedKategori: selectedIdKategori,
         dataCabang: listCabang,
@@ -65,11 +68,11 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   }
 
   FutureOr<void> _onSellSearchItem(
-    SellSearchItem event,
-    Emitter<SellState> emit,
+    TransactionSearchItem event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       if (event.text != "") {
         List<ModelItem> item = List.from(
           currentState.filteredItem!
@@ -94,7 +97,7 @@ class SellBloc extends Bloc<SellEvent, SellState> {
 
   _sellFilterItem(String? idkategori) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       List<ModelItem> list = List.from(
         currentState.dataItem!.where(
           (element) => element.getidBranch == currentState.selectedIDBranch,
@@ -114,11 +117,11 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   }
 
   FutureOr<void> _onSelectedKategoriItem(
-    SellSelectedKategoriItem event,
-    Emitter<SellState> emit,
+    TransactionSelectedKategoriItem event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       emit(
         currentState.copyWith(
           selectedKategori: event.selectedKategori,
@@ -129,11 +132,11 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   }
 
   FutureOr<void> _onSelectedItem(
-    SellSelectedItem event,
-    Emitter<SellState> emit,
+    TransactionSelectedItem event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       emit(
         currentState.copyWith(
           selectedItem: event.selectedItem,
@@ -144,22 +147,22 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   }
 
   FutureOr<void> _onResetSelectedItem(
-    SellResetSelectedItem event,
-    Emitter<SellState> emit,
+    TransactionResetSelectedItem event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
-      print("Log SellBloc _onResetSelectedItem: masuk");
+    if (currentState is TransactionLoaded) {
+      print("Log SellBloc: _onResetSelectedItem: masuk");
       emit(currentState.copyWith(selectedItem: null, editSelectedItem: false));
     }
   }
 
   FutureOr<void> _onSelectedCondiment(
-    SellSelectedCondiment event,
-    Emitter<SellState> emit,
+    TransactionSelectedCondiment event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       final data = currentState.selectedItem!.copyWith();
       final condimentList = List<ModelItemOrdered>.from(data.getCondiment);
       List<ModelItemOrdered>? updatedList = [];
@@ -199,11 +202,11 @@ class SellBloc extends Bloc<SellEvent, SellState> {
   }
 
   FutureOr<void> _onAddOrderedItem(
-    SellAddOrderedItem event,
-    Emitter<SellState> emit,
+    TransactionAddOrderedItem event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       List<ModelItemOrdered> itemPesanan = List<ModelItemOrdered>.from(
         currentState.itemOrdered ?? [],
       );
@@ -219,13 +222,17 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       } else {
         emit(currentState.copyWith(itemOrdered: [...itemPesanan, selected]));
       }
-      add(SellResetSelectedItem());
+      add(TransactionResetSelectedItem());
     }
   }
 
-  FutureOr<void> _onAdjustItem(SellAdjustItem event, Emitter<SellState> emit) {
+  FutureOr<void> _onAdjustItem(
+    TransactionAdjustItem event,
+    Emitter<TransactionState> emit,
+  ) {
     final currentState = state;
-    if (currentState is SellLoaded && currentState.selectedItem != null) {
+    if (currentState is TransactionLoaded &&
+        currentState.selectedItem != null) {
       final selectedItem = currentState.selectedItem!.copyWith();
       double qty = selectedItem.getqtyItem;
       int discount = selectedItem.getdiscountItem;
@@ -268,12 +275,12 @@ class SellBloc extends Bloc<SellEvent, SellState> {
     }
   }
 
-  FutureOr<void> _onSellDeleteItemOrdered(
-    SellDeleteItemOrdered event,
-    Emitter<SellState> emit,
+  FutureOr<void> _onDeleteItemOrdered(
+    TransactionDeleteItemOrdered event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       List<ModelItemOrdered> listItemOrdered = List.from(
         currentState.itemOrdered!,
       );
@@ -281,17 +288,17 @@ class SellBloc extends Bloc<SellEvent, SellState> {
         (element) =>
             element.getidOrdered == currentState.selectedItem!.getidOrdered,
       );
-      add(SellResetSelectedItem());
+      add(TransactionResetSelectedItem());
       emit(currentState.copyWith(itemOrdered: listItemOrdered));
     }
   }
 
   FutureOr<void> _onResetOrderedItem(
-    SellResetOrderedItem event,
-    Emitter<SellState> emit,
+    TransactionResetOrderedItem event,
+    Emitter<TransactionState> emit,
   ) {
     final currentState = state;
-    if (currentState is SellLoaded) {
+    if (currentState is TransactionLoaded) {
       print("Log SellBloc: ResetOrderedItem");
       emit(
         currentState.copyWith(
@@ -300,6 +307,19 @@ class SellBloc extends Bloc<SellEvent, SellState> {
           itemOrdered: [],
         ),
       );
+    }
+  }
+
+  FutureOr<void> _onStatusTransaction(
+    TransactionStatusTransaction event,
+    Emitter<TransactionState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is TransactionLoaded) {
+      add(TransactionResetSelectedItem());
+      add(TransactionResetOrderedItem());
+      final newStatus = currentState.sell;
+      emit(currentState.copyWith(sell: !newStatus));
     }
   }
 }

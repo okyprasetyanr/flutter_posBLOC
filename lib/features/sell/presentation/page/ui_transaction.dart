@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/dropdown_cabang.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/grid_view_item.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/list_view_kategori.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/pop_item/main_page/popup_item.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/top_page/saved_cart.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/dropdown_cabang.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/grid_view_item.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/list_view_kategori.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/pop_item/main_page/popup_item.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/saved_cart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/sell/bottom_page/list_view_ordered_item.dart.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/bottom_page/list_view_ordered_item.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
-class UiSell extends StatefulWidget {
-  const UiSell({super.key});
+class UITransaction extends StatefulWidget {
+  const UITransaction({super.key});
 
   @override
-  State<UiSell> createState() => _UiSellState();
+  State<UITransaction> createState() => _UITransactionState();
 }
 
-class _UiSellState extends State<UiSell> {
+class _UITransactionState extends State<UITransaction> {
   final searchController = TextEditingController();
   final isOpen = ValueNotifier<bool>(false);
+  final sellOrbuy = ValueNotifier<bool>(false);
   double ratioGridView = 0;
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _UiSellState extends State<UiSell> {
 
   Future<void> initData() async {
     final bloc = context.read<SellBloc>();
-    bloc.add(AmbilDataSellBloc(idCabang: null));
+    bloc.add(TransactionAmbilDataSellBloc(idCabang: null));
   }
 
   @override
@@ -91,15 +92,70 @@ class _UiSellState extends State<UiSell> {
                       ),
                     ),
                     onChanged: (value) => context.read<SellBloc>().add(
-                      SellSearchItem(text: value),
+                      TransactionSearchItem(text: value),
                     ),
                   ),
                 ),
 
                 const SizedBox(width: 10),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text("Penjualan", style: titleTextStyle),
+                GestureDetector(
+                  onTap: () {
+                    context.read<SellBloc>().add(
+                      TransactionStatusTransaction(),
+                    );
+                    initData();
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    width: 120,
+                    padding: const EdgeInsets.only(top: 5, bottom: 5),
+                    height: 40,
+                    child: BlocSelector<SellBloc, TransactionState, bool>(
+                      selector: (state) {
+                        if (state is TransactionLoaded) {
+                          return state.sell;
+                        }
+                        return false;
+                      },
+                      builder: (context, state) {
+                        return Stack(
+                          children: [
+                            AnimatedPositioned(
+                              curve: Curves.easeInOut,
+                              left: state ? 0 : -200,
+                              duration: const Duration(milliseconds: 500),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.swap_horiz_rounded,
+                                    size: 25,
+                                  ),
+                                  Text("Penjualan", style: titleTextStyle),
+                                ],
+                              ),
+                            ),
+                            AnimatedPositioned(
+                              curve: Curves.easeInOut,
+                              left: state ? 300 : 0,
+                              duration: const Duration(milliseconds: 500),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.swap_horiz_rounded,
+                                      size: 25,
+                                    ),
+                                    Text("Pembelian", style: titleTextStyle),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -110,17 +166,20 @@ class _UiSellState extends State<UiSell> {
                 const SizedBox(width: 5),
                 Expanded(
                   flex: 6,
-                  child: SizedBox(height: 27, child: UISellListViewKategori()),
+                  child: SizedBox(
+                    height: 27,
+                    child: UITransactionListViewKategori(),
+                  ),
                 ),
                 const SizedBox(width: 5),
-                SizedBox(width: 140, child: UISellDropDownCabang()),
-                SizedBox(width: 50, child: UISellSavedCart()),
+                SizedBox(width: 140, child: UITransactionDropDownCabang()),
+                SizedBox(width: 50, child: UITransactionSavedCart()),
               ],
             ),
-            Expanded(child: UISellGridViewItem()),
+            Expanded(child: UITransactionGridViewItem()),
           ],
         ),
-        UISellPopUpItem(),
+        UITransactionPopUpItem(),
       ],
     );
   }
@@ -133,9 +192,9 @@ class _UiSellState extends State<UiSell> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            BlocSelector<SellBloc, SellState, (int, double)>(
+            BlocSelector<SellBloc, TransactionState, (int, double)>(
               selector: (state) {
-                if (state is SellLoaded && state.itemOrdered != null) {
+                if (state is TransactionLoaded && state.itemOrdered != null) {
                   final itemOrdered = state.itemOrdered!;
                   int itemcount = 0;
                   double subTotal = 0;
@@ -187,7 +246,7 @@ class _UiSellState extends State<UiSell> {
           ],
         ),
         Divider(color: Colors.grey[400], thickness: 1),
-        Expanded(child: SellListViewOrderedItem()),
+        Expanded(child: TransactionListViewOrderedItem()),
       ],
     );
   }

@@ -582,7 +582,7 @@ class _UIInventoryState extends State<UIInventory> {
     final contentNavGesture = [
       {
         "id": "inventory",
-        "toContext": const UIInventory(),
+        "toContext": "/inventory",
         "text_menu": "Inventori",
         "onTap": () {},
       },

@@ -4,7 +4,7 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/sell/logic/payment/payment_state.dart';
-import 'package:flutter_pos/model_data/model_transaction_sell.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UIPaymentPaymentMethod extends StatelessWidget {
@@ -13,7 +13,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<PaymentBloc, PaymentState, ModelTransactionSell?>(
+    return BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
       selector: (state) {
         if (state is PaymentLoaded) {
           return state.transaction_sell;

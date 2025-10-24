@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
-class SellListViewOrderedItem extends StatelessWidget {
-  const SellListViewOrderedItem({super.key});
+class TransactionListViewOrderedItem extends StatelessWidget {
+  const TransactionListViewOrderedItem({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: BlocSelector<SellBloc, SellState, List<ModelItemOrdered>>(
+          child: BlocSelector<SellBloc, TransactionState, List<ModelItemOrdered>>(
             selector: (state) {
-              if (state is SellLoaded) {
+              if (state is TransactionLoaded) {
                 return state.itemOrdered ?? [];
               }
               return [];
@@ -59,7 +59,7 @@ class SellListViewOrderedItem extends StatelessWidget {
                               child: InkWell(
                                 onTap: () {
                                   context.read<SellBloc>().add(
-                                    SellSelectedItem(
+                                    TransactionSelectedItem(
                                       selectedItem: item,
                                       edit: true,
                                     ),
@@ -194,7 +194,7 @@ class SellListViewOrderedItem extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  context.read<SellBloc>().add(SellResetOrderedItem());
+                  context.read<SellBloc>().add(TransactionResetOrderedItem());
                 },
                 label: Text("Hapus", style: lv0TextStyleRED),
                 icon: Icon(Icons.delete, color: Colors.red),
@@ -212,7 +212,8 @@ class SellListViewOrderedItem extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  final bloc = context.read<SellBloc>().state as SellLoaded;
+                  final bloc =
+                      context.read<SellBloc>().state as TransactionLoaded;
                   if (bloc.itemOrdered!.isEmpty) {
                     return customSnackBar(context, "Belum ada Pesanan!");
                   }

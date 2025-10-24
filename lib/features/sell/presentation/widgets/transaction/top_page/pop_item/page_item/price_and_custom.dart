@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_bloc.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_event.dart';
-import 'package:flutter_pos/features/sell/logic/sell/sell_state.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
-class SellPopUpPriceAndCustomPrice extends StatefulWidget {
-  const SellPopUpPriceAndCustomPrice({super.key});
+class UITransactionPopUpPriceAndCustom extends StatefulWidget {
+  const UITransactionPopUpPriceAndCustom({super.key});
 
   @override
-  State<SellPopUpPriceAndCustomPrice> createState() =>
-      _SellPopUpPriceAndCustomPriceState();
+  State<UITransactionPopUpPriceAndCustom> createState() =>
+      _UITransactionPopUpPriceAndCustomState();
 }
 
-class _SellPopUpPriceAndCustomPriceState
-    extends State<SellPopUpPriceAndCustomPrice> {
+class _UITransactionPopUpPriceAndCustomState
+    extends State<UITransactionPopUpPriceAndCustom> {
   final priceController = TextEditingController();
   final editprice = ValueNotifier(false);
 
@@ -31,7 +31,7 @@ class _SellPopUpPriceAndCustomPriceState
     super.initState();
     editprice.addListener(() {
       if (!editprice.value) {
-        context.read<SellBloc>().add(SellAdjustItem(customprice: 0));
+        context.read<SellBloc>().add(TransactionAdjustItem(customprice: 0));
         priceController.clear();
       }
     });
@@ -70,9 +70,10 @@ class _SellPopUpPriceAndCustomPriceState
                   onPressed: () {
                     editprice.value = !editprice.value;
                   },
-                  label: BlocSelector<SellBloc, SellState, double>(
+                  label: BlocSelector<SellBloc, TransactionState, double>(
                     selector: (state) {
-                      if (state is SellLoaded && state.selectedItem != null) {
+                      if (state is TransactionLoaded &&
+                          state.selectedItem != null) {
                         return state.selectedItem!.getpriceItemCustom;
                       }
                       return 0;
@@ -102,13 +103,13 @@ class _SellPopUpPriceAndCustomPriceState
                           duration: Duration(milliseconds: 500),
                           child: SizedBox(
                             width: 200,
-                            child: BlocListener<SellBloc, SellState>(
+                            child: BlocListener<SellBloc, TransactionState>(
                               listenWhen: (previous, current) =>
-                                  previous is SellLoaded &&
-                                  current is SellLoaded &&
+                                  previous is TransactionLoaded &&
+                                  current is TransactionLoaded &&
                                   previous.selectedItem != current.selectedItem,
                               listener: (context, state) {
-                                if (state is SellLoaded &&
+                                if (state is TransactionLoaded &&
                                     state.selectedItem == null) {
                                   priceController.clear();
                                 }
@@ -139,7 +140,7 @@ class _SellPopUpPriceAndCustomPriceState
                                     "Log UISell: cek BlocSelector Harga",
                                   );
                                   context.read<SellBloc>().add(
-                                    SellAdjustItem(
+                                    TransactionAdjustItem(
                                       customprice: double.tryParse(value),
                                     ),
                                   );
