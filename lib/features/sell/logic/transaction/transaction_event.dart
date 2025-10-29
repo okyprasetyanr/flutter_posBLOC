@@ -4,9 +4,9 @@ import 'package:flutter_pos/model_data/model_category.dart';
 class TransactionEvent {}
 
 class TransactionAmbilDataSellBloc extends TransactionEvent {
-  final String? idCabang;
+  final String? idBranch;
 
-  TransactionAmbilDataSellBloc({required this.idCabang});
+  TransactionAmbilDataSellBloc({required this.idBranch});
 }
 
 class TransactionResetSelectedItem extends TransactionEvent {}

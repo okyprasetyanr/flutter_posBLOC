@@ -121,7 +121,7 @@ class _UIInventoryState extends State<UIInventory> {
     );
     bloc.add(
       InvAmbilData(
-        idCabang: null,
+        idBranch: null,
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
         filterjenis: selectedFilterJenisItem!,
@@ -549,7 +549,7 @@ class _UIInventoryState extends State<UIInventory> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: UIKategoriButtonKategori(
-                      namaKategoriController: namaKategoriController,
+                      nameCategoryController: namaKategoriController,
                       resetKategoriForm: () => _resetKategoriForm(),
                     ),
                   ),

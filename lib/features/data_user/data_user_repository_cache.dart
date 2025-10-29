@@ -2,11 +2,13 @@ import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_partner.dart';
 
 class DataUserRepositoryCache {
-  List<ModelCabang>? dataBranch;
+  List<ModelBranch>? dataBranch;
   List<ModelItem>? dataItem;
   List<ModelKategori>? dataCategory;
+  List<ModelPartner>? dataPartner;
 
   final DataUserRepository repo;
 
@@ -16,6 +18,7 @@ class DataUserRepositoryCache {
     dataBranch = await initBranch();
     dataItem = await initItem();
     dataCategory = await initCategory();
+    dataPartner = await initPartner();
 
     for (var a in dataBranch!) {
       print("Log DataUserRepositoryCache cabang: $a");
@@ -30,7 +33,7 @@ class DataUserRepositoryCache {
     return true;
   }
 
-  Future<List<ModelCabang>> initBranch() async {
+  Future<List<ModelBranch>> initBranch() async {
     return await repo.getBranch();
   }
 
@@ -42,19 +45,39 @@ class DataUserRepositoryCache {
     return await repo.getCategory();
   }
 
-  List<ModelCabang> getBranch() {
+  Future<List<ModelPartner>> initPartner() async {
+    return await repo.getPartner();
+  }
+
+  List<ModelBranch> getBranch() {
     return dataBranch!.toList();
   }
 
-  List<ModelItem> getItem(String idCabang) {
+  List<ModelItem> getItem(String idBranch) {
     return dataItem!
-        .where((element) => element.getidBranch == idCabang)
+        .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
-  List<ModelKategori> getCategory(String idCabang) {
+  List<ModelKategori> getCategory(String idBranch) {
     return dataCategory!
-        .where((element) => element.getidBranch == idCabang)
+        .where((element) => element.getidBranch == idBranch)
+        .toList();
+  }
+
+  List<ModelPartner> getCustomer(String idBranch) {
+    return dataPartner!
+        .where(
+          (element) => element.isCustomer && element.getidBranch == idBranch,
+        )
+        .toList();
+  }
+
+  List<ModelPartner> getSupplier(String idBranch) {
+    return dataPartner!
+        .where(
+          (element) => element.isSupplier && element.getidBranch == idBranch,
+        )
         .toList();
   }
 }

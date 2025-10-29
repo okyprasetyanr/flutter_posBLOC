@@ -57,11 +57,11 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                 BlocSelector<
                   InventoryBloc,
                   InventoryState,
-                  (List<ModelCabang> data, String? selectedIDCabang)
+                  (List<ModelBranch>, String?)
                 >(
                   selector: (state) {
                     if (state is InventoryLoaded) {
-                      return (state.datacabang, state.idCabang);
+                      return (state.datacabang, state.idBranch);
                     }
                     return ([], "");
                   },
@@ -72,7 +72,7 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                         size: 30.0,
                       );
                     }
-                    return DropdownButtonFormField<ModelCabang>(
+                    return DropdownButtonFormField<ModelBranch>(
                       style: lv05TextStyle,
                       decoration: InputDecoration(
                         isDense: true,
@@ -99,10 +99,10 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                           )
                           .toList(),
                       onChanged: (value) {
-                        String idCabang = value!.getidBranch;
+                        String idBranch = value!.getidBranch;
                         context.read<InventoryBloc>().add(
                           InvAmbilData(
-                            idCabang: idCabang,
+                            idBranch: idBranch,
                             filter: selectedFilterItem!,
                             status: selectedStatusItem!,
                             filterjenis: selectedFilterJenisItem!,

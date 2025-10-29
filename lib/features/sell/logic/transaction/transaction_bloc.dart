@@ -10,10 +10,10 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 
-class SellBloc extends Bloc<TransactionEvent, TransactionState> {
+class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
 
-  SellBloc(this.repo) : super(TransactionInitial()) {
+  TransactionBloc(this.repo) : super(TransactionInitial()) {
     on<TransactionAmbilDataSellBloc>(_onAmbilData);
     on<TransactionSearchItem>(
       _onSellSearchItem,
@@ -41,14 +41,14 @@ class SellBloc extends Bloc<TransactionEvent, TransactionState> {
 
     final listCabang = repo.getBranch();
 
-    String idCabang = event.idCabang ?? listCabang.first.getidBranch;
+    String idBranch = event.idBranch ?? listCabang.first.getidBranch;
     final listItem = repo
-        .getItem(idCabang)
+        .getItem(idBranch)
         .where((element) => element.getStatusItem)
         .toList();
     List<ModelKategori> listKategori = [
       ModelKategori(nameCategory: "All", idCategory: "0", idBranch: "0"),
-      ...repo.getCategory(idCabang),
+      ...repo.getCategory(idBranch),
     ];
 
     ModelKategori selectedIdKategori =
@@ -58,7 +58,7 @@ class SellBloc extends Bloc<TransactionEvent, TransactionState> {
         filteredItem: currentState.sell
             ? listItem.where((element) => !element.getstatusCondiment).toList()
             : listItem,
-        selectedIDCabang: idCabang,
+        selectedIDBranch: idBranch,
         selectedKategori: selectedIdKategori,
         dataCabang: listCabang,
         dataItem: listItem,

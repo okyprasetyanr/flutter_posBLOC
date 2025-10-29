@@ -16,7 +16,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
   InventoryBloc(this.repoCahce) : super(InventoryInitial()) {
     print("Log InventoryBloc: Masuk Bloc");
-    on<InvAmbilData>(_onAmbilData);
+    on<InvAmbilData>(_onGetData);
 
     on<InvFilterItem>(_onFilteredItem);
 
@@ -132,7 +132,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     }
   }
 
-  Future<void> _onAmbilData(
+  Future<void> _onGetData(
     InvAmbilData event,
     Emitter<InventoryState> emit,
   ) async {
@@ -143,7 +143,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     emit(InventoryLoading());
 
     try {
-      if (event.idCabang == null) {
+      if (event.idBranch == null) {
         final cabangs = repoCahce.getBranch();
 
         final firstCabang = cabangs.first;
@@ -151,7 +151,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         final kategori = repoCahce.getCategory(firstCabang.getidBranch);
         kategori.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
         final loaded = InventoryLoaded(
-          idCabang: firstCabang.getidBranch,
+          idBranch: firstCabang.getidBranch,
           daerahCabang: firstCabang.getareaBranch,
           datacabang: cabangs,
           dataItem: items,
@@ -169,12 +169,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         );
 
         bool cekDataItem = loadedItem.any(
-          (item) => item.getidBranch == event.idCabang,
+          (item) => item.getidBranch == event.idBranch,
         );
 
         if (!cekDataItem) {
-          final newItems = repoCahce.getItem(event.idCabang!);
-          final newKategori = repoCahce.getCategory(event.idCabang!);
+          final newItems = repoCahce.getItem(event.idBranch!);
+          final newKategori = repoCahce.getCategory(event.idBranch!);
           if (newItems.isNotEmpty) {
             loadedItem.addAll(newItems);
           }
@@ -185,7 +185,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         }
 
         final daerahCabang = currentState.datacabang
-            .firstWhere((data) => data.getidBranch == event.idCabang)
+            .firstWhere((data) => data.getidBranch == event.idBranch)
             .getareaBranch;
 
         loadedKategori.sort(
@@ -194,7 +194,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         final copyWithLoaded = currentState.copyWith(
           selectedFilterItem: event.filter,
           selectedStatusItem: event.status,
-          idCabang: event.idCabang,
+          idBranch: event.idBranch,
           daerahCabang: daerahCabang,
           dataItem: loadedItem,
           dataKategori: loadedKategori,
@@ -220,14 +220,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     Emitter<InventoryState> emit,
   ) async {
     add(InvResetItemForm());
-    await FirebaseFirestore.instance
-        .collection("items")
-        .doc(event.data.getidItem)
-        .set(convertToMapItem(event.data));
+    event.item.pushDataItem();
 
-    print("InvBloc UploadItem: ${event.data}");
+    print("InvBloc UploadItem: ${event.item}");
 
-    final item = repoCahce.getItem(event.data.getidBranch);
+    final item = repoCahce.getItem(event.item.getidBranch);
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
@@ -252,19 +249,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     InvUploadKategori event,
     Emitter<InventoryState> emit,
   ) async {
-    await FirebaseFirestore.instance
-        .collection("kategori")
-        .doc(event.data['id_kategori'])
-        .set(event.data);
-
+    event.category.pushDataCategory();
     add(InvResetKategoriForm());
-    final kategori = repoCahce.getCategory(event.data['id_cabang']);
-    kategori.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
+    final category = repoCahce.getCategory(event.category.getidBranch);
+    category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    final newState = currentState.copyWith(dataKategori: kategori);
+    final newState = currentState.copyWith(dataKategori: category);
     emit(newState);
   }
 

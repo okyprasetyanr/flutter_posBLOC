@@ -24,7 +24,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
 
         color: Colors.grey.shade200,
       ),
-      child: BlocSelector<SellBloc, TransactionState, List<ModelItem>>(
+      child: BlocSelector<TransactionBloc, TransactionState, List<ModelItem>>(
         selector: (state) {
           if (state is TransactionLoaded) {
             return state.dataItem
@@ -62,7 +62,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child:
                           BlocSelector<
-                            SellBloc,
+                            TransactionBloc,
                             TransactionState,
                             (String?, List<ModelItemOrdered>?, String?)
                           >(
@@ -162,7 +162,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                 urlImage: "",
                                                 condiment: [],
                                               );
-                                          context.read<SellBloc>().add(
+                                          context.read<TransactionBloc>().add(
                                             TransactionSelectedCondiment(
                                               add: false,
                                               selectedCondiment:
@@ -232,7 +232,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                 urlImage: "",
                                                 condiment: [],
                                               );
-                                          context.read<SellBloc>().add(
+                                          context.read<TransactionBloc>().add(
                                             TransactionSelectedCondiment(
                                               add: true,
                                               selectedCondiment:

@@ -4,7 +4,7 @@ import 'package:flutter_pos/model_data/model_category.dart';
 class InventoryEvent {}
 
 class InvAmbilData extends InventoryEvent {
-  final String? idCabang;
+  final String? idBranch;
   final String filter;
   final String status;
   final String filterjenis;
@@ -13,7 +13,7 @@ class InvAmbilData extends InventoryEvent {
   InvAmbilData({
     required this.filter,
     required this.status,
-    required this.idCabang,
+    required this.idBranch,
     required this.filterjenis,
     required this.filterIDKategori,
   });
@@ -56,15 +56,15 @@ class InvFilterItem extends InventoryEvent {
 }
 
 class InvUploadItem extends InventoryEvent {
-  final ModelItem data;
+  final ModelItem item;
 
-  InvUploadItem({required this.data});
+  InvUploadItem({required this.item});
 }
 
 class InvUploadKategori extends InventoryEvent {
-  final Map<String, dynamic> data;
+  final ModelKategori category;
 
-  InvUploadKategori({required this.data});
+  InvUploadKategori({required this.category});
 }
 
 class InvSearchitem extends InventoryEvent {

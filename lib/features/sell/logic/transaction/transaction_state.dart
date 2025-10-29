@@ -15,7 +15,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
   final List<ModelKategori>? dataCategory;
-  final List<ModelCabang>? dataBranch;
+  final List<ModelBranch>? dataBranch;
   final String? selectedIDBranch;
   final ModelKategori? selectedKategori;
   final ModelItemOrdered? selectedItem;
@@ -39,10 +39,10 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     bool? sell,
     List<ModelItem>? dataItem,
     List<ModelItem>? filteredItem,
-    String? selectedIDCabang,
+    String? selectedIDBranch,
     ModelKategori? selectedKategori,
     List<ModelKategori>? dataKategori,
-    List<ModelCabang>? dataCabang,
+    List<ModelBranch>? dataCabang,
     ModelItemOrdered? selectedItem,
     List<ModelItemOrdered>? itemOrdered,
     bool? editSelectedItem,
@@ -56,7 +56,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
       dataBranch: dataCabang ?? this.dataBranch,
       dataCategory: dataKategori ?? this.dataCategory,
       filteredItem: filteredItem ?? this.filteredItem,
-      selectedIDBranch: selectedIDCabang ?? this.selectedIDBranch,
+      selectedIDBranch: selectedIDBranch ?? this.selectedIDBranch,
       selectedKategori: selectedKategori ?? this.selectedKategori,
     );
   }

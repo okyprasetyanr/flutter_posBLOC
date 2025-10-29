@@ -25,11 +25,11 @@ class UIInventoryDropdownCabang extends StatelessWidget {
     return BlocSelector<
       InventoryBloc,
       InventoryState,
-      (List<ModelCabang> data, String? selectedIDCabang)
+      (List<ModelBranch>, String?)
     >(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.datacabang, state.idCabang);
+          return (state.datacabang, state.idBranch);
         }
         return ([], "");
       },
@@ -37,7 +37,7 @@ class UIInventoryDropdownCabang extends StatelessWidget {
         if (state.$1.isEmpty) {
           return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
         }
-        return DropdownButtonFormField<ModelCabang>(
+        return DropdownButtonFormField<ModelBranch>(
           style: lv1TextStyle,
           initialValue: state.$1.firstWhere(
             (data) => data.getidBranch == state.$2,
@@ -55,7 +55,7 @@ class UIInventoryDropdownCabang extends StatelessWidget {
               InvAmbilData(
                 filter: selectedFilterItem,
                 status: selectedStatusItem,
-                idCabang: value!.getidBranch,
+                idBranch: value!.getidBranch,
                 filterjenis: selectedFilterJenisItem,
                 filterIDKategori: selectedFilterKategoriItem,
               ),

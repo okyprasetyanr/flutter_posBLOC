@@ -15,10 +15,10 @@ class ListViewKategori extends StatelessWidget {
     return BlocSelector<
       InventoryBloc,
       InventoryState,
-      (List<ModelKategori>? data, String? selectedIDCabang)
+      (List<ModelKategori>?, String?)
     >(
       selector: (state) => state is InventoryLoaded
-          ? (state.dataKategori, state.idCabang)
+          ? (state.dataKategori, state.idBranch)
           : (null, null),
       builder: (context, state) {
         if (state.$1 == null) {

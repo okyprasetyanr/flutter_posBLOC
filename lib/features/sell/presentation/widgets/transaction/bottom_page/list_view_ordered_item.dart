@@ -18,7 +18,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: BlocSelector<SellBloc, TransactionState, List<ModelItemOrdered>>(
+          child: BlocSelector<TransactionBloc, TransactionState, List<ModelItemOrdered>>(
             selector: (state) {
               if (state is TransactionLoaded) {
                 return state.itemOrdered ?? [];
@@ -58,7 +58,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                   : const Color.fromARGB(255, 235, 235, 235),
                               child: InkWell(
                                 onTap: () {
-                                  context.read<SellBloc>().add(
+                                  context.read<TransactionBloc>().add(
                                     TransactionSelectedItem(
                                       selectedItem: item,
                                       edit: true,
@@ -194,7 +194,9 @@ class TransactionListViewOrderedItem extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  context.read<SellBloc>().add(TransactionResetOrderedItem());
+                  context.read<TransactionBloc>().add(
+                    TransactionResetOrderedItem(),
+                  );
                 },
                 label: Text("Hapus", style: lv0TextStyleRED),
                 icon: Icon(Icons.delete, color: Colors.red),
@@ -213,7 +215,8 @@ class TransactionListViewOrderedItem extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   final bloc =
-                      context.read<SellBloc>().state as TransactionLoaded;
+                      context.read<TransactionBloc>().state
+                          as TransactionLoaded;
                   if (bloc.itemOrdered!.isEmpty) {
                     return customSnackBar(context, "Belum ada Pesanan!");
                   }

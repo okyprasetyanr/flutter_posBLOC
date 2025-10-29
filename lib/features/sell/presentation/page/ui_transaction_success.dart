@@ -22,7 +22,7 @@ class UITransactionSuccess extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           Navigator.popUntil(context, ModalRoute.withName('/sell'));
-          final blocSell = context.read<SellBloc>();
+          final blocSell = context.read<TransactionBloc>();
           blocSell.add(TransactionResetOrderedItem());
           blocSell.add(TransactionResetSelectedItem());
 

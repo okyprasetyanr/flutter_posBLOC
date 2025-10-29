@@ -34,8 +34,8 @@ class _UITransactionState extends State<UITransaction> {
   }
 
   Future<void> initData() async {
-    final bloc = context.read<SellBloc>();
-    bloc.add(TransactionAmbilDataSellBloc(idCabang: null));
+    final bloc = context.read<TransactionBloc>();
+    bloc.add(TransactionAmbilDataSellBloc(idBranch: null));
   }
 
   @override
@@ -91,7 +91,7 @@ class _UITransactionState extends State<UITransaction> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    onChanged: (value) => context.read<SellBloc>().add(
+                    onChanged: (value) => context.read<TransactionBloc>().add(
                       TransactionSearchItem(text: value),
                     ),
                   ),
@@ -100,7 +100,7 @@ class _UITransactionState extends State<UITransaction> {
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
-                    context.read<SellBloc>().add(
+                    context.read<TransactionBloc>().add(
                       TransactionStatusTransaction(),
                     );
                     initData();
@@ -110,51 +110,55 @@ class _UITransactionState extends State<UITransaction> {
                     width: 120,
                     padding: const EdgeInsets.only(top: 5, bottom: 5),
                     height: 40,
-                    child: BlocSelector<SellBloc, TransactionState, bool>(
-                      selector: (state) {
-                        if (state is TransactionLoaded) {
-                          return state.sell;
-                        }
-                        return false;
-                      },
-                      builder: (context, state) {
-                        return Stack(
-                          children: [
-                            AnimatedPositioned(
-                              curve: Curves.easeInOut,
-                              left: state ? 0 : -200,
-                              duration: const Duration(milliseconds: 500),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.swap_horiz_rounded,
-                                    size: 25,
+                    child:
+                        BlocSelector<TransactionBloc, TransactionState, bool>(
+                          selector: (state) {
+                            if (state is TransactionLoaded) {
+                              return state.sell;
+                            }
+                            return false;
+                          },
+                          builder: (context, state) {
+                            return Stack(
+                              children: [
+                                AnimatedPositioned(
+                                  curve: Curves.easeInOut,
+                                  left: state ? 0 : -200,
+                                  duration: const Duration(milliseconds: 500),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.swap_horiz_rounded,
+                                        size: 25,
+                                      ),
+                                      Text("Penjualan", style: titleTextStyle),
+                                    ],
                                   ),
-                                  Text("Penjualan", style: titleTextStyle),
-                                ],
-                              ),
-                            ),
-                            AnimatedPositioned(
-                              curve: Curves.easeInOut,
-                              left: state ? 300 : 0,
-                              duration: const Duration(milliseconds: 500),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.swap_horiz_rounded,
-                                      size: 25,
-                                    ),
-                                    Text("Pembelian", style: titleTextStyle),
-                                  ],
                                 ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                                AnimatedPositioned(
+                                  curve: Curves.easeInOut,
+                                  left: state ? 300 : 0,
+                                  duration: const Duration(milliseconds: 500),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.swap_horiz_rounded,
+                                          size: 25,
+                                        ),
+                                        Text(
+                                          "Pembelian",
+                                          style: titleTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                   ),
                 ),
               ],
@@ -192,7 +196,7 @@ class _UITransactionState extends State<UITransaction> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            BlocSelector<SellBloc, TransactionState, (int, double)>(
+            BlocSelector<TransactionBloc, TransactionState, (int, double)>(
               selector: (state) {
                 if (state is TransactionLoaded && state.itemOrdered != null) {
                   final itemOrdered = state.itemOrdered!;
