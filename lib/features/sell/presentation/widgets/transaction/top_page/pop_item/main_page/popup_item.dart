@@ -42,7 +42,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SellBloc, TransactionState>(
+    return BlocListener<TransactionBloc, TransactionState>(
       listener: (context, state) {
         if (state is TransactionLoaded) {
           final data = state.selectedItem;
@@ -167,7 +167,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 ),
                                 onPressed: () {
                                   popup.value = !isVisible;
-                                  context.read<SellBloc>().add(
+                                  context.read<TransactionBloc>().add(
                                     TransactionDeleteItemOrdered(),
                                   );
                                 },
@@ -201,7 +201,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 ),
                                 onPressed: () {
                                   popup.value = false;
-                                  context.read<SellBloc>().add(
+                                  context.read<TransactionBloc>().add(
                                     TransactionResetSelectedItem(),
                                   );
                                 },
@@ -236,7 +236,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 onPressed: () {
                                   ;
                                   popup.value = !isVisible;
-                                  context.read<SellBloc>().add(
+                                  context.read<TransactionBloc>().add(
                                     TransactionAddOrderedItem(),
                                   );
                                 },

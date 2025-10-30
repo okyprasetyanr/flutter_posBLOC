@@ -13,7 +13,11 @@ class UITransactionListViewKategori extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SellBloc, TransactionState, List<ModelKategori>?>(
+    return BlocSelector<
+      TransactionBloc,
+      TransactionState,
+      List<ModelKategori>?
+    >(
       selector: (state) {
         if (state is TransactionLoaded) {
           return (state.dataCategory);
@@ -53,7 +57,7 @@ class UITransactionListViewKategori extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        context.read<SellBloc>().add(
+                        context.read<TransactionBloc>().add(
                           TransactionSelectedKategoriItem(
                             selectedKategori: kategori,
                           ),
@@ -61,7 +65,7 @@ class UITransactionListViewKategori extends StatelessWidget {
                       },
                       child:
                           BlocSelector<
-                            SellBloc,
+                            TransactionBloc,
                             TransactionState,
                             ModelKategori?
                           >(

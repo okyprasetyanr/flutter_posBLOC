@@ -13,7 +13,7 @@ class UITransactionDropDownCabang extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<
-      SellBloc,
+      TransactionBloc,
       TransactionState,
       (List<ModelCabang>?, String?)
     >(
@@ -55,7 +55,7 @@ class UITransactionDropDownCabang extends StatelessWidget {
               )
               .toList(),
           onChanged: (value) {
-            context.read<SellBloc>().add(
+            context.read<TransactionBloc>().add(
               TransactionAmbilDataSellBloc(idCabang: value!.getidBranch),
             );
           },

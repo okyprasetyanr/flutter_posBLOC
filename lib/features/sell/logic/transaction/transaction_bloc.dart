@@ -10,10 +10,10 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 
-class SellBloc extends Bloc<TransactionEvent, TransactionState> {
+class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
 
-  SellBloc(this.repo) : super(TransactionInitial()) {
+  TransactionBloc(this.repo) : super(TransactionInitial()) {
     on<TransactionAmbilDataSellBloc>(_onAmbilData);
     on<TransactionSearchItem>(
       _onSellSearchItem,

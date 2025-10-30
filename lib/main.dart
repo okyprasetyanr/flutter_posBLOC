@@ -27,7 +27,7 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => InventoryBloc(repo)),
-          BlocProvider(create: (context) => SellBloc(repo)),
+          BlocProvider(create: (context) => TransactionBloc(repo)),
           BlocProvider(create: (context) => PaymentBloc()),
         ],
         child: MaterialApp(

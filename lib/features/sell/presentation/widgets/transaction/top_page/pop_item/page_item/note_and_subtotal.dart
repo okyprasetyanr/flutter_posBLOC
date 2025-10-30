@@ -29,7 +29,7 @@ class _UITransactionPopUpNoteAndSubTotalState
     return Row(
       children: [
         Flexible(
-          child: BlocListener<SellBloc, TransactionState>(
+          child: BlocListener<TransactionBloc, TransactionState>(
             listenWhen: (previous, current) =>
                 previous is TransactionLoaded &&
                 current is TransactionLoaded &&
@@ -61,7 +61,7 @@ class _UITransactionPopUpNoteAndSubTotalState
                 ),
               ),
               controller: noteController,
-              onChanged: (value) => context.read<SellBloc>().add(
+              onChanged: (value) => context.read<TransactionBloc>().add(
                 TransactionAdjustItem(note: value),
               ),
             ),
@@ -74,7 +74,7 @@ class _UITransactionPopUpNoteAndSubTotalState
             enabled: false,
             controller: TextEditingController(
               text:
-                  "${formatUang(context.select<SellBloc, double?>((value) {
+                  "${formatUang(context.select<TransactionBloc, double?>((value) {
                     final state = value.state;
                     if (state is TransactionLoaded && state.selectedItem != null) {
                       return state.selectedItem!.getsubTotal;

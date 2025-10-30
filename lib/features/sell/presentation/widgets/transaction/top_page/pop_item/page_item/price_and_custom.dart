@@ -31,7 +31,9 @@ class _UITransactionPopUpPriceAndCustomState
     super.initState();
     editprice.addListener(() {
       if (!editprice.value) {
-        context.read<SellBloc>().add(TransactionAdjustItem(customprice: 0));
+        context.read<TransactionBloc>().add(
+          TransactionAdjustItem(customprice: 0),
+        );
         priceController.clear();
       }
     });
@@ -70,21 +72,22 @@ class _UITransactionPopUpPriceAndCustomState
                   onPressed: () {
                     editprice.value = !editprice.value;
                   },
-                  label: BlocSelector<SellBloc, TransactionState, double>(
-                    selector: (state) {
-                      if (state is TransactionLoaded &&
-                          state.selectedItem != null) {
-                        return state.selectedItem!.getpriceItemCustom;
-                      }
-                      return 0;
-                    },
-                    builder: (context, state) {
-                      debugPrint(
-                        "Log UISell: BlocSelector Harga value: $state",
-                      );
-                      return Text(formatUang(state), style: lv05TextStyle);
-                    },
-                  ),
+                  label:
+                      BlocSelector<TransactionBloc, TransactionState, double>(
+                        selector: (state) {
+                          if (state is TransactionLoaded &&
+                              state.selectedItem != null) {
+                            return state.selectedItem!.getpriceItemCustom;
+                          }
+                          return 0;
+                        },
+                        builder: (context, state) {
+                          debugPrint(
+                            "Log UISell: BlocSelector Harga value: $state",
+                          );
+                          return Text(formatUang(state), style: lv05TextStyle);
+                        },
+                      ),
                 ),
               ),
               SizedBox(
@@ -103,50 +106,53 @@ class _UITransactionPopUpPriceAndCustomState
                           duration: Duration(milliseconds: 500),
                           child: SizedBox(
                             width: 200,
-                            child: BlocListener<SellBloc, TransactionState>(
-                              listenWhen: (previous, current) =>
-                                  previous is TransactionLoaded &&
-                                  current is TransactionLoaded &&
-                                  previous.selectedItem != current.selectedItem,
-                              listener: (context, state) {
-                                if (state is TransactionLoaded &&
-                                    state.selectedItem == null) {
-                                  priceController.clear();
-                                }
-                              },
-                              child: TextField(
-                                style: lv05TextStyle,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 5,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.always,
-                                  labelText: "Ubah Harga:",
-                                  labelStyle: lv05TextStyle,
-                                  hintText: "Rp...",
-                                  hintStyle: lv05TextStyle,
-                                ),
-                                textAlign: TextAlign.right,
-                                controller: priceController,
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) {
-                                  debugPrint(
-                                    "Log UISell: cek BlocSelector Harga",
-                                  );
-                                  context.read<SellBloc>().add(
-                                    TransactionAdjustItem(
-                                      customprice: double.tryParse(value),
+                            child:
+                                BlocListener<TransactionBloc, TransactionState>(
+                                  listenWhen: (previous, current) =>
+                                      previous is TransactionLoaded &&
+                                      current is TransactionLoaded &&
+                                      previous.selectedItem !=
+                                          current.selectedItem,
+                                  listener: (context, state) {
+                                    if (state is TransactionLoaded &&
+                                        state.selectedItem == null) {
+                                      priceController.clear();
+                                    }
+                                  },
+                                  child: TextField(
+                                    style: lv05TextStyle,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                            horizontal: 5,
+                                          ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.always,
+                                      labelText: "Ubah Harga:",
+                                      labelStyle: lv05TextStyle,
+                                      hintText: "Rp...",
+                                      hintStyle: lv05TextStyle,
                                     ),
-                                  );
-                                },
-                              ),
-                            ),
+                                    textAlign: TextAlign.right,
+                                    controller: priceController,
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {
+                                      debugPrint(
+                                        "Log UISell: cek BlocSelector Harga",
+                                      );
+                                      context.read<TransactionBloc>().add(
+                                        TransactionAdjustItem(
+                                          customprice: double.tryParse(value),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                           ),
                         );
                       },

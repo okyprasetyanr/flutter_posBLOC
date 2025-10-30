@@ -71,7 +71,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
             navUpDownTransition(context, '/inventory', false);
           },
           Icon(Icons.inventory),
-          "Inventoryi",
+          "Inventori",
         ),
         gridViewMenu(
           () {

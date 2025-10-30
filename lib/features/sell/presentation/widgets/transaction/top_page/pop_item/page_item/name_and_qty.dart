@@ -23,23 +23,31 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            child: BlocSelector<SellBloc, TransactionState, ModelItemOrdered?>(
-              selector: (stateNama) {
-                if (stateNama is TransactionLoaded) {
-                  return stateNama.selectedItem;
-                }
-                return null;
-              },
-              builder: (context, stateNama) {
-                return Text(stateNama?.getnameItem ?? "", style: lv05TextStyle);
-              },
-            ),
+            child:
+                BlocSelector<
+                  TransactionBloc,
+                  TransactionState,
+                  ModelItemOrdered?
+                >(
+                  selector: (stateNama) {
+                    if (stateNama is TransactionLoaded) {
+                      return stateNama.selectedItem;
+                    }
+                    return null;
+                  },
+                  builder: (context, stateNama) {
+                    return Text(
+                      stateNama?.getnameItem ?? "",
+                      style: lv05TextStyle,
+                    );
+                  },
+                ),
           ),
           Expanded(
             child: Column(
               children: [
                 Text("Quantity:", style: lv05TextStyle),
-                BlocSelector<SellBloc, TransactionState, double?>(
+                BlocSelector<TransactionBloc, TransactionState, double?>(
                   selector: (state) {
                     if (state is TransactionLoaded) {
                       return state.selectedItem?.getqtyItem;
@@ -65,7 +73,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            context.read<SellBloc>().add(
+                            context.read<TransactionBloc>().add(
                               TransactionAdjustItem(mode: false),
                             );
                           },
@@ -92,7 +100,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                           ),
                           padding: EdgeInsets.zero,
                           onPressed: () {
-                            context.read<SellBloc>().add(
+                            context.read<TransactionBloc>().add(
                               TransactionAdjustItem(mode: true),
                             );
                           },

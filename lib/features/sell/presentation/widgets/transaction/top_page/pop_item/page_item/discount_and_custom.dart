@@ -38,7 +38,7 @@ class _UITransactionPopUpDiscountAndCustomState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Diskon:", style: lv05TextStyle),
-          BlocSelector<SellBloc, TransactionState, int?>(
+          BlocSelector<TransactionBloc, TransactionState, int?>(
             selector: (state) {
               if (state is TransactionLoaded && state.selectedItem != null) {
                 return state.selectedItem!.getdiscountItem;
@@ -61,7 +61,7 @@ class _UITransactionPopUpDiscountAndCustomState
                         customDiscountController.clear();
                       }
 
-                      context.read<SellBloc>().add(
+                      context.read<TransactionBloc>().add(
                         TransactionAdjustItem(discount: diskon),
                       );
                     },
@@ -92,7 +92,7 @@ class _UITransactionPopUpDiscountAndCustomState
           ),
           const SizedBox(height: 5),
           SizedBox(
-            child: BlocListener<SellBloc, TransactionState>(
+            child: BlocListener<TransactionBloc, TransactionState>(
               listenWhen: (previous, current) =>
                   previous is TransactionLoaded &&
                   current is TransactionLoaded &&
@@ -137,7 +137,7 @@ class _UITransactionPopUpDiscountAndCustomState
                       customSnackBar(context, "Jumlah melebihi 100%");
                       return oldValue;
                     }
-                    context.read<SellBloc>().add(
+                    context.read<TransactionBloc>().add(
                       TransactionAdjustItem(
                         discount: customDiscount.isEmpty ? 0 : intValue,
                       ),

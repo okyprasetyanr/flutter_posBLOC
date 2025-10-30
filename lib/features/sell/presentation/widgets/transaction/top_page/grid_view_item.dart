@@ -16,7 +16,7 @@ class UITransactionGridViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String idPesananNota = Uuid().v1();
-    return BlocSelector<SellBloc, TransactionState, List<ModelItem>>(
+    return BlocSelector<TransactionBloc, TransactionState, List<ModelItem>>(
       selector: (state) {
         if (state is TransactionLoaded) {
           return state.filteredItem!.toList();
@@ -64,7 +64,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                         condiment: [],
                       );
 
-                      context.read<SellBloc>().add(
+                      context.read<TransactionBloc>().add(
                         TransactionSelectedItem(
                           selectedItem: selectedItem,
                           edit: false,

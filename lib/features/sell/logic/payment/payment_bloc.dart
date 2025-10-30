@@ -161,7 +161,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     PaymentGetItem event,
     Emitter<PaymentState> emit,
   ) async {
-    final sellState = event.context.read<SellBloc>().state;
+    final sellState = event.context.read<TransactionBloc>().state;
     if (sellState is TransactionLoaded) {
       debugPrint("Log PaymentBloc: cek SellState");
 
