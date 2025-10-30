@@ -14,7 +14,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
 
   TransactionBloc(this.repo) : super(TransactionInitial()) {
-    on<TransactionAmbilDataSellBloc>(_onAmbilData);
+    on<TransactionGetData>(_onGetData);
     on<TransactionSearchItem>(
       _onSellSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
@@ -30,8 +30,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionStatusTransaction>(_onStatusTransaction);
   }
 
-  Future<void> _onAmbilData(
-    TransactionAmbilDataSellBloc event,
+  Future<void> _onGetData(
+    TransactionGetData event,
     Emitter<TransactionState> emit,
   ) async {
     final currentState = state is TransactionLoaded
@@ -41,14 +41,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     final listCabang = repo.getBranch();
 
-    String idCabang = event.idCabang ?? listCabang.first.getidBranch;
+    String idBranch = event.idBranch ?? listCabang.first.getidBranch;
     final listItem = repo
-        .getItem(idCabang)
+        .getItem(idBranch)
         .where((element) => element.getStatusItem)
         .toList();
     List<ModelKategori> listKategori = [
       ModelKategori(nameCategory: "All", idCategory: "0", idBranch: "0"),
-      ...repo.getCategory(idCabang),
+      ...repo.getCategory(idBranch),
     ];
 
     ModelKategori selectedIdKategori =
@@ -58,7 +58,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         filteredItem: currentState.sell
             ? listItem.where((element) => !element.getstatusCondiment).toList()
             : listItem,
-        selectedIDCabang: idCabang,
+        selectedIDBranch: idBranch,
         selectedKategori: selectedIdKategori,
         dataCabang: listCabang,
         dataItem: listItem,

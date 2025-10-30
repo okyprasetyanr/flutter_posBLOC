@@ -44,22 +44,7 @@ class UserSession {
   }
 }
 
-Map<String, dynamic> convertToMapItem(ModelItem data) {
-  return {
-    'uid_user': data.getuidUser,
-    'nama_item': data.getnameItem,
-    'harga_item': data.getpriceItem,
-    'id_item': data.getidItem,
-    'id_kategori': data.getidCategoryiItem,
-    'status_condiment': data.getstatusCondiment,
-    'url_gambar': data.geturlImage,
-    'qty_item': data.getqtyitem,
-    'id_cabang': data.getidBranch,
-    'barcode': data.getBarcode,
-    'status_item': data.getStatusItem,
-    'tanggal_item': data.getDateItem,
-  };
-}
+
 
 Future<void> checkAndroidVersion() async {
   final deviceInfo = DeviceInfoPlugin();

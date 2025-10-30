@@ -16,11 +16,11 @@ class UIInventoryGridViewItem extends StatelessWidget {
     return BlocSelector<
       InventoryBloc,
       InventoryState,
-      (List<ModelItem>, String? idCabang)
+      (List<ModelItem>, String?)
     >(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.filteredDataItem, state.idCabang);
+          return (state.filteredDataItem, state.selectedIdBranch);
         }
         return ([], null);
       },
@@ -53,7 +53,6 @@ class UIInventoryGridViewItem extends StatelessWidget {
                         InvSelectedItem(
                           selectedItem: ModelItem(
                             qtyItem: items[index].getqtyitem,
-                            uidUser: items[index].getuidUser,
                             nameItem: items[index].getnameItem,
                             idItem: items[index].getidItem,
                             priceItem: items[index].getpriceItem,

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-class ModelCabang extends Equatable {
+class ModelBranch extends Equatable {
   final String _areaBranch, _numTelpBranch, _addressBranch, _idBranch;
-  ModelCabang({
+  ModelBranch({
     required String areaBranch,
     required String numTelpBranch,
     required String addressBranch,
@@ -23,12 +23,12 @@ class ModelCabang extends Equatable {
   set setaddressBranch(String value) => _addressBranch;
   set setidBranch(String value) => _idBranch;
 
-  static List<ModelCabang> getDataListCabang(DocumentSnapshot data) {
+  static List<ModelBranch> getDataListCabang(DocumentSnapshot data) {
     Map dataUser = data.data() as Map<String, dynamic>;
     List listcabang = dataUser['cabang'] ?? [];
     return listcabang
         .map(
-          (map) => ModelCabang(
+          (map) => ModelBranch(
             areaBranch: map['daerah_cabang'],
             numTelpBranch: map['no_telephone_cabang'],
             addressBranch: map['alamat_cabang'],

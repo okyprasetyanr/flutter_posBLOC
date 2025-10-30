@@ -25,15 +25,22 @@ class SellPopUpPageItem extends StatelessWidget {
             children: [
               Expanded(flex: 4, child: UITransactionPopUpPriceAndCustom()),
               const SizedBox(width: 5),
-              (context.read<TransactionBloc>().state is TransactionLoaded)
-                  ? (context.read<TransactionBloc>().state as TransactionLoaded)
-                            .sell
-                        ? Expanded(
-                            flex: 6,
-                            child: UITransactionPopUpDiscountAndCustom(),
-                          )
-                        : Expanded(flex: 6, child: SizedBox())
-                  : SizedBox.shrink(),
+              Expanded(
+                flex: 6,
+                child: BlocSelector<TransactionBloc, TransactionState, bool>(
+                  selector: (state) {
+                    if (state is TransactionLoaded) {
+                      return state.sell;
+                    }
+                    return true;
+                  },
+                  builder: (context, state) {
+                    return state
+                        ? const UITransactionPopUpDiscountAndCustom()
+                        : const SizedBox.shrink();
+                  },
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 60),

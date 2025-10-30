@@ -4,7 +4,6 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
@@ -69,20 +68,19 @@ class UIInventoryButtonItem extends StatelessWidget {
                         : bloc.dataSelectedItem!.getidItem;
                     final data = ModelItem(
                       qtyItem: 0,
-                      uidUser: UserSession.uidUser!,
                       nameItem: namaItemController.text,
                       idItem: idUser,
                       priceItem: double.tryParse(hargaItemController.text)!,
                       idCategoryItem: selectedKategori,
                       statusCondiment: bloc.condimentForm,
                       urlImage: "",
-                      idBranch: bloc.idCabang!,
+                      idBranch: bloc.selectedIdBranch!,
                       barcode: kodeBarcodeController.text,
                       statusItem: true,
                       dateItem: DateFormat('yyyy-MM-dd').format(DateTime.now()),
                     );
                     context.read<InventoryBloc>().add(
-                      InvUploadItem(data: data),
+                      InvUploadItem(item: data),
                     );
 
                     resetItemForm();

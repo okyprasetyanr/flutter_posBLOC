@@ -17,14 +17,14 @@ class InventoryError extends InventoryState {
 }
 
 class InventoryLoaded extends InventoryState with EquatableMixin {
-  final String? idCabang;
+  final String? selectedIdBranch;
   final String? daerahCabang;
   final String? selectedFilterItem;
   final String? selectedStatusItem;
   final String? selectedFilterJenisItem;
   final String? selectedFilterIDKategoriItem;
   final bool condimentForm;
-  final List<ModelCabang> datacabang;
+  final List<ModelBranch> datacabang;
   final List<ModelItem> dataItem;
   final List<ModelKategori> dataKategori;
   final List<ModelItem> filteredDataItem;
@@ -41,7 +41,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     this.condimentForm = false,
     this.dataSelectedKategori,
     this.dataSelectedItem,
-    this.idCabang,
+    this.selectedIdBranch,
     this.daerahCabang,
     this.datacabang = const [],
     this.dataItem = const [],
@@ -50,14 +50,14 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   });
 
   InventoryLoaded copyWith({
-    String? idCabang,
+    String? idBranch,
     String? daerahCabang,
     String? selectedFilterItem,
     String? selectedStatusItem,
     String? selectedFilterJenisItem,
     String? selectedFilterIDKategoriItem,
     bool? condimentForm,
-    List<ModelCabang>? datacabang,
+    List<ModelBranch>? datacabang,
     List<ModelItem>? dataItem,
     List<ModelKategori>? dataKategori,
     List<ModelItem>? filteredDataItem,
@@ -73,7 +73,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
           selectedFilterJenisItem ?? this.selectedFilterJenisItem,
       selectedStatusItem: selectedStatusItem ?? this.selectedStatusItem,
       condimentForm: condimentForm ?? this.condimentForm,
-      idCabang: idCabang ?? this.idCabang,
+      selectedIdBranch: idBranch ?? this.selectedIdBranch,
       daerahCabang: daerahCabang ?? this.daerahCabang,
       datacabang: datacabang ?? this.datacabang,
       dataItem: dataItem ?? this.dataItem,
@@ -87,7 +87,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    idCabang,
+    selectedIdBranch,
     daerahCabang,
     selectedFilterItem,
     selectedStatusItem,

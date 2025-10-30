@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/function/function.dart';
 
 class ModelItem extends Equatable {
-  final String _uidUser,
-      _nameItem,
+  final String _nameItem,
       _idItem,
       _idCategoryItem,
       _urlImage,
@@ -15,7 +15,6 @@ class ModelItem extends Equatable {
 
   ModelItem({
     required double qtyItem,
-    required String uidUser,
     required String nameItem,
     required String idItem,
     required double priceItem,
@@ -26,8 +25,7 @@ class ModelItem extends Equatable {
     required String barcode,
     required bool statusItem,
     required String dateItem,
-  }) : _uidUser = uidUser,
-       _nameItem = nameItem,
+  }) : _nameItem = nameItem,
        _idItem = idItem,
        _priceItem = priceItem,
        _idCategoryItem = idCategoryItem,
@@ -39,7 +37,6 @@ class ModelItem extends Equatable {
        _statusItem = statusItem,
        _dateItem = dateItem;
 
-  String get getuidUser => _uidUser;
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
   double get getpriceItem => _priceItem;
@@ -52,24 +49,34 @@ class ModelItem extends Equatable {
   bool get getStatusItem => _statusItem;
   String get getDateItem => _dateItem;
 
-  set setuidUser(String value) => _uidUser;
-  set setnameItem(String value) => _nameItem;
-  set setidItem(String value) => _idItem;
-  set setpriceItem(String value) => _priceItem;
-  set setidCategoryItem(String value) => _idCategoryItem;
-  set setstatusCondiment(bool value) => _statusCondiment;
-  set seturlImage(String value) => _urlImage;
-  set setqtyItem(double value) => _qtyItem;
-  set setidBranch(String value) => _idBranch;
-  set setBarcode(String value) => _barcode;
-  set setStatusItem(bool value) => _statusItem;
-  set setDateItem(String value) => _dateItem;
+  Map<String, dynamic> convertToMapItem() {
+    return {
+      'uid_user': UserSession.ambilUidUser(),
+      'nama_item': _nameItem,
+      'harga_item': _priceItem,
+      'id_item': _idItem,
+      'id_kategori': _idCategoryItem,
+      'status_condiment': _statusCondiment,
+      'url_gambar': _urlImage,
+      'qty_item': _qtyItem,
+      'id_cabang': _idBranch,
+      'barcode': _barcode,
+      'status_item': _statusItem,
+      'tanggal_item': _dateItem,
+    };
+  }
+
+  Future<void> pushDataItem() async {
+    await FirebaseFirestore.instance
+        .collection("items")
+        .doc(_idItem)
+        .set(convertToMapItem());
+  }
 
   static List<ModelItem> getDataListItem(QuerySnapshot data) {
     return data.docs.map((map) {
       final dataItem = map.data() as Map<String, dynamic>;
       return ModelItem(
-        uidUser: dataItem['uid_user'],
         nameItem: dataItem['nama_item'],
         idItem: dataItem['id_item'],
         priceItem: dataItem['harga_item'].toDouble(),
@@ -87,7 +94,6 @@ class ModelItem extends Equatable {
 
   @override
   List<Object?> get props => [
-    _uidUser,
     _nameItem,
     _idItem,
     _priceItem,

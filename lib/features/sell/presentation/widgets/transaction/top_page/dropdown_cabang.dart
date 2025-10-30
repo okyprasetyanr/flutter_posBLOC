@@ -15,7 +15,7 @@ class UITransactionDropDownCabang extends StatelessWidget {
     return BlocSelector<
       TransactionBloc,
       TransactionState,
-      (List<ModelCabang>?, String?)
+      (List<ModelBranch>?, String?)
     >(
       selector: (state) {
         if (state is TransactionLoaded) {
@@ -28,7 +28,7 @@ class UITransactionDropDownCabang extends StatelessWidget {
           return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
         }
 
-        return DropdownButtonFormField<ModelCabang>(
+        return DropdownButtonFormField<ModelBranch>(
           decoration: InputDecoration(
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(vertical: 4),
@@ -56,7 +56,7 @@ class UITransactionDropDownCabang extends StatelessWidget {
               .toList(),
           onChanged: (value) {
             context.read<TransactionBloc>().add(
-              TransactionAmbilDataSellBloc(idCabang: value!.getidBranch),
+              TransactionGetData(idBranch: value!.getidBranch),
             );
           },
         );

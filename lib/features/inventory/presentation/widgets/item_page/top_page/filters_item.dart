@@ -112,7 +112,7 @@ class UIFiltersItem extends StatelessWidget {
                         data.getidBranch ==
                             (context.read<InventoryBloc>().state
                                     as InventoryLoaded)
-                                .idCabang,
+                                .selectedIdBranch,
                   )
                   .map(
                     (map) => DropdownMenuItem<ModelKategori>(

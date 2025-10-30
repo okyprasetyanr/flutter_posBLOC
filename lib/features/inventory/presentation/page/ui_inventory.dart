@@ -111,6 +111,7 @@ class _UIInventoryState extends State<UIInventory> {
     selectedFilterKategoriItem = filterkategori.first.getidCategory;
 
     final bloc = context.read<InventoryBloc>();
+    final blocValue = bloc.state;
     bloc.add(
       InvFilterItem(
         filter: selectedFilterItem!,
@@ -120,8 +121,10 @@ class _UIInventoryState extends State<UIInventory> {
       ),
     );
     bloc.add(
-      InvAmbilData(
-        idCabang: null,
+      InvGetData(
+        idBranch: (blocValue is InventoryLoaded)
+            ? blocValue.selectedIdBranch
+            : null,
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
         filterjenis: selectedFilterJenisItem!,
@@ -160,7 +163,7 @@ class _UIInventoryState extends State<UIInventory> {
   Future<void> _onRefresh() async {
     final bloc = context.read<InventoryBloc>();
     bloc.add(InvResetItemForm());
-    bloc.add(InvResetKategoriForm());
+    bloc.add(InvResetCategoryForm());
     _resetItemForm();
     namaKategoriController.clear();
 
@@ -549,7 +552,7 @@ class _UIInventoryState extends State<UIInventory> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: UIKategoriButtonKategori(
-                      namaKategoriController: namaKategoriController,
+                      nameCategoryController: namaKategoriController,
                       resetKategoriForm: () => _resetKategoriForm(),
                     ),
                   ),
@@ -611,7 +614,7 @@ class _UIInventoryState extends State<UIInventory> {
   }
 
   void _resetKategoriForm() {
-    context.read<InventoryBloc>().add(InvResetKategoriForm());
+    context.read<InventoryBloc>().add(InvResetCategoryForm());
     namaKategoriController.clear();
   }
 }

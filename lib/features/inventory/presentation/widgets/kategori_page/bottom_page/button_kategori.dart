@@ -4,18 +4,17 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class UIKategoriButtonKategori extends StatelessWidget {
-  final TextEditingController namaKategoriController;
+  final TextEditingController nameCategoryController;
   final VoidCallback resetKategoriForm;
   const UIKategoriButtonKategori({
     super.key,
-    required this.namaKategoriController,
+    required this.nameCategoryController,
     required this.resetKategoriForm,
   });
 
@@ -31,21 +30,19 @@ class UIKategoriButtonKategori extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton.icon(
           onPressed: () async {
-            if (namaKategoriController.text.trim().isEmpty) {
-              customSnackBar(context, "Nama kategori Kosong!");
+            if (nameCategoryController.text.trim().isEmpty) {
+              customSnackBar(context, "Nama Kategori Kosong!");
               return;
             }
-            String idkategori = state?.getidCategory ?? const Uuid().v4();
-            Map<String, dynamic> pushKategori = {
-              "nama_kategori": namaKategoriController.text,
-              "id_kategori": idkategori,
-              "uid_user": UserSession.ambilUidUser(),
-              "id_cabang":
-                  (context.read<InventoryBloc>().state as InventoryLoaded)
-                      .idCabang,
-            };
+            String idCategory = state?.getidCategory ?? const Uuid().v4();
+            final category = ModelKategori(
+              nameCategory: nameCategoryController.text,
+              idCategory: idCategory,
+              idBranch: (context.read<InventoryBloc>().state as InventoryLoaded)
+                  .selectedIdBranch!,
+            );
             context.read<InventoryBloc>().add(
-              InvUploadKategori(data: pushKategori),
+              InvUploadCategory(category: category),
             );
 
             resetKategoriForm();

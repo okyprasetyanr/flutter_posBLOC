@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/function/function.dart';
 
 class ModelKategori extends Equatable {
   final String _nameCategory, _idCategory, _idBranch;
@@ -11,36 +12,24 @@ class ModelKategori extends Equatable {
        _idCategory = idCategory,
        _idBranch = idBranch;
 
-  static reset() {
-    ModelKategori(nameCategory: "", idCategory: "", idBranch: "");
-  }
-
-  Map<String, dynamic> convertMap() {
-    return {
-      'nama_kategori': _nameCategory,
-      'id_kategori': _idCategory,
-      'id_cabang': _idBranch,
-    };
-  }
-
   String get getnameCategory => _nameCategory;
   String get getidCategory => _idCategory;
   String get getidBranch => _idBranch;
 
-  set setnameCategory(String value) => _nameCategory;
-  set setidCategory(String value) => _idCategory;
-  set setidBranch(String value) => _idBranch;
-
-  Map<String, dynamic> convertToMap() {
+  Map<String, dynamic> convertToMapCategory() {
     return {
-      'nama_kategori': getnameCategory,
-      'id_kategori': getidCategory,
-      'id_cabang': getidBranch,
+      'nama_kategori': _nameCategory,
+      'id_kategori': _idCategory,
+      'id_cabang': _idBranch,
+      'uid_user': UserSession.ambilUidUser(),
     };
   }
 
-  Future<void> pushData(String uidUser) async {
-    await FirebaseFirestore.instance.collection("kategori").add(convertToMap());
+  Future<void> pushDataCategory() async {
+    await FirebaseFirestore.instance
+        .collection("kategori")
+        .doc(_idCategory)
+        .set(convertToMapCategory());
   }
 
   static List<ModelKategori> getDataListKategori(QuerySnapshot data) {

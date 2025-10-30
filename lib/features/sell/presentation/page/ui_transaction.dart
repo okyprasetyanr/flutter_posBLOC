@@ -35,7 +35,14 @@ class _UITransactionState extends State<UITransaction> {
 
   Future<void> initData() async {
     final bloc = context.read<TransactionBloc>();
-    bloc.add(TransactionAmbilDataSellBloc(idCabang: null));
+    final blocValue = bloc.state;
+    bloc.add(
+      TransactionGetData(
+        idBranch: (blocValue is TransactionLoaded)
+            ? blocValue.selectedIDBranch
+            : null,
+      ),
+    );
   }
 
   @override

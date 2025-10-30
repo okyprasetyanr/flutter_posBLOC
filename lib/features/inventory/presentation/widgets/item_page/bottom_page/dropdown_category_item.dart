@@ -28,7 +28,9 @@ class DropdownKategoriItem extends StatelessWidget {
           return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
         }
         final blocState = contextBloc.read<InventoryBloc>().state;
-        final idCabang = blocState is InventoryLoaded ? blocState.idCabang : "";
+        final idBranch = blocState is InventoryLoaded
+            ? blocState.selectedIdBranch
+            : "";
         final initselection = stateBLoc.$2 != null
             ? stateBLoc.$1!.firstWhere((element) {
                 return element.getidCategory == stateBLoc.$2!.getidCategory;
@@ -49,7 +51,7 @@ class DropdownKategoriItem extends StatelessWidget {
           initialValue: initselection,
           hint: Text("Kategori...", style: lv05TextStyle),
           items: stateBLoc.$1!
-              .where((data) => data.getidBranch == idCabang)
+              .where((data) => data.getidBranch == idBranch)
               .map(
                 (map) => DropdownMenuItem<ModelKategori>(
                   value: map,

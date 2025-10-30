@@ -3,10 +3,10 @@ import 'package:flutter_pos/model_data/model_category.dart';
 
 class TransactionEvent {}
 
-class TransactionAmbilDataSellBloc extends TransactionEvent {
-  final String? idCabang;
+class TransactionGetData extends TransactionEvent {
+  final String? idBranch;
 
-  TransactionAmbilDataSellBloc({required this.idCabang});
+  TransactionGetData({required this.idBranch});
 }
 
 class TransactionResetSelectedItem extends TransactionEvent {}
