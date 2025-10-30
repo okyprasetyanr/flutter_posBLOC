@@ -14,7 +14,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
 
   TransactionBloc(this.repo) : super(TransactionInitial()) {
-    on<TransactionAmbilDataSellBloc>(_onAmbilData);
+    on<TransactionGetData>(_onGetData);
     on<TransactionSearchItem>(
       _onSellSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
@@ -30,8 +30,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionStatusTransaction>(_onStatusTransaction);
   }
 
-  Future<void> _onAmbilData(
-    TransactionAmbilDataSellBloc event,
+  Future<void> _onGetData(
+    TransactionGetData event,
     Emitter<TransactionState> emit,
   ) async {
     final currentState = state is TransactionLoaded

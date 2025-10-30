@@ -30,7 +30,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     emit(
       currentState.copyWith(
         dataPartner: partner,
-        idBranch: event.idBranch,
+        selectedIdBranch: event.idBranch,
         dataBranch: branch,
         isCustomer: event.isCustomer,
       ),

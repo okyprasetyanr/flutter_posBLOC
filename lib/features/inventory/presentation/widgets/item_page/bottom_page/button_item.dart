@@ -74,7 +74,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                       idCategoryItem: selectedKategori,
                       statusCondiment: bloc.condimentForm,
                       urlImage: "",
-                      idBranch: bloc.idBranch!,
+                      idBranch: bloc.selectedIdBranch!,
                       barcode: kodeBarcodeController.text,
                       statusItem: true,
                       dateItem: DateFormat('yyyy-MM-dd').format(DateTime.now()),

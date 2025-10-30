@@ -18,7 +18,7 @@ class ListViewKategori extends StatelessWidget {
       (List<ModelKategori>?, String?)
     >(
       selector: (state) => state is InventoryLoaded
-          ? (state.dataKategori, state.idBranch)
+          ? (state.dataKategori, state.selectedIdBranch)
           : (null, null),
       builder: (context, state) {
         if (state.$1 == null) {

@@ -80,7 +80,9 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
           Icon(Icons.shopping_cart),
           "Transaksi",
         ),
-        gridViewMenu(() {}, Icon(Icons.assignment_outlined), "Laporan"),
+        gridViewMenu(() {
+           navUpDownTransition(context, '/partner', false);
+        }, Icon(Icons.assignment_outlined), "Laporan"),
       ],
     );
   }

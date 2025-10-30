@@ -56,7 +56,7 @@ class UITransactionDropDownCabang extends StatelessWidget {
               .toList(),
           onChanged: (value) {
             context.read<TransactionBloc>().add(
-              TransactionAmbilDataSellBloc(idBranch: value!.getidBranch),
+              TransactionGetData(idBranch: value!.getidBranch),
             );
           },
         );

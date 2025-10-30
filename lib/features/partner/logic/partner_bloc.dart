@@ -11,6 +11,8 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     on<PartnerGetData>(_onGetData);
     on<PartnerSelectedCustomer>(_onSelectedCustomer);
     on<PartnerPushDataPartner>(_onPushDataPartner);
+    on<PartnerStatusPartner>(_onPartnerStatusPartner);
+    on<PartnerResetSelectedPartner>(_onPartnerResetSelectedPartner);
   }
 
   FutureOr<void> _onGetData(PartnerGetData event, Emitter<PartnerState> emit) {
@@ -30,7 +32,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     emit(
       currentState.copyWith(
         dataPartner: partner,
-        idBranch: event.idBranch,
+        selectedIdBranch: idBranch,
         dataBranch: branch,
         isCustomer: event.isCustomer,
       ),
@@ -53,5 +55,29 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   ) async {
     emit(PartnerLoading());
     await event.partner.pushDataPartner();
+  }
+
+  FutureOr<void> _onPartnerStatusPartner(event, Emitter<PartnerState> emit) {
+    add(PartnerResetSelectedPartner());
+    final currentState = state;
+    if (currentState is PartnerLoaded) {
+      emit(currentState.copyWith(isCustomer: !currentState.isCustomer));
+      add(
+        PartnerGetData(
+          isCustomer: currentState.isCustomer,
+          idBranch: currentState.selectedIdBranch,
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _onPartnerResetSelectedPartner(
+    PartnerResetSelectedPartner event,
+    Emitter<PartnerState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is PartnerLoaded) {
+      emit(currentState.copyWith(selectedPartner: null));
+    }
   }
 }

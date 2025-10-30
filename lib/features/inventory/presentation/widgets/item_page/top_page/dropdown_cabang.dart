@@ -29,7 +29,7 @@ class UIInventoryDropdownCabang extends StatelessWidget {
     >(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.datacabang, state.idBranch);
+          return (state.datacabang, state.selectedIdBranch);
         }
         return ([], "");
       },
@@ -52,7 +52,7 @@ class UIInventoryDropdownCabang extends StatelessWidget {
               .toList(),
           onChanged: (value) {
             context.read<InventoryBloc>().add(
-              InvAmbilData(
+              InvGetData(
                 filter: selectedFilterItem,
                 status: selectedStatusItem,
                 idBranch: value!.getidBranch,

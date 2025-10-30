@@ -39,10 +39,10 @@ class UIKategoriButtonKategori extends StatelessWidget {
               nameCategory: nameCategoryController.text,
               idCategory: idCategory,
               idBranch: (context.read<InventoryBloc>().state as InventoryLoaded)
-                  .idBranch!,
+                  .selectedIdBranch!,
             );
             context.read<InventoryBloc>().add(
-              InvUploadKategori(category: category),
+              InvUploadCategory(category: category),
             );
 
             resetKategoriForm();

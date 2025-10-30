@@ -16,7 +16,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
   InventoryBloc(this.repoCahce) : super(InventoryInitial()) {
     print("Log InventoryBloc: Masuk Bloc");
-    on<InvAmbilData>(_onGetData);
+    on<InvGetData>(_onGetData);
 
     on<InvFilterItem>(_onFilteredItem);
 
@@ -28,9 +28,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<InvSelectedItem>(_onSelectedItem);
 
-    on<InvUploadKategori>(_onUploadKategori);
+    on<InvUploadCategory>(_onUploadKategori);
 
-    on<InvResetKategoriForm>(_onResetKategoriForm);
+    on<InvResetCategoryForm>(_onResetKategoriForm);
 
     on<InvResetItemForm>(_onResetItemForm);
 
@@ -133,7 +133,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   Future<void> _onGetData(
-    InvAmbilData event,
+    InvGetData event,
     Emitter<InventoryState> emit,
   ) async {
     final currentState = state is InventoryLoaded
@@ -151,7 +151,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         final kategori = repoCahce.getCategory(firstCabang.getidBranch);
         kategori.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
         final loaded = InventoryLoaded(
-          idBranch: firstCabang.getidBranch,
+          selectedIdBranch: firstCabang.getidBranch,
           daerahCabang: firstCabang.getareaBranch,
           datacabang: cabangs,
           dataItem: items,
@@ -168,11 +168,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           currentState.dataKategori,
         );
 
-        bool cekDataItem = loadedItem.any(
+        bool checkDataItem = loadedItem.any(
           (item) => item.getidBranch == event.idBranch,
         );
 
-        if (!cekDataItem) {
+        if (!checkDataItem) {
           final newItems = repoCahce.getItem(event.idBranch!);
           final newKategori = repoCahce.getCategory(event.idBranch!);
           if (newItems.isNotEmpty) {
@@ -246,11 +246,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onUploadKategori(
-    InvUploadKategori event,
+    InvUploadCategory event,
     Emitter<InventoryState> emit,
   ) async {
     event.category.pushDataCategory();
-    add(InvResetKategoriForm());
+    add(InvResetCategoryForm());
     final category = repoCahce.getCategory(event.category.getidBranch);
     category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
     final currentState = state is InventoryLoaded
@@ -262,7 +262,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onResetKategoriForm(
-    InvResetKategoriForm event,
+    InvResetCategoryForm event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded

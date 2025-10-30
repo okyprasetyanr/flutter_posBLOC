@@ -28,7 +28,9 @@ class DropdownKategoriItem extends StatelessWidget {
           return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
         }
         final blocState = contextBloc.read<InventoryBloc>().state;
-        final idBranch = blocState is InventoryLoaded ? blocState.idBranch : "";
+        final idBranch = blocState is InventoryLoaded
+            ? blocState.selectedIdBranch
+            : "";
         final initselection = stateBLoc.$2 != null
             ? stateBLoc.$1!.firstWhere((element) {
                 return element.getidCategory == stateBLoc.$2!.getidCategory;

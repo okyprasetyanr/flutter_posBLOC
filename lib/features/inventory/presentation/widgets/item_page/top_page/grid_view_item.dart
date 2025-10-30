@@ -20,7 +20,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
     >(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.filteredDataItem, state.idBranch);
+          return (state.filteredDataItem, state.selectedIdBranch);
         }
         return ([], null);
       },

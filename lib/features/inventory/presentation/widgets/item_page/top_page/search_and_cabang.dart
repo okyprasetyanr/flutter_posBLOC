@@ -61,7 +61,7 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                 >(
                   selector: (state) {
                     if (state is InventoryLoaded) {
-                      return (state.datacabang, state.idBranch);
+                      return (state.datacabang, state.selectedIdBranch);
                     }
                     return ([], "");
                   },
@@ -101,7 +101,7 @@ class UIInventorySearchAndCabang extends StatelessWidget {
                       onChanged: (value) {
                         String idBranch = value!.getidBranch;
                         context.read<InventoryBloc>().add(
-                          InvAmbilData(
+                          InvGetData(
                             idBranch: idBranch,
                             filter: selectedFilterItem!,
                             status: selectedStatusItem!,

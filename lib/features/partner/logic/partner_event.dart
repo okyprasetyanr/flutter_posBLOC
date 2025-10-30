@@ -20,3 +20,7 @@ class PartnerPushDataPartner extends PartnerEvent{
 
   PartnerPushDataPartner({required this.partner});
 }
+
+class PartnerStatusPartner extends PartnerEvent{}
+
+class PartnerResetSelectedPartner extends PartnerEvent{}
