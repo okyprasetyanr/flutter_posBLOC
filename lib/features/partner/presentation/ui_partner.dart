@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/partner/logic/partner_state.dart';
-import 'package:flutter_pos/model_data/logic/partner_bloc.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -25,21 +25,17 @@ class _UIPartnerState extends State<UIPartner> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initData());
+    _initData();
   }
 
-  PartnerBloc? bloc;
-  PartnerState? blocValue;
   Future<void> _initData() async {
-    bloc = context.read<PartnerBloc>();
-    blocValue = bloc!.state;
-    bloc!.add(
+    final bloc = context.read<PartnerBloc>();
+    final blocValue = bloc.state;
+    bloc.add(
       PartnerGetData(
-        isCustomer: (blocValue is PartnerLoaded)
-            ? (blocValue as PartnerLoaded).isCustomer
-            : true,
+        isCustomer: (blocValue is PartnerLoaded) ? blocValue.isCustomer : true,
         idBranch: (blocValue is PartnerLoaded)
-            ? (blocValue as PartnerLoaded).selectedIdBranch
+            ? blocValue.selectedIdBranch
             : null,
       ),
     );
@@ -117,7 +113,7 @@ class _UIPartnerState extends State<UIPartner> {
         Container(
           padding: const EdgeInsets.only(left: 10),
           width: 150,
-          child: BlocSelector(
+          child: BlocSelector<PartnerBloc, PartnerState, bool>(
             selector: (state) => state is PartnerLoading,
             builder: (context, state) {
               return state
@@ -158,7 +154,7 @@ class _UIPartnerState extends State<UIPartner> {
           ),
         ),
         Expanded(
-          child: BlocSelector(
+          child: BlocSelector<PartnerBloc, PartnerState, bool>(
             selector: (state) => state is PartnerLoading,
             builder: (context, state) {
               return state
@@ -267,7 +263,6 @@ class _UIPartnerState extends State<UIPartner> {
       }
       return "";
     });
-
     return Row(
       children: [
         Expanded(

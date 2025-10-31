@@ -13,7 +13,9 @@ Future navUpDownTransition(
 
   final route = PageRouteBuilder(
     settings: RouteSettings(name: routeName),
-    pageBuilder: (context, animation, secondaryAnimation) => builder(context),
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return Builder(builder: (innerContext) => builder(innerContext));
+    },
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
