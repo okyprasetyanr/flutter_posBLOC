@@ -57,19 +57,29 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     await event.partner.pushDataPartner();
   }
 
-  FutureOr<void> _onPartnerStatusPartner(event, Emitter<PartnerState> emit) {
-    add(PartnerResetSelectedPartner());
-    final currentState = state;
-    if (currentState is PartnerLoaded) {
-      emit(currentState.copyWith(isCustomer: !currentState.isCustomer));
-      add(
-        PartnerGetData(
-          isCustomer: currentState.isCustomer,
-          idBranch: currentState.selectedIdBranch,
-        ),
-      );
-    }
+FutureOr<void> _onPartnerStatusPartner(
+  event,
+  Emitter<PartnerState> emit,
+) async {
+  add(PartnerResetSelectedPartner());
+
+  final currentState = state;
+  if (currentState is PartnerLoaded) {
+    final newCustomerStatus = !currentState.isCustomer;
+    emit(currentState.copyWith(isCustomer: newCustomerStatus));
+
+    // tunggu sebentar biar state baru ke-emit dulu
+    await Future.delayed(Duration(milliseconds: 10));
+
+    add(
+      PartnerGetData(
+        isCustomer: newCustomerStatus,
+        idBranch: currentState.selectedIdBranch,
+      ),
+    );
   }
+}
+
 
   FutureOr<void> _onPartnerResetSelectedPartner(
     PartnerResetSelectedPartner event,

@@ -41,8 +41,20 @@ class _UIPartnerState extends State<UIPartner> {
     );
   }
 
+  String? nameBranch;
   @override
   Widget build(BuildContext context) {
+    nameBranch = context.select<PartnerBloc, String?>((bloc) {
+      final state = bloc.state;
+      if (state is PartnerLoaded) {
+        return state.dataBranch!
+            .firstWhere(
+              (element) => element.getidBranch == state.selectedIdBranch,
+            )
+            .getareaBranch;
+      }
+      return "";
+    });
     return LayoutTopBottom(
       layoutTop: layoutTop(),
       layoutBottom: layoutBottom(),
@@ -61,7 +73,6 @@ class _UIPartnerState extends State<UIPartner> {
           child: GestureDetector(
             onTap: () {
               context.read<PartnerBloc>().add(PartnerStatusPartner());
-              _initData();
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 500),
@@ -246,23 +257,6 @@ class _UIPartnerState extends State<UIPartner> {
   }
 
   Widget layoutBottom() {
-    final isCustomer = context.select<PartnerBloc, bool>(
-      (bloc) => bloc.state is PartnerLoaded
-          ? (bloc.state as PartnerLoaded).isCustomer
-          : true,
-    );
-
-    final nameBranch = context.select<PartnerBloc, String?>((bloc) {
-      final state = bloc.state;
-      if (state is PartnerLoaded) {
-        return state.dataBranch!
-            .firstWhere(
-              (element) => element.getidBranch == state.selectedIdBranch,
-            )
-            .getareaBranch;
-      }
-      return "";
-    });
     return Row(
       children: [
         Expanded(
@@ -277,10 +271,20 @@ class _UIPartnerState extends State<UIPartner> {
                 namePartnerController.text = state.selectedPartner!.getname;
               }
             },
-            child: customTextField(
-              "Nama ${isCustomer ? "Customer" : "Supplier"}",
-              namePartnerController,
-              true,
+            child: BlocSelector<PartnerBloc, PartnerState, bool>(
+              selector: (state) {
+                if (state is PartnerLoaded) {
+                  return state.isCustomer;
+                }
+                return true;
+              },
+              builder: (context, state) {
+                return customTextField(
+                  "Nama ${state ? "Customer" : "Supplier"}",
+                  namePartnerController,
+                  true,
+                );
+              },
             ),
           ),
         ),

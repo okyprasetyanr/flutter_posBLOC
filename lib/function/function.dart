@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -43,8 +42,6 @@ class UserSession {
     return uidUser;
   }
 }
-
-
 
 Future<void> checkAndroidVersion() async {
   final deviceInfo = DeviceInfoPlugin();
