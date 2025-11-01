@@ -6,7 +6,7 @@ class PartnerGetData extends PartnerEvent {
   final String? idBranch;
   final bool isCustomer;
 
-  PartnerGetData({required this.idBranch,required this.isCustomer});
+  PartnerGetData({this.idBranch, this.isCustomer = true});
 }
 
 class PartnerSelectedCustomer extends PartnerEvent {
@@ -15,12 +15,18 @@ class PartnerSelectedCustomer extends PartnerEvent {
   PartnerSelectedCustomer({required this.selectedPartner});
 }
 
-class PartnerPushDataPartner extends PartnerEvent{
+class PartnerUploadDataPartner extends PartnerEvent {
   final ModelPartner partner;
 
-  PartnerPushDataPartner({required this.partner});
+  PartnerUploadDataPartner({required this.partner});
 }
 
-class PartnerStatusPartner extends PartnerEvent{}
+class PartnerStatusPartner extends PartnerEvent {}
 
-class PartnerResetSelectedPartner extends PartnerEvent{}
+class PartnerResetSelectedPartner extends PartnerEvent {}
+
+class PartnerSelectedBranch extends PartnerEvent {
+  String selectedIdBranch;
+
+  PartnerSelectedBranch({required this.selectedIdBranch});
+}

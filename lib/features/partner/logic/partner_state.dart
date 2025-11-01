@@ -16,11 +16,11 @@ class PartnerLoaded extends PartnerState with EquatableMixin {
   final ModelPartner? selectedPartner;
 
   PartnerLoaded({
-    this.dataBranch = const [],
+    this.dataBranch = null,
     this.dataPartner = const [],
     this.selectedPartner,
     this.selectedIdBranch,
-    this.isCustomer = false,
+    this.isCustomer = true,
   });
 
   PartnerLoaded copyWith({

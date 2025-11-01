@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/partner/logic/partner_state.dart';
@@ -10,9 +11,10 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   PartnerBloc(this.repo) : super(PartnerInitial()) {
     on<PartnerGetData>(_onGetData);
     on<PartnerSelectedCustomer>(_onSelectedCustomer);
-    on<PartnerPushDataPartner>(_onPushDataPartner);
+    on<PartnerUploadDataPartner>(_onUploadataPartner);
     on<PartnerStatusPartner>(_onPartnerStatusPartner);
     on<PartnerResetSelectedPartner>(_onPartnerResetSelectedPartner);
+    on<PartnerSelectedBranch>(_onPartnerSelectedBranch);
   }
 
   FutureOr<void> _onGetData(PartnerGetData event, Emitter<PartnerState> emit) {
@@ -21,14 +23,21 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         ? state as PartnerLoaded
         : PartnerLoaded();
 
-    final branch = repo.getBranch();
+    final branch = currentState.dataBranch ?? repo.getBranch();
     final idBranch = event.idBranch ?? branch.first.getidBranch;
+
+    debugPrint("Log PartnerBloc: isCustomer: ${event.isCustomer}");
+    debugPrint("Log PartnerBloc: GetData: $idBranch");
+
     final partner;
-    if (event.isCustomer) {
+    if (currentState.isCustomer) {
       partner = repo.getCustomer(idBranch);
+      debugPrint("Log PartnerBloc: Partner: $partner");
     } else {
       partner = repo.getSupplier(idBranch);
+      debugPrint("Log PartnerBloc: Partner: $partner");
     }
+
     emit(
       currentState.copyWith(
         dataPartner: partner,
@@ -49,37 +58,29 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     }
   }
 
-  Future<void> _onPushDataPartner(
-    PartnerPushDataPartner event,
+  Future<void> _onUploadataPartner(
+    PartnerUploadDataPartner event,
     Emitter<PartnerState> emit,
   ) async {
     emit(PartnerLoading());
     await event.partner.pushDataPartner();
   }
 
-FutureOr<void> _onPartnerStatusPartner(
-  event,
-  Emitter<PartnerState> emit,
-) async {
-  add(PartnerResetSelectedPartner());
+  FutureOr<void> _onPartnerStatusPartner(
+    event,
+    Emitter<PartnerState> emit,
+  ) async {
+    add(PartnerResetSelectedPartner());
 
-  final currentState = state;
-  if (currentState is PartnerLoaded) {
-    final newCustomerStatus = !currentState.isCustomer;
-    emit(currentState.copyWith(isCustomer: newCustomerStatus));
+    final currentState = state;
+    if (currentState is PartnerLoaded) {
+      final isCustomer = !currentState.isCustomer;
+      emit(currentState.copyWith(isCustomer: isCustomer));
 
-    // tunggu sebentar biar state baru ke-emit dulu
-    await Future.delayed(Duration(milliseconds: 10));
-
-    add(
-      PartnerGetData(
-        isCustomer: newCustomerStatus,
-        idBranch: currentState.selectedIdBranch,
-      ),
-    );
+      debugPrint("Log PartnerBloc: isCustomer: $isCustomer");
+      add(PartnerGetData(isCustomer: isCustomer));
+    }
   }
-}
-
 
   FutureOr<void> _onPartnerResetSelectedPartner(
     PartnerResetSelectedPartner event,
@@ -88,6 +89,20 @@ FutureOr<void> _onPartnerStatusPartner(
     final currentState = state;
     if (currentState is PartnerLoaded) {
       emit(currentState.copyWith(selectedPartner: null));
+    }
+  }
+
+  FutureOr<void> _onPartnerSelectedBranch(
+    PartnerSelectedBranch event,
+    Emitter<PartnerState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is PartnerLoaded) {
+      emit(currentState.copyWith(selectedIdBranch: event.selectedIdBranch));
+      add(PartnerGetData(idBranch: event.selectedIdBranch));
+      debugPrint(
+        "Log PartnerBloc: SelectedIdBranch: ${event.selectedIdBranch}",
+      );
     }
   }
 }

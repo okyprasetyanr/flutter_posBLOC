@@ -11,6 +11,8 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class UIPartner extends StatefulWidget {
   const UIPartner({super.key});
@@ -30,31 +32,11 @@ class _UIPartnerState extends State<UIPartner> {
 
   Future<void> _initData() async {
     final bloc = context.read<PartnerBloc>();
-    final blocValue = bloc.state;
-    bloc.add(
-      PartnerGetData(
-        isCustomer: (blocValue is PartnerLoaded) ? blocValue.isCustomer : true,
-        idBranch: (blocValue is PartnerLoaded)
-            ? blocValue.selectedIdBranch
-            : null,
-      ),
-    );
+    bloc.add(PartnerGetData());
   }
 
-  String? nameBranch;
   @override
   Widget build(BuildContext context) {
-    nameBranch = context.select<PartnerBloc, String?>((bloc) {
-      final state = bloc.state;
-      if (state is PartnerLoaded) {
-        return state.dataBranch!
-            .firstWhere(
-              (element) => element.getidBranch == state.selectedIdBranch,
-            )
-            .getareaBranch;
-      }
-      return "";
-    });
     return LayoutTopBottom(
       layoutTop: layoutTop(),
       layoutBottom: layoutBottom(),
@@ -157,7 +139,13 @@ class _UIPartnerState extends State<UIPartner> {
                                 ),
                               )
                               .toList(),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            context.read<PartnerBloc>().add(
+                              PartnerSelectedBranch(
+                                selectedIdBranch: value!.getidBranch,
+                              ),
+                            );
+                          },
                         );
                       },
                     );
@@ -175,9 +163,12 @@ class _UIPartnerState extends State<UIPartner> {
                       PartnerState,
                       (List<ModelPartner>?, String?)
                     >(
-                      selector: (state) => state is PartnerLoaded
-                          ? (state.dataPartner, state.selectedIdBranch)
-                          : ([], null),
+                      selector: (state) {
+                        if (state is PartnerLoaded) {
+                          return (state.dataPartner, state.selectedIdBranch);
+                        }
+                        return ([], null);
+                      },
                       builder: (context, state) {
                         if (state.$1!.isEmpty) {
                           return Padding(
@@ -257,45 +248,86 @@ class _UIPartnerState extends State<UIPartner> {
   }
 
   Widget layoutBottom() {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          flex: 2,
-          child: BlocListener<PartnerBloc, PartnerState>(
-            listenWhen: (previous, current) =>
-                previous is PartnerLoaded &&
-                current is PartnerLoaded &&
-                previous.selectedPartner != current.selectedPartner,
-            listener: (context, state) {
-              if (state is PartnerLoaded && state.selectedPartner != null) {
-                namePartnerController.text = state.selectedPartner!.getname;
-              }
-            },
-            child: BlocSelector<PartnerBloc, PartnerState, bool>(
-              selector: (state) {
-                if (state is PartnerLoaded) {
-                  return state.isCustomer;
-                }
-                return true;
-              },
-              builder: (context, state) {
-                return customTextField(
-                  "Nama ${state ? "Customer" : "Supplier"}",
-                  namePartnerController,
-                  true,
-                );
-              },
+        Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: BlocListener<PartnerBloc, PartnerState>(
+                listenWhen: (previous, current) =>
+                    previous is PartnerLoaded &&
+                    current is PartnerLoaded &&
+                    previous.selectedPartner != current.selectedPartner,
+                listener: (context, state) {
+                  if (state is PartnerLoaded && state.selectedPartner != null) {
+                    namePartnerController.text = state.selectedPartner!.getname;
+                  }
+                },
+                child: BlocSelector<PartnerBloc, PartnerState, bool>(
+                  selector: (state) {
+                    if (state is PartnerLoaded) {
+                      return state.isCustomer;
+                    }
+                    return true;
+                  },
+                  builder: (context, state) {
+                    return customTextField(
+                      "Nama ${state ? "Customer" : "Supplier"}",
+                      namePartnerController,
+                      true,
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 1,
+              child: BlocSelector<PartnerBloc, PartnerState, String?>(
+                selector: (state) => state is PartnerLoaded
+                    ? state.dataBranch
+                          ?.firstWhere(
+                            (element) =>
+                                element.getidBranch == state.selectedIdBranch,
+                          )
+                          .getareaBranch
+                    : null,
+                builder: (context, state) {
+                  return customTextField(
+                    "Cabang",
+                    TextEditingController(text: state ?? ""),
+                    false,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          flex: 1,
-          child: customTextField(
-            "Cabang",
-            TextEditingController(text: nameBranch),
-            false,
-          ),
+        ElevatedButton.icon(
+          onPressed: () {
+            final bloc = context.read<PartnerBloc>().state;
+            final partner = ModelPartner(
+              idBranch: bloc is PartnerLoaded ? bloc.selectedIdBranch! : "",
+              id: Uuid().v4().substring(0, 8),
+              name: namePartnerController.text,
+              phone: "",
+              email: "",
+              address: "",
+              notes: "",
+              balance: 0,
+              type: bloc is PartnerLoaded
+                  ? bloc.isCustomer
+                        ? PartnerType.customer
+                        : PartnerType.supplier
+                  : PartnerType.customer,
+              createdAt: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            );
+            context.read<PartnerBloc>().add(
+              PartnerUploadDataPartner(partner: partner),
+            );
+          },
+          label: Text("Simpan", style: lv05TextStyle),
         ),
       ],
     );

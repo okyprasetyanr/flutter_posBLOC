@@ -13,7 +13,7 @@ class ModelPartner extends Equatable {
   final String _notes;
   final double _balance;
   final PartnerType _type;
-  final DateTime _createdAt;
+  final String _createdAt;
   final String _idBranch;
 
   const ModelPartner({
@@ -26,9 +26,8 @@ class ModelPartner extends Equatable {
     required String notes,
     required double balance,
     required PartnerType type,
-    required DateTime createdAt,
-  }) : 
-       _idBranch = idBranch,
+    required String createdAt,
+  }) : _idBranch = idBranch,
        _id = id,
        _name = name,
        _phone = phone,
@@ -50,7 +49,7 @@ class ModelPartner extends Equatable {
   double get getbalance => _balance;
   String get getidBranch => _idBranch;
   PartnerType get gettype => _type;
-  DateTime get getcreatedAt => _createdAt;
+  String get getcreatedAt => _createdAt;
 
   ModelPartner copyWith({
     String? idBranch,
@@ -63,8 +62,8 @@ class ModelPartner extends Equatable {
     String? notes,
     double? balance,
     PartnerType? type,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    String? createdAt,
+    String? updatedAt,
   }) {
     return ModelPartner(
       idBranch: idBranch ?? this._idBranch,
@@ -92,7 +91,7 @@ class ModelPartner extends Equatable {
       'notes': _notes,
       'balance': _balance,
       'type': _type.name,
-      'createdAt': _createdAt.millisecondsSinceEpoch,
+      'createdAt': _createdAt,
     };
   }
 
@@ -110,14 +109,15 @@ class ModelPartner extends Equatable {
         (e) => e.name == map['type'],
         orElse: () => PartnerType.customer,
       ),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      createdAt: map['createdAt'],
     );
   }
 
   Future<void> pushDataPartner() async {
     await FirebaseFirestore.instance
-        .collection('${this._type.name}')
-        .add(convertToMapPartner());
+        .collection('partner')
+        .doc(_id)
+        .set(convertToMapPartner());
   }
 
   static List<ModelPartner> getDataListPartner(QuerySnapshot data) {
@@ -136,9 +136,7 @@ class ModelPartner extends Equatable {
           (e) => e.name == dataPartner['type'],
           orElse: () => PartnerType.customer,
         ),
-        createdAt: DateTime.fromMillisecondsSinceEpoch(
-          dataPartner['createdAt'],
-        ),
+        createdAt: dataPartner['createdAt'],
       );
     }).toList();
   }
