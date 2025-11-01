@@ -58,7 +58,7 @@ class _UIPartnerState extends State<UIPartner> {
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 500),
-              width: 120,
+              width: 130,
               padding: const EdgeInsets.only(top: 5, bottom: 5),
               height: 40,
               child: BlocSelector<PartnerBloc, PartnerState, bool>(
@@ -78,20 +78,20 @@ class _UIPartnerState extends State<UIPartner> {
                         child: Row(
                           children: [
                             const Icon(Icons.swap_horiz_rounded, size: 25),
-                            Text("Customer", style: titleTextStyle),
+                            Text("Pelanggan", style: titleTextStyle),
                           ],
                         ),
                       ),
                       AnimatedPositioned(
                         curve: Curves.easeInOut,
-                        left: state ? 300 : 0,
+                        left: state ? 300 : 15,
                         duration: const Duration(milliseconds: 500),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Row(
                             children: [
                               const Icon(Icons.swap_horiz_rounded, size: 25),
-                              Text("Supplier", style: titleTextStyle),
+                              Text("Pemasok", style: titleTextStyle),
                             ],
                           ),
                         ),
@@ -326,6 +326,7 @@ class _UIPartnerState extends State<UIPartner> {
             context.read<PartnerBloc>().add(
               PartnerUploadDataPartner(partner: partner),
             );
+            _resetForm();
           },
           label: Text("Simpan", style: lv05TextStyle),
         ),
@@ -336,5 +337,9 @@ class _UIPartnerState extends State<UIPartner> {
   Future<void> _onRefresh() async {
     await context.read<DataUserRepositoryCache>().initData();
     _initData();
+  }
+
+  void _resetForm() {
+    namePartnerController.clear();
   }
 }

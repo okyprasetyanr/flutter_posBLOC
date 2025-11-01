@@ -24,18 +24,21 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         : PartnerLoaded();
 
     final branch = currentState.dataBranch ?? repo.getBranch();
-    final idBranch = event.idBranch ?? branch.first.getidBranch;
+    final idBranch =
+        event.idBranch ??
+        currentState.selectedIdBranch ??
+        branch.first.getidBranch;
 
     debugPrint("Log PartnerBloc: isCustomer: ${event.isCustomer}");
     debugPrint("Log PartnerBloc: GetData: $idBranch");
 
     final partner;
-    if (currentState.isCustomer) {
+    if (event.isCustomer) {
       partner = repo.getCustomer(idBranch);
-      debugPrint("Log PartnerBloc: Partner: $partner");
+      debugPrint("Log PartnerBloc: Customer: $partner");
     } else {
       partner = repo.getSupplier(idBranch);
-      debugPrint("Log PartnerBloc: Partner: $partner");
+      debugPrint("Log PartnerBloc: Supplier: $partner");
     }
 
     emit(
@@ -62,8 +65,8 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     PartnerUploadDataPartner event,
     Emitter<PartnerState> emit,
   ) async {
-    emit(PartnerLoading());
     await event.partner.pushDataPartner();
+    add(PartnerResetSelectedPartner());
   }
 
   FutureOr<void> _onPartnerStatusPartner(

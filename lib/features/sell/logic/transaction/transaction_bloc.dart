@@ -9,6 +9,7 @@ import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_partner.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
@@ -51,10 +52,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       ...repo.getCategory(idBranch),
     ];
 
+    List<ModelPartner> partner = currentState.sell
+        ? repo.getCustomer(idBranch)
+        : repo.getSupplier(idBranch);
+
     ModelKategori selectedIdKategori =
         currentState.selectedKategori ?? listKategori.first;
     emit(
       currentState.copyWith(
+        dataPartner: partner,
         filteredItem: currentState.sell
             ? listItem.where((element) => !element.getstatusCondiment).toList()
             : listItem,

@@ -3,6 +3,7 @@ import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_partner.dart';
 
 class TransactionState {}
 
@@ -21,12 +22,14 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   final ModelItemOrdered? selectedItem;
   final bool editSelectedItem;
   final List<ModelItemOrdered>? itemOrdered;
+  final List<ModelPartner>? dataPartner;
 
   TransactionLoaded({
     this.sell = true,
     this.selectedItem,
     this.editSelectedItem = false,
     this.filteredItem = const [],
+    this.dataPartner = const [],
     this.dataCategory = const [],
     this.dataBranch = const [],
     this.dataItem = const [],
@@ -36,6 +39,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   });
 
   TransactionLoaded copyWith({
+    List<ModelPartner>? dataPartner,
     bool? sell,
     List<ModelItem>? dataItem,
     List<ModelItem>? filteredItem,
@@ -48,6 +52,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     bool? editSelectedItem,
   }) {
     return TransactionLoaded(
+      dataPartner: dataPartner ?? this.dataPartner,
       sell: sell ?? this.sell,
       editSelectedItem: editSelectedItem ?? this.editSelectedItem,
       itemOrdered: itemOrdered ?? this.itemOrdered,
@@ -63,6 +68,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    dataPartner,
     sell,
     dataItem,
     filteredItem,
