@@ -9,7 +9,7 @@ class ModelItemOrdered extends Equatable {
       _idCondimen,
       _note,
       _urlImage;
-  final String? _nameCustomer, _idCustomer;
+  final String? _namePartner, _idPartner;
   final int _discountItem;
   final double _qtyItem, _priceItem, _subTotal, _priceItemCustom;
   final List<ModelItemOrdered> _condiment;
@@ -19,8 +19,8 @@ class ModelItemOrdered extends Equatable {
     required double subTotal,
     required String nameItem,
     required String idItem,
-    required String? nameCustomer,
-    required String? idCustomer,
+    required String? namePartner,
+    required String? idPartner,
     required String idBranch,
     required String idOrdered,
     required double qtyItem,
@@ -33,8 +33,8 @@ class ModelItemOrdered extends Equatable {
     required List<ModelItemOrdered> condiment,
   }) : _nameItem = nameItem,
        _idItem = idItem,
-       _idCustomer = idCustomer,
-       _nameCustomer = nameCustomer,
+       _idPartner = idPartner,
+       _namePartner = namePartner,
        _subTotal = subTotal,
        _idBranch = idBranch,
        _idOrdered = idOrdered,
@@ -50,8 +50,8 @@ class ModelItemOrdered extends Equatable {
 
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
-  String? get getnameCustomer => _nameCustomer;
-  String? get getidCustomer => _idCustomer;
+  String? get getNamePartner => _namePartner;
+  String? get getIdPartner => _idPartner;
   String get getidBranch => _idBranch;
   String get getidOrdered => _idOrdered;
   double get getsubTotal => _subTotal;
@@ -68,8 +68,8 @@ class ModelItemOrdered extends Equatable {
   ModelItemOrdered copyWith({
     String? nameItem,
     String? idItem,
-    String? idCustomer,
-    String? nameCustomer,
+    String? idPartner,
+    String? namePartner,
     String? idBranch,
     String? idOrdered,
     double? qtyItem,
@@ -84,8 +84,8 @@ class ModelItemOrdered extends Equatable {
     List<ModelItemOrdered>? condiment,
   }) {
     return ModelItemOrdered(
-      idCustomer: idCustomer ?? _idCustomer,
-      nameCustomer: nameCustomer ?? _nameCustomer,
+      idPartner: idPartner ?? _idPartner,
+      namePartner: namePartner ?? _namePartner,
       subTotal: subTotal ?? _subTotal,
       nameItem: nameItem ?? _nameItem,
       idItem: idItem ?? _idItem,

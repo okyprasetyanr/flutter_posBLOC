@@ -139,8 +139,8 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                           ModelItemOrdered
                                           selectedItemCondiment =
                                               ModelItemOrdered(
-                                                idCustomer: null,
-                                                nameCustomer: null,
+                                                idPartner: null,
+                                                namePartner: null,
                                                 priceItemCustom:
                                                     state[index].getpriceItem,
                                                 subTotal:
@@ -209,8 +209,8 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                           ModelItemOrdered
                                           selectedItemCondiment =
                                               ModelItemOrdered(
-                                                idCustomer: null,
-                                                nameCustomer: null,
+                                                idPartner: null,
+                                                namePartner: null,
                                                 priceItemCustom:
                                                     state[index].getpriceItem,
                                                 subTotal:

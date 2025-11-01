@@ -1,5 +1,6 @@
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_partner.dart';
 
 class TransactionEvent {}
 
@@ -48,6 +49,16 @@ class TransactionUpdateOrderedItem extends TransactionEvent {
   TransactionUpdateOrderedItem({required this.updatedItem});
 }
 
+class TransactionUpdateCustomer extends TransactionEvent {
+  final String idCustomer;
+  final String nameCustomer;
+
+  TransactionUpdateCustomer({
+    required this.idCustomer,
+    required this.nameCustomer,
+  });
+}
+
 class TransactionAddOrderedItem extends TransactionEvent {}
 
 class TransactionAdjustItem extends TransactionEvent {
@@ -56,6 +67,8 @@ class TransactionAdjustItem extends TransactionEvent {
   int? discount;
   double? customprice;
   String? note;
+  String? namePartner;
+  String? idPartner;
 
   TransactionAdjustItem({
     this.mode,
@@ -63,6 +76,8 @@ class TransactionAdjustItem extends TransactionEvent {
     this.discount,
     this.customprice,
     this.note,
+    this.namePartner,
+    this.idPartner,
   });
 }
 

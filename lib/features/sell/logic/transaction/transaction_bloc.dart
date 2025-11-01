@@ -21,6 +21,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
     on<TransactionSelectedKategoriItem>(_onSelectedKategoriItem);
+    on<TransactionUpdateCustomer>(_onTransactionUpdateCustomer);
     on<TransactionSelectedItem>(_onSelectedItem);
     on<TransactionSelectedCondiment>(_onSelectedCondiment);
     on<TransactionResetSelectedItem>(_onResetSelectedItem);
@@ -241,6 +242,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         currentState.selectedItem != null) {
       final selectedItem = currentState.selectedItem!.copyWith();
       double qty = selectedItem.getqtyItem;
+      String? idPartner = selectedItem.getIdPartner;
+      String? namePartner = selectedItem.getNamePartner;
       int discount = selectedItem.getdiscountItem;
       double price = event.customprice == 0
           ? selectedItem.getpriceItem
@@ -266,6 +269,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         qty = event.qty!;
       }
 
+      if (event.idPartner != null) {
+        idPartner = event.idPartner;
+        namePartner = event.namePartner;
+      }
+
       double subTotal = price * qty - (price * qty * discount / 100);
       emit(
         currentState.copyWith(
@@ -275,6 +283,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             priceItemCustom: price,
             dicountItem: discount,
             note: event.note,
+            namePartner: namePartner,
+            idPartner: idPartner,
           ),
         ),
       );
@@ -328,4 +338,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(currentState.copyWith(sell: !newStatus));
     }
   }
+
+  FutureOr<void> _onTransactionUpdateCustomer(
+    TransactionUpdateCustomer event,
+    Emitter<TransactionState> emit,
+  ) {}
 }

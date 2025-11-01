@@ -7,7 +7,6 @@ import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.da
 import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/dropdown_cabang.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/list_view_kategori.dart';
-import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/pop_item/main_page/popup_item.dart';
 import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/saved_cart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -190,7 +189,6 @@ class _UITransactionState extends State<UITransaction> {
             Expanded(child: UITransactionGridViewItem()),
           ],
         ),
-        UITransactionPopUpItem(),
       ],
     );
   }

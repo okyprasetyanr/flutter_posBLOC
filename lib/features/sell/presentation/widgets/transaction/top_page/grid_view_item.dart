@@ -4,6 +4,8 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/pop_item/main_page/popup_item.dart';
+import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
@@ -46,8 +48,8 @@ class UITransactionGridViewItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     onTap: () {
                       ModelItemOrdered selectedItem = ModelItemOrdered(
-                        idCustomer: null,
-                        nameCustomer: null,
+                        idPartner: null,
+                        namePartner: null,
                         priceItemCustom: items[index].getpriceItem,
                         subTotal: items[index].getpriceItem,
                         idBranch: items[index].getidBranch,
@@ -70,6 +72,10 @@ class UITransactionGridViewItem extends StatelessWidget {
                           edit: false,
                         ),
                       );
+
+                      customBottomSheet(context, (scrollController) {
+                        return UITransactionPopUpItem();
+                      });
                     },
                     child: Padding(
                       padding: const EdgeInsetsGeometry.all(3),

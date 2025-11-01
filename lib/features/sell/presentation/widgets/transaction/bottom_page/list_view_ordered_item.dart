@@ -4,8 +4,11 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/sell/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/sell/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/sell/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/sell/presentation/widgets/transaction/top_page/pop_item/main_page/popup_item.dart';
+import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
@@ -64,6 +67,11 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                       edit: true,
                                     ),
                                   );
+                                  customBottomSheet(context, (
+                                    scrollController,
+                                  ) {
+                                    return UITransactionPopUpItem();
+                                  });
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -176,7 +184,92 @@ class TransactionListViewOrderedItem extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  navUpDownTransition(context, '/sellpayment', false);
+                  customBottomSheet(context, (scrollController) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Pilih Pelanggan",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          Expanded(
+                            child:
+                                BlocSelector<
+                                  TransactionBloc,
+                                  TransactionState,
+                                  List<ModelPartner>?
+                                >(
+                                  selector: (state) {
+                                    if (state is TransactionLoaded) {
+                                      return state.dataPartner ?? [];
+                                    }
+                                    return [];
+                                  },
+                                  builder: (context, state) {
+                                    return ListView.builder(
+                                      controller: scrollController,
+                                      itemCount: state!.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          leading: const CircleAvatar(
+                                            child: Icon(Icons.person, size: 20),
+                                          ),
+                                          title: Text(
+                                            "Customer ${state[index].getname}",
+                                            style: lv05TextStyle,
+                                          ),
+                                          subtitle: Text(
+                                            "${state[index].getphone}",
+                                            style: lv05TextStyle,
+                                          ),
+                                          onTap: () {
+                                            context.read<TransactionBloc>().add(
+                                              TransactionAdjustItem(),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                customSnackBar(
+                                  context,
+                                  "Tambah Customer Baru!",
+                                );
+                              },
+                              icon: const Icon(Icons.add),
+                              label: const Text("Tambah Customer Baru"),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  });
                 },
                 label: Text("Cust.", style: lv1TextStyleWhite),
                 icon: Icon(Icons.contacts_rounded, color: Colors.white),
