@@ -3,12 +3,14 @@ import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class DataUserRepositoryCache {
   List<ModelBranch>? dataBranch;
   List<ModelItem>? dataItem;
   List<ModelKategori>? dataCategory;
   List<ModelPartner>? dataPartner;
+  List<ModelTransaction>? dataTransaction;
 
   final DataUserRepository repo;
 
@@ -19,6 +21,7 @@ class DataUserRepositoryCache {
     dataItem = await initItem();
     dataCategory = await initCategory();
     dataPartner = await initPartner();
+    dataTransaction = await initTransaction();
 
     for (var a in dataBranch!) {
       print("Log DataUserRepositoryCache cabang: $a");
@@ -35,6 +38,10 @@ class DataUserRepositoryCache {
 
   Future<List<ModelBranch>> initBranch() async {
     return await repo.getBranch();
+  }
+
+  Future<List<ModelTransaction>> initTransaction() async {
+    return await repo.getTransaction();
   }
 
   Future<List<ModelItem>> initItem() async {
@@ -78,6 +85,12 @@ class DataUserRepositoryCache {
         .where(
           (element) => element.isSupplier && element.getidBranch == idBranch,
         )
+        .toList();
+  }
+
+  List<ModelTransaction> getTransaction(String idBranch) {
+    return dataTransaction!
+        .where((element) => element.getid == idBranch)
         .toList();
   }
 }

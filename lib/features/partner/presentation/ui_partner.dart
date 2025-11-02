@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_event.dart';
@@ -273,7 +274,7 @@ class _UIPartnerState extends State<UIPartner> {
                   },
                   builder: (context, state) {
                     return customTextField(
-                      "Nama ${state ? "Customer" : "Supplier"}",
+                      "Nama Kontak",
                       namePartnerController,
                       true,
                     );
@@ -304,31 +305,48 @@ class _UIPartnerState extends State<UIPartner> {
             ),
           ],
         ),
-        ElevatedButton.icon(
-          onPressed: () {
-            final bloc = context.read<PartnerBloc>().state;
-            final partner = ModelPartner(
-              idBranch: bloc is PartnerLoaded ? bloc.selectedIdBranch! : "",
-              id: Uuid().v4().substring(0, 8),
-              name: namePartnerController.text,
-              phone: "",
-              email: "",
-              address: "",
-              notes: "",
-              balance: 0,
-              type: bloc is PartnerLoaded
-                  ? bloc.isCustomer
-                        ? PartnerType.customer
-                        : PartnerType.supplier
-                  : PartnerType.customer,
-              createdAt: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-            );
-            context.read<PartnerBloc>().add(
-              PartnerUploadDataPartner(partner: partner),
-            );
-            _resetForm();
-          },
-          label: Text("Simpan", style: lv05TextStyle),
+        const SizedBox(height: 10),
+        Align(
+          alignment: AlignmentGeometry.centerRight,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              final bloc = context.read<PartnerBloc>().state;
+
+              final idPartner = bloc is PartnerLoaded
+                  ? bloc.selectedPartner?.getid ?? Uuid().v4().substring(0, 8)
+                  : Uuid().v4().substring(0, 8);
+              final partner = ModelPartner(
+                idBranch: bloc is PartnerLoaded ? bloc.selectedIdBranch! : "",
+                id: idPartner,
+                name: namePartnerController.text,
+                phone: "",
+                email: "",
+                address: "",
+                notes: "",
+                balance: 0,
+                type: bloc is PartnerLoaded
+                    ? bloc.isCustomer
+                          ? PartnerType.customer
+                          : PartnerType.supplier
+                    : PartnerType.customer,
+                createdAt: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              );
+              context.read<PartnerBloc>().add(
+                PartnerUploadDataPartner(partner: partner),
+              );
+              _resetForm();
+            },
+            label: Text("Simpan", style: lv05TextStyleWhite),
+            icon: Icon(Icons.check_rounded, color: Colors.white),
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(10),
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );

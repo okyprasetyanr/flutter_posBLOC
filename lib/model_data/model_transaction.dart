@@ -1,16 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
 class ModelTransaction extends Equatable {
   final String _date,
       _invoice,
-      _nameCustomer,
-      _idCustomer,
+      _namePartner,
+      _idPartner,
       _nameOperator,
       _paymentMethod,
       _note,
       _idOperator;
-  final String? bankName;
+  final String? _bankName, _statusTransaction, _idBranch;
   final int _discount, _ppn, _totalItem, _charge;
   final double _subTotal,
       _total,
@@ -19,15 +22,19 @@ class ModelTransaction extends Equatable {
       _totalCharge,
       _billPaid;
   final List<ModelSplit> _dataSplit;
+  final List<ModelItemOrdered> _itemsOrdered;
 
   ModelTransaction({
+    required String? idBranch,
+    String? statusTransaction,
+    required List<ModelItemOrdered> itemsOrdered,
     required List<ModelSplit> dataSplit,
     required String date,
-    this.bankName,
+    String? bankName,
     required String note,
     required String invoice,
-    required String nameCustomer,
-    required String idCustomer,
+    required String namePartner,
+    required String idPartner,
     required String nameOperator,
     required String idOperator,
     required String paymentMethod,
@@ -41,11 +48,12 @@ class ModelTransaction extends Equatable {
     required double totalPpn,
     required double totalDiscount,
     required double total,
-  }) : _date = date,
+  }) : _bankName = bankName,
+       _date = date,
        _note = note,
        _invoice = invoice,
-       _nameCustomer = nameCustomer,
-       _idCustomer = idCustomer,
+       _namePartner = namePartner,
+       _idPartner = idPartner,
        _nameOperator = nameOperator,
        _idOperator = idOperator,
        _discount = discount,
@@ -59,17 +67,20 @@ class ModelTransaction extends Equatable {
        _totalPpn = totalPpn,
        _totalDiscount = totalDiscount,
        _totalCharge = totalCharge,
-       _dataSplit = dataSplit;
+       _dataSplit = dataSplit,
+       _itemsOrdered = itemsOrdered,
+       _statusTransaction = statusTransaction,
+       _idBranch = idBranch;
 
   String get getdate => _date;
   String get getinvoice => _invoice;
-  String get getnameCustomer => _nameCustomer;
-  String get getidCustomer => _idCustomer;
+  String get getnamePartner => _namePartner;
+  String get getidPartner => _idPartner;
   String get getnameOperator => _nameOperator;
   String get getidOperator => _idOperator;
   String get getpaymentMethod => _paymentMethod;
   String get getnote => _note;
-  String? get getbankName => bankName;
+  String? get getbankName => _bankName;
   int get getdiscount => _discount;
   int get getppn => _ppn;
   int get gettotalItem => _totalItem;
@@ -81,14 +92,17 @@ class ModelTransaction extends Equatable {
   double get gettotalDiscount => _totalDiscount;
   double get gettotalPpn => _totalPpn;
   List<ModelSplit> get getdataSplit => _dataSplit;
+  List<ModelItemOrdered> get etitemsOrdered => _itemsOrdered;
 
   ModelTransaction copyWith({
+    String? idBranch,
+    String? statusTransaction,
     String? bankName,
     String? date,
     String? note,
     String? invoice,
-    String? nameCustomer,
-    String? idCustomer,
+    String? namePartner,
+    String? idPartner,
     String? nameOperator,
     String? idOperator,
     String? paymentMethod,
@@ -103,8 +117,12 @@ class ModelTransaction extends Equatable {
     double? totalDiscount,
     double? totalPpn,
     List<ModelSplit>? dataSplit,
+    List<ModelItemOrdered>? itemsOrdered,
   }) {
     return ModelTransaction(
+      idBranch: idBranch,
+      statusTransaction: statusTransaction,
+      itemsOrdered: itemsOrdered ?? _itemsOrdered,
       bankName: bankName,
       dataSplit: dataSplit ?? _dataSplit,
       billPaid: billPaid ?? _billPaid,
@@ -115,8 +133,8 @@ class ModelTransaction extends Equatable {
       paymentMethod: paymentMethod ?? _paymentMethod,
       date: date ?? _date,
       invoice: invoice ?? _invoice,
-      nameCustomer: nameCustomer ?? _nameCustomer,
-      idCustomer: idCustomer ?? _idCustomer,
+      namePartner: namePartner ?? _namePartner,
+      idPartner: idPartner ?? _idPartner,
       nameOperator: nameOperator ?? _nameOperator,
       idOperator: idOperator ?? _idOperator,
       discount: discount ?? _discount,
@@ -128,16 +146,125 @@ class ModelTransaction extends Equatable {
     );
   }
 
+  Map<String, dynamic> convertToMapTransaction() {
+    return {
+      'id_branch': _idBranch,
+      'uid_user': UserSession.ambilUidUser(),
+      'items_ordered': convertToMapItemOrdered(),
+      'bank_name': _bankName ?? "",
+      'data_split': _dataSplit,
+      'bill_paid': _billPaid,
+      'note': _note,
+      'total_charge': _totalCharge,
+      'total_discount': _totalDiscount,
+      'total_ppn': _totalPpn,
+      'payment_method': _paymentMethod,
+      'date': _date,
+      'invoice': _invoice,
+      'name_partner': _namePartner,
+      'id_partner': _idPartner,
+      'name_operator': _nameOperator,
+      'id_operator': _idOperator,
+      'discount': _discount,
+      'ppn': _ppn,
+      'total_item': _totalItem,
+      'sub_total': _subTotal,
+      'charge': _charge,
+      'total': _total,
+      'status_transaction': _statusTransaction,
+    };
+  }
+
+  List<Map<String, dynamic>> convertToMapItemOrdered() {
+    return _itemsOrdered.map((item) {
+      return {
+        'sub_total': item.getsubTotal,
+        'name_item': item.getnameItem,
+        'id_item': item.getidItem,
+        'id_branch': item.getidBranch,
+        'id_ordered': item.getidOrdered,
+        'qty_item': item.getqtyItem,
+        'price_item_final': item.getpriceItemFinal,
+        'discount_item': item.getdiscountItem,
+        'id_category_item': item.getidCategoryItem,
+        'id_condiment': item.getidCondimen,
+        'note': item.getNote,
+        'condiment': convertToMapCondimentOrdered(item.getCondiment),
+      };
+    }).toList();
+  }
+
+  List<Map<String, dynamic>> convertToMapCondimentOrdered(
+    List<ModelItemOrdered> itemsCondiment,
+  ) {
+    return itemsCondiment.map((condiment) {
+      return {
+        'sub_total': condiment.getsubTotal,
+        'name_item': condiment.getnameItem,
+        'id_item': condiment.getidItem,
+        'id_branch': condiment.getidBranch,
+        'id_ordered': condiment.getidOrdered,
+        'qty_item': condiment.getqtyItem,
+        'price_item_final': condiment.getpriceItemFinal,
+        'discount_item': condiment.getdiscountItem,
+        'id_category_item': condiment.getidCategoryItem,
+        'id_condiment': condiment.getidCondimen,
+        'note': condiment.getNote,
+        'condiment': {},
+      };
+    }).toList();
+  }
+
+  Future<void> pushDataTransaction() async {
+    await FirebaseFirestore.instance
+        .collection("transaction")
+        .doc(_invoice)
+        .set(convertToMapTransaction());
+  }
+
+  static List<ModelTransaction> getDataListTansaction(QuerySnapshot data) {
+    return data.docs.map((map) {
+      final dataTransaction = map.data() as Map<String, dynamic>;
+      return ModelTransaction(
+        idBranch: dataTransaction['id_branch'],
+        bankName: dataTransaction['bank_name'],
+        itemsOrdered: dataTransaction['items_ordered'],
+        dataSplit: dataTransaction['data_split'],
+        date: dataTransaction['date'],
+        note: dataTransaction['note'],
+        invoice: dataTransaction['invoice'],
+        namePartner: dataTransaction['name_partner'],
+        idPartner: dataTransaction['id_partner'],
+        nameOperator: dataTransaction['name_operator'],
+        idOperator: dataTransaction['id_operator'],
+        paymentMethod: dataTransaction['payment_method'],
+        discount: dataTransaction['discount'],
+        ppn: dataTransaction['ppn'],
+        totalItem: dataTransaction['total_item'],
+        charge: dataTransaction['charge'],
+        subTotal: dataTransaction['subTotal'],
+        billPaid: dataTransaction['bill_paid'],
+        totalCharge: dataTransaction['total_charge'],
+        totalPpn: dataTransaction['total_ppn'],
+        totalDiscount: dataTransaction['total_discount'],
+        total: dataTransaction['total'],
+        statusTransaction: dataTransaction['status_transaction'],
+      );
+    }).toList();
+  }
+
   @override
   List<Object?> get props => [
-    bankName,
+    _statusTransaction,
+    _itemsOrdered,
+    _bankName,
     _dataSplit,
     _billPaid,
     _note,
     _date,
     _invoice,
-    _nameCustomer,
-    _idCustomer,
+    _namePartner,
+    _idPartner,
     _nameOperator,
     _idOperator,
     _paymentMethod,

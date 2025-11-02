@@ -111,7 +111,6 @@ class _UIInventoryState extends State<UIInventory> {
     selectedFilterKategoriItem = filterkategori.first.getidCategory;
 
     final bloc = context.read<InventoryBloc>();
-    final blocValue = bloc.state;
     bloc.add(
       InvFilterItem(
         filter: selectedFilterItem!,
@@ -122,9 +121,7 @@ class _UIInventoryState extends State<UIInventory> {
     );
     bloc.add(
       InvGetData(
-        idBranch: (blocValue is InventoryLoaded)
-            ? blocValue.selectedIdBranch
-            : null,
+        idBranch: null,
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
         filterjenis: selectedFilterJenisItem!,
@@ -167,8 +164,10 @@ class _UIInventoryState extends State<UIInventory> {
     _resetItemForm();
     namaKategoriController.clear();
 
-    await context.read<DataUserRepositoryCache>().initData();
+    context.read<DataUserRepositoryCache>().initData();
+
     _initData();
+    print("UI Inventory: initData");
   }
 
   @override

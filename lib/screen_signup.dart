@@ -414,7 +414,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                           "nama_perusahaan": namaperusahaan.text,
                           "no_telp_perusahaan": notelephoneperusahaan.text,
                           "bergabung":
-                              "$selectedDay/$selectedMonth/$selectedYear",
+                              "$selectedYear-$selectedMonth-$selectedDay",
                           "cabang": mapCabang,
                         });
 

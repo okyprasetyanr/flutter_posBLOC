@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
@@ -145,20 +146,22 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
         final firstCabang = cabangs.first;
         final items = repoCahce.getItem(firstCabang.getidBranch);
+        debugPrint("Log InventoryBloc: items: $items");
         final kategori = repoCahce.getCategory(firstCabang.getidBranch);
         kategori.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
-        final loaded = InventoryLoaded(
-          selectedIdBranch: firstCabang.getidBranch,
-          daerahCabang: firstCabang.getareaBranch,
-          datacabang: cabangs,
-          dataItem: items,
-          dataKategori: kategori,
-          selectedFilterItem: event.filter,
-          selectedFilterJenisItem: event.filterjenis,
-          selectedStatusItem: event.status,
-          selectedFilterIDKategoriItem: event.filterIDKategori,
+        emit(
+          InventoryLoaded(
+            selectedIdBranch: firstCabang.getidBranch,
+            daerahCabang: firstCabang.getareaBranch,
+            datacabang: cabangs,
+            dataItem: items,
+            dataKategori: kategori,
+            selectedFilterItem: event.filter,
+            selectedFilterJenisItem: event.filterjenis,
+            selectedStatusItem: event.status,
+            selectedFilterIDKategoriItem: event.filterIDKategori,
+          ),
         );
-        emit(loaded);
       } else {
         List<ModelItem> loadedItem = List.from(currentState.dataItem);
         List<ModelKategori> loadedKategori = List.from(
