@@ -12,8 +12,9 @@ class ModelTransaction extends Equatable {
       _nameOperator,
       _paymentMethod,
       _note,
+      _idBranch,
       _idOperator;
-  final String? _bankName, _statusTransaction, _idBranch;
+  final String? _bankName, _statusTransaction;
   final int _discount, _ppn, _totalItem, _charge;
   final double _subTotal,
       _total,
@@ -25,7 +26,7 @@ class ModelTransaction extends Equatable {
   final List<ModelItemOrdered> _itemsOrdered;
 
   ModelTransaction({
-    required String? idBranch,
+    required String idBranch,
     String? statusTransaction,
     required List<ModelItemOrdered> itemsOrdered,
     required List<ModelSplit> dataSplit,
@@ -72,6 +73,7 @@ class ModelTransaction extends Equatable {
        _statusTransaction = statusTransaction,
        _idBranch = idBranch;
 
+  String get getidBranch => _idBranch;
   String get getdate => _date;
   String get getinvoice => _invoice;
   String get getnamePartner => _namePartner;
@@ -120,7 +122,7 @@ class ModelTransaction extends Equatable {
     List<ModelItemOrdered>? itemsOrdered,
   }) {
     return ModelTransaction(
-      idBranch: idBranch,
+      idBranch: idBranch ?? _idBranch,
       statusTransaction: statusTransaction,
       itemsOrdered: itemsOrdered ?? _itemsOrdered,
       bankName: bankName,
@@ -255,6 +257,7 @@ class ModelTransaction extends Equatable {
 
   @override
   List<Object?> get props => [
+    _idBranch,
     _statusTransaction,
     _itemsOrdered,
     _bankName,

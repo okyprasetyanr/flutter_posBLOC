@@ -195,6 +195,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         PaymentLoaded(
           itemOrdered: itemOrdered,
           transaction_sell: ModelTransaction(
+            idBranch: sellState.selectedIDBranch!,
             itemsOrdered: itemOrdered,
             dataSplit: [],
             billPaid: 0,

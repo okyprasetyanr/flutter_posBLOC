@@ -32,6 +32,9 @@ class DataUserRepositoryCache {
     for (var a in dataCategory!) {
       print("Log DataUserRepositoryCache kategori: $a");
     }
+    for (var a in dataTransaction!) {
+      print("Log DataUserRepositoryCache transaction: $a");
+    }
 
     return true;
   }
@@ -90,7 +93,7 @@ class DataUserRepositoryCache {
 
   List<ModelTransaction> getTransaction(String idBranch) {
     return dataTransaction!
-        .where((element) => element.getid == idBranch)
+        .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 }
