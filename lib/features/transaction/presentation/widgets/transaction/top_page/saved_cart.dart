@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/function/bottom_sheet.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class UITransactionSavedCart extends StatelessWidget {
@@ -24,7 +27,51 @@ class UITransactionSavedCart extends StatelessWidget {
             padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
             backgroundColor: WidgetStatePropertyAll(AppColor.primary),
           ),
-          onPressed: () {},
+          onPressed: () {
+            customBottomSheet(context, (scrollController) {
+              return BlocSelector<
+                TransactionBloc,
+                TransactionState,
+                List<ModelTransaction>
+              >(
+                selector: (state) {
+                  if (state is TransactionLoaded) {
+                    return state.dataTransactionSaved;
+                  }
+                  return [];
+                },
+                builder: (context, state) {
+                  return ListView.builder(
+                    itemCount: state.length,
+                    itemBuilder: (context, index) {
+                      final transaction = state[index];
+                      return InkWell(
+                        onTap: () {
+                          print(
+                            "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
+                          );
+                          context.read<TransactionBloc>().add(
+                            TransactionAddOrderedItem(
+                              orderedItem: state[index].getitemsOrdered,
+                            ),
+                          );
+                          Navigator.pop(context);
+                        },
+                        child: ListTile(
+                          title: Text(
+                            "${transaction.getinvoice}, ${formatUang(transaction.gettotal)}",
+                          ),
+                          subtitle: Text(
+                            "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            });
+          },
           child: Icon(
             Icons.shopping_bag_rounded,
             size: 20,
@@ -41,15 +88,14 @@ class UITransactionSavedCart extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Text(
-              context.select<TransactionBloc, String>((state) {
-                if (state is TransactionLoaded) {
-                  return (state as TransactionLoaded)
-                      .dataTransactionSaved
-                      .length
-                      .toString();
-                }
-                return "0";
-              }),
+              context.select<TransactionBloc, String>(
+                (bloc) => bloc.state is TransactionLoaded
+                    ? (bloc.state as TransactionLoaded)
+                          .dataTransactionSaved
+                          .length
+                          .toString()
+                    : "0",
+              ),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10,

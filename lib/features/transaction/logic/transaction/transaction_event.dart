@@ -49,7 +49,11 @@ class TransactionUpdateOrderedItem extends TransactionEvent {
   TransactionUpdateOrderedItem({required this.updatedItem});
 }
 
-class TransactionAddOrderedItem extends TransactionEvent {}
+class TransactionAddOrderedItem extends TransactionEvent {
+  final List<ModelItemOrdered>? orderedItem;
+
+  TransactionAddOrderedItem({this.orderedItem});
+}
 
 class TransactionAdjustItem extends TransactionEvent {
   bool? mode;

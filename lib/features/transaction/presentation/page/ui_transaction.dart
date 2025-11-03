@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
@@ -33,6 +34,8 @@ class _UITransactionState extends State<UITransaction> {
   }
 
   Future<void> initData() async {
+    await context.read<DataUserRepositoryCache>().initData();
+
     final bloc = context.read<TransactionBloc>();
     final blocValue = bloc.state;
     bloc.add(

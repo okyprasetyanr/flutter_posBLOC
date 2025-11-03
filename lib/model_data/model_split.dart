@@ -28,6 +28,13 @@ class ModelSplit extends Equatable {
     );
   }
 
+  factory ModelSplit.fromMap(Map<String, dynamic> split) {
+    return ModelSplit(
+      paymentName: split['payment_name'],
+      paymentTotal: double.tryParse(split['payment_total'].toString())!,
+    );
+  }
+
   @override
   List<Object?> get props => [_paymentName, _paymentTotal, paymentDebitName];
 }

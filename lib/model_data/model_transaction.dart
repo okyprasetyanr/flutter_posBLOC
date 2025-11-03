@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
@@ -94,7 +96,7 @@ class ModelTransaction extends Equatable {
   double get gettotalDiscount => _totalDiscount;
   double get gettotalPpn => _totalPpn;
   List<ModelSplit> get getdataSplit => _dataSplit;
-  List<ModelItemOrdered> get etitemsOrdered => _itemsOrdered;
+  List<ModelItemOrdered> get getitemsOrdered => _itemsOrdered;
 
   ModelTransaction copyWith({
     String? idBranch,
@@ -186,6 +188,7 @@ class ModelTransaction extends Equatable {
         'id_branch': item.getidBranch,
         'id_ordered': item.getidOrdered,
         'qty_item': item.getqtyItem,
+        'price_item': item.getpriceItem,
         'price_item_final': item.getpriceItemFinal,
         'discount_item': item.getdiscountItem,
         'id_category_item': item.getidCategoryItem,
@@ -207,6 +210,7 @@ class ModelTransaction extends Equatable {
         'id_branch': condiment.getidBranch,
         'id_ordered': condiment.getidOrdered,
         'qty_item': condiment.getqtyItem,
+        'price_item': condiment.getpriceItem,
         'price_item_final': condiment.getpriceItemFinal,
         'discount_item': condiment.getdiscountItem,
         'id_category_item': condiment.getidCategoryItem,
@@ -230,8 +234,17 @@ class ModelTransaction extends Equatable {
       return ModelTransaction(
         idBranch: dataTransaction['id_branch'],
         bankName: dataTransaction['bank_name'],
-        itemsOrdered: dataTransaction['items_ordered'],
-        dataSplit: dataTransaction['data_split'],
+        itemsOrdered: (dataTransaction['items_ordered'] as List<dynamic>? ?? [])
+            .map(
+              (items) => ModelItemOrdered.fromMap(
+                items as Map<String, dynamic>,
+                false,
+              ),
+            )
+            .toList(),
+        dataSplit: (dataTransaction['data_split'] as List<dynamic>? ?? [])
+            .map((split) => ModelSplit.fromMap(split as Map<String, dynamic>))
+            .toList(),
         date: dataTransaction['date'],
         note: dataTransaction['note'],
         invoice: dataTransaction['invoice'],
@@ -240,16 +253,20 @@ class ModelTransaction extends Equatable {
         nameOperator: dataTransaction['name_operator'],
         idOperator: dataTransaction['id_operator'],
         paymentMethod: dataTransaction['payment_method'],
-        discount: dataTransaction['discount'],
-        ppn: dataTransaction['ppn'],
-        totalItem: dataTransaction['total_item'],
-        charge: dataTransaction['charge'],
-        subTotal: dataTransaction['subTotal'],
-        billPaid: dataTransaction['bill_paid'],
-        totalCharge: dataTransaction['total_charge'],
-        totalPpn: dataTransaction['total_ppn'],
-        totalDiscount: dataTransaction['total_discount'],
-        total: dataTransaction['total'],
+        discount: int.tryParse(dataTransaction['discount'].toString())!,
+        ppn: int.tryParse(dataTransaction['ppn'].toString())!,
+        totalItem: int.tryParse(dataTransaction['total_item'].toString())!,
+        charge: int.tryParse(dataTransaction['charge'].toString())!,
+        subTotal: double.tryParse(dataTransaction['sub_total'].toString())!,
+        billPaid: double.tryParse(dataTransaction['bill_paid'].toString())!,
+        totalCharge: double.tryParse(
+          dataTransaction['total_charge'].toString(),
+        )!,
+        totalPpn: double.tryParse(dataTransaction['total_ppn'].toString())!,
+        totalDiscount: double.tryParse(
+          dataTransaction['total_discount'].toString(),
+        )!,
+        total: double.tryParse(dataTransaction['total'].toString())!,
         statusTransaction: dataTransaction['status_transaction'],
       );
     }).toList();

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
@@ -57,10 +59,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ? repo.getCustomer(idBranch)
         : repo.getSupplier(idBranch);
 
+    List<ModelTransaction> dataTransactionSaved = repo.getTransaction(idBranch);
+
     ModelKategori selectedIdKategori =
         currentState.selectedKategori ?? listKategori.first;
     emit(
       currentState.copyWith(
+        dataTransactionSaved: dataTransactionSaved,
         dataPartner: partner,
         filteredItem: currentState.sell
             ? listItem.where((element) => !element.getstatusCondiment).toList()
@@ -217,17 +222,23 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       List<ModelItemOrdered> itemPesanan = List<ModelItemOrdered>.from(
         currentState.itemOrdered ?? [],
       );
-      final selected = currentState.selectedItem!;
+      final selected = currentState.selectedItem;
+
       if (currentState.editSelectedItem) {
         final index = itemPesanan.indexWhere(
-          (element) => element.getidOrdered == selected.getidOrdered,
+          (element) => element.getidOrdered == selected!.getidOrdered,
         );
         if (index != -1) {
-          itemPesanan[index] = selected.copyWith();
+          itemPesanan[index] = selected!.copyWith();
           emit(currentState.copyWith(itemOrdered: itemPesanan));
         }
       } else {
-        emit(currentState.copyWith(itemOrdered: [...itemPesanan, selected]));
+        if (event.orderedItem != null) {
+          debugPrint("cek ${event.orderedItem!.toList()}");
+          emit(currentState.copyWith(itemOrdered: event.orderedItem));
+        } else {
+          emit(currentState.copyWith(itemOrdered: [...itemPesanan, selected!]));
+        }
       }
       add(TransactionResetSelectedItem());
     }
