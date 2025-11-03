@@ -16,7 +16,7 @@ class UITransactionListViewKategori extends StatelessWidget {
     return BlocSelector<
       TransactionBloc,
       TransactionState,
-      List<ModelKategori>?
+      List<ModelCategory>?
     >(
       selector: (state) {
         if (state is TransactionLoaded) {
@@ -67,11 +67,11 @@ class UITransactionListViewKategori extends StatelessWidget {
                           BlocSelector<
                             TransactionBloc,
                             TransactionState,
-                            ModelKategori?
+                            ModelCategory?
                           >(
                             selector: (state) {
                               if (state is TransactionLoaded) {
-                                return state.selectedKategori;
+                                return state.selectedCategory;
                               }
                               return null;
                             },

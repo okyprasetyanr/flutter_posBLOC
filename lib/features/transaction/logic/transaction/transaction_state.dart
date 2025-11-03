@@ -14,13 +14,14 @@ class TransactionLoading extends TransactionState {}
 
 class TransactionLoaded extends TransactionState with EquatableMixin {
   final List<ModelTransaction> dataTransactionSaved;
+  final ModelTransaction? selectedTransaction;
   final bool sell;
   final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
-  final List<ModelKategori>? dataCategory;
+  final List<ModelCategory>? dataCategory;
   final List<ModelBranch>? dataBranch;
   final String? selectedIDBranch;
-  final ModelKategori? selectedKategori;
+  final ModelCategory? selectedCategory;
   final ModelItemOrdered? selectedItem;
   final ModelPartner? selectedPartner;
   final bool editSelectedItem;
@@ -32,6 +33,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     this.sell = true,
     this.selectedItem,
     this.selectedPartner,
+    this.selectedTransaction,
     this.editSelectedItem = false,
     this.filteredItem = const [],
     this.dataPartner = const [],
@@ -40,25 +42,27 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     this.dataItem = const [],
     this.itemOrdered = const [],
     this.selectedIDBranch,
-    this.selectedKategori,
+    this.selectedCategory,
   });
 
   TransactionLoaded copyWith({
+    ModelTransaction? selectedTransaction,
     List<ModelTransaction>? dataTransactionSaved,
     List<ModelPartner>? dataPartner,
     bool? sell,
     List<ModelItem>? dataItem,
     List<ModelItem>? filteredItem,
     String? selectedIDBranch,
-    ModelKategori? selectedKategori,
-    List<ModelKategori>? dataKategori,
-    List<ModelBranch>? dataCabang,
+    ModelCategory? selectedCategory,
+    List<ModelCategory>? dataCategory,
+    List<ModelBranch>? dataBranch,
     ModelItemOrdered? selectedItem,
     ModelPartner? selectedPartner,
     List<ModelItemOrdered>? itemOrdered,
     bool? editSelectedItem,
   }) {
     return TransactionLoaded(
+      selectedTransaction: selectedTransaction ?? this.selectedTransaction,
       dataTransactionSaved: dataTransactionSaved ?? this.dataTransactionSaved,
       selectedPartner: selectedPartner ?? selectedPartner,
       dataPartner: dataPartner ?? this.dataPartner,
@@ -67,16 +71,17 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
       itemOrdered: itemOrdered ?? this.itemOrdered,
       selectedItem: selectedItem,
       dataItem: dataItem ?? this.dataItem,
-      dataBranch: dataCabang ?? this.dataBranch,
-      dataCategory: dataKategori ?? this.dataCategory,
+      dataBranch: dataBranch ?? this.dataBranch,
+      dataCategory: dataCategory ?? this.dataCategory,
       filteredItem: filteredItem ?? this.filteredItem,
       selectedIDBranch: selectedIDBranch ?? this.selectedIDBranch,
-      selectedKategori: selectedKategori ?? this.selectedKategori,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
     );
   }
 
   @override
   List<Object?> get props => [
+    selectedTransaction,
     dataTransactionSaved,
     selectedPartner,
     dataPartner,
@@ -86,7 +91,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     dataCategory,
     dataBranch,
     selectedIDBranch,
-    selectedKategori,
+    selectedCategory,
     selectedItem,
     editSelectedItem,
     itemOrdered,

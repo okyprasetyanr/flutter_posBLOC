@@ -7,6 +7,7 @@ import 'package:flutter_pos/features/transaction/logic/payment/payment_state.dar
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -15,7 +16,7 @@ import 'package:uuid/uuid.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
-    on<PaymentGetItem>(_oPaymentGetItem);
+    on<PaymentGetTransaction>(_onPaymentGetTransaction);
     on<PaymentAdjust>(_onPaymentAdjust);
     on<PaymentProcess>(_onPaymentDone);
     on<PaymentResetSplit>(_onPaymentResetSplit);
@@ -158,8 +159,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  Future<void> _oPaymentGetItem(
-    PaymentGetItem event,
+  Future<void> _onPaymentGetTransaction(
+    PaymentGetTransaction event,
     Emitter<PaymentState> emit,
   ) async {
     final sellState = event.context.read<TransactionBloc>().state;
@@ -191,6 +192,23 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         }
       }
 
+      final ModelTransaction? dataRevisiOrSaved = sellState.selectedTransaction;
+      debugPrint(
+        "Log PaymentBloc: dataRevisiOrSaved: ${sellState.selectedTransaction}",
+      );
+      final bool isNewTransaction = dataRevisiOrSaved == null;
+
+      final note = isNewTransaction ? "" : dataRevisiOrSaved.getnote;
+      final discount = isNewTransaction ? 0 : dataRevisiOrSaved.getdiscount;
+      final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
+      final invoice = isNewTransaction
+          ? generateInvoice(
+              branchId: sellState.selectedIDBranch!,
+              queue: 1,
+              operatorId: null,
+            )
+          : dataRevisiOrSaved.getinvoice;
+
       emit(
         PaymentLoaded(
           itemOrdered: itemOrdered,
@@ -199,17 +217,16 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             itemsOrdered: itemOrdered,
             dataSplit: [],
             billPaid: 0,
-            note: "",
+            note: note,
             paymentMethod: "Cash",
             date: formattedDate,
-            invoice:
-                "idOP-${sellState.selectedIDBranch!.substring(0, 4)}-1-${Uuid().v4().substring(0, 4)}",
+            invoice: invoice,
             namePartner: sellState.selectedPartner?.getname ?? "",
             idPartner: sellState.selectedPartner?.getid ?? "",
             nameOperator: "",
             idOperator: "",
-            discount: 0,
-            ppn: 0,
+            discount: discount,
+            ppn: ppn,
             totalItem: itemTotal,
             subTotal: priceTotal,
             charge: 0,

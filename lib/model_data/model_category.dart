@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/function/function.dart';
 
-class ModelKategori extends Equatable {
+class ModelCategory extends Equatable {
   final String _nameCategory, _idCategory, _idBranch;
-  ModelKategori({
+  ModelCategory({
     required String nameCategory,
     required String idCategory,
     required String idBranch,
@@ -32,10 +32,10 @@ class ModelKategori extends Equatable {
         .set(convertToMapCategory());
   }
 
-  static List<ModelKategori> getDataListKategori(QuerySnapshot data) {
+  static List<ModelCategory> getDataListKategori(QuerySnapshot data) {
     return data.docs.map((map) {
       final dataKetegori = map.data() as Map<String, dynamic>;
-      return ModelKategori(
+      return ModelCategory(
         nameCategory: dataKetegori['nama_kategori'],
         idCategory: map.id,
         idBranch: dataKetegori['id_cabang'],

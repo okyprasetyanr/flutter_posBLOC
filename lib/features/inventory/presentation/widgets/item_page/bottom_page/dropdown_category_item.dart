@@ -15,7 +15,7 @@ class DropdownKategoriItem extends StatelessWidget {
     return BlocSelector<
       InventoryBloc,
       InventoryState,
-      (List<ModelKategori>?, ModelKategori?)
+      (List<ModelCategory>?, ModelCategory?)
     >(
       selector: (state) {
         if (state is InventoryLoaded) {
@@ -37,7 +37,7 @@ class DropdownKategoriItem extends StatelessWidget {
               })
             : null;
         debugPrint("Log UIInventory initselection: $initselection");
-        return DropdownButtonFormField<ModelKategori?>(
+        return DropdownButtonFormField<ModelCategory?>(
           decoration: InputDecoration(
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(
@@ -53,7 +53,7 @@ class DropdownKategoriItem extends StatelessWidget {
           items: stateBLoc.$1!
               .where((data) => data.getidBranch == idBranch)
               .map(
-                (map) => DropdownMenuItem<ModelKategori>(
+                (map) => DropdownMenuItem<ModelCategory>(
                   value: map,
                   child: Text(map.getnameCategory, style: lv05TextStyle),
                 ),

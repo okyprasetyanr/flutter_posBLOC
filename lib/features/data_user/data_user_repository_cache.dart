@@ -8,7 +8,7 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 class DataUserRepositoryCache {
   List<ModelBranch>? dataBranch;
   List<ModelItem>? dataItem;
-  List<ModelKategori>? dataCategory;
+  List<ModelCategory>? dataCategory;
   List<ModelPartner>? dataPartner;
   List<ModelTransaction>? dataTransaction;
 
@@ -51,7 +51,7 @@ class DataUserRepositoryCache {
     return await repo.getItem();
   }
 
-  Future<List<ModelKategori>> initCategory() async {
+  Future<List<ModelCategory>> initCategory() async {
     return await repo.getCategory();
   }
 
@@ -69,7 +69,7 @@ class DataUserRepositoryCache {
         .toList();
   }
 
-  List<ModelKategori> getCategory(String idBranch) {
+  List<ModelCategory> getCategory(String idBranch) {
     return dataCategory!
         .where((element) => element.getidBranch == idBranch)
         .toList();

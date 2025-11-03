@@ -15,7 +15,7 @@ class ListViewKategori extends StatelessWidget {
     return BlocSelector<
       InventoryBloc,
       InventoryState,
-      (List<ModelKategori>?, String?)
+      (List<ModelCategory>?, String?)
     >(
       selector: (state) => state is InventoryLoaded
           ? (state.dataKategori, state.selectedIdBranch)

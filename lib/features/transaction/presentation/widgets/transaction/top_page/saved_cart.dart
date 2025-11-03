@@ -51,8 +51,8 @@ class UITransactionSavedCart extends StatelessWidget {
                             "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
                           );
                           context.read<TransactionBloc>().add(
-                            TransactionAddOrderedItem(
-                              orderedItem: state[index].getitemsOrdered,
+                            TransactionLoadTransaction(
+                              currentTransaction: state[index],
                             ),
                           );
                           Navigator.pop(context);

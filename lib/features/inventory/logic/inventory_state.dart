@@ -26,11 +26,11 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   final bool condimentForm;
   final List<ModelBranch> datacabang;
   final List<ModelItem> dataItem;
-  final List<ModelKategori> dataKategori;
+  final List<ModelCategory> dataKategori;
   final List<ModelItem> filteredDataItem;
-  final ModelKategori? dataSelectedKategori;
+  final ModelCategory? dataSelectedKategori;
   final ModelItem? dataSelectedItem;
-  final ModelKategori? dataSelectedKategoriItem;
+  final ModelCategory? dataSelectedKategoriItem;
 
   InventoryLoaded({
     this.dataSelectedKategoriItem,
@@ -59,10 +59,10 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     bool? condimentForm,
     List<ModelBranch>? datacabang,
     List<ModelItem>? dataItem,
-    List<ModelKategori>? dataKategori,
+    List<ModelCategory>? dataKategori,
     List<ModelItem>? filteredDataItem,
-    ModelKategori? dataSelectedKategoriItem,
-    ModelKategori? dataSelectedKategori,
+    ModelCategory? dataSelectedKategoriItem,
+    ModelCategory? dataSelectedKategori,
     ModelItem? dataSelectedItem,
   }) {
     return InventoryLoaded(

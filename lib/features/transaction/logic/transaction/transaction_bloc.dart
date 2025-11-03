@@ -32,6 +32,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionSelectedPartner>(_onSelectedPartner);
     on<TransactionDeleteItemOrdered>(_onDeleteItemOrdered);
     on<TransactionStatusTransaction>(_onStatusTransaction);
+    on<TransactionLoadTransaction>(_onTransactionLoadTransaction);
   }
 
   Future<void> _onGetData(
@@ -50,8 +51,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         .getItem(idBranch)
         .where((element) => element.getStatusItem)
         .toList();
-    List<ModelKategori> listKategori = [
-      ModelKategori(nameCategory: "All", idCategory: "0", idBranch: "0"),
+    List<ModelCategory> listKategori = [
+      ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...repo.getCategory(idBranch),
     ];
 
@@ -61,8 +62,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     List<ModelTransaction> dataTransactionSaved = repo.getTransaction(idBranch);
 
-    ModelKategori selectedIdKategori =
-        currentState.selectedKategori ?? listKategori.first;
+    ModelCategory selectedIdKategori =
+        currentState.selectedCategory ?? listKategori.first;
     emit(
       currentState.copyWith(
         dataTransactionSaved: dataTransactionSaved,
@@ -71,10 +72,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             ? listItem.where((element) => !element.getstatusCondiment).toList()
             : listItem,
         selectedIDBranch: idBranch,
-        selectedKategori: selectedIdKategori,
-        dataCabang: listCabang,
+        selectedCategory: selectedIdKategori,
+        dataBranch: listCabang,
         dataItem: listItem,
-        dataKategori: listKategori,
+        dataCategory: listKategori,
       ),
     );
   }
@@ -116,7 +117,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ),
       );
       String finalidkategori =
-          idkategori ?? currentState.selectedKategori!.getidCategory;
+          idkategori ?? currentState.selectedCategory!.getidCategory;
       if (finalidkategori != "0") {
         list = list
             .where((element) => element.getidCategoryiItem == finalidkategori)
@@ -136,7 +137,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (currentState is TransactionLoaded) {
       emit(
         currentState.copyWith(
-          selectedKategori: event.selectedKategori,
+          selectedCategory: event.selectedKategori,
           filteredItem: _sellFilterItem(event.selectedKategori.getidCategory),
         ),
       );
@@ -348,6 +349,26 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       emit(currentState.copyWith(selectedPartner: event.selectedPartner));
+    }
+  }
+
+  FutureOr<void> _onTransactionLoadTransaction(
+    TransactionLoadTransaction event,
+    Emitter<TransactionState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is TransactionLoaded) {
+      add(
+        TransactionAddOrderedItem(
+          orderedItem: event.currentTransaction.getitemsOrdered,
+        ),
+      );
+      debugPrint(
+        "Log TransactionBloc: LoadedTransaction: ${event.currentTransaction}",
+      );
+      emit(
+        currentState.copyWith(selectedTransaction: event.currentTransaction),
+      );
     }
   }
 }

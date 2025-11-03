@@ -20,13 +20,13 @@ class InvGetData extends InventoryEvent {
 }
 
 class InvSelectedKategori extends InventoryEvent {
-  final ModelKategori selectedKategori;
+  final ModelCategory selectedKategori;
 
   InvSelectedKategori({required this.selectedKategori});
 }
 
 class InvSelectedKategoriItem extends InventoryEvent {
-  final ModelKategori? dataKategoriItem;
+  final ModelCategory? dataKategoriItem;
 
   InvSelectedKategoriItem({required this.dataKategoriItem});
 }
@@ -62,7 +62,7 @@ class InvUploadItem extends InventoryEvent {
 }
 
 class InvUploadCategory extends InventoryEvent {
-  final ModelKategori category;
+  final ModelCategory category;
 
   InvUploadCategory({required this.category});
 }

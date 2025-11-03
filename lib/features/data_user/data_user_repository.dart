@@ -25,13 +25,13 @@ class DataUserRepository {
     return ModelItem.getDataListItem(data);
   }
 
-  Future<List<ModelKategori>> getCategory() async {
+  Future<List<ModelCategory>> getCategory() async {
     final data = await _db
         .collection("kategori")
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
-    return ModelKategori.getDataListKategori(data);
+    return ModelCategory.getDataListKategori(data);
   }
 
   Future<List<ModelPartner>> getPartner() async {

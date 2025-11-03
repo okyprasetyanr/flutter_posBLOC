@@ -150,13 +150,23 @@ class ModelTransaction extends Equatable {
     );
   }
 
+  List<Map<String, dynamic>> convertToMapSplit(List<ModelSplit> split) {
+    return split.map((dataSplit) {
+      return {
+        'payment_debit_name': dataSplit.getpaymentDebitName,
+        'payment_name': dataSplit.getpaymentName,
+        'payment_total': dataSplit.getpaymentTotal,
+      };
+    }).toList();
+  }
+
   Map<String, dynamic> convertToMapTransaction() {
     return {
       'id_branch': _idBranch,
       'uid_user': UserSession.ambilUidUser(),
       'items_ordered': convertToMapItemOrdered(),
       'bank_name': _bankName ?? "",
-      'data_split': _dataSplit,
+      'data_split': convertToMapSplit(_dataSplit),
       'bill_paid': _billPaid,
       'note': _note,
       'total_charge': _totalCharge,

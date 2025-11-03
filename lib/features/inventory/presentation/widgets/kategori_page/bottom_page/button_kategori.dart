@@ -20,7 +20,7 @@ class UIKategoriButtonKategori extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<InventoryBloc, InventoryState, ModelKategori?>(
+    return BlocSelector<InventoryBloc, InventoryState, ModelCategory?>(
       selector: (state) {
         if (state is InventoryLoaded) {
           return state.dataSelectedKategori;
@@ -35,7 +35,7 @@ class UIKategoriButtonKategori extends StatelessWidget {
               return;
             }
             String idCategory = state?.getidCategory ?? const Uuid().v4();
-            final category = ModelKategori(
+            final category = ModelCategory(
               nameCategory: nameCategoryController.text,
               idCategory: idCategory,
               idBranch: (context.read<InventoryBloc>().state as InventoryLoaded)

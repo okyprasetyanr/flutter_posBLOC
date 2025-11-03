@@ -3,6 +3,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 String formatUang(double nominal) {
   final nominalfinal = "${formatQty(nominal)}"
@@ -51,4 +52,11 @@ Future<void> checkAndroidVersion() async {
   print('Android SDK version: $sdkInt');
   print('Device: ${androidInfo.model}');
   print('Brand: ${androidInfo.brand}');
+}
+
+String generateInvoice({String? branchId, String? operatorId, int? queue}) {
+  final branch = branchId!.substring(0, 4);
+  final uuid = Uuid().v4().substring(0, 4);
+  final operator = "idOP";
+  return "$operator-$branch-$queue-$uuid";
 }

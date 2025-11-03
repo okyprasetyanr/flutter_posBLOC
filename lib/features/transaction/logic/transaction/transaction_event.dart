@@ -1,6 +1,7 @@
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class TransactionEvent {}
 
@@ -38,7 +39,7 @@ class TransactionSearchItem extends TransactionEvent {
 }
 
 class TransactionSelectedKategoriItem extends TransactionEvent {
-  final ModelKategori selectedKategori;
+  final ModelCategory selectedKategori;
 
   TransactionSelectedKategoriItem({required this.selectedKategori});
 }
@@ -53,6 +54,12 @@ class TransactionAddOrderedItem extends TransactionEvent {
   final List<ModelItemOrdered>? orderedItem;
 
   TransactionAddOrderedItem({this.orderedItem});
+}
+
+class TransactionLoadTransaction extends TransactionEvent {
+  final ModelTransaction currentTransaction;
+
+  TransactionLoadTransaction({required this.currentTransaction});
 }
 
 class TransactionAdjustItem extends TransactionEvent {

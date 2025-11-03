@@ -164,7 +164,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         );
       } else {
         List<ModelItem> loadedItem = List.from(currentState.dataItem);
-        List<ModelKategori> loadedKategori = List.from(
+        List<ModelCategory> loadedKategori = List.from(
           currentState.dataKategori,
         );
 

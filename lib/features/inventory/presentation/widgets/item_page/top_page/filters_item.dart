@@ -10,7 +10,7 @@ class UIFiltersItem extends StatelessWidget {
   final List<String> filters;
   final List<String> statusItem;
   final List<String> filterjenis;
-  final List<ModelKategori> filterkategori;
+  final List<ModelCategory> filterkategori;
 
   final String? selectedFilterItem;
   final String? selectedStatusItem;
@@ -90,7 +90,7 @@ class UIFiltersItem extends StatelessWidget {
           // ===== KATEGORI =====
           SizedBox(
             width: 120,
-            child: DropdownButtonFormField<ModelKategori>(
+            child: DropdownButtonFormField<ModelCategory>(
               style: lv05TextStyle,
               decoration: InputDecoration(
                 isDense: true,
@@ -115,7 +115,7 @@ class UIFiltersItem extends StatelessWidget {
                                 .selectedIdBranch,
                   )
                   .map(
-                    (map) => DropdownMenuItem<ModelKategori>(
+                    (map) => DropdownMenuItem<ModelCategory>(
                       value: map,
                       child: Text(
                         map.getnameCategory,

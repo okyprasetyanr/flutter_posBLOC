@@ -30,10 +30,10 @@ class PaymentNote extends PaymentEvent {
   PaymentNote({required this.note});
 }
 
-class PaymentGetItem extends PaymentEvent {
+class PaymentGetTransaction extends PaymentEvent {
   final BuildContext context;
 
-  PaymentGetItem({required this.context});
+  PaymentGetTransaction({required this.context});
 }
 
 class PaymentProcess extends PaymentEvent {

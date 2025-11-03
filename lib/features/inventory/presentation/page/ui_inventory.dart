@@ -41,8 +41,8 @@ class _UIInventoryState extends State<UIInventory> {
   ];
   List<String> statusItem = ["Active", "Deactive"];
   List<String> filterjenis = ["All", "Condiment", "Normal"];
-  List<ModelKategori> filterkategori = [
-    ModelKategori(nameCategory: "All", idCategory: "0", idBranch: "0"),
+  List<ModelCategory> filterkategori = [
+    ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
   ];
 
   String? selectedFilterItem;
@@ -172,7 +172,7 @@ class _UIInventoryState extends State<UIInventory> {
 
   @override
   Widget build(BuildContext context) {
-    context.select<InventoryBloc, List<ModelKategori>>((value) {
+    context.select<InventoryBloc, List<ModelCategory>>((value) {
       final dataKategori = value.state is InventoryLoaded
           ? (value.state as InventoryLoaded).dataKategori
           : null;
