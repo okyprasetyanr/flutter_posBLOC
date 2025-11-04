@@ -71,7 +71,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                 return (
                                   state.selectedItem?.getidOrdered,
                                   state.selectedItem?.getCondiment,
-                                  state.selectedItem?.getidCondimen,
+                                  state.selectedItem?.getidCondiment,
                                 );
                               }
                               return ("", [], "");

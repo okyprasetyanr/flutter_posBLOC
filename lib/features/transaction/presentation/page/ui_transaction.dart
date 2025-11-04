@@ -33,6 +33,14 @@ class _UITransactionState extends State<UITransaction> {
     initData();
   }
 
+  @override
+  dispose() {
+    sellOrbuy.dispose();
+    searchController.dispose();
+    isOpen.dispose();
+    super.dispose();
+  }
+
   Future<void> initData() async {
     await context.read<DataUserRepositoryCache>().initData();
 
@@ -49,11 +57,21 @@ class _UITransactionState extends State<UITransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutTopBottom(
-      layoutTop: layoutTop(),
-      layoutBottom: layoutBottom(),
-      widgetNavigation: navigationGesture(),
-      refreshIndicator: initData,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.pop(context);
+          context.read<TransactionBloc>().add(TransactionResetOrderedItem());
+          context.read<TransactionBloc>().add(TransactionResetSelectedItem());
+        }
+      },
+      child: LayoutTopBottom(
+        layoutTop: layoutTop(),
+        layoutBottom: layoutBottom(),
+        widgetNavigation: navigationGesture(),
+        refreshIndicator: initData,
+      ),
     );
   }
 
@@ -123,7 +141,7 @@ class _UITransactionState extends State<UITransaction> {
                         BlocSelector<TransactionBloc, TransactionState, bool>(
                           selector: (state) {
                             if (state is TransactionLoaded) {
-                              return state.sell;
+                              return state.isSell;
                             }
                             return false;
                           },
@@ -186,7 +204,19 @@ class _UITransactionState extends State<UITransaction> {
                 ),
                 const SizedBox(width: 5),
                 SizedBox(width: 140, child: UITransactionDropDownCabang()),
-                SizedBox(width: 50, child: UITransactionSavedCart()),
+                BlocSelector<TransactionBloc, TransactionState, bool>(
+                  selector: (state) {
+                    if (state is TransactionLoaded) {
+                      return state.isSell;
+                    }
+                    return true;
+                  },
+                  builder: (context, state) {
+                    return state
+                        ? SizedBox(width: 50, child: UITransactionSavedCart())
+                        : SizedBox.shrink();
+                  },
+                ),
               ],
             ),
             Expanded(child: UITransactionGridViewItem()),

@@ -7,6 +7,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -56,11 +57,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       ...repo.getCategory(idBranch),
     ];
 
-    List<ModelPartner> partner = currentState.sell
+    List<ModelPartner> partner = currentState.isSell
         ? repo.getCustomer(idBranch)
         : repo.getSupplier(idBranch);
 
-    List<ModelTransaction> dataTransactionSaved = repo.getTransaction(idBranch);
+    List<ModelTransaction> dataTransactionSaved = repo
+        .getTransaction(idBranch)
+        .where(
+          (element) =>
+              element.getstatusTransactioin == statusTransaction(index: 1),
+        )
+        .toList();
 
     ModelCategory selectedIdKategori =
         currentState.selectedCategory ?? listKategori.first;
@@ -68,7 +75,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       currentState.copyWith(
         dataTransactionSaved: dataTransactionSaved,
         dataPartner: partner,
-        filteredItem: currentState.sell
+        filteredItem: currentState.isSell
             ? listItem.where((element) => !element.getstatusCondiment).toList()
             : listItem,
         selectedIDBranch: idBranch,
@@ -150,9 +157,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
+      debugPrint("Log TransactionBloc: SelectedItem: ${event.selectedItem}");
       emit(
         currentState.copyWith(
-          selectedItem: event.selectedItem,
+          selectedItem: event.selectedItem.copyWith(),
           editSelectedItem: event.edit,
         ),
       );
@@ -165,7 +173,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      print("Log SellBloc: _onResetSelectedItem: masuk");
+      print("Log TransactionBloc: _onResetSelectedItem: masuk");
       emit(currentState.copyWith(selectedItem: null, editSelectedItem: false));
     }
   }
@@ -266,14 +274,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           qty--;
         }
       }
-      print("Log SellBloc: AdjustItem value: ${event.note}");
+      print("Log TransactionBloc: AdjustItem value: ${event.note}");
       if (event.customprice != null && event.customprice != 0) {
-        print("Log SellBloc: test Nominal");
+        print("Log TransactionBloc: test Nominal");
         price = event.customprice!;
       }
       if (event.discount != null) {
         discount = event.discount!;
-        print("Log SellBloc: Diskon value: $discount");
+        print("Log TransactionBloc: Diskon value: $discount");
       }
       if (event.qty != null) {
         qty = event.qty!;
@@ -318,7 +326,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      print("Log SellBloc: ResetOrderedItem");
+      print("Log TransactionBloc: ResetOrderedItem");
       emit(
         currentState.copyWith(
           selectedItem: null,
@@ -337,7 +345,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (currentState is TransactionLoaded) {
       add(TransactionResetSelectedItem());
       add(TransactionResetOrderedItem());
-      final newStatus = currentState.sell;
+      final newStatus = currentState.isSell;
       emit(currentState.copyWith(sell: !newStatus));
     }
   }

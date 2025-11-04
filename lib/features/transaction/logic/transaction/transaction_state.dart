@@ -15,7 +15,7 @@ class TransactionLoading extends TransactionState {}
 class TransactionLoaded extends TransactionState with EquatableMixin {
   final List<ModelTransaction> dataTransactionSaved;
   final ModelTransaction? selectedTransaction;
-  final bool sell;
+  final bool isSell;
   final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
   final List<ModelCategory>? dataCategory;
@@ -30,7 +30,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
 
   TransactionLoaded({
     this.dataTransactionSaved = const [],
-    this.sell = true,
+    this.isSell = true,
     this.selectedItem,
     this.selectedPartner,
     this.selectedTransaction,
@@ -66,7 +66,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
       dataTransactionSaved: dataTransactionSaved ?? this.dataTransactionSaved,
       selectedPartner: selectedPartner ?? selectedPartner,
       dataPartner: dataPartner ?? this.dataPartner,
-      sell: sell ?? this.sell,
+      isSell: sell ?? this.isSell,
       editSelectedItem: editSelectedItem ?? this.editSelectedItem,
       itemOrdered: itemOrdered ?? this.itemOrdered,
       selectedItem: selectedItem,
@@ -85,7 +85,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     dataTransactionSaved,
     selectedPartner,
     dataPartner,
-    sell,
+    isSell,
     dataItem,
     filteredItem,
     dataCategory,

@@ -33,9 +33,11 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
   final customPPNController = TextEditingController();
   final chargeController = TextEditingController();
   final payDebitController = TextEditingController();
+  final noteController = TextEditingController();
 
   @override
   void dispose() {
+    noteController.dispose();
     payDebitController.dispose();
     customDiscountController.dispose();
     customPPNController.dispose();
@@ -81,6 +83,10 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
   }
 
   Widget layoutTop() {
+    final bloc = context.read<PaymentBloc>().state;
+    noteController.text = bloc is PaymentLoaded
+        ? bloc.transaction_sell?.getnote ?? ""
+        : "";
     return Column(
       children: [
         Text("Pembayaran", style: titleTextStyle),
@@ -107,6 +113,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                     const SizedBox(height: 10),
                     TextField(
                       style: lv05TextStyle,
+                      controller: noteController,
                       decoration: InputDecoration(
                         labelText: "Catatan",
                         labelStyle: lv05TextStyle,
@@ -291,15 +298,30 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                   flex: 1,
                   child: Column(
                     children: [
-                      _buttonIcon(
-                        text: "Simpan",
-                        textStyle: lv05TextStyleBold,
-                        backgroundColor: Colors.white,
-                        function: () {
-                          context.read<PaymentBloc>().add(
-                            PaymentProcess(statusTransaction: false),
-                          );
-                          customSnackBar(context, "Transaksi Disimpan!");
+                      BlocSelector<PaymentBloc, PaymentState, bool>(
+                        selector: (state) =>
+                            state is PaymentLoaded ? state.isSell : false,
+                        builder: (context, isSell) {
+                          return isSell
+                              ? _buttonIcon(
+                                  text: "Simpan",
+                                  textStyle: lv05TextStyleBold,
+                                  backgroundColor: Colors.white,
+                                  function: () {
+                                    context.read<PaymentBloc>().add(
+                                      PaymentProcess(
+                                        index: 1,
+                                        context: context,
+                                      ),
+                                    );
+                                    customSnackBar(
+                                      context,
+                                      "Transaksi Disimpan!",
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                )
+                              : const SizedBox.shrink();
                         },
                       ),
                       const SizedBox(height: 10),
@@ -342,7 +364,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                             );
                           }
                           context.read<PaymentBloc>().add(
-                            PaymentProcess(statusTransaction: true),
+                            PaymentProcess(index: 0, context: context),
                           );
                           navUpDownTransition(
                             context,

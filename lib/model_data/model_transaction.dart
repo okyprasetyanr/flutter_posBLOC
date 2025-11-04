@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
@@ -97,6 +95,7 @@ class ModelTransaction extends Equatable {
   double get gettotalPpn => _totalPpn;
   List<ModelSplit> get getdataSplit => _dataSplit;
   List<ModelItemOrdered> get getitemsOrdered => _itemsOrdered;
+  String? get getstatusTransactioin => _statusTransaction;
 
   ModelTransaction copyWith({
     String? idBranch,
@@ -202,7 +201,7 @@ class ModelTransaction extends Equatable {
         'price_item_final': item.getpriceItemFinal,
         'discount_item': item.getdiscountItem,
         'id_category_item': item.getidCategoryItem,
-        'id_condiment': item.getidCondimen,
+        'id_condiment': item.getidCondiment,
         'note': item.getNote,
         'condiment': convertToMapCondimentOrdered(item.getCondiment),
       };
@@ -224,16 +223,16 @@ class ModelTransaction extends Equatable {
         'price_item_final': condiment.getpriceItemFinal,
         'discount_item': condiment.getdiscountItem,
         'id_category_item': condiment.getidCategoryItem,
-        'id_condiment': condiment.getidCondimen,
+        'id_condiment': condiment.getidCondiment,
         'note': condiment.getNote,
         'condiment': {},
       };
     }).toList();
   }
 
-  Future<void> pushDataTransaction() async {
+  Future<void> pushDataTransaction({required bool isSell}) async {
     await FirebaseFirestore.instance
-        .collection("transaction")
+        .collection(isSell ? "transaction_sell" : "transaction_buy")
         .doc(_invoice)
         .set(convertToMapTransaction());
   }

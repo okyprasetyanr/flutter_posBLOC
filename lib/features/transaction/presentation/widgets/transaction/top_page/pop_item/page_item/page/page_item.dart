@@ -7,8 +7,8 @@ import 'package:flutter_pos/features/transaction/presentation/widgets/transactio
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/pop_item/page_item/note_and_subtotal.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/pop_item/page_item/price_and_custom.dart';
 
-class SellPopUpPageItem extends StatelessWidget {
-  const SellPopUpPageItem({super.key});
+class TransactionPopUpPageItem extends StatelessWidget {
+  const TransactionPopUpPageItem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class SellPopUpPageItem extends StatelessWidget {
                 child: BlocSelector<TransactionBloc, TransactionState, bool>(
                   selector: (state) {
                     if (state is TransactionLoaded) {
-                      return state.sell;
+                      return state.isSell;
                     }
                     return true;
                   },

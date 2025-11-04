@@ -70,9 +70,17 @@ class UITransactionGridViewItem extends StatelessWidget {
                         ),
                       );
 
-                      customBottomSheet(context, (scrollController) {
-                        return UITransactionPopUpItem();
-                      });
+                      customBottomSheet(
+                        context,
+                        () {
+                          context.read<TransactionBloc>().add(
+                            TransactionResetSelectedItem(),
+                          );
+                        },
+                        (scrollController) {
+                          return UITransactionPopUpItem();
+                        },
+                      );
                     },
                     child: Padding(
                       padding: const EdgeInsetsGeometry.all(3),

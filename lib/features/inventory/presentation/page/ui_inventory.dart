@@ -55,6 +55,7 @@ class _UIInventoryState extends State<UIInventory> {
   TextEditingController kodeBarcodeController = TextEditingController();
   TextEditingController namaKategoriController = TextEditingController();
   final isOpen = ValueNotifier<bool>(false);
+  final currentPage = ValueNotifier<bool>(true);
 
   PageController pageControllerTop = PageController();
   PageController pageControllerBottom = PageController();
@@ -64,6 +65,8 @@ class _UIInventoryState extends State<UIInventory> {
   @override
   void dispose() {
     if (mounted) {
+      isOpen.dispose();
+      currentPage.dispose();
       _inventorySub?.cancel();
       namaItemController.dispose();
       cabangItemController.dispose();
@@ -76,7 +79,6 @@ class _UIInventoryState extends State<UIInventory> {
     super.dispose();
   }
 
-  final currentPage = ValueNotifier<bool>(true);
 
   void _gotoPage(bool page) {
     int goto = page ? 0 : 1;
@@ -181,11 +183,21 @@ class _UIInventoryState extends State<UIInventory> {
         if (dataKategori != null) ...dataKategori,
       ];
     });
-    return LayoutTopBottom(
-      refreshIndicator: _onRefresh,
-      layoutTop: topLayout(),
-      layoutBottom: bottomLayout(),
-      widgetNavigation: navigationGesture(),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.pop(context);
+          context.read<InventoryBloc>().add(InvResetCategoryForm());
+          context.read<InventoryBloc>().add(InvResetItemForm());
+        }
+      },
+      child: LayoutTopBottom(
+        refreshIndicator: _onRefresh,
+        layoutTop: topLayout(),
+        layoutBottom: bottomLayout(),
+        widgetNavigation: navigationGesture(),
+      ),
     );
   }
 

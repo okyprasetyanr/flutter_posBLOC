@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -12,13 +13,12 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
     on<PaymentGetTransaction>(_onPaymentGetTransaction);
     on<PaymentAdjust>(_onPaymentAdjust);
-    on<PaymentProcess>(_onPaymentDone);
+    on<PaymentProcess>(_onPaymentProcess);
     on<PaymentResetSplit>(_onPaymentResetSplit);
     on<PaymentResetTransaction>(_onPaymentResetTransaction);
     on<PaymentNote>(
@@ -208,9 +208,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
               operatorId: null,
             )
           : dataRevisiOrSaved.getinvoice;
-
+      add(PaymentAdjust(ppn: ppn, discount: discount));
+      debugPrint("Log PaymentBloc: isSell: ${sellState.isSell}");
       emit(
         PaymentLoaded(
+          isSell: sellState.isSell,
           itemOrdered: itemOrdered,
           transaction_sell: ModelTransaction(
             idBranch: sellState.selectedIDBranch!,
@@ -256,23 +258,33 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  FutureOr<void> _onPaymentResetTransaction(event, Emitter<PaymentState> emit) {
+  FutureOr<void> _onPaymentResetTransaction(
+    PaymentResetTransaction event,
+    Emitter<PaymentState> emit,
+  ) {
     final currentState = state;
     if (currentState is PaymentLoaded) {
       emit(currentState.copyWith(transaction_sell: null));
     }
   }
 
-  FutureOr<void> _onPaymentDone(
+  FutureOr<void> _onPaymentProcess(
     PaymentProcess event,
     Emitter<PaymentState> emit,
   ) {
+    final sellState = event.context.read<TransactionBloc>();
+    if (sellState.state is TransactionLoaded) {
+      sellState.add(TransactionResetOrderedItem());
+      sellState.add(TransactionResetSelectedItem());
+    }
+
     final currentState = state;
     if (currentState is PaymentLoaded) {
       final transaction = currentState.transaction_sell!.copyWith(
-        statusTransaction: "Done",
+        statusTransaction: statusTransaction(index: event.index),
       );
-      transaction.pushDataTransaction();
+      transaction.pushDataTransaction(isSell: currentState.isSell);
+      add(PaymentResetTransaction());
     }
   }
 }

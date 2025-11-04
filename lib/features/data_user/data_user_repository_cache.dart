@@ -10,7 +10,8 @@ class DataUserRepositoryCache {
   List<ModelItem>? dataItem;
   List<ModelCategory>? dataCategory;
   List<ModelPartner>? dataPartner;
-  List<ModelTransaction>? dataTransaction;
+  List<ModelTransaction>? dataTransactionSell;
+  List<ModelTransaction>? dataTransactionBuy;
 
   final DataUserRepository repo;
 
@@ -21,7 +22,8 @@ class DataUserRepositoryCache {
     dataItem = await initItem();
     dataCategory = await initCategory();
     dataPartner = await initPartner();
-    dataTransaction = await initTransaction();
+    dataTransactionSell = await initTransactionSell();
+    dataTransactionBuy = await initTransactionBuy();
 
     for (var a in dataBranch!) {
       print("Log DataUserRepositoryCache cabang: $a");
@@ -32,8 +34,11 @@ class DataUserRepositoryCache {
     for (var a in dataCategory!) {
       print("Log DataUserRepositoryCache kategori: $a");
     }
-    for (var a in dataTransaction!) {
-      print("Log DataUserRepositoryCache transaction: $a");
+    for (var a in dataTransactionSell!) {
+      print("Log DataUserRepositoryCache transactionSell: $a");
+    }
+    for (var a in dataTransactionBuy!) {
+      print("Log DataUserRepositoryCache transactionBuy: $a");
     }
 
     return true;
@@ -43,8 +48,12 @@ class DataUserRepositoryCache {
     return await repo.getBranch();
   }
 
-  Future<List<ModelTransaction>> initTransaction() async {
-    return await repo.getTransaction();
+  Future<List<ModelTransaction>> initTransactionSell() async {
+    return await repo.getTransactionSell();
+  }
+
+    Future<List<ModelTransaction>> initTransactionBuy() async {
+    return await repo.getTransactionBuy();
   }
 
   Future<List<ModelItem>> initItem() async {
@@ -92,7 +101,7 @@ class DataUserRepositoryCache {
   }
 
   List<ModelTransaction> getTransaction(String idBranch) {
-    return dataTransaction!
+    return dataTransactionSell!
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }

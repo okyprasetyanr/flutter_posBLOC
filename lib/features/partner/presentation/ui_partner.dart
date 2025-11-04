@@ -31,6 +31,12 @@ class _UIPartnerState extends State<UIPartner> {
     _initData();
   }
 
+  @override
+  void dispose() {
+    namePartnerController.dispose();
+    super.dispose();
+  }
+
   Future<void> _initData() async {
     final bloc = context.read<PartnerBloc>();
     bloc.add(PartnerGetData());

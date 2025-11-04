@@ -7,7 +7,7 @@ class ModelItemOrdered extends Equatable {
       _idItem,
       _idOrdered,
       _idCategoryItem,
-      _idCondimen,
+      _idCondiment,
       _note;
   final int _discountItem;
   final double _qtyItem, _priceItem, _subTotal, _priceItemFinal;
@@ -36,7 +36,7 @@ class ModelItemOrdered extends Equatable {
        _priceItem = priceItem,
        _discountItem = discountItem,
        _idCategoryItem = idCategoryItem,
-       _idCondimen = idCondiment,
+       _idCondiment = idCondiment,
        _note = note,
        _condiment = condiment,
        _priceItemFinal = priceItemFinal;
@@ -51,7 +51,7 @@ class ModelItemOrdered extends Equatable {
   double get getpriceItemFinal => _priceItemFinal;
   int get getdiscountItem => _discountItem;
   String get getidCategoryItem => _idCategoryItem;
-  String get getidCondimen => _idCondimen;
+  String get getidCondiment => _idCondiment;
   String get getNote => _note;
   List<ModelItemOrdered> get getCondiment => _condiment;
 
@@ -81,7 +81,7 @@ class ModelItemOrdered extends Equatable {
       priceItem: priceItem ?? _priceItem,
       discountItem: dicountItem ?? _discountItem,
       idCategoryItem: idCategoryItem ?? _idCategoryItem,
-      idCondiment: idCondimen ?? _idCondimen,
+      idCondiment: idCondimen ?? _idCondiment,
       note: note ?? _note,
       condiment: condiment ?? _condiment,
     );
@@ -121,18 +121,18 @@ class ModelItemOrdered extends Equatable {
 
   @override
   List<Object?> get props => [
-    _nameItem,
-    _idBranch,
-    _idItem,
-    _idOrdered,
-    _priceItem,
     _priceItemFinal,
+    _subTotal,
+    _nameItem,
+    _idItem,
+    _idBranch,
+    _idOrdered,
+    _qtyItem,
+    _priceItem,
     _discountItem,
     _idCategoryItem,
-    _idCondimen,
+    _idCondiment,
     _note,
-    _qtyItem,
     _condiment,
-    _subTotal,
   ];
 }

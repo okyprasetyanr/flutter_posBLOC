@@ -33,6 +33,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
 
   @override
   void dispose() {
+    currentPage.dispose();
     pageController.dispose();
     super.dispose();
   }
@@ -66,7 +67,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                 PageView(
                   controller: pageController,
                   children: [
-                    SellPopUpPageItem(),
+                    TransactionPopUpPageItem(),
                     UITransactionPopUpPageCondiment(),
                   ],
                 ),

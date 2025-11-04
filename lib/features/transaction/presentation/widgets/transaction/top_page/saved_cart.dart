@@ -28,49 +28,54 @@ class UITransactionSavedCart extends StatelessWidget {
             backgroundColor: WidgetStatePropertyAll(AppColor.primary),
           ),
           onPressed: () {
-            customBottomSheet(context, (scrollController) {
-              return BlocSelector<
-                TransactionBloc,
-                TransactionState,
-                List<ModelTransaction>
-              >(
-                selector: (state) {
-                  if (state is TransactionLoaded) {
-                    return state.dataTransactionSaved;
-                  }
-                  return [];
-                },
-                builder: (context, state) {
-                  return ListView.builder(
-                    itemCount: state.length,
-                    itemBuilder: (context, index) {
-                      final transaction = state[index];
-                      return InkWell(
-                        onTap: () {
-                          print(
-                            "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
-                          );
-                          context.read<TransactionBloc>().add(
-                            TransactionLoadTransaction(
-                              currentTransaction: state[index],
+            customBottomSheet(
+              context,
+              () {
+              },
+              (scrollController) {
+                return BlocSelector<
+                  TransactionBloc,
+                  TransactionState,
+                  List<ModelTransaction>
+                >(
+                  selector: (state) {
+                    if (state is TransactionLoaded) {
+                      return state.dataTransactionSaved;
+                    }
+                    return [];
+                  },
+                  builder: (context, state) {
+                    return ListView.builder(
+                      itemCount: state.length,
+                      itemBuilder: (context, index) {
+                        final transaction = state[index];
+                        return InkWell(
+                          onTap: () {
+                            print(
+                              "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
+                            );
+                            context.read<TransactionBloc>().add(
+                              TransactionLoadTransaction(
+                                currentTransaction: state[index],
+                              ),
+                            );
+                            Navigator.pop(context);
+                          },
+                          child: ListTile(
+                            title: Text(
+                              "${transaction.getinvoice}, ${formatUang(transaction.gettotal)}",
                             ),
-                          );
-                          Navigator.pop(context);
-                        },
-                        child: ListTile(
-                          title: Text(
-                            "${transaction.getinvoice}, ${formatUang(transaction.gettotal)}",
+                            subtitle: Text(
+                              "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
+                            ),
                           ),
-                          subtitle: Text(
-                            "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
-            });
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            );
           },
           child: Icon(
             Icons.shopping_bag_rounded,

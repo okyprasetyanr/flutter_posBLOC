@@ -37,9 +37,10 @@ class PaymentGetTransaction extends PaymentEvent {
 }
 
 class PaymentProcess extends PaymentEvent {
-  final bool statusTransaction;
+  final int index;
+    final BuildContext context;
 
-  PaymentProcess({required this.statusTransaction});
+  PaymentProcess({required this.index,required this.context});
 }
 
 class PaymentResetSplit extends PaymentEvent {}

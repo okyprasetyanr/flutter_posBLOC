@@ -26,44 +26,33 @@ class _UITransactionPopUpNoteAndSubTotalState
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<TransactionBloc>().state;
+    noteController.text = bloc is TransactionLoaded
+        ? bloc.selectedItem?.getNote ?? ""
+        : "";
     return Row(
       children: [
         Flexible(
-          child: BlocListener<TransactionBloc, TransactionState>(
-            listenWhen: (previous, current) =>
-                previous is TransactionLoaded &&
-                current is TransactionLoaded &&
-                previous.selectedItem?.getNote != current.selectedItem?.getNote,
-            listener: (context, state) {
-              if (state is TransactionLoaded) {
-                if (state.selectedItem == null) {
-                  noteController.clear();
-                } else {
-                  noteController.text = state.selectedItem!.getNote;
-                }
-              }
-            },
-            child: TextField(
-              style: lv05TextStyle,
-              decoration: InputDecoration(
-                labelText: "Catatan",
-                labelStyle: lv05TextStyle,
-                hintText: "Catatan...",
-                hintStyle: lv05TextStyle,
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 5,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
+          child: TextField(
+            style: lv05TextStyle,
+            decoration: InputDecoration(
+              labelText: "Catatan",
+              labelStyle: lv05TextStyle,
+              hintText: "Catatan...",
+              hintStyle: lv05TextStyle,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 5,
               ),
-              controller: noteController,
-              onChanged: (value) => context.read<TransactionBloc>().add(
-                TransactionAdjustItem(note: value),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
               ),
+            ),
+            controller: noteController,
+            onChanged: (value) => context.read<TransactionBloc>().add(
+              TransactionAdjustItem(note: value),
             ),
           ),
         ),

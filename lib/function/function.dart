@@ -60,3 +60,8 @@ String generateInvoice({String? branchId, String? operatorId, int? queue}) {
   final operator = "idOP";
   return "$operator-$branch-$queue-$uuid";
 }
+
+const List<String> listStatusTransaction = ["Done", "Pending", "Revisi"];
+String statusTransaction({int? index}) {
+  return listStatusTransaction[index!];
+}

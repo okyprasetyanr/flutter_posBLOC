@@ -43,9 +43,18 @@ class DataUserRepository {
     return ModelPartner.getDataListPartner(data);
   }
 
-  Future<List<ModelTransaction>> getTransaction() async {
+  Future<List<ModelTransaction>> getTransactionSell() async {
     final data = await _db
-        .collection("transaction")
+        .collection("transaction_sell")
+        .where('uid_user', isEqualTo: UserSession.uidUser)
+        .get();
+
+    return ModelTransaction.getDataListTansaction(data);
+  }
+
+  Future<List<ModelTransaction>> getTransactionBuy() async {
+    final data = await _db
+        .collection("transaction_buy")
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 

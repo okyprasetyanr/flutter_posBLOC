@@ -67,11 +67,17 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                       edit: true,
                                     ),
                                   );
-                                  customBottomSheet(context, (
-                                    scrollController,
-                                  ) {
-                                    return UITransactionPopUpItem();
-                                  });
+                                  customBottomSheet(
+                                    context,
+                                    () {
+                                      context.read<TransactionBloc>().add(
+                                        TransactionResetSelectedItem(),
+                                      );
+                                    },
+                                    (scrollController) {
+                                      return UITransactionPopUpItem();
+                                    },
+                                  );
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -106,11 +112,24 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                       style:
                                                           lv05TextStyleOrderedItem,
                                                     ),
-                                                    Text(
-                                                      formatUang(
-                                                        item.getsubTotal,
-                                                      ),
-                                                      style: lv05textStyleHarga,
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          "(${item.getdiscountItem}%)",
+                                                          style:
+                                                              lv05textStyleHargaCondiment,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                          formatUang(
+                                                            item.getsubTotal,
+                                                          ),
+                                                          style:
+                                                              lv05textStyleHarga,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -140,6 +159,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                             style:
                                                                 lv05TextStyle,
                                                           ),
+
                                                           Text(
                                                             formatUang(
                                                               condiment
@@ -184,7 +204,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  customBottomSheet(context, (scrollController) {
+                  customBottomSheet(context, () {}, (scrollController) {
                     return Column(
                       children: [
                         Text("Pilih Kontak", style: lv1TextStyleBold),
