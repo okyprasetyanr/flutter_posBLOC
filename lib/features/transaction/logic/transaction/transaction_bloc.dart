@@ -65,7 +65,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         .getTransaction(idBranch)
         .where(
           (element) =>
-              element.getstatusTransactioin == statusTransaction(index: 1),
+              element.getstatusTransaction == statusTransaction(index: 1),
         )
         .toList();
 

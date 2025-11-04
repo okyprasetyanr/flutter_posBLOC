@@ -73,10 +73,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           list.sort((a, b) => b.getnameItem.compareTo(a.getnameItem));
           break;
         case "Stock +":
-          list.sort((a, b) => a.getqtyitem.compareTo(b.getqtyitem));
+          list.sort((a, b) => a.getqtyItem.compareTo(b.getqtyItem));
           break;
         case "Stock -":
-          list.sort((a, b) => b.getqtyitem.compareTo(a.getqtyitem));
+          list.sort((a, b) => b.getqtyItem.compareTo(a.getqtyItem));
           break;
         case "Terbaru":
           list.sort(

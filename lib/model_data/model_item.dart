@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 
 class ModelItem extends Equatable {
   final String _nameItem,
@@ -43,34 +43,33 @@ class ModelItem extends Equatable {
   String get getidCategoryiItem => _idCategoryItem;
   bool get getstatusCondiment => _statusCondiment;
   String get geturlImage => _urlImage;
-  double get getqtyitem => _qtyItem;
+  double get getqtyItem => _qtyItem;
   String get getidBranch => _idBranch;
   String get getBarcode => _barcode;
   bool get getStatusItem => _statusItem;
   String get getDateItem => _dateItem;
 
-  Map<String, dynamic> convertToMapItem() {
-    return {
-      'uid_user': UserSession.ambilUidUser(),
-      'nama_item': _nameItem,
-      'harga_item': _priceItem,
-      'id_item': _idItem,
-      'id_kategori': _idCategoryItem,
-      'status_condiment': _statusCondiment,
-      'url_gambar': _urlImage,
-      'qty_item': _qtyItem,
-      'id_cabang': _idBranch,
-      'barcode': _barcode,
-      'status_item': _statusItem,
-      'tanggal_item': _dateItem,
-    };
-  }
-
   Future<void> pushDataItem() async {
     await FirebaseFirestore.instance
         .collection("items")
         .doc(_idItem)
-        .set(convertToMapItem());
+        .set(
+          convertToMapItem(
+            ModelItem(
+              qtyItem: _qtyItem,
+              nameItem: _nameItem,
+              idItem: _idItem,
+              priceItem: _priceItem,
+              idCategoryItem: _idCategoryItem,
+              statusCondiment: _statusCondiment,
+              urlImage: _urlImage,
+              idBranch: _idBranch,
+              barcode: _barcode,
+              statusItem: _statusItem,
+              dateItem: _dateItem,
+            ),
+          ),
+        );
   }
 
   static List<ModelItem> getDataListItem(QuerySnapshot data) {

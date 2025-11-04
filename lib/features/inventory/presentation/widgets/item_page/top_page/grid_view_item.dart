@@ -52,7 +52,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       context.read<InventoryBloc>().add(
                         InvSelectedItem(
                           selectedItem: ModelItem(
-                            qtyItem: items[index].getqtyitem,
+                            qtyItem: items[index].getqtyItem,
                             nameItem: items[index].getnameItem,
                             idItem: items[index].getidItem,
                             priceItem: items[index].getpriceItem,
@@ -94,7 +94,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
                               child: Text(
-                                formatQty(items[index].getqtyitem),
+                                formatQty(items[index].getqtyItem),
                                 style: lv0TextStyleRED,
                                 textAlign: TextAlign.left,
                               ),

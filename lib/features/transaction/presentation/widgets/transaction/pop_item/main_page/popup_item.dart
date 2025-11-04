@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/pop_item/page_condiment/page_condiment.dart';
-import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/pop_item/page_item/page/page_item.dart';
+import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_condiment/page_condiment.dart';
+import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_item/page/page_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 
 class UITransactionPopUpItem extends StatefulWidget {

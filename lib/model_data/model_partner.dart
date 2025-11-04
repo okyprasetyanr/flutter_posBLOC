@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 
 enum PartnerType { customer, supplier }
 
@@ -79,22 +79,6 @@ class ModelPartner extends Equatable {
     );
   }
 
-  Map<String, dynamic> convertToMapPartner() {
-    return {
-      'id_branch': _idBranch,
-      'uid_user': UserSession.ambilUidUser(),
-      'id': _id,
-      'name': _name,
-      'phone': _phone,
-      'email': _email,
-      'address': _address,
-      'notes': _notes,
-      'balance': _balance,
-      'type': _type.name,
-      'createdAt': _createdAt,
-    };
-  }
-
   factory ModelPartner.fromMap(Map<String, dynamic> map) {
     return ModelPartner(
       idBranch: map['id_branch'],
@@ -117,7 +101,22 @@ class ModelPartner extends Equatable {
     await FirebaseFirestore.instance
         .collection('partner')
         .doc(_id)
-        .set(convertToMapPartner());
+        .set(
+          convertToMapPartner(
+            ModelPartner(
+              idBranch: _idBranch,
+              id: _id,
+              name: _name,
+              phone: _phone,
+              email: _email,
+              address: _address,
+              notes: _notes,
+              balance: _balance,
+              type: _type,
+              createdAt: _createdAt,
+            ),
+          ),
+        );
   }
 
   static List<ModelPartner> getDataListPartner(QuerySnapshot data) {

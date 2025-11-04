@@ -3,6 +3,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
@@ -59,5 +60,14 @@ class DataUserRepository {
         .get();
 
     return ModelTransaction.getDataListTansaction(data);
+  }
+
+  Future<List<ModelItemBatch>> getItemBatch() async {
+    final data = await _db
+        .collection("item_batch")
+        .where('uid_user', isEqualTo: UserSession.uidUser)
+        .get();
+
+    return ModelItemBatch.getDataListItemBatch(data);
   }
 }

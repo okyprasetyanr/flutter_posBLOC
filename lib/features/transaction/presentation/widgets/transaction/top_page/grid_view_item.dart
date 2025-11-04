@@ -4,7 +4,7 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/pop_item/main_page/popup_item.dart';
+import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/main_page/popup_item.dart';
 import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -109,7 +109,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
                               child: Text(
-                                formatQty(items[index].getqtyitem),
+                                formatQty(items[index].getqtyItem),
                                 style: lv0TextStyleRED,
                                 textAlign: TextAlign.left,
                               ),

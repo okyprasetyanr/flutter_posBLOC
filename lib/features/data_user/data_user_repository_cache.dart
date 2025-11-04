@@ -2,6 +2,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
@@ -12,6 +13,7 @@ class DataUserRepositoryCache {
   List<ModelPartner>? dataPartner;
   List<ModelTransaction>? dataTransactionSell;
   List<ModelTransaction>? dataTransactionBuy;
+  List<ModelItemBatch>? dataItemBatch;
 
   final DataUserRepository repo;
 
@@ -24,6 +26,7 @@ class DataUserRepositoryCache {
     dataPartner = await initPartner();
     dataTransactionSell = await initTransactionSell();
     dataTransactionBuy = await initTransactionBuy();
+    dataItemBatch = await initItemBatch();
 
     for (var a in dataBranch!) {
       print("Log DataUserRepositoryCache cabang: $a");
@@ -40,6 +43,9 @@ class DataUserRepositoryCache {
     for (var a in dataTransactionBuy!) {
       print("Log DataUserRepositoryCache transactionBuy: $a");
     }
+    for (var a in dataItemBatch!) {
+      print("Log DataUserRepositoryCache dataItemBatch: $a");
+    }
 
     return true;
   }
@@ -52,7 +58,7 @@ class DataUserRepositoryCache {
     return await repo.getTransactionSell();
   }
 
-    Future<List<ModelTransaction>> initTransactionBuy() async {
+  Future<List<ModelTransaction>> initTransactionBuy() async {
     return await repo.getTransactionBuy();
   }
 
@@ -66,6 +72,10 @@ class DataUserRepositoryCache {
 
   Future<List<ModelPartner>> initPartner() async {
     return await repo.getPartner();
+  }
+
+  Future<List<ModelItemBatch>> initItemBatch() async {
+    return await repo.getItemBatch();
   }
 
   List<ModelBranch> getBranch() {
@@ -102,6 +112,12 @@ class DataUserRepositoryCache {
 
   List<ModelTransaction> getTransaction(String idBranch) {
     return dataTransactionSell!
+        .where((element) => element.getidBranch == idBranch)
+        .toList();
+  }
+
+  List<ModelItemBatch> getItemBatch(String idBranch) {
+    return dataItemBatch!
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }

@@ -1,0 +1,120 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+
+class ModelItemBatch extends Equatable {
+  final String _nameItem,
+      _idBranch,
+      _idItem,
+      _idOrdered,
+      _idCategoryItem,
+      _note,
+      _date_buy,
+      _expiredDate,
+      _invoice;
+  final int _discountItem;
+  final double _qtyItem, _priceItem, _subTotal, _priceItemFinal;
+
+  ModelItemBatch({
+    required String invoice,
+    required String nameItem,
+    required String idBranch,
+    required String idItem,
+    required String idOrdered,
+    required String idCategoryItem,
+    required String note,
+    required String date_buy,
+    required String expiredDate,
+    required int discountItem,
+    required double qtyItem,
+    required double priceItem,
+    required double subTotal,
+    required double priceItemFinal,
+  }) : _nameItem = nameItem,
+       _idBranch = idBranch,
+       _idItem = idItem,
+       _idOrdered = idOrdered,
+       _idCategoryItem = idCategoryItem,
+       _note = note,
+       _date_buy = date_buy,
+       _expiredDate = expiredDate,
+       _discountItem = discountItem,
+       _qtyItem = qtyItem,
+       _priceItem = priceItem,
+       _subTotal = subTotal,
+       _priceItemFinal = priceItemFinal,
+       _invoice = invoice;
+
+  ModelItemBatch copyWith({
+    String? invoice,
+    String? nameItem,
+    String? idBranch,
+    String? idItem,
+    String? idOrdered,
+    String? idCategoryItem,
+    String? note,
+    String? date_buy,
+    String? expiredDate,
+    int? discountItem,
+    double? qtyItem,
+    double? priceItem,
+    double? subTotal,
+    double? priceItemFinal,
+  }) {
+    return ModelItemBatch(
+      invoice: invoice ?? this._invoice,
+      nameItem: nameItem ?? this._nameItem,
+      idBranch: idBranch ?? this._idBranch,
+      idItem: idItem ?? this._idItem,
+      idOrdered: idOrdered ?? this._idOrdered,
+      idCategoryItem: idCategoryItem ?? this._idCategoryItem,
+      note: note ?? this._note,
+      date_buy: date_buy ?? this._date_buy,
+      expiredDate: expiredDate ?? this._expiredDate,
+      discountItem: discountItem ?? this._discountItem,
+      qtyItem: qtyItem ?? this._qtyItem,
+      priceItem: priceItem ?? this._priceItem,
+      subTotal: subTotal ?? this._subTotal,
+      priceItemFinal: priceItemFinal ?? this._priceItemFinal,
+    );
+  }
+
+  static List<ModelItemBatch> getDataListItemBatch(QuerySnapshot data) {
+    return data.docs.map((map) {
+      final dataItemBatch = map.data() as Map<String, dynamic>;
+      return ModelItemBatch(
+        invoice: dataItemBatch['invoice'],
+        nameItem: dataItemBatch['name_item'],
+        idBranch: dataItemBatch['id_branch'],
+        idItem: dataItemBatch['id_item'],
+        idOrdered: dataItemBatch['id_ordered'],
+        idCategoryItem: dataItemBatch['id_category_item'],
+        note: dataItemBatch['note'],
+        date_buy: dataItemBatch['date_buy'],
+        expiredDate: dataItemBatch['expired_date'],
+        discountItem: dataItemBatch['discount_item'],
+        qtyItem: dataItemBatch['qty_item'],
+        priceItem: dataItemBatch['price_item'],
+        subTotal: dataItemBatch['sub_total'],
+        priceItemFinal: dataItemBatch['price_item_final'],
+      );
+    }).toList();
+  }
+
+  @override
+  List<Object?> get props => [
+    _invoice,
+    _nameItem,
+    _idBranch,
+    _idItem,
+    _idOrdered,
+    _idCategoryItem,
+    _note,
+    _date_buy,
+    _expiredDate,
+    _discountItem,
+    _qtyItem,
+    _priceItem,
+    _subTotal,
+    _priceItemFinal,
+  ];
+}

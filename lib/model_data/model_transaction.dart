@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
@@ -95,7 +95,7 @@ class ModelTransaction extends Equatable {
   double get gettotalPpn => _totalPpn;
   List<ModelSplit> get getdataSplit => _dataSplit;
   List<ModelItemOrdered> get getitemsOrdered => _itemsOrdered;
-  String? get getstatusTransactioin => _statusTransaction;
+  String? get getstatusTransaction => _statusTransaction;
 
   ModelTransaction copyWith({
     String? idBranch,
@@ -149,92 +149,47 @@ class ModelTransaction extends Equatable {
     );
   }
 
-  List<Map<String, dynamic>> convertToMapSplit(List<ModelSplit> split) {
-    return split.map((dataSplit) {
-      return {
-        'payment_debit_name': dataSplit.getpaymentDebitName,
-        'payment_name': dataSplit.getpaymentName,
-        'payment_total': dataSplit.getpaymentTotal,
-      };
-    }).toList();
-  }
-
-  Map<String, dynamic> convertToMapTransaction() {
-    return {
-      'id_branch': _idBranch,
-      'uid_user': UserSession.ambilUidUser(),
-      'items_ordered': convertToMapItemOrdered(),
-      'bank_name': _bankName ?? "",
-      'data_split': convertToMapSplit(_dataSplit),
-      'bill_paid': _billPaid,
-      'note': _note,
-      'total_charge': _totalCharge,
-      'total_discount': _totalDiscount,
-      'total_ppn': _totalPpn,
-      'payment_method': _paymentMethod,
-      'date': _date,
-      'invoice': _invoice,
-      'name_partner': _namePartner,
-      'id_partner': _idPartner,
-      'name_operator': _nameOperator,
-      'id_operator': _idOperator,
-      'discount': _discount,
-      'ppn': _ppn,
-      'total_item': _totalItem,
-      'sub_total': _subTotal,
-      'charge': _charge,
-      'total': _total,
-      'status_transaction': _statusTransaction,
-    };
-  }
-
-  List<Map<String, dynamic>> convertToMapItemOrdered() {
-    return _itemsOrdered.map((item) {
-      return {
-        'sub_total': item.getsubTotal,
-        'name_item': item.getnameItem,
-        'id_item': item.getidItem,
-        'id_branch': item.getidBranch,
-        'id_ordered': item.getidOrdered,
-        'qty_item': item.getqtyItem,
-        'price_item': item.getpriceItem,
-        'price_item_final': item.getpriceItemFinal,
-        'discount_item': item.getdiscountItem,
-        'id_category_item': item.getidCategoryItem,
-        'id_condiment': item.getidCondiment,
-        'note': item.getNote,
-        'condiment': convertToMapCondimentOrdered(item.getCondiment),
-      };
-    }).toList();
-  }
-
-  List<Map<String, dynamic>> convertToMapCondimentOrdered(
-    List<ModelItemOrdered> itemsCondiment,
-  ) {
-    return itemsCondiment.map((condiment) {
-      return {
-        'sub_total': condiment.getsubTotal,
-        'name_item': condiment.getnameItem,
-        'id_item': condiment.getidItem,
-        'id_branch': condiment.getidBranch,
-        'id_ordered': condiment.getidOrdered,
-        'qty_item': condiment.getqtyItem,
-        'price_item': condiment.getpriceItem,
-        'price_item_final': condiment.getpriceItemFinal,
-        'discount_item': condiment.getdiscountItem,
-        'id_category_item': condiment.getidCategoryItem,
-        'id_condiment': condiment.getidCondiment,
-        'note': condiment.getNote,
-        'condiment': {},
-      };
-    }).toList();
-  }
-
   Future<void> pushDataTransaction({required bool isSell}) async {
+    if (!isSell) {
+      await FirebaseFirestore.instance
+          .collection("items_batch")
+          .doc(_invoice)
+          .set({
+            'invoice': _invoice,
+            'items': convertToMapItemBatch(_itemsOrdered, _invoice),
+          });
+    }
+
     await FirebaseFirestore.instance
         .collection(isSell ? "transaction_sell" : "transaction_buy")
         .doc(_invoice)
-        .set(convertToMapTransaction());
+        .set(
+          convertToMapTransaction(
+            ModelTransaction(
+              idBranch: _idBranch,
+              itemsOrdered: _itemsOrdered,
+              dataSplit: _dataSplit,
+              date: _date,
+              note: _note,
+              invoice: _invoice,
+              namePartner: _namePartner,
+              idPartner: _idPartner,
+              nameOperator: _nameOperator,
+              idOperator: _idOperator,
+              paymentMethod: _paymentMethod,
+              discount: _discount,
+              ppn: _ppn,
+              totalItem: _totalItem,
+              charge: _charge,
+              subTotal: _subTotal,
+              billPaid: _billPaid,
+              totalCharge: _totalCharge,
+              totalPpn: _totalPpn,
+              totalDiscount: _totalDiscount,
+              total: _total,
+            ),
+          ),
+        );
   }
 
   static List<ModelTransaction> getDataListTansaction(QuerySnapshot data) {

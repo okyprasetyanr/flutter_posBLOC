@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,10 +22,6 @@ String formatUang(double nominal) {
 String formatQty(double qty) {
   final format = NumberFormat("##.##");
   return format.format(qty);
-}
-
-Map<String, dynamic> convertToMap(Widget toContext, String text) {
-  return {'toContext': toContext, 'text_menu': text};
 }
 
 class UserSession {
