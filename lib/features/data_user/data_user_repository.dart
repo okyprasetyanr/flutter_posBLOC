@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -13,7 +14,7 @@ class DataUserRepository {
   Future<List<ModelBranch>> getBranch() async {
     final data = await _db
         .collection('users')
-        .doc(UserSession.ambilUidUser())
+        .doc(UserSession.getUidUser())
         .get();
     return ModelBranch.getDataListCabang(data);
   }
@@ -62,12 +63,12 @@ class DataUserRepository {
     return ModelTransaction.getDataListTansaction(data);
   }
 
-  Future<List<ModelItemBatch>> getItemBatch() async {
+  Future<List<ModelBatch>> getBatch() async {
     final data = await _db
-        .collection("item_batch")
+        .collection("batch")
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
-    return ModelItemBatch.getDataListItemBatch(data);
+    return ModelBatch.getDataListBatch(data);
   }
 }

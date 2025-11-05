@@ -21,34 +21,6 @@ class TransactionPopUpPageItem extends StatelessWidget {
           UITransactionPopUpNameAndQty(),
           const SizedBox(height: 10),
           UITransactionPopUpNoteAndSubTotal(),
-          Expanded(
-            child: BlocSelector<TransactionBloc, TransactionState, bool>(
-              selector: (state) {
-                if (state is TransactionLoaded) {
-                  return state.isSell;
-                }
-                return true;
-              },
-              builder: (context, state) {
-                return state
-                    ? SizedBox.shrink()
-                    : Row(
-                        children: [
-                          Text("Tanggal Kadaluarsa", style: lv05TextStyle),
-                          WidgetCustomDate(
-                            onSelected: (day, month, year) {
-                              context.read<TransactionBloc>().add(
-                                TransactionAdjustItem(
-                                  expiredDate: "$year-$month-$day",
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      );
-              },
-            ),
-          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,7 +40,29 @@ class TransactionPopUpPageItem extends StatelessWidget {
                   builder: (context, state) {
                     return state
                         ? const UITransactionPopUpDiscountAndCustom()
-                        : const SizedBox.shrink();
+                        : SizedBox(
+                            height: 50,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Tanggal Kadaluarsa:",
+                                  style: lv05TextStyle,
+                                ),
+                                SizedBox(height: 10),
+                                Expanded(
+                                  child: WidgetCustomDate(
+                                    onSelected: (day, month, year) {
+                                      context.read<TransactionBloc>().add(
+                                        TransactionAdjustItem(
+                                          expiredDate: "$year-$month-$day",
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                   },
                 ),
               ),

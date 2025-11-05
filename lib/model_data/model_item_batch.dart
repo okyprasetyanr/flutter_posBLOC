@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class ModelItemBatch extends Equatable {
@@ -9,8 +8,8 @@ class ModelItemBatch extends Equatable {
       _idCategoryItem,
       _note,
       _date_buy,
-      _expiredDate,
       _invoice;
+  final String? _expiredDate;
   final int _discountItem;
   final double _qtyItem, _priceItem, _subTotal, _priceItemFinal;
 
@@ -23,7 +22,7 @@ class ModelItemBatch extends Equatable {
     required String idCategoryItem,
     required String note,
     required String date_buy,
-    required String expiredDate,
+    required String? expiredDate,
     required int discountItem,
     required double qtyItem,
     required double priceItem,
@@ -52,7 +51,7 @@ class ModelItemBatch extends Equatable {
   String get getidCategoryItem => _idCategoryItem;
   String get getnote => _note;
   String get getdateBuy => _date_buy;
-  String get getexpiredDate => _expiredDate;
+  String? get getexpiredDate => _expiredDate;
   int get getdiscountItem => _discountItem;
   double get getqtyItem => _qtyItem;
   double get getpriceItem => _priceItem;
@@ -84,7 +83,7 @@ class ModelItemBatch extends Equatable {
       idCategoryItem: idCategoryItem ?? this._idCategoryItem,
       note: note ?? this._note,
       date_buy: date_buy ?? this._date_buy,
-      expiredDate: expiredDate ?? this._expiredDate,
+      expiredDate: expiredDate,
       discountItem: discountItem ?? this._discountItem,
       qtyItem: qtyItem ?? this._qtyItem,
       priceItem: priceItem ?? this._priceItem,
@@ -93,26 +92,29 @@ class ModelItemBatch extends Equatable {
     );
   }
 
-  static List<ModelItemBatch> getDataListItemBatch(QuerySnapshot data) {
-    return data.docs.map((map) {
-      final dataItemBatch = map.data() as Map<String, dynamic>;
-      return ModelItemBatch(
-        invoice: dataItemBatch['invoice'],
-        nameItem: dataItemBatch['name_item'],
-        idBranch: dataItemBatch['id_branch'],
-        idItem: dataItemBatch['id_item'],
-        idOrdered: dataItemBatch['id_ordered'],
-        idCategoryItem: dataItemBatch['id_category_item'],
-        note: dataItemBatch['note'],
-        date_buy: dataItemBatch['date_buy'],
-        expiredDate: dataItemBatch['expired_date'],
-        discountItem: dataItemBatch['discount_item'],
-        qtyItem: dataItemBatch['qty_item'],
-        priceItem: dataItemBatch['price_item'],
-        subTotal: dataItemBatch['sub_total'],
-        priceItemFinal: dataItemBatch['price_item_final'],
-      );
-    }).toList();
+  static List<ModelItemBatch> fromMapItemsBatch(
+    List<Map<String, dynamic>> data,
+  ) {
+    return data
+        .map(
+          (map) => ModelItemBatch(
+            invoice: map['invoice'],
+            nameItem: map['name_item'],
+            idBranch: map['id_branch'],
+            idItem: map['id_item'],
+            idOrdered: map['id_ordered'],
+            idCategoryItem: map['id_category_item'],
+            note: map['note'],
+            date_buy: map['date_buy'],
+            expiredDate: map['expired_date'],
+            discountItem: map['discount_item'],
+            qtyItem: map['qty_item'],
+            priceItem: map['price_item'],
+            subTotal: map['sub_total'],
+            priceItemFinal: map['price_item_final'],
+          ),
+        )
+        .toList();
   }
 
   @override

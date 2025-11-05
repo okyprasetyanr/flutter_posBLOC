@@ -1,4 +1,5 @@
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
+import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -13,7 +14,7 @@ class DataUserRepositoryCache {
   List<ModelPartner>? dataPartner;
   List<ModelTransaction>? dataTransactionSell;
   List<ModelTransaction>? dataTransactionBuy;
-  List<ModelItemBatch>? dataItemBatch;
+  List<ModelBatch>? dataBatch;
 
   final DataUserRepository repo;
 
@@ -26,7 +27,7 @@ class DataUserRepositoryCache {
     dataPartner = await initPartner();
     dataTransactionSell = await initTransactionSell();
     dataTransactionBuy = await initTransactionBuy();
-    dataItemBatch = await initItemBatch();
+    dataBatch = await initBatch();
 
     for (var a in dataBranch!) {
       print("Log DataUserRepositoryCache cabang: $a");
@@ -43,7 +44,7 @@ class DataUserRepositoryCache {
     for (var a in dataTransactionBuy!) {
       print("Log DataUserRepositoryCache transactionBuy: $a");
     }
-    for (var a in dataItemBatch!) {
+    for (var a in dataBatch!) {
       print("Log DataUserRepositoryCache dataItemBatch: $a");
     }
 
@@ -74,8 +75,8 @@ class DataUserRepositoryCache {
     return await repo.getPartner();
   }
 
-  Future<List<ModelItemBatch>> initItemBatch() async {
-    return await repo.getItemBatch();
+  Future<List<ModelBatch>> initBatch() async {
+    return await repo.getBatch();
   }
 
   List<ModelBranch> getBranch() {
@@ -116,8 +117,8 @@ class DataUserRepositoryCache {
         .toList();
   }
 
-  List<ModelItemBatch> getItemBatch(String idBranch) {
-    return dataItemBatch!
+  List<ModelBatch> getItemBatch(String idBranch) {
+    return dataBatch!
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }

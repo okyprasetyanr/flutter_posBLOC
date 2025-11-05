@@ -22,7 +22,7 @@ List<Map<String, dynamic>> convertToMapSplit(List<ModelSplit> _dataSplit) {
 Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   return {
     'id_branch': transaction.getidBranch,
-    'uid_user': UserSession.ambilUidUser(),
+    'uid_user': UserSession.getUidUser(),
     'items_ordered': convertToMapItemOrdered(transaction.getitemsOrdered),
     'bank_name': transaction.getbankName ?? "",
     'data_split': convertToMapSplit(transaction.getdataSplit),
@@ -94,7 +94,7 @@ List<Map<String, dynamic>> convertToMapCondimentOrdered(
 
 Map<String, dynamic> convertToMapItem(ModelItem item) {
   return {
-    'uid_user': UserSession.ambilUidUser(),
+    'uid_user': UserSession.getUidUser(),
     'nama_item': item.getnameItem,
     'harga_item': item.getpriceItem,
     'id_item': item.getidItem,
@@ -111,6 +111,7 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
 
 Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
   return {
+    'uid_user': UserSession.getUidUser(),
     'invoice': batch.getinvoice,
     'id_branch': batch.getidBranch,
     'date_buy': batch.getdate_buy,
@@ -150,7 +151,7 @@ List<Map<String, dynamic>> convertToMapItemBatch(
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
     'id_branch': partner.getidBranch,
-    'uid_user': UserSession.ambilUidUser(),
+    'uid_user': UserSession.getUidUser(),
     'id': partner.getid,
     'name': partner.getname,
     'phone': partner.getphone,
@@ -168,7 +169,7 @@ Map<String, dynamic> convertToMapCategory(ModelCategory category) {
     'nama_kategori': category.getnameCategory,
     'id_kategori': category.getidCategory,
     'id_cabang': category.getidBranch,
-    'uid_user': UserSession.ambilUidUser(),
+    'uid_user': UserSession.getUidUser(),
   };
 }
 

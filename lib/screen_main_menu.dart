@@ -33,10 +33,10 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   }
 
   Future<void> getNamaPerusahaan() async {
-    UserSession.ambilUidUser();
+    UserSession.getUidUser();
     DocumentSnapshot data = await FirebaseFirestore.instance
         .collection("users")
-        .doc(UserSession.ambilUidUser())
+        .doc(UserSession.getUidUser())
         .get();
     if (data.exists) {
       setState(() {
@@ -80,9 +80,13 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
           Icon(Icons.shopping_cart),
           "Transaksi",
         ),
-        gridViewMenu(() {
-           navUpDownTransition(context, '/partner', false);
-        }, Icon(Icons.assignment_outlined), "Laporan"),
+        gridViewMenu(
+          () {
+            navUpDownTransition(context, '/partner', false);
+          },
+          Icon(Icons.assignment_outlined),
+          "Laporan",
+        ),
       ],
     );
   }

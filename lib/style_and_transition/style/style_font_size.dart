@@ -11,7 +11,7 @@ final labelTextStyle = GoogleFonts.poppins(
 final hintTextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w100,
-  fontSize: 11,
+  fontSize: 10,
 );
 
 final titleTextStyle = GoogleFonts.poppins(

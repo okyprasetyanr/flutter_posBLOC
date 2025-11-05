@@ -175,10 +175,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       List<ModelItemOrdered> itemOrdered = await List.from(
         sellState.itemOrdered ?? [],
       );
-      if(!sellState.isSell){
-        for(final item in itemOrdered){
-          item.copyWith(dateBuy: formattedDate);
-        }
+      if (!sellState.isSell) {
+        itemOrdered = itemOrdered
+            .map((item) => item.copyWith(dateBuy: formattedDate))
+            .toList();
       }
       int itemTotal = 0;
       double priceTotal = 0;

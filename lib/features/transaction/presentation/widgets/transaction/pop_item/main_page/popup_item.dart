@@ -40,25 +40,8 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 8, right: 8),
-      padding: const EdgeInsets.only(top: 5, bottom: 0, right: 5, left: 5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15),
-          topRight: Radius.circular(15),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurStyle: BlurStyle.outer,
-            offset: Offset(0, 0),
-            spreadRadius: 5,
-            blurRadius: 10,
-          ),
-        ],
-      ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [
           Expanded(

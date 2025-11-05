@@ -34,7 +34,7 @@ class UserSession {
     await repo.initData();
   }
 
-  static String? ambilUidUser() {
+  static String? getUidUser() {
     return uidUser;
   }
 }

@@ -165,7 +165,7 @@ class ModelTransaction extends Equatable {
             idCategoryItem: itemordered.getidCategoryItem,
             note: itemordered.getNote,
             date_buy: itemordered.getdateBuy!,
-            expiredDate: itemordered.getexpiredDate!,
+            expiredDate: itemordered.getexpiredDate,
             discountItem: itemordered.getdiscountItem,
             qtyItem: itemordered.getqtyItem,
             priceItem: itemordered.getpriceItem,
