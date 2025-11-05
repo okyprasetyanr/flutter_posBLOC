@@ -35,7 +35,7 @@ class UIInventoryDropdownCabang extends StatelessWidget {
       },
       builder: (context, state) {
         if (state.$1.isEmpty) {
-          return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
+          return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
         }
         return DropdownButtonFormField<ModelBranch>(
           style: lv1TextStyle,

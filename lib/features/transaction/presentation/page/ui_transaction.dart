@@ -42,8 +42,6 @@ class _UITransactionState extends State<UITransaction> {
   }
 
   Future<void> initData() async {
-    await context.read<DataUserRepositoryCache>().initData();
-
     final bloc = context.read<TransactionBloc>();
     final blocValue = bloc.state;
     bloc.add(
@@ -53,6 +51,11 @@ class _UITransactionState extends State<UITransaction> {
             : null,
       ),
     );
+  }
+
+  Future<void> _onRefresh() async {
+    await context.read<DataUserRepositoryCache>().initData();
+    initData();
   }
 
   @override
@@ -70,7 +73,7 @@ class _UITransactionState extends State<UITransaction> {
         layoutTop: layoutTop(),
         layoutBottom: layoutBottom(),
         widgetNavigation: navigationGesture(),
-        refreshIndicator: initData,
+        refreshIndicator: _onRefresh,
       ),
     );
   }

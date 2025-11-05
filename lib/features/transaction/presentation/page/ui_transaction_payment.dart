@@ -100,7 +100,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
             },
             builder: (context, state) {
               if (state == null) {
-                return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
+                return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
               }
               return SingleChildScrollView(
                 child: Column(

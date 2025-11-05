@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
@@ -90,32 +92,6 @@ List<Map<String, dynamic>> convertToMapCondimentOrdered(
   }).toList();
 }
 
-List<Map<String, dynamic>> convertToMapItemBatch(
-  List<ModelItemOrdered> itemOrdered,
-  String invoice,
-) {
-  return itemOrdered
-      .map(
-        (item) => {
-          'invoice': invoice,
-          'name_item': item.getnameItem,
-          'id_branch': item.getidBranch,
-          'id_item': item.getidItem,
-          'id_ordered': item.getidOrdered,
-          'id_category_item': item.getidCategoryItem,
-          'note': item.getNote,
-          'date_buy': item.getdateBuy,
-          'expired_date': item.getexpiredDate,
-          'discount_item': item.getdiscountItem,
-          'qty_item': item.getqtyItem,
-          'price_item': item.getpriceItem,
-          'sub_total': item.getsubTotal,
-          'price_item_final': item.getpriceItemFinal,
-        },
-      )
-      .toList();
-}
-
 Map<String, dynamic> convertToMapItem(ModelItem item) {
   return {
     'uid_user': UserSession.ambilUidUser(),
@@ -131,6 +107,44 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
     'status_item': item.getStatusItem,
     'tanggal_item': item.getDateItem,
   };
+}
+
+Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
+  return {
+    'invoice': batch.getinvoice,
+    'id_branch': batch.getidBranch,
+    'date_buy': batch.getdate_buy,
+    'items_batch': convertToMapItemBatch(
+      batch.getitems_batch,
+      batch.getinvoice,
+    ),
+  };
+}
+
+List<Map<String, dynamic>> convertToMapItemBatch(
+  List<ModelItemBatch> itemBatch,
+  String invoice,
+) {
+  return itemBatch
+      .map(
+        (item) => {
+          'invoice': invoice,
+          'name_item': item.getnameItem,
+          'id_branch': item.getidBranch,
+          'id_item': item.getidItem,
+          'id_ordered': item.getidOrdered,
+          'id_category_item': item.getidCategoryItem,
+          'note': item.getnote,
+          'date_buy': item.getdateBuy,
+          'expired_date': item.getexpiredDate,
+          'discount_item': item.getdiscountItem,
+          'qty_item': item.getqtyItem,
+          'price_item': item.getpriceItem,
+          'sub_total': item.getsubTotal,
+          'price_item_final': item.getpriceItemFinal,
+        },
+      )
+      .toList();
 }
 
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
+import 'package:flutter_pos/model_data/model_batch.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
@@ -151,13 +153,41 @@ class ModelTransaction extends Equatable {
 
   Future<void> pushDataTransaction({required bool isSell}) async {
     if (!isSell) {
+      List<ModelItemBatch> convertToItemBatch = [];
+      for (final itemordered in _itemsOrdered) {
+        convertToItemBatch.add(
+          ModelItemBatch(
+            invoice: _invoice,
+            nameItem: itemordered.getnameItem,
+            idBranch: itemordered.getidBranch,
+            idItem: itemordered.getidItem,
+            idOrdered: itemordered.getidOrdered,
+            idCategoryItem: itemordered.getidCategoryItem,
+            note: itemordered.getNote,
+            date_buy: itemordered.getdateBuy!,
+            expiredDate: itemordered.getexpiredDate!,
+            discountItem: itemordered.getdiscountItem,
+            qtyItem: itemordered.getqtyItem,
+            priceItem: itemordered.getpriceItem,
+            subTotal: itemordered.getsubTotal,
+            priceItemFinal: itemordered.getpriceItemFinal,
+          ),
+        );
+      }
+
       await FirebaseFirestore.instance
-          .collection("items_batch")
+          .collection("batch")
           .doc(_invoice)
-          .set({
-            'invoice': _invoice,
-            'items': convertToMapItemBatch(_itemsOrdered, _invoice),
-          });
+          .set(
+            convertToMapBatch(
+              ModelBatch(
+                invoice: _invoice,
+                idBranch: _idBranch,
+                date_buy: _date,
+                items_batch: convertToItemBatch,
+              ),
+            ),
+          );
     }
 
     await FirebaseFirestore.instance

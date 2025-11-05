@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_item/discount_and_custom.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_item/name_and_qty.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_item/note_and_subtotal.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_item/price_and_custom.dart';
+import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_date.dart';
 
 class TransactionPopUpPageItem extends StatelessWidget {
   const TransactionPopUpPageItem({super.key});
@@ -18,6 +21,34 @@ class TransactionPopUpPageItem extends StatelessWidget {
           UITransactionPopUpNameAndQty(),
           const SizedBox(height: 10),
           UITransactionPopUpNoteAndSubTotal(),
+          Expanded(
+            child: BlocSelector<TransactionBloc, TransactionState, bool>(
+              selector: (state) {
+                if (state is TransactionLoaded) {
+                  return state.isSell;
+                }
+                return true;
+              },
+              builder: (context, state) {
+                return state
+                    ? SizedBox.shrink()
+                    : Row(
+                        children: [
+                          Text("Tanggal Kadaluarsa", style: lv05TextStyle),
+                          WidgetCustomDate(
+                            onSelected: (day, month, year) {
+                              context.read<TransactionBloc>().add(
+                                TransactionAdjustItem(
+                                  expiredDate: "$year-$month-$day",
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+              },
+            ),
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

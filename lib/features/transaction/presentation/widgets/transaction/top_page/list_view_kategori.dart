@@ -26,7 +26,7 @@ class UITransactionListViewKategori extends StatelessWidget {
       },
       builder: (context, state) {
         if (state == null) {
-          return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
+          return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
         }
         return ShaderMask(
           shaderCallback: (bounds) {

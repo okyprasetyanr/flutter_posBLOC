@@ -117,7 +117,7 @@ class _UIPartnerState extends State<UIPartner> {
             selector: (state) => state is PartnerLoading,
             builder: (context, state) {
               return state
-                  ? const SpinKitThreeBounce(color: Colors.blue, size: 20.0)
+                  ? const SpinKitThreeBounce(color: Colors.blue, size: 15.0)
                   : BlocSelector<
                       PartnerBloc,
                       PartnerState,
@@ -164,7 +164,7 @@ class _UIPartnerState extends State<UIPartner> {
             selector: (state) => state is PartnerLoading,
             builder: (context, state) {
               return state
-                  ? SpinKitThreeBounce(color: Colors.blue, size: 20.0)
+                  ? SpinKitThreeBounce(color: Colors.blue, size: 15.0)
                   : BlocSelector<
                       PartnerBloc,
                       PartnerState,

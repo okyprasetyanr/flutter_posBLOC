@@ -25,7 +25,7 @@ class DropdownKategoriItem extends StatelessWidget {
       },
       builder: (contextBloc, stateBLoc) {
         if (stateBLoc.$1 == null) {
-          return const SpinKitThreeBounce(color: Colors.blue, size: 30.0);
+          return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
         }
         final blocState = contextBloc.read<InventoryBloc>().state;
         final idBranch = blocState is InventoryLoaded

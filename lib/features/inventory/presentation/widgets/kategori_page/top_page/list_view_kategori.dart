@@ -24,7 +24,7 @@ class ListViewKategori extends StatelessWidget {
         if (state.$1 == null) {
           return Padding(
             padding: const EdgeInsets.all(10),
-            child: const SpinKitThreeBounce(color: Colors.blue, size: 30.0),
+            child: const SpinKitThreeBounce(color: Colors.blue, size: 15.0),
           );
         }
         final dataKategori = state.$1!

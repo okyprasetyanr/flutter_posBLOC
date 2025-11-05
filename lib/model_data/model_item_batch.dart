@@ -44,6 +44,21 @@ class ModelItemBatch extends Equatable {
        _priceItemFinal = priceItemFinal,
        _invoice = invoice;
 
+  String get getinvoice => _invoice;
+  String get getnameItem => _nameItem;
+  String get getidBranch => _idBranch;
+  String get getidItem => _idItem;
+  String get getidOrdered => _idOrdered;
+  String get getidCategoryItem => _idCategoryItem;
+  String get getnote => _note;
+  String get getdateBuy => _date_buy;
+  String get getexpiredDate => _expiredDate;
+  int get getdiscountItem => _discountItem;
+  double get getqtyItem => _qtyItem;
+  double get getpriceItem => _priceItem;
+  double get getsubTotal => _subTotal;
+  double get getpriceItemFinal => _priceItemFinal;
+
   ModelItemBatch copyWith({
     String? invoice,
     String? nameItem,

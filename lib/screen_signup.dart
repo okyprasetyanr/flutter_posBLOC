@@ -78,9 +78,9 @@ class _ScreenSignupState extends State<ScreenSignup> {
       "11",
       "12",
     ];
+    List<String> years = List.generate(100, (index) => '${2025 - index}');
     final formKey = GlobalKey<FormState>();
     List<String> cabang = ["1", "2", "3"];
-    List<String> years = List.generate(100, (index) => '${2025 - index}');
     selectedcabang ??= "1";
     return Scaffold(
       backgroundColor: Colors.white,
