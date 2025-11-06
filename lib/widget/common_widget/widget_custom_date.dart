@@ -42,11 +42,7 @@ class WidgetCustomDate extends StatelessWidget {
                 .toList(),
             onChanged: (value) {
               selectedDay = value;
-              onSelected(
-                selectedDay ?? '',
-                selectedMonth ?? '',
-                selectedYear ?? '',
-              );
+              onSelected(value!, selectedMonth ?? '', selectedYear ?? '');
             },
             decoration: InputDecoration(
               labelText: "Tanggal",
@@ -74,11 +70,7 @@ class WidgetCustomDate extends StatelessWidget {
                 .toList(),
             onChanged: (value) {
               selectedMonth = value;
-              onSelected(
-                selectedDay ?? '',
-                selectedMonth ?? '',
-                selectedYear ?? '',
-              );
+              onSelected(selectedDay ?? '', value!, selectedYear ?? '');
             },
             decoration: InputDecoration(
               labelText: "Bulan",
@@ -105,11 +97,7 @@ class WidgetCustomDate extends StatelessWidget {
                 .toList(),
             onChanged: (value) {
               selectedYear = value;
-              onSelected(
-                selectedDay ?? '',
-                selectedMonth ?? '',
-                selectedYear ?? '',
-              );
+              onSelected(selectedDay ?? '', selectedMonth ?? '', value!);
             },
             decoration: InputDecoration(
               labelText: "Tahun",

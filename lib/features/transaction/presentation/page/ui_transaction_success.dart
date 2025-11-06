@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_bloc.dart';
+import 'package:flutter_pos/features/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -19,6 +20,7 @@ class UITransactionSuccess extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           Navigator.popUntil(context, ModalRoute.withName('/sell'));
+          context.read<PaymentBloc>().add(PaymentResetTransaction());
         }
       },
       child: LayoutTopBottom(

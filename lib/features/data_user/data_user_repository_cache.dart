@@ -48,6 +48,19 @@ class DataUserRepositoryCache {
       print("Log DataUserRepositoryCache dataItemBatch: $a");
     }
 
+    for (int i = 0; i < dataItem!.length; i++) {
+      final item = dataItem![i];
+      for (final batch in dataBatch!) {
+        List<ModelItemBatch> itemBatchs = batch.getitems_batch
+            .where((element) => element.getidItem == item.getidItem)
+            .toList();
+        for (final itemBatch in itemBatchs) {
+          double qty = itemBatch.getqtyItem_in + item.getqtyItem;
+          dataItem![i] = item.copyWith(qtyItem: qty);
+        }
+      }
+    }
+
     return true;
   }
 
@@ -117,7 +130,7 @@ class DataUserRepositoryCache {
         .toList();
   }
 
-  List<ModelBatch> getItemBatch(String idBranch) {
+  List<ModelBatch> getBatch(String idBranch) {
     return dataBatch!
         .where((element) => element.getidBranch == idBranch)
         .toList();

@@ -29,7 +29,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
         return AnimatedPositioned(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          left: value ? 0 : -290,
+          left: value ? 0 : -240,
           top: 0,
           bottom: 0,
           child: Container(
@@ -43,13 +43,12 @@ class _NavigationGestureState extends State<NavigationGesture> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.4),
-                  // offset: Offset(3, 0),
                   blurRadius: 10,
                   blurStyle: BlurStyle.outer,
                 ),
               ],
             ),
-            width: 250,
+            width: 200,
             padding: const EdgeInsets.all(10),
             child: Column(
               mainAxisSize: MainAxisSize.max,

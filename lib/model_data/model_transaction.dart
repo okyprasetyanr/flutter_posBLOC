@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
@@ -155,8 +156,10 @@ class ModelTransaction extends Equatable {
     if (!isSell) {
       List<ModelItemBatch> convertToItemBatch = [];
       for (final itemordered in _itemsOrdered) {
+        debugPrint("Log ModelTransaction: ${itemordered}");
         convertToItemBatch.add(
           ModelItemBatch(
+            qtyItem_out: 0,
             invoice: _invoice,
             nameItem: itemordered.getnameItem,
             idBranch: itemordered.getidBranch,
@@ -167,7 +170,7 @@ class ModelTransaction extends Equatable {
             date_buy: itemordered.getdateBuy!,
             expiredDate: itemordered.getexpiredDate,
             discountItem: itemordered.getdiscountItem,
-            qtyItem: itemordered.getqtyItem,
+            qtyItem_in: itemordered.getqtyItem,
             priceItem: itemordered.getpriceItem,
             subTotal: itemordered.getsubTotal,
             priceItemFinal: itemordered.getpriceItemFinal,

@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/features/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
@@ -31,6 +32,7 @@ void main() async {
           BlocProvider(create: (context) => TransactionBloc(repo)),
           BlocProvider(create: (context) => PaymentBloc()),
           BlocProvider(create: (context) => PartnerBloc(repo)),
+          BlocProvider(create: (context) => BatchBloc(repo)),
         ],
         child: MaterialApp(
           initialRoute: '/login',

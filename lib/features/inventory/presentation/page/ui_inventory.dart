@@ -79,7 +79,6 @@ class _UIInventoryState extends State<UIInventory> {
     super.dispose();
   }
 
-
   void _gotoPage(bool page) {
     int goto = page ? 0 : 1;
     currentPage.value = page;
@@ -598,6 +597,12 @@ class _UIInventoryState extends State<UIInventory> {
         "id": "inventory",
         "toContext": "/inventory",
         "text_menu": "Inventori",
+        "onTap": () {},
+      },
+      {
+        "id": "batch",
+        "toContext": "/batch",
+        "text_menu": "Batch",
         "onTap": () {},
       },
     ];

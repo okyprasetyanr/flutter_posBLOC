@@ -168,13 +168,16 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       debugPrint("Log PaymentBloc: cek SellState");
 
       debugPrint("Log PaymentBloc: cek Faktur");
-      final formattedDate = DateFormat(
-        'dd-MM-yyyy, HH:mm:ss',
-      ).format(DateTime.now());
+      final formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
       List<ModelItemOrdered> itemOrdered = await List.from(
         sellState.itemOrdered ?? [],
       );
+
+      for (final dataItemOrdered in itemOrdered) {
+        debugPrint("Log PaymentBloc: ItemOrdered: $dataItemOrdered");
+      }
+
       if (!sellState.isSell) {
         itemOrdered = itemOrdered
             .map((item) => item.copyWith(dateBuy: formattedDate))
@@ -289,7 +292,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         statusTransaction: statusTransaction(index: event.index),
       );
       transaction.pushDataTransaction(isSell: currentState.isSell);
-      add(PaymentResetTransaction());
     }
   }
 }

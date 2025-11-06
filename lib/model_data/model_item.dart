@@ -49,6 +49,34 @@ class ModelItem extends Equatable {
   bool get getStatusItem => _statusItem;
   String get getDateItem => _dateItem;
 
+  ModelItem copyWith({
+    double? qtyItem,
+    String? nameItem,
+    String? idItem,
+    double? priceItem,
+    String? idCategoryItem,
+    bool? statusCondiment,
+    String? urlImage,
+    String? idBranch,
+    String? barcode,
+    bool? statusItem,
+    String? dateItem,
+  }) {
+    return ModelItem(
+      qtyItem: qtyItem ?? this._qtyItem,
+      nameItem: nameItem ?? this._nameItem,
+      idItem: idItem ?? this._idItem,
+      priceItem: priceItem ?? this._priceItem,
+      idCategoryItem: idCategoryItem ?? this._idCategoryItem,
+      statusCondiment: statusCondiment ?? this._statusCondiment,
+      urlImage: urlImage ?? this._urlImage,
+      idBranch: idBranch ?? this._idBranch,
+      barcode: barcode ?? this._barcode,
+      statusItem: statusItem ?? this._statusItem,
+      dateItem: dateItem ?? this._dateItem,
+    );
+  }
+
   Future<void> pushDataItem() async {
     await FirebaseFirestore.instance
         .collection("items")

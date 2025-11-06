@@ -45,7 +45,7 @@ class ModelBatch extends Equatable {
         idBranch: dataBatch['id_branch'],
         date_buy: dataBatch['date_buy'],
         items_batch: ModelItemBatch.fromMapItemsBatch(
-          List<Map<String, dynamic>>.from(dataBatch['date_buy']),
+          List<Map<String, dynamic>>.from(dataBatch['items_batch']),
         ),
       );
     }).toList();

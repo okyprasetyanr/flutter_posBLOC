@@ -270,6 +270,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       if (event.expiredDate != null) {
         expiredDate = event.expiredDate!;
+        print("Log TransactionBloc: ExpiredDate value: $expiredDate}");
       }
 
       if (event.mode != null) {

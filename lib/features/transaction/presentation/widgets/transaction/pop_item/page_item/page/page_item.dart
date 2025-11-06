@@ -52,6 +52,9 @@ class TransactionPopUpPageItem extends StatelessWidget {
                                 Expanded(
                                   child: WidgetCustomDate(
                                     onSelected: (day, month, year) {
+                                      print(
+                                        "Log UITransaction: CustomDate: $year-$month-$day",
+                                      );
                                       context.read<TransactionBloc>().add(
                                         TransactionAdjustItem(
                                           expiredDate: "$year-$month-$day",
