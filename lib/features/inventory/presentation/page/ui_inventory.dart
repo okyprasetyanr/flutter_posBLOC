@@ -165,7 +165,7 @@ class _UIInventoryState extends State<UIInventory> {
     _resetItemForm();
     namaKategoriController.clear();
 
-    context.read<DataUserRepositoryCache>().initData();
+    await context.read<DataUserRepositoryCache>().initData();
 
     _initData();
     print("UI Inventory: initData");

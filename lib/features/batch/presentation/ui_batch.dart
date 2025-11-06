@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/batch/logic/batch_bloc.dart';
+import 'package:flutter_pos/features/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/batch/logic/batch_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -27,6 +28,16 @@ class _UiBatchState extends State<UiBatch> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    context.read<BatchBloc>().add(BatchGetData(idBranch: null));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
       layoutTop: layoutTop(),
@@ -42,12 +53,13 @@ class _UiBatchState extends State<UiBatch> {
     return BlocSelector<BatchBloc, BatchState, List<ModelItem>?>(
       selector: (state) {
         if (state is BatchLoaded) {
-          return state.dataItemBatch;
+          return state.dataItem;
         }
         return null;
       },
       builder: (context, state) {
-        return state == null
+        print("Log UIBatch: itemBatch: $state");
+        return state == null || state.isEmpty
             ? Center(
                 child: Text(
                   "Belum ada item yang diRe-Stock",
@@ -62,41 +74,8 @@ class _UiBatchState extends State<UiBatch> {
                   return null;
                 },
                 builder: (context, itemById) {
-                  return itemById != null
-                      ? ListView.builder(
-                          itemCount: itemById.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                Text("Nota: ${itemById[index].getinvoice}"),
-                                rowContent(
-                                  "Stock Masuk",
-                                  formatQty(itemById[index].getqtyItem_in),
-                                ),
-                                rowContent(
-                                  "Stock Keluar",
-                                  formatQty(itemById[index].getqtyItem_out),
-                                ),
-                                rowContent(
-                                  "Stock Sisa",
-                                  formatQty(
-                                    itemById[index].getqtyItem_in -
-                                        itemById[index].getqtyItem_out,
-                                  ),
-                                ),
-                                rowContent(
-                                  "Tanggal",
-                                  itemById[index].getdateBuy,
-                                ),
-                                rowContent(
-                                  "Kadaluarsa",
-                                  itemById[index].getexpiredDate!,
-                                ),
-                              ],
-                            );
-                          },
-                        )
-                      : GridView.builder(
+                  return itemById == null || itemById.isEmpty
+                      ? GridView.builder(
                           padding: const EdgeInsets.only(
                             left: 10,
                             right: 10,
@@ -114,7 +93,13 @@ class _UiBatchState extends State<UiBatch> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               borderRadius: BorderRadius.circular(8),
-                              onTap: () {},
+                              onTap: () {
+                                context.read<BatchBloc>().add(
+                                  BatchSelectedIdItem(
+                                    selectedIdItem: state[index].getidItem,
+                                  ),
+                                );
+                              },
                               child: Padding(
                                 padding: const EdgeInsets.all(3),
                                 child: Column(
@@ -146,6 +131,39 @@ class _UiBatchState extends State<UiBatch> {
                               ),
                             );
                           },
+                        )
+                      : ListView.builder(
+                          itemCount: itemById.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                Text("Nota: ${itemById[index].getinvoice}"),
+                                rowContent(
+                                  "Stock Masuk",
+                                  formatQty(itemById[index].getqtyItem_in),
+                                ),
+                                rowContent(
+                                  "Stock Keluar",
+                                  formatQty(itemById[index].getqtyItem_out),
+                                ),
+                                rowContent(
+                                  "Stock Sisa",
+                                  formatQty(
+                                    itemById[index].getqtyItem_in -
+                                        itemById[index].getqtyItem_out,
+                                  ),
+                                ),
+                                rowContent(
+                                  "Tanggal",
+                                  itemById[index].getdateBuy,
+                                ),
+                                rowContent(
+                                  "Kadaluarsa",
+                                  itemById[index].getexpiredDate ?? "-",
+                                ),
+                              ],
+                            );
+                          },
                         );
                 },
               );
@@ -169,30 +187,17 @@ class _UiBatchState extends State<UiBatch> {
                   style: lv05TextStyle,
                 ),
               )
-            : Row(
+            : Column(
                 children: [
-                  Image.asset("assets/logo.png"),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        rowContent("Nama Item", state.getnameItem),
-                        rowContent(
-                          "Stock Masuk",
-                          formatQty(state.getqtyItem_in),
-                        ),
-                        rowContent(
-                          "Stock Keluar",
-                          formatQty(state.getqtyItem_out),
-                        ),
-                        rowContent(
-                          "Stock Sisa",
-                          formatQty(state.getqtyItem_in - state.getqtyItem_out),
-                        ),
-                        rowContent("Batch Terbaru", state.getnameItem),
-                      ],
-                    ),
+                  Image.asset("assets/logo.png", height: 100),
+                  rowContent("Nama Item", state.getnameItem),
+                  rowContent("Stock Masuk", formatQty(state.getqtyItem_in)),
+                  rowContent("Stock Keluar", formatQty(state.getqtyItem_out)),
+                  rowContent(
+                    "Stock Sisa",
+                    formatQty(state.getqtyItem_in - state.getqtyItem_out),
                   ),
+                  rowContent("Batch Terbaru", state.getdateBuy),
                 ],
               );
       },

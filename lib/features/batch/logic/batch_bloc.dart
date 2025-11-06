@@ -21,23 +21,26 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
     final dataBatch = repoCache.getBatch(
       event.idBranch ?? dataBranch.first.getidBranch,
     );
-    final dataItem = repoCache.getItem(
-      event.idBranch ?? dataBranch.first.getidBranch,
-    );
-    List<ModelItemBatch> dataItemBatch = dataBatch
+    final dataItemBatch = dataBatch
         .expand((element) => element.getitems_batch)
         .toList();
 
-    List<ModelItem> finaldataItem = [];
-    for (final itemBatch in dataItemBatch) {
-      for (final item in dataItem) {
-        if (itemBatch.getidItem == item.getidItem) {
-          finaldataItem.add(item);
-        }
-      }
-    }
+    final dataItem = repoCache.getItem(
+      event.idBranch ?? dataBranch.first.getidBranch,
+    );
 
-    emit(BatchLoaded(dataBatch: dataBatch, dataItemBatch: finaldataItem));
+    final idItemBatchSet = dataItemBatch.map((e) => e.getidItem).toSet();
+    final finaldataItem = dataItem
+        .where((item) => idItemBatchSet.contains(item.getidItem))
+        .toList();
+
+    emit(
+      BatchLoaded(
+        dataBatch: dataBatch,
+        dataItemBatch: dataItemBatch,
+        dataItem: finaldataItem,
+      ),
+    );
   }
 
   FutureOr<void> _onBatchSelectedIdItem(
@@ -46,7 +49,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
   ) {
     final currentState = state;
     if (currentState is BatchLoaded) {
-      final ItemById = currentState.dataItemByIdItem
+      final ItemById = currentState.dataItemBatch
           .where((element) => element.getidItem == event.selectedIdItem)
           .toList();
 

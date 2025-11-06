@@ -11,12 +11,14 @@ class BatchLoading extends BatchState {}
 
 class BatchLoaded extends BatchState with EquatableMixin {
   final List<ModelBatch> dataBatch;
-  final List<ModelItem> dataItemBatch;
+  final List<ModelItemBatch> dataItemBatch;
+  final List<ModelItem> dataItem;
   final String? selectedIdItem;
   final List<ModelItemBatch> dataItemByIdItem;
   final ModelItemBatch? detailSelectedItem;
 
   BatchLoaded({
+    this.dataItem = const [],
     this.dataBatch = const [],
     this.dataItemBatch = const [],
     this.dataItemByIdItem = const [],
@@ -27,11 +29,13 @@ class BatchLoaded extends BatchState with EquatableMixin {
   BatchLoaded copyWith({
     List<ModelItemBatch>? dataItemByIdItem,
     List<ModelBatch>? dataBatch,
-    List<ModelItem>? dataItemBatch,
+    List<ModelItemBatch>? dataItemBatch,
+    List<ModelItem>? dataItem,
     String? selectedIdItem,
     ModelItemBatch? detailSelectedItem,
   }) {
     return BatchLoaded(
+      dataItem: dataItem ?? this.dataItem,
       detailSelectedItem: detailSelectedItem,
       dataItemByIdItem: dataItemByIdItem ?? this.dataItemByIdItem,
       selectedIdItem: selectedIdItem,
@@ -42,6 +46,7 @@ class BatchLoaded extends BatchState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    dataItem,
     dataBatch,
     dataItemBatch,
     selectedIdItem,

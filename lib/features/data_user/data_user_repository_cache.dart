@@ -3,7 +3,6 @@ import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
@@ -21,13 +20,15 @@ class DataUserRepositoryCache {
   DataUserRepositoryCache(this.repo);
 
   Future<bool> initData() async {
-    dataBranch = await initBranch();
-    dataItem = await initItem();
-    dataCategory = await initCategory();
-    dataPartner = await initPartner();
-    dataTransactionSell = await initTransactionSell();
-    dataTransactionBuy = await initTransactionBuy();
-    dataBatch = await initBatch();
+    Future.wait([
+      initBranch(),
+      initItem(),
+      initCategory(),
+      initPartner(),
+      initTransactionSell(),
+      initTransactionBuy(),
+      initBatch(),
+    ]);
 
     for (var a in dataBranch!) {
       print("Log DataUserRepositoryCache cabang: $a");
@@ -50,46 +51,46 @@ class DataUserRepositoryCache {
 
     for (int i = 0; i < dataItem!.length; i++) {
       final item = dataItem![i];
-      for (final batch in dataBatch!) {
-        List<ModelItemBatch> itemBatchs = batch.getitems_batch
-            .where((element) => element.getidItem == item.getidItem)
-            .toList();
-        for (final itemBatch in itemBatchs) {
-          double qty = itemBatch.getqtyItem_in + item.getqtyItem;
-          dataItem![i] = item.copyWith(qtyItem: qty);
-        }
+      double qty = item.getqtyItem;
+      final allBatchItems = dataBatch!
+          .expand((batch) => batch.getitems_batch)
+          .where((element) => element.getidItem == item.getidItem);
+
+      for (final itemBatch in allBatchItems) {
+        qty += itemBatch.getqtyItem_in;
       }
+      dataItem![i] = item.copyWith(qtyItem: qty);
     }
 
     return true;
   }
 
-  Future<List<ModelBranch>> initBranch() async {
-    return await repo.getBranch();
+  Future<void> initBranch() async {
+    dataBranch = await repo.getBranch();
   }
 
-  Future<List<ModelTransaction>> initTransactionSell() async {
-    return await repo.getTransactionSell();
+  Future<void> initTransactionSell() async {
+    dataTransactionSell = await repo.getTransactionSell();
   }
 
-  Future<List<ModelTransaction>> initTransactionBuy() async {
-    return await repo.getTransactionBuy();
+  Future<void> initTransactionBuy() async {
+    dataTransactionBuy = await repo.getTransactionBuy();
   }
 
-  Future<List<ModelItem>> initItem() async {
-    return await repo.getItem();
+  Future<void> initItem() async {
+    dataItem = await repo.getItem();
   }
 
-  Future<List<ModelCategory>> initCategory() async {
-    return await repo.getCategory();
+  Future<void> initCategory() async {
+    dataCategory = await repo.getCategory();
   }
 
-  Future<List<ModelPartner>> initPartner() async {
-    return await repo.getPartner();
+  Future<void> initPartner() async {
+    dataPartner = await repo.getPartner();
   }
 
-  Future<List<ModelBatch>> initBatch() async {
-    return await repo.getBatch();
+  Future<void> initBatch() async {
+    dataBatch = await repo.getBatch();
   }
 
   List<ModelBranch> getBranch() {
