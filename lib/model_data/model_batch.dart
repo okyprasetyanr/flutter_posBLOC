@@ -54,3 +54,4 @@ class ModelBatch extends Equatable {
   @override
   List<Object?> get props => [_invoice, _idBranch, _dateBuy, _itemsBatch];
 }
+

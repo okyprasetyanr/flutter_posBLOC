@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
@@ -223,6 +224,65 @@ class ModelTransaction extends Equatable {
             ),
           ),
         );
+  }
+
+  void reduceQtyFIFO({required List<ModelBatch> dataBatch}) {
+    final dataItemBatch = dataBatch.expand((b) => b.getitems_batch).toList();
+
+    for (final transItem in _itemsOrdered) {
+      double qtyItemTrans = transItem.getqtyItem;
+
+      final itemBatchs =
+          dataItemBatch
+              .where((b) => b.getidItem == transItem.getidItem)
+              .toList()
+            ..sort(
+              (a, b) => DateTime.parse(
+                a.getdateBuy,
+              ).compareTo(DateTime.parse(b.getdateBuy)),
+            );
+
+      for (int i = 0; i < itemBatchs.length && qtyItemTrans > 0; i++) {
+        final batch = itemBatchs[i];
+        final availableQty = batch.getqtyItem_in - batch.getqtyItem_out;
+
+        if (availableQty <= 0) continue;
+
+        final used = (availableQty >= qtyItemTrans)
+            ? qtyItemTrans
+            : availableQty;
+        qtyItemTrans -= used;
+
+        final updatedBatch = batch.copyWith(
+          qtyItem_out: batch.getqtyItem_out + used,
+        );
+
+        final index = dataItemBatch.indexWhere(
+          (x) =>
+              x.getinvoice == updatedBatch.getinvoice &&
+              x.getidItem == updatedBatch.getidItem,
+        );
+        if (index != -1) {
+          dataItemBatch[index] = updatedBatch;
+        }
+      }
+
+      if (qtyItemTrans > 0) {
+        print(
+          "⚠️ Item ${transItem.getnameItem} stok habis, sisa minus $qtyItemTrans",
+        );
+      }
+    }
+
+    // rebuild ulang tiap batch dengan item batch yang udah diupdate
+    for (int i = 0; i < dataBatch.length; i++) {
+      final batch = dataBatch[i];
+      final updatedItems = dataItemBatch
+          .where((x) => x.getinvoice == batch.getinvoice)
+          .toList();
+
+      dataBatch[i] = batch.copyWith(null, null, null, updatedItems);
+    }
   }
 
   static List<ModelTransaction> getDataListTansaction(QuerySnapshot data) {
