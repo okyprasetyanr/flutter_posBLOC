@@ -101,6 +101,7 @@ class ModelItemOrdered extends Equatable {
 
   factory ModelItemOrdered.fromMap(
     Map<String, dynamic> items,
+    List<ModelItemOrdered> condiment,
     bool isCondiment,
   ) {
     debugPrint("Log ModelData: Transaction ItemOrdered: ${items}");
@@ -120,16 +121,7 @@ class ModelItemOrdered extends Equatable {
       idCategoryItem: items['id_category_item'],
       idCondiment: items['id_condiment'],
       note: items['note'],
-      condiment: isCondiment
-          ? []
-          : (items['condiment'] as List<dynamic>? ?? [])
-                .map(
-                  (items) => ModelItemOrdered.fromMap(
-                    items as Map<String, dynamic>,
-                    true,
-                  ),
-                )
-                .toList(),
+      condiment: isCondiment ? [] : condiment,
     );
   }
 

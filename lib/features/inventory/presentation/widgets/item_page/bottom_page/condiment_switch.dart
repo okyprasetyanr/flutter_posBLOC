@@ -66,7 +66,7 @@ class CondimentSwitch extends StatelessWidget {
                   top: 1,
                   left: state ? -100 : 28,
                   duration: Duration(milliseconds: 500),
-                  child: Text("Normal", style: lv1TextStyle),
+                  child: Text("Normal", style: lv05TextStyle),
                 ),
                 AnimatedPositioned(
                   curve: Curves.easeInOut,

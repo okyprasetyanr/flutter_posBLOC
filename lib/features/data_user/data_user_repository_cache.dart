@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
@@ -20,7 +21,7 @@ class DataUserRepositoryCache {
   DataUserRepositoryCache(this.repo);
 
   Future<bool> initData() async {
-    Future.wait([
+    await Future.wait([
       initBranch(),
       initItem(),
       initCategory(),
@@ -47,19 +48,6 @@ class DataUserRepositoryCache {
     }
     for (var a in dataBatch!) {
       print("Log DataUserRepositoryCache dataItemBatch: $a");
-    }
-
-    for (int i = 0; i < dataItem!.length; i++) {
-      final item = dataItem![i];
-      double qty = item.getqtyItem;
-      final allBatchItems = dataBatch!
-          .expand((batch) => batch.getitems_batch)
-          .where((element) => element.getidItem == item.getidItem);
-
-      for (final itemBatch in allBatchItems) {
-        qty += itemBatch.getqtyItem_in;
-      }
-      dataItem![i] = item.copyWith(qtyItem: qty);
     }
 
     return true;
@@ -98,9 +86,24 @@ class DataUserRepositoryCache {
   }
 
   List<ModelItem> getItem(String idBranch) {
-    return dataItem!
+    final dataItemFinal = dataItem!
         .where((element) => element.getidBranch == idBranch)
         .toList();
+
+    for (int i = 0; i < dataItemFinal.length; i++) {
+      final item = dataItemFinal[i];
+      double qty = item.getqtyItem;
+      final allBatchItems = dataBatch!
+          .expand((batch) => batch.getitems_batch)
+          .where((element) => element.getidItem == item.getidItem);
+
+      for (final itemBatch in allBatchItems) {
+        qty += itemBatch.getqtyItem_in - itemBatch.getqtyItem_out;
+      }
+      dataItemFinal[i] = item.copyWith(qtyItem: qty);
+    }
+    debugPrint("Log DataUserRepositoryCache: getItem: ${dataItemFinal}");
+    return dataItemFinal;
   }
 
   List<ModelCategory> getCategory(String idBranch) {

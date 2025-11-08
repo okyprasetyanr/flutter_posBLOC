@@ -9,8 +9,6 @@ class ModelPartner extends Equatable {
   final String _name;
   final String _phone;
   final String _email;
-  final String _address;
-  final String _notes;
   final double _balance;
   final PartnerType _type;
   final String _createdAt;
@@ -22,8 +20,6 @@ class ModelPartner extends Equatable {
     required String name,
     required String phone,
     required String email,
-    required String address,
-    required String notes,
     required double balance,
     required PartnerType type,
     required String createdAt,
@@ -32,8 +28,6 @@ class ModelPartner extends Equatable {
        _name = name,
        _phone = phone,
        _email = email,
-       _address = address,
-       _notes = notes,
        _createdAt = createdAt,
        _balance = balance,
        _type = type;
@@ -44,8 +38,6 @@ class ModelPartner extends Equatable {
   String get getname => _name;
   String get getphone => _phone;
   String get getemail => _email;
-  String get getaddress => _address;
-  String get getnotes => _notes;
   double get getbalance => _balance;
   String get getidBranch => _idBranch;
   PartnerType get gettype => _type;
@@ -58,7 +50,6 @@ class ModelPartner extends Equatable {
     String? name,
     String? phone,
     String? email,
-    String? address,
     String? notes,
     double? balance,
     PartnerType? type,
@@ -71,8 +62,6 @@ class ModelPartner extends Equatable {
       name: name ?? this._name,
       phone: phone ?? this._phone,
       email: email ?? this._email,
-      address: address ?? this._address,
-      notes: notes ?? this._notes,
       balance: balance ?? this._balance,
       type: type ?? this._type,
       createdAt: createdAt ?? this._createdAt,
@@ -86,8 +75,6 @@ class ModelPartner extends Equatable {
       name: map['name'] ?? '',
       phone: map['phone'] ?? '',
       email: map['email'],
-      address: map['address'],
-      notes: map['notes'],
       balance: (map['balance'] ?? 0).toDouble(),
       type: PartnerType.values.firstWhere(
         (e) => e.name == map['type'],
@@ -109,8 +96,6 @@ class ModelPartner extends Equatable {
               name: _name,
               phone: _phone,
               email: _email,
-              address: _address,
-              notes: _notes,
               balance: _balance,
               type: _type,
               createdAt: _createdAt,
@@ -128,8 +113,6 @@ class ModelPartner extends Equatable {
         name: dataPartner['name'],
         phone: dataPartner['phone'],
         email: dataPartner['email'],
-        address: dataPartner['address'],
-        notes: dataPartner['notes'],
         balance: (dataPartner['balance'] ?? 0).toDouble(),
         type: PartnerType.values.firstWhere(
           (e) => e.name == dataPartner['type'],
@@ -146,8 +129,6 @@ class ModelPartner extends Equatable {
     _name,
     _phone,
     _email,
-    _address,
-    _notes,
     _balance,
     _type,
     _createdAt,

@@ -82,7 +82,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                         SizedBox(
                           width: 18,
                           child: Text(
-                            formatQty(state),
+                            formatQtyOrPrice(state),
                             style: lv1TextStyle,
                             textAlign: TextAlign.center,
                           ),

@@ -17,6 +17,7 @@ import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/to
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/button_kategori.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/text_field_and_branch.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/top_page/list_view_kategori.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
@@ -136,7 +137,8 @@ class _UIInventoryState extends State<UIInventory> {
         if (state.dataSelectedItem != null) {
           namaItemController.text = state.dataSelectedItem!.getnameItem;
           kodeBarcodeController.text = state.dataSelectedItem!.getBarcode;
-          hargaItemController.text = "${state.dataSelectedItem!.getpriceItem}";
+          hargaItemController.text =
+              "${formatQtyOrPrice(state.dataSelectedItem!.getpriceItem)}";
 
           bloc.add(
             InvCondimentForm(
@@ -165,7 +167,8 @@ class _UIInventoryState extends State<UIInventory> {
     _resetItemForm();
     namaKategoriController.clear();
 
-    await context.read<DataUserRepositoryCache>().initData();
+    await context.read<DataUserRepositoryCache>().initItem();
+    await context.read<DataUserRepositoryCache>().initCategory();
 
     _initData();
     print("UI Inventory: initData");

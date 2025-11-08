@@ -52,6 +52,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         .getItem(idBranch)
         .where((element) => element.getStatusItem)
         .toList();
+    listItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
     List<ModelCategory> listKategori = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...repo.getCategory(idBranch),
@@ -123,6 +124,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           (element) => element.getidBranch == currentState.selectedIDBranch,
         ),
       );
+      if (currentState.isSell) {
+        list = list.where((element) => !element.getstatusCondiment).toList();
+      }
       String finalidkategori =
           idkategori ?? currentState.selectedCategory!.getidCategory;
       if (finalidkategori != "0") {

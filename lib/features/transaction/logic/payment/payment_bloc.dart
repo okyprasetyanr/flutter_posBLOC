@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
@@ -168,7 +169,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       debugPrint("Log PaymentBloc: cek SellState");
 
       debugPrint("Log PaymentBloc: cek Faktur");
-      final formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      final formattedDate = DateFormat(
+        'yyyy-MM-dd hh:mm:ss',
+      ).format(DateTime.now());
 
       List<ModelItemOrdered> itemOrdered = await List.from(
         sellState.itemOrdered ?? [],
@@ -276,22 +279,30 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  FutureOr<void> _onPaymentProcess(
+  Future<void> _onPaymentProcess(
     PaymentProcess event,
     Emitter<PaymentState> emit,
-  ) {
-    final sellState = event.context.read<TransactionBloc>();
-    if (sellState.state is TransactionLoaded) {
-      sellState.add(TransactionResetOrderedItem());
-      sellState.add(TransactionResetSelectedItem());
-    }
-
+  ) async {
     final currentState = state;
     if (currentState is PaymentLoaded) {
       final transaction = currentState.transaction_sell!.copyWith(
         statusTransaction: statusTransaction(index: event.index),
       );
-      transaction.pushDataTransaction(isSell: currentState.isSell);
+      await transaction.pushDataTransaction(
+        isSell: currentState.isSell,
+        dataBatch: event.context.read<DataUserRepositoryCache>().dataBatch!,
+      );
+    }
+
+    final sellState = event.context.read<TransactionBloc>();
+    if (sellState.state is TransactionLoaded) {
+      sellState.add(TransactionResetOrderedItem());
+      sellState.add(TransactionResetSelectedItem());
+      sellState.add(
+        TransactionGetData(
+          idBranch: (sellState.state as TransactionLoaded).selectedIDBranch,
+        ),
+      );
     }
   }
 }

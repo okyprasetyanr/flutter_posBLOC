@@ -7,12 +7,13 @@ import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/request/delete_data.dart';
 import 'package:intl/intl.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
-  final DataUserRepositoryCache repoCahce;
+  final DataUserRepositoryCache repoCache;
 
-  InventoryBloc(this.repoCahce) : super(InventoryInitial()) {
+  InventoryBloc(this.repoCache) : super(InventoryInitial()) {
     print("Log InventoryBloc: Masuk Bloc");
     on<InvGetData>(_onGetData);
 
@@ -34,6 +35,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<InvCondimentForm>(_onCondimentForm);
 
+    on<InvDeleteCategory>(_onDeleteCategory);
+    on<InvDeleteItem>(_onDeleteItem);
+
     on<InvSearchitem>(
       _onSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
@@ -44,11 +48,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     String status,
     String filter,
     String filterjenis,
-    String filterIDKategori,
-  ) {
+    String filterIDKategori, {
+    List<ModelItem>? items,
+  }) {
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      List<ModelItem> item = List.from(currentState.dataItem);
+      List<ModelItem> item = items ?? List.from(currentState.dataItem);
       List<ModelItem> list = item.where((element) {
         final isActive = element.getStatusItem;
         if (status == "Active") return isActive;
@@ -142,12 +147,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     try {
       if (event.idBranch == null) {
-        final cabangs = repoCahce.getBranch();
+        final cabangs = repoCache.getBranch();
 
         final firstCabang = cabangs.first;
-        final items = repoCahce.getItem(firstCabang.getidBranch);
+        final items = repoCache.getItem(firstCabang.getidBranch);
         debugPrint("Log InventoryBloc: items: $items");
-        final kategori = repoCahce.getCategory(firstCabang.getidBranch);
+        final kategori = repoCache.getCategory(firstCabang.getidBranch);
         kategori.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
         emit(
           InventoryLoaded(
@@ -173,8 +178,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         );
 
         if (!checkDataItem) {
-          final newItems = repoCahce.getItem(event.idBranch!);
-          final newKategori = repoCahce.getCategory(event.idBranch!);
+          final newItems = repoCache.getItem(event.idBranch!);
+          final newKategori = repoCache.getCategory(event.idBranch!);
           if (newItems.isNotEmpty) {
             loadedItem.addAll(newItems);
           }
@@ -220,45 +225,68 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     Emitter<InventoryState> emit,
   ) async {
     add(InvResetItemForm());
-    event.item.pushDataItem();
+    await event.item.pushDataItem();
+    final currentState = state;
+    if (currentState is InventoryLoaded) {
+      final edit = repoCache.dataItem!.any(
+        (element) => element.getidItem == event.item.getidItem,
+      );
 
-    print("InvBloc UploadItem: ${event.item}");
+      if (edit) {
+        final indexCategory = repoCache.dataItem!.indexWhere(
+          (element) => element.getidItem == event.item.getidItem,
+        );
 
-    final item = repoCahce.getItem(event.item.getidBranch);
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
-    await repoCahce.initItem();
+        repoCache.dataItem![indexCategory] = event.item;
+      } else {
+        repoCache.dataItem!.add(event.item);
+      }
 
-    final newState = currentState.copyWith(
-      dataSelectedItem: null,
-      condimentForm: false,
-      dataItem: item,
-      filteredDataItem: _filterItem(
-        currentState.selectedStatusItem!,
-        currentState.selectedFilterItem!,
-        currentState.selectedFilterJenisItem!,
-        currentState.selectedFilterIDKategoriItem!,
-      ),
-    );
+      final item = repoCache.getItem(event.item.getidBranch);
+      item.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
 
-    emit(newState);
+      emit(
+        currentState.copyWith(
+          dataSelectedItem: null,
+          condimentForm: false,
+          dataItem: item,
+          filteredDataItem: _filterItem(
+            items: item,
+            currentState.selectedStatusItem!,
+            currentState.selectedFilterItem!,
+            currentState.selectedFilterJenisItem!,
+            currentState.selectedFilterIDKategoriItem!,
+          ),
+        ),
+      );
+    }
   }
 
   FutureOr<void> _onUploadKategori(
     InvUploadCategory event,
     Emitter<InventoryState> emit,
   ) async {
-    event.category.pushDataCategory();
+    await event.category.pushDataCategory();
     add(InvResetCategoryForm());
-    final category = repoCahce.getCategory(event.category.getidBranch);
-    category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
+    final currentState = state;
+    if (currentState is InventoryLoaded) {
+      final edit = currentState.dataKategori.any(
+        (element) => element.getidCategory == event.category.getidCategory,
+      );
+      if (edit) {
+        final indexCategory = repoCache.dataCategory!.indexWhere(
+          (element) => element.getidCategory == event.category.getidCategory,
+        );
 
-    final newState = currentState.copyWith(dataKategori: category);
-    emit(newState);
+        repoCache.dataCategory![indexCategory] = event.category;
+      } else {
+        repoCache.dataCategory!.add(event.category);
+      }
+      final category = repoCache.getCategory(event.category.getidBranch);
+      category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
+
+      emit(currentState.copyWith(dataKategori: category));
+    }
   }
 
   FutureOr<void> _onResetKategoriForm(
@@ -364,5 +392,46 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         : InventoryLoaded();
     print("Log InventoryBloc CondimentForm: ${event.condimentForm}");
     emit(currentState.copyWith(condimentForm: event.condimentForm));
+  }
+
+  Future<void> _onDeleteCategory(
+    InvDeleteCategory event,
+    Emitter<InventoryState> emit,
+  ) async {
+    await deleteDataCategory(event.id);
+    repoCache.dataCategory!.removeWhere(
+      (element) => element.getidCategory == event.id,
+    );
+    final currentState = state;
+    if (currentState is InventoryLoaded) {
+      final dataCategory = await repoCache.getCategory(
+        currentState.selectedIdBranch!,
+      );
+      dataCategory.sort(
+        (a, b) => a.getnameCategory.compareTo(b.getnameCategory),
+      );
+
+      emit(currentState.copyWith(dataKategori: dataCategory));
+    }
+  }
+
+  Future<void> _onDeleteItem(
+    InvDeleteItem event,
+    Emitter<InventoryState> emit,
+  ) async {
+    await deleteDataCategory(event.id);
+    repoCache.dataItem!.removeWhere((element) => element.getidItem == event.id);
+    final currentState = state;
+    if (currentState is InventoryLoaded) {
+      add(
+        InvGetData(
+          filter: currentState.selectedFilterItem!,
+          status: currentState.selectedStatusItem!,
+          idBranch: currentState.selectedIdBranch!,
+          filterjenis: currentState.selectedFilterJenisItem!,
+          filterIDKategori: currentState.selectedFilterIDKategoriItem!,
+        ),
+      );
+    }
   }
 }

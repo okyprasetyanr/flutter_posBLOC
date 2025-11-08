@@ -94,7 +94,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
                               child: Text(
-                                formatQty(items[index].getqtyItem),
+                                formatQtyOrPrice(items[index].getqtyItem),
                                 style: lv0TextStyleRED,
                                 textAlign: TextAlign.left,
                               ),

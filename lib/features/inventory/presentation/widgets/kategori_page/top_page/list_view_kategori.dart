@@ -27,14 +27,15 @@ class ListViewKategori extends StatelessWidget {
             child: const SpinKitThreeBounce(color: Colors.blue, size: 15.0),
           );
         }
-        final dataKategori = state.$1!
+        final dataCategory = state.$1!
             .where((data) => data.getidBranch == state.$2)
             .toList();
         return Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: ListView.builder(
-            itemCount: dataKategori.length,
+            itemCount: dataCategory.length,
             itemBuilder: (context, index) {
+              final category = dataCategory[index];
               return ShaderMask(
                 shaderCallback: (bounds) {
                   return LinearGradient(
@@ -57,22 +58,67 @@ class ListViewKategori extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       context.read<InventoryBloc>().add(
-                        InvSelectedKategori(
-                          selectedKategori: dataKategori[index],
-                        ),
+                        InvSelectedKategori(selectedKategori: category),
                       );
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 5,
-                        right: 5,
-                        top: 10,
-                        bottom: 10,
+                    child: Dismissible(
+                      key: Key(category.getidCategory),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        padding: EdgeInsets.only(right: 10),
+                        color: Colors.redAccent,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(Icons.delete, color: Colors.white),
+                        ),
                       ),
+                      confirmDismiss: (direction) async {
+                        final result = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Konfirmasi", style: lv2TextStyle),
+                            content: Text(
+                              "Hapus Kategori ${category.getnameCategory}?",
+                              style: lv1TextStyle,
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text("Batal", style: lv1TextStyle),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context.read<InventoryBloc>().add(
+                                    InvDeleteCategory(
+                                      id: category.getidCategory,
+                                    ),
+                                  );
+                                  Navigator.pop(context, true);
+                                },
+                                child: Text("Hapus", style: lv1TextStyle),
+                              ),
+                            ],
+                          ),
+                        );
 
-                      child: Text(
-                        dataKategori[index].getnameCategory,
-                        style: lv1TextStyle,
+                        if (result == true) {
+                          return true;
+                        }
+
+                        return false;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 5,
+                          right: 5,
+                          top: 10,
+                          bottom: 10,
+                        ),
+
+                        child: Text(
+                          category.getnameCategory,
+                          style: lv1TextStyle,
+                        ),
                       ),
                     ),
                   ),

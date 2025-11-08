@@ -25,6 +25,13 @@ class PartnerStatusPartner extends PartnerEvent {}
 
 class PartnerResetSelectedPartner extends PartnerEvent {}
 
+class PartnerDeletePartner extends PartnerEvent {
+  final String id;
+  final PartnerType type;
+
+  PartnerDeletePartner({required this.type, required this.id});
+}
+
 class PartnerSelectedBranch extends PartnerEvent {
   String selectedIdBranch;
 

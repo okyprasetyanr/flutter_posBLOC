@@ -9,23 +9,19 @@ import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
-List<Map<String, dynamic>> convertToMapSplit(List<ModelSplit> _dataSplit) {
-  return _dataSplit.map((dataSplit) {
-    return {
-      'payment_debit_name': dataSplit.getpaymentDebitName,
-      'payment_name': dataSplit.getpaymentName,
-      'payment_total': dataSplit.getpaymentTotal,
-    };
-  }).toList();
+Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
+  return {
+    'payment_debit_name': _dataSplit.getpaymentDebitName,
+    'payment_name': _dataSplit.getpaymentName,
+    'payment_total': _dataSplit.getpaymentTotal,
+  };
 }
 
 Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   return {
     'id_branch': transaction.getidBranch,
     'uid_user': UserSession.getUidUser(),
-    'items_ordered': convertToMapItemOrdered(transaction.getitemsOrdered),
     'bank_name': transaction.getbankName ?? "",
-    'data_split': convertToMapSplit(transaction.getdataSplit),
     'bill_paid': transaction.getbillPaid,
     'note': transaction.getnote,
     'total_charge': transaction.gettotalCharge,
@@ -48,26 +44,22 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   };
 }
 
-List<Map<String, dynamic>> convertToMapItemOrdered(
-  List<ModelItemOrdered> _itemsOrdered,
-) {
-  return _itemsOrdered.map((item) {
-    return {
-      'sub_total': item.getsubTotal,
-      'name_item': item.getnameItem,
-      'id_item': item.getidItem,
-      'id_branch': item.getidBranch,
-      'id_ordered': item.getidOrdered,
-      'qty_item': item.getqtyItem,
-      'price_item': item.getpriceItem,
-      'price_item_final': item.getpriceItemFinal,
-      'discount_item': item.getdiscountItem,
-      'id_category_item': item.getidCategoryItem,
-      'id_condiment': item.getidCondiment,
-      'note': item.getNote,
-      'condiment': convertToMapCondimentOrdered(item.getCondiment),
-    };
-  }).toList();
+Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
+  return {
+    'sub_total': _itemsOrdered.getsubTotal,
+    'name_item': _itemsOrdered.getnameItem,
+    'id_item': _itemsOrdered.getidItem,
+    'id_branch': _itemsOrdered.getidBranch,
+    'id_ordered': _itemsOrdered.getidOrdered,
+    'qty_item': _itemsOrdered.getqtyItem,
+    'price_item': _itemsOrdered.getpriceItem,
+    'price_item_final': _itemsOrdered.getpriceItemFinal,
+    'discount_item': _itemsOrdered.getdiscountItem,
+    'id_category_item': _itemsOrdered.getidCategoryItem,
+    'id_condiment': _itemsOrdered.getidCondiment,
+    'note': _itemsOrdered.getNote,
+    'condiment': convertToMapCondimentOrdered(_itemsOrdered.getCondiment),
+  };
 }
 
 List<Map<String, dynamic>> convertToMapCondimentOrdered(
@@ -115,38 +107,30 @@ Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
     'invoice': batch.getinvoice,
     'id_branch': batch.getidBranch,
     'date_buy': batch.getdate_buy,
-    'items_batch': convertToMapItemBatch(
-      batch.getitems_batch,
-      batch.getinvoice,
-    ),
   };
 }
 
-List<Map<String, dynamic>> convertToMapItemBatch(
-  List<ModelItemBatch> itemBatch,
+Map<String, dynamic> convertToMapItemBatch(
+  ModelItemBatch itemBatch,
   String invoice,
 ) {
-  return itemBatch
-      .map(
-        (item) => {
-          'invoice': invoice,
-          'name_item': item.getnameItem,
-          'id_branch': item.getidBranch,
-          'id_item': item.getidItem,
-          'id_ordered': item.getidOrdered,
-          'id_category_item': item.getidCategoryItem,
-          'note': item.getnote,
-          'date_buy': item.getdateBuy,
-          'expired_date': item.getexpiredDate,
-          'discount_item': item.getdiscountItem,
-          'qty_item_in': item.getqtyItem_in,
-          'qty_item_out': item.getqtyItem_out,
-          'price_item': item.getpriceItem,
-          'sub_total': item.getsubTotal,
-          'price_item_final': item.getpriceItemFinal,
-        },
-      )
-      .toList();
+  return {
+    'invoice': invoice,
+    'name_item': itemBatch.getnameItem,
+    'id_branch': itemBatch.getidBranch,
+    'id_item': itemBatch.getidItem,
+    'id_ordered': itemBatch.getidOrdered,
+    'id_category_item': itemBatch.getidCategoryItem,
+    'note': itemBatch.getnote,
+    'date_buy': itemBatch.getdateBuy,
+    'expired_date': itemBatch.getexpiredDate,
+    'discount_item': itemBatch.getdiscountItem,
+    'qty_item_in': itemBatch.getqtyItem_in,
+    'qty_item_out': itemBatch.getqtyItem_out,
+    'price_item': itemBatch.getpriceItem,
+    'sub_total': itemBatch.getsubTotal,
+    'price_item_final': itemBatch.getpriceItemFinal,
+  };
 }
 
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
@@ -157,8 +141,6 @@ Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
     'name': partner.getname,
     'phone': partner.getphone,
     'email': partner.getemail,
-    'address': partner.getaddress,
-    'notes': partner.getnotes,
     'balance': partner.getbalance,
     'type': partner.gettype.name,
     'createdAt': partner.getcreatedAt,

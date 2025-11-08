@@ -58,7 +58,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
           return SizedBox.shrink();
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            payDebitController.text = formatQty(
+            payDebitController.text = formatQtyOrPrice(
               state.$2
                       ?.firstWhereOrNull(
                         (element) => element.getpaymentName == "Debit",

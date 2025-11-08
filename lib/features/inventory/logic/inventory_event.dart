@@ -78,3 +78,15 @@ class InvCondimentForm extends InventoryEvent {
 
   InvCondimentForm({required this.condimentForm});
 }
+
+class InvDeleteCategory extends InventoryEvent {
+  final String id;
+
+  InvDeleteCategory({required this.id});
+}
+
+class InvDeleteItem extends InventoryEvent {
+  final String id;
+
+  InvDeleteItem({required this.id});
+}

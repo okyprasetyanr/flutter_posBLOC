@@ -176,7 +176,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                       SizedBox(
                                         width: 20,
                                         child: Text(
-                                          "${formatQty(qtyitem)}",
+                                          "${formatQtyOrPrice(qtyitem)}",
                                           style: lv1TextStyle,
                                           textAlign: TextAlign.center,
                                         ),

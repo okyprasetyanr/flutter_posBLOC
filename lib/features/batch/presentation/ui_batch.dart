@@ -120,7 +120,9 @@ class _UiBatchState extends State<UiBatch> {
                                           right: 5,
                                         ),
                                         child: Text(
-                                          formatQty(state[index].getqtyItem),
+                                          formatQtyOrPrice(
+                                            state[index].getqtyItem,
+                                          ),
                                           style: lv0TextStyleRED,
                                           textAlign: TextAlign.left,
                                         ),
@@ -140,15 +142,19 @@ class _UiBatchState extends State<UiBatch> {
                                 Text("Nota: ${itemById[index].getinvoice}"),
                                 rowContent(
                                   "Stock Masuk",
-                                  formatQty(itemById[index].getqtyItem_in),
+                                  formatQtyOrPrice(
+                                    itemById[index].getqtyItem_in,
+                                  ),
                                 ),
                                 rowContent(
                                   "Stock Keluar",
-                                  formatQty(itemById[index].getqtyItem_out),
+                                  formatQtyOrPrice(
+                                    itemById[index].getqtyItem_out,
+                                  ),
                                 ),
                                 rowContent(
                                   "Stock Sisa",
-                                  formatQty(
+                                  formatQtyOrPrice(
                                     itemById[index].getqtyItem_in -
                                         itemById[index].getqtyItem_out,
                                   ),
@@ -191,11 +197,19 @@ class _UiBatchState extends State<UiBatch> {
                 children: [
                   Image.asset("assets/logo.png", height: 100),
                   rowContent("Nama Item", state.getnameItem),
-                  rowContent("Stock Masuk", formatQty(state.getqtyItem_in)),
-                  rowContent("Stock Keluar", formatQty(state.getqtyItem_out)),
+                  rowContent(
+                    "Stock Masuk",
+                    formatQtyOrPrice(state.getqtyItem_in),
+                  ),
+                  rowContent(
+                    "Stock Keluar",
+                    formatQtyOrPrice(state.getqtyItem_out),
+                  ),
                   rowContent(
                     "Stock Sisa",
-                    formatQty(state.getqtyItem_in - state.getqtyItem_out),
+                    formatQtyOrPrice(
+                      state.getqtyItem_in - state.getqtyItem_out,
+                    ),
                   ),
                   rowContent("Batch Terbaru", state.getdateBuy),
                 ],

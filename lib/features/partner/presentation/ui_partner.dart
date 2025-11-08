@@ -24,6 +24,8 @@ class UIPartner extends StatefulWidget {
 
 class _UIPartnerState extends State<UIPartner> {
   final namePartnerController = TextEditingController();
+  final phonePartnerController = TextEditingController();
+  final emailPartnerController = TextEditingController();
 
   @override
   void initState() {
@@ -34,6 +36,8 @@ class _UIPartnerState extends State<UIPartner> {
   @override
   void dispose() {
     namePartnerController.dispose();
+    emailPartnerController.dispose();
+    phonePartnerController.dispose();
     super.dispose();
   }
 
@@ -57,58 +61,61 @@ class _UIPartnerState extends State<UIPartner> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: GestureDetector(
-            onTap: () {
-              context.read<PartnerBloc>().add(PartnerStatusPartner());
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
-              width: 130,
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
-              height: 40,
-              child: BlocSelector<PartnerBloc, PartnerState, bool>(
-                selector: (state) {
-                  if (state is PartnerLoaded) {
-                    return state.isCustomer;
-                  }
-                  return true;
-                },
-                builder: (context, state) {
-                  return Stack(
-                    children: [
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        left: state ? 0 : -200,
-                        duration: const Duration(milliseconds: 500),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.swap_horiz_rounded, size: 25),
-                            Text("Pelanggan", style: titleTextStyle),
-                          ],
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        curve: Curves.easeInOut,
-                        left: state ? 300 : 15,
-                        duration: const Duration(milliseconds: 500),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Data Kontak", style: titleTextStyle),
+            GestureDetector(
+              onTap: () {
+                context.read<PartnerBloc>().add(PartnerStatusPartner());
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                width: 130,
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                height: 40,
+                child: BlocSelector<PartnerBloc, PartnerState, bool>(
+                  selector: (state) {
+                    if (state is PartnerLoaded) {
+                      return state.isCustomer;
+                    }
+                    return true;
+                  },
+                  builder: (context, state) {
+                    return Stack(
+                      children: [
+                        AnimatedPositioned(
+                          curve: Curves.easeInOut,
+                          left: state ? 0 : -200,
+                          duration: const Duration(milliseconds: 500),
                           child: Row(
                             children: [
                               const Icon(Icons.swap_horiz_rounded, size: 25),
-                              Text("Pemasok", style: titleTextStyle),
+                              Text("Pelanggan", style: titleTextStyle),
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
+                        AnimatedPositioned(
+                          curve: Curves.easeInOut,
+                          left: state ? 300 : 15,
+                          duration: const Duration(milliseconds: 500),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                const Icon(Icons.swap_horiz_rounded, size: 25),
+                                Text("Pemasok", style: titleTextStyle),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
-          ),
+          ],
         ),
         Container(
           padding: const EdgeInsets.only(left: 10),
@@ -134,7 +141,19 @@ class _UIPartnerState extends State<UIPartner> {
                           );
                         }
                         return DropdownButtonFormField<ModelBranch>(
-                          style: lv1TextStyle,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 4,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            label: Text("Pilih Cabang", style: lv1TextStyle),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          style: lv05TextStyle,
                           initialValue: state.$1.firstWhere(
                             (data) => data.getidBranch == state.$2,
                           ),
@@ -182,7 +201,7 @@ class _UIPartnerState extends State<UIPartner> {
                             padding: const EdgeInsets.all(10),
                             child: Text(
                               "Data masih Kosong",
-                              style: lv1TextStyle,
+                              style: lv05TextStyle,
                             ),
                           );
                         }
@@ -194,6 +213,7 @@ class _UIPartnerState extends State<UIPartner> {
                           child: ListView.builder(
                             itemCount: dataPartner.length,
                             itemBuilder: (context, index) {
+                              final partner = dataPartner[index];
                               return ShaderMask(
                                 shaderCallback: (bounds) {
                                   return LinearGradient(
@@ -222,21 +242,86 @@ class _UIPartnerState extends State<UIPartner> {
                                     onTap: () {
                                       context.read<PartnerBloc>().add(
                                         PartnerSelectedCustomer(
-                                          selectedPartner: dataPartner[index],
+                                          selectedPartner: partner,
                                         ),
                                       );
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 5,
-                                        right: 5,
-                                        top: 10,
-                                        bottom: 10,
+                                    child: Dismissible(
+                                      key: Key(partner.getid),
+                                      direction: DismissDirection.endToStart,
+                                      background: Container(
+                                        padding: EdgeInsets.only(right: 10),
+                                        color: Colors.redAccent,
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
+                                      confirmDismiss: (direction) async {
+                                        final result = await showDialog<bool>(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Text(
+                                              "Konfirmasi",
+                                              style: lv2TextStyle,
+                                            ),
+                                            content: Text(
+                                              "Hapus Kontak ${partner.getname}?",
+                                              style: lv1TextStyle,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                  context,
+                                                  false,
+                                                ),
+                                                child: Text(
+                                                  "Batal",
+                                                  style: lv1TextStyle,
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  context
+                                                      .read<PartnerBloc>()
+                                                      .add(
+                                                        PartnerDeletePartner(
+                                                          type: partner.gettype,
+                                                          id: partner.getid,
+                                                        ),
+                                                      );
+                                                  Navigator.pop(context, true);
+                                                },
+                                                child: Text(
+                                                  "Hapus",
+                                                  style: lv1TextStyle,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
 
-                                      child: Text(
-                                        "${dataPartner[index].getname}, ${dataPartner[index].getphone}",
-                                        style: lv1TextStyle,
+                                        if (result == true) {
+                                          return true;
+                                        }
+
+                                        return false;
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 5,
+                                          right: 5,
+                                          top: 10,
+                                          bottom: 10,
+                                        ),
+
+                                        child: Text(
+                                          "${partner.getname}, ${partner.getphone}",
+                                          style: lv05TextStyle,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -257,60 +342,91 @@ class _UIPartnerState extends State<UIPartner> {
   Widget layoutBottom() {
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: BlocListener<PartnerBloc, PartnerState>(
-                listenWhen: (previous, current) =>
-                    previous is PartnerLoaded &&
-                    current is PartnerLoaded &&
-                    previous.selectedPartner != current.selectedPartner,
-                listener: (context, state) {
-                  if (state is PartnerLoaded && state.selectedPartner != null) {
-                    namePartnerController.text = state.selectedPartner!.getname;
-                  }
-                },
-                child: BlocSelector<PartnerBloc, PartnerState, bool>(
-                  selector: (state) {
-                    if (state is PartnerLoaded) {
-                      return state.isCustomer;
-                    }
-                    return true;
-                  },
-                  builder: (context, state) {
-                    return customTextField(
-                      "Nama Kontak",
-                      namePartnerController,
-                      true,
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 1,
-              child: BlocSelector<PartnerBloc, PartnerState, String?>(
-                selector: (state) => state is PartnerLoaded
-                    ? state.dataBranch
-                          ?.firstWhere(
-                            (element) =>
-                                element.getidBranch == state.selectedIdBranch,
-                          )
-                          .getareaBranch
-                    : null,
-                builder: (context, state) {
-                  return customTextField(
-                    "Cabang",
-                    TextEditingController(text: state ?? ""),
-                    false,
-                  );
-                },
-              ),
-            ),
-          ],
+        BlocListener<PartnerBloc, PartnerState>(
+          listenWhen: (previous, current) =>
+              previous is PartnerLoaded &&
+              current is PartnerLoaded &&
+              previous.selectedPartner != current.selectedPartner,
+          listener: (context, state) {
+            if (state is PartnerLoaded && state.selectedPartner != null) {
+              namePartnerController.text = state.selectedPartner!.getname;
+              phonePartnerController.text = state.selectedPartner!.getphone;
+              emailPartnerController.text =
+                  state.selectedPartner?.getphone ?? "";
+            }
+          },
+          child: BlocSelector<PartnerBloc, PartnerState, bool>(
+            selector: (state) {
+              if (state is PartnerLoaded) {
+                return state.isCustomer;
+              }
+              return true;
+            },
+            builder: (context, state) {
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: customTextField(
+                          "Nama Kontak",
+                          namePartnerController,
+                          true,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 1,
+                        child: BlocSelector<PartnerBloc, PartnerState, String?>(
+                          selector: (state) => state is PartnerLoaded
+                              ? state.dataBranch
+                                    ?.firstWhere(
+                                      (element) =>
+                                          element.getidBranch ==
+                                          state.selectedIdBranch,
+                                    )
+                                    .getareaBranch
+                              : null,
+                          builder: (context, state) {
+                            return customTextField(
+                              "Cabang",
+                              TextEditingController(text: state ?? ""),
+                              false,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: customTextField(
+                          "Nomor Kontak",
+                          phonePartnerController,
+                          true,
+                          inputType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: customTextField(
+                          "E-mail",
+                          emailPartnerController,
+                          true,
+                          inputType: TextInputType.emailAddress,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
         ),
+
         const SizedBox(height: 10),
         Align(
           alignment: AlignmentGeometry.centerRight,
@@ -327,8 +443,6 @@ class _UIPartnerState extends State<UIPartner> {
                 name: namePartnerController.text,
                 phone: "",
                 email: "",
-                address: "",
-                notes: "",
                 balance: 0,
                 type: bloc is PartnerLoaded
                     ? bloc.isCustomer

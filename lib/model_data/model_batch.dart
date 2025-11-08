@@ -23,12 +23,12 @@ class ModelBatch extends Equatable {
   String get getdate_buy => _dateBuy;
   List<ModelItemBatch> get getitems_batch => _itemsBatch;
 
-  ModelBatch copyWith(
+  ModelBatch copyWith({
     String? invoice,
     String? idBranch,
     String? date_buy,
     List<ModelItemBatch>? items_batch,
-  ) {
+  }) {
     return ModelBatch(
       invoice: invoice ?? _invoice,
       idBranch: idBranch ?? _idBranch,
@@ -37,21 +37,51 @@ class ModelBatch extends Equatable {
     );
   }
 
-  static List<ModelBatch> getDataListBatch(QuerySnapshot data) {
-    return data.docs.map((map) {
-      final dataBatch = map.data() as Map<String, dynamic>;
-      return ModelBatch(
-        invoice: dataBatch['invoice'],
-        idBranch: dataBatch['id_branch'],
-        date_buy: dataBatch['date_buy'],
-        items_batch: ModelItemBatch.fromMapItemsBatch(
-          List<Map<String, dynamic>>.from(dataBatch['items_batch']),
-        ),
-      );
-    }).toList();
+  static Future<List<ModelBatch>> getDataListBatch(QuerySnapshot data) async {
+    final firestore = FirebaseFirestore.instance;
+
+    return await Future.wait(
+      data.docs.map((map) async {
+        final dataBatch = map.data() as Map<String, dynamic>;
+
+        final itemsSnapshot = await firestore
+            .collection('batch')
+            .doc(map.id)
+            .collection('items_batch')
+            .get();
+
+        final itemsBatch = itemsSnapshot.docs.map((itemDoc) {
+          final itemData = itemDoc.data();
+
+          return ModelItemBatch(
+            invoice: itemData['invoice'],
+            idBranch: itemData['id_branch'],
+            idItem: itemData['id_item'],
+            idOrdered: itemData['id_ordered'],
+            nameItem: itemData['name_item'],
+            idCategoryItem: itemData['id_category_item'],
+            note: itemData['note'],
+            date_buy: itemData['date_buy'],
+            expiredDate: itemData['expired_date'],
+            discountItem: itemData['discount_item'],
+            qtyItem_in: itemData['qty_item_in'],
+            qtyItem_out: itemData['qty_item_out'],
+            priceItem: itemData['price_item'],
+            subTotal: itemData['sub_total'],
+            priceItemFinal: itemData['price_item_final'],
+          );
+        }).toList();
+
+        return ModelBatch(
+          invoice: dataBatch['invoice'],
+          idBranch: dataBatch['id_branch'],
+          date_buy: dataBatch['date_buy'],
+          items_batch: itemsBatch,
+        );
+      }).toList(),
+    );
   }
 
   @override
   List<Object?> get props => [_invoice, _idBranch, _dateBuy, _itemsBatch];
 }
-

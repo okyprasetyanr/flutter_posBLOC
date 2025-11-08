@@ -107,11 +107,16 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(
-                                                      "${formatQty(item.getqtyItem)}x ${item.getnameItem}",
-                                                      style:
-                                                          lv05TextStyleOrderedItem,
+                                                    Expanded(
+                                                      child: Text(
+                                                        "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem}",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            lv05TextStyleOrderedItem,
+                                                      ),
                                                     ),
+
                                                     Row(
                                                       children: [
                                                         Text(
@@ -155,7 +160,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                                 .spaceBetween,
                                                         children: [
                                                           Text(
-                                                            "${formatQty(condiment.getqtyItem)}x ${condiment.getnameItem}",
+                                                            "${formatQtyOrPrice(condiment.getqtyItem)}x ${condiment.getnameItem}",
                                                             style:
                                                                 lv05TextStyle,
                                                           ),
@@ -202,6 +207,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
         Row(
           children: [
             Expanded(
+              flex: 3,
               child: ElevatedButton.icon(
                 onPressed: () {
                   customBottomSheet(context, () {}, (scrollController) {
@@ -305,14 +311,13 @@ class TransactionListViewOrderedItem extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: ElevatedButton.icon(
+              flex: 2,
+              child: ElevatedButton(
                 onPressed: () {
                   context.read<TransactionBloc>().add(
                     TransactionResetOrderedItem(),
                   );
                 },
-                label: Text("Hapus", style: lv0TextStyleRED),
-                icon: Icon(Icons.delete, color: Colors.red),
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(Colors.white),
                   shape: WidgetStatePropertyAll(
@@ -321,11 +326,13 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                     ),
                   ),
                 ),
+                child: Icon(Icons.delete, color: Colors.red),
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: ElevatedButton.icon(
+              flex: 2,
+              child: ElevatedButton(
                 onPressed: () {
                   final bloc = context.read<TransactionBloc>();
                   if (bloc.state is TransactionLoaded &&
@@ -335,8 +342,6 @@ class TransactionListViewOrderedItem extends StatelessWidget {
 
                   navUpDownTransition(context, '/sellpayment', false);
                 },
-                label: Text("Bayar", style: lv1TextStyleWhite),
-                icon: Icon(Icons.attach_money_rounded, color: Colors.white),
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(AppColor.primary),
                   shape: WidgetStatePropertyAll(
@@ -345,6 +350,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                     ),
                   ),
                 ),
+                child: Icon(Icons.attach_money_rounded, color: Colors.white),
               ),
             ),
           ],

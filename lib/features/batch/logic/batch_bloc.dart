@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/batch/logic/batch_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class BatchBloc extends Bloc<BatchEvent, BatchState> {

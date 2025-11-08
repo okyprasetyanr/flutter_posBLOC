@@ -4,9 +4,11 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 Widget customTextField(
   String text,
   TextEditingController controller,
-  bool enable,
-) {
+  bool enable, {
+  TextInputType? inputType,
+}) {
   return TextFormField(
+    keyboardType: inputType ?? TextInputType.text,
     enabled: enable,
     controller: controller,
     style: lv05TextStyle,

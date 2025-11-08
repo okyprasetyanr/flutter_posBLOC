@@ -96,9 +96,9 @@ class UIPaymentCashPayment extends StatelessWidget {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (!split) {
                       selectedAmount.value = state.$2!;
-                      payController.text = formatQty(state.$2!);
+                      payController.text = formatQtyOrPrice(state.$2!);
                     } else {
-                      payController.text = formatQty(
+                      payController.text = formatQtyOrPrice(
                         state.$3
                                 ?.firstWhereOrNull(
                                   (element) => element.getpaymentName == "Cash",

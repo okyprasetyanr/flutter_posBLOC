@@ -5,7 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
 String formatUang(double nominal) {
-  final nominalfinal = "${formatQty(nominal)}"
+  final nominalfinal = "${formatQtyOrPrice(nominal)}"
       .replaceAll("R", "")
       .replaceAll(".", "")
       .replaceAll(",", "")
@@ -19,7 +19,7 @@ String formatUang(double nominal) {
   return format.format(convertnominal);
 }
 
-String formatQty(double qty) {
+String formatQtyOrPrice(double qty) {
   final format = NumberFormat("##.##");
   return format.format(qty);
 }

@@ -39,7 +39,20 @@ class UIInventoryButtonItem extends StatelessWidget {
         children: [
           Expanded(
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                final bloc = context.read<InventoryBloc>();
+                String? idItem;
+                if (bloc.state is InventoryLoaded) {
+                  idItem = (bloc.state as InventoryLoaded)
+                      .dataSelectedItem
+                      ?.getidItem;
+                }
+                if (idItem != null) {
+                  bloc.add(InvDeleteItem(id: idItem));
+                } else {
+                  customSnackBar(context, "Pilih item terlebih dahulu!");
+                }
+              },
               label: Text("Hapus", style: lv0TextStyleRED),
               icon: Icon(Icons.delete, color: Colors.white),
               style: ButtonStyle(

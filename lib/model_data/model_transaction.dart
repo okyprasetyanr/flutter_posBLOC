@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
@@ -153,7 +152,10 @@ class ModelTransaction extends Equatable {
     );
   }
 
-  Future<void> pushDataTransaction({required bool isSell}) async {
+  Future<void> pushDataTransaction({
+    required bool isSell,
+    required List<ModelBatch> dataBatch,
+  }) async {
     if (!isSell) {
       List<ModelItemBatch> convertToItemBatch = [];
       for (final itemordered in _itemsOrdered) {
@@ -179,54 +181,100 @@ class ModelTransaction extends Equatable {
         );
       }
 
-      await FirebaseFirestore.instance
+      final newBatch = ModelBatch(
+        invoice: _invoice,
+        idBranch: _idBranch,
+        date_buy: _date,
+        items_batch: convertToItemBatch,
+      );
+
+      final batchRef = FirebaseFirestore.instance
           .collection("batch")
-          .doc(_invoice)
-          .set(
-            convertToMapBatch(
-              ModelBatch(
-                invoice: _invoice,
-                idBranch: _idBranch,
-                date_buy: _date,
-                items_batch: convertToItemBatch,
-              ),
-            ),
-          );
+          .doc(_invoice);
+
+      await batchRef.set(convertToMapBatch(newBatch));
+
+      final itemsRef = batchRef.collection("items_batch");
+      final writeBatch = FirebaseFirestore.instance.batch();
+
+      for (final itemBatch in convertToItemBatch) {
+        final itemDoc = itemsRef.doc(itemBatch.getidOrdered);
+        writeBatch.set(itemDoc, convertToMapItemBatch(itemBatch, _invoice));
+      }
+
+      await writeBatch.commit();
+
+      dataBatch.add(newBatch);
+
+      print("cek aja datanya ${newBatch}");
+    } else {
+      reduceQtyFIFO(dataBatch: dataBatch);
     }
 
-    await FirebaseFirestore.instance
+    final transRef = FirebaseFirestore.instance
         .collection(isSell ? "transaction_sell" : "transaction_buy")
-        .doc(_invoice)
-        .set(
-          convertToMapTransaction(
-            ModelTransaction(
-              idBranch: _idBranch,
-              itemsOrdered: _itemsOrdered,
-              dataSplit: _dataSplit,
-              date: _date,
-              note: _note,
-              invoice: _invoice,
-              namePartner: _namePartner,
-              idPartner: _idPartner,
-              nameOperator: _nameOperator,
-              idOperator: _idOperator,
-              paymentMethod: _paymentMethod,
-              discount: _discount,
-              ppn: _ppn,
-              totalItem: _totalItem,
-              charge: _charge,
-              subTotal: _subTotal,
-              billPaid: _billPaid,
-              totalCharge: _totalCharge,
-              totalPpn: _totalPpn,
-              totalDiscount: _totalDiscount,
-              total: _total,
-            ),
-          ),
+        .doc(_invoice);
+    final writeBatch = FirebaseFirestore.instance.batch();
+
+    await transRef.set(
+      convertToMapTransaction(
+        ModelTransaction(
+          idBranch: _idBranch,
+          date: _date,
+          note: _note,
+          invoice: _invoice,
+          namePartner: _namePartner,
+          idPartner: _idPartner,
+          nameOperator: _nameOperator,
+          idOperator: _idOperator,
+          paymentMethod: _paymentMethod,
+          discount: _discount,
+          ppn: _ppn,
+          totalItem: _totalItem,
+          charge: _charge,
+          subTotal: _subTotal,
+          billPaid: _billPaid,
+          totalCharge: _totalCharge,
+          totalPpn: _totalPpn,
+          totalDiscount: _totalDiscount,
+          total: _total,
+          itemsOrdered: [],
+          dataSplit: [],
+        ),
+      ),
+    );
+
+    final itemsRef = transRef.collection("items_ordered");
+
+    for (final itemOrdered in _itemsOrdered) {
+      final itemIdOrdered = itemsRef.doc(itemOrdered.getidOrdered);
+      final condimentRef = itemIdOrdered.collection("condiment");
+      for (final condimentOrdered in itemOrdered.getCondiment) {
+        final condimentIdOrdered = condimentRef.doc(
+          condimentOrdered.getidOrdered,
         );
+        writeBatch.set(
+          condimentIdOrdered,
+          convertToMapItemOrdered(condimentOrdered),
+        );
+      }
+      writeBatch.set(itemIdOrdered, convertToMapItemOrdered(itemOrdered));
+    }
+
+    final splitRef = transRef.collection("data_split");
+    int inc = 0;
+    for (final split in _dataSplit) {
+      final idInc = splitRef.doc("${inc++}");
+      writeBatch.set(idInc, convertToMapSplit(split));
+    }
+
+    await writeBatch.commit();
   }
 
-  void reduceQtyFIFO({required List<ModelBatch> dataBatch}) {
+  Future<void> reduceQtyFIFO({required List<ModelBatch> dataBatch}) async {
+    final firestore = FirebaseFirestore.instance;
+    final batchWrite = firestore.batch();
+
     final dataItemBatch = dataBatch.expand((b) => b.getitems_batch).toList();
 
     for (final transItem in _itemsOrdered) {
@@ -265,68 +313,115 @@ class ModelTransaction extends Equatable {
         if (index != -1) {
           dataItemBatch[index] = updatedBatch;
         }
-      }
 
-      if (qtyItemTrans > 0) {
-        print(
-          "⚠️ Item ${transItem.getnameItem} stok habis, sisa minus $qtyItemTrans",
-        );
+        final docRef = firestore
+            .collection("batch")
+            .doc(updatedBatch.getinvoice)
+            .collection("items_batch")
+            .doc(updatedBatch.getidOrdered);
+
+        batchWrite.update(docRef, {
+          'qty_item_out': updatedBatch.getqtyItem_out,
+        });
       }
     }
 
-    // rebuild ulang tiap batch dengan item batch yang udah diupdate
     for (int i = 0; i < dataBatch.length; i++) {
       final batch = dataBatch[i];
       final updatedItems = dataItemBatch
           .where((x) => x.getinvoice == batch.getinvoice)
           .toList();
 
-      dataBatch[i] = batch.copyWith(null, null, null, updatedItems);
+      dataBatch[i] = batch.copyWith(items_batch: updatedItems);
     }
+
+    await batchWrite.commit();
+    print("✅ Semua qtyItem_out berhasil diupdate ke Firestore!");
   }
 
-  static List<ModelTransaction> getDataListTansaction(QuerySnapshot data) {
-    return data.docs.map((map) {
-      final dataTransaction = map.data() as Map<String, dynamic>;
-      return ModelTransaction(
-        idBranch: dataTransaction['id_branch'],
-        bankName: dataTransaction['bank_name'],
-        itemsOrdered: (dataTransaction['items_ordered'] as List<dynamic>? ?? [])
-            .map(
-              (items) => ModelItemOrdered.fromMap(
-                items as Map<String, dynamic>,
-                false,
-              ),
-            )
-            .toList(),
-        dataSplit: (dataTransaction['data_split'] as List<dynamic>? ?? [])
-            .map((split) => ModelSplit.fromMap(split as Map<String, dynamic>))
-            .toList(),
-        date: dataTransaction['date'],
-        note: dataTransaction['note'],
-        invoice: dataTransaction['invoice'],
-        namePartner: dataTransaction['name_partner'],
-        idPartner: dataTransaction['id_partner'],
-        nameOperator: dataTransaction['name_operator'],
-        idOperator: dataTransaction['id_operator'],
-        paymentMethod: dataTransaction['payment_method'],
-        discount: int.tryParse(dataTransaction['discount'].toString())!,
-        ppn: int.tryParse(dataTransaction['ppn'].toString())!,
-        totalItem: int.tryParse(dataTransaction['total_item'].toString())!,
-        charge: int.tryParse(dataTransaction['charge'].toString())!,
-        subTotal: double.tryParse(dataTransaction['sub_total'].toString())!,
-        billPaid: double.tryParse(dataTransaction['bill_paid'].toString())!,
-        totalCharge: double.tryParse(
-          dataTransaction['total_charge'].toString(),
-        )!,
-        totalPpn: double.tryParse(dataTransaction['total_ppn'].toString())!,
-        totalDiscount: double.tryParse(
-          dataTransaction['total_discount'].toString(),
-        )!,
-        total: double.tryParse(dataTransaction['total'].toString())!,
-        statusTransaction: dataTransaction['status_transaction'],
-      );
-    }).toList();
+  static Future<List<ModelTransaction>> getDataListTransaction(
+    QuerySnapshot data, {
+    required bool isSell,
+  }) async {
+    final firestore = FirebaseFirestore.instance;
+    final String collection = isSell ? 'transaction_sell' : 'transaction_buy';
+
+    final transactions = await Future.wait(
+      data.docs.map((map) async {
+        final dataTransaction = map.data() as Map<String, dynamic>;
+
+        final itemsSnapshot = await firestore
+            .collection(collection)
+            .doc(map.id)
+            .collection('items_ordered')
+            .get();
+
+        final itemsOrdered = await Future.wait(
+          itemsSnapshot.docs.map((itemDoc) async {
+            final condimentSnapshot = await firestore
+                .collection(collection)
+                .doc(map.id)
+                .collection('condiment')
+                .get();
+
+            final condiments = condimentSnapshot.docs
+                .map(
+                  (condimentDoc) =>
+                      ModelItemOrdered.fromMap(condimentDoc.data(), [], true),
+                )
+                .toList();
+
+            return ModelItemOrdered.fromMap(itemDoc.data(), condiments, false);
+          }),
+        );
+
+        final splitSnapshot = await firestore
+            .collection(collection)
+            .doc(map.id)
+            .collection('data_split')
+            .get();
+
+        final splitData = splitSnapshot.docs
+            .map((splitDoc) => ModelSplit.fromMap(splitDoc.data()))
+            .toList();
+
+        return ModelTransaction(
+          idBranch: dataTransaction['id_branch'],
+          bankName: dataTransaction['bank_name'],
+          itemsOrdered: itemsOrdered,
+          dataSplit: splitData,
+          date: dataTransaction['date'],
+          note: dataTransaction['note'],
+          invoice: dataTransaction['invoice'],
+          namePartner: dataTransaction['name_partner'],
+          idPartner: dataTransaction['id_partner'],
+          nameOperator: dataTransaction['name_operator'],
+          idOperator: dataTransaction['id_operator'],
+          paymentMethod: dataTransaction['payment_method'],
+          discount: int.tryParse(dataTransaction['discount'].toString()) ?? 0,
+          ppn: int.tryParse(dataTransaction['ppn'].toString()) ?? 0,
+          totalItem:
+              int.tryParse(dataTransaction['total_item'].toString()) ?? 0,
+          charge: int.tryParse(dataTransaction['charge'].toString()) ?? 0,
+          subTotal:
+              double.tryParse(dataTransaction['sub_total'].toString()) ?? 0.0,
+          billPaid:
+              double.tryParse(dataTransaction['bill_paid'].toString()) ?? 0.0,
+          totalCharge:
+              double.tryParse(dataTransaction['total_charge'].toString()) ??
+              0.0,
+          totalPpn:
+              double.tryParse(dataTransaction['total_ppn'].toString()) ?? 0.0,
+          totalDiscount:
+              double.tryParse(dataTransaction['total_discount'].toString()) ??
+              0.0,
+          total: double.tryParse(dataTransaction['total'].toString()) ?? 0.0,
+          statusTransaction: dataTransaction['status_transaction'],
+        );
+      }),
+    );
+
+    return transactions;
   }
 
   @override

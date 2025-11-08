@@ -50,7 +50,7 @@ class DataUserRepository {
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
-    return ModelTransaction.getDataListTansaction(data);
+    return await ModelTransaction.getDataListTransaction(data, isSell: true);
   }
 
   Future<List<ModelTransaction>> getTransactionBuy() async {
@@ -59,7 +59,7 @@ class DataUserRepository {
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
-    return ModelTransaction.getDataListTansaction(data);
+    return await ModelTransaction.getDataListTransaction(data, isSell: false);
   }
 
   Future<List<ModelBatch>> getBatch() async {
