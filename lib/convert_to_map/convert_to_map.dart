@@ -87,17 +87,17 @@ List<Map<String, dynamic>> convertToMapCondimentOrdered(
 Map<String, dynamic> convertToMapItem(ModelItem item) {
   return {
     'uid_user': UserSession.getUidUser(),
-    'nama_item': item.getnameItem,
-    'harga_item': item.getpriceItem,
+    'name_item': item.getnameItem,
+    'price_item': item.getpriceItem,
     'id_item': item.getidItem,
-    'id_kategori': item.getidCategoryiItem,
+    'id_category': item.getidCategoryiItem,
     'status_condiment': item.getstatusCondiment,
-    'url_gambar': item.geturlImage,
+    'url_image': item.geturlImage,
     'qty_item': item.getqtyItem,
-    'id_cabang': item.getidBranch,
+    'id_branch': item.getidBranch,
     'barcode': item.getBarcode,
     'status_item': item.getStatusItem,
-    'tanggal_item': item.getDateItem,
+    'created': item.getDateItem,
   };
 }
 
@@ -137,21 +137,21 @@ Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
     'id_branch': partner.getidBranch,
     'uid_user': UserSession.getUidUser(),
-    'id': partner.getid,
-    'name': partner.getname,
-    'phone': partner.getphone,
-    'email': partner.getemail,
-    'balance': partner.getbalance,
+    'id_partner': partner.getid,
+    'name_partner': partner.getname,
+    'phone_partner': partner.getphone,
+    'email_partner': partner.getemail,
+    'balance_partner': partner.getbalance,
     'type': partner.gettype.name,
-    'createdAt': partner.getcreatedAt,
+    'created': partner.getcreated,
   };
 }
 
 Map<String, dynamic> convertToMapCategory(ModelCategory category) {
   return {
-    'nama_kategori': category.getnameCategory,
-    'id_kategori': category.getidCategory,
-    'id_cabang': category.getidBranch,
+    'name_category': category.getnameCategory,
+    'id_category': category.getidCategory,
+    'id_branch': category.getidBranch,
     'uid_user': UserSession.getUidUser(),
   };
 }

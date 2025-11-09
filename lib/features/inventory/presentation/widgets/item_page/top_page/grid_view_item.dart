@@ -13,21 +13,15 @@ class UIInventoryGridViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<
-      InventoryBloc,
-      InventoryState,
-      (List<ModelItem>, String?)
-    >(
+    return BlocSelector<InventoryBloc, InventoryState, List<ModelItem>>(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.filteredDataItem, state.selectedIdBranch);
+          return state.filteredDataItem;
         }
-        return ([], null);
+        return [];
       },
       builder: (contextBloc, state) {
-        final items = state.$1
-            .where((data) => data.getidBranch == state.$2)
-            .toList();
+        final items = state;
         return GridView.builder(
           padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
           itemCount: items.length,
@@ -62,7 +56,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             idBranch: items[index].getidBranch,
                             barcode: items[index].getBarcode,
                             statusItem: true,
-                            dateItem: items[index].getDateItem,
+                            created: items[index].getDateItem,
                           ),
                         ),
                       );
@@ -84,7 +78,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               formatUang(items[index].getpriceItem),
-                              style: lv05textStyleHarga,
+                              style: lv05textStylePrice,
                               textAlign: TextAlign.left,
                             ),
                           ),

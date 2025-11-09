@@ -18,7 +18,7 @@ class ModelCategory extends Equatable {
 
   Future<void> pushDataCategory() async {
     await FirebaseFirestore.instance
-        .collection("kategori")
+        .collection("category")
         .doc(_idCategory)
         .set(
           convertToMapCategory(
@@ -31,13 +31,13 @@ class ModelCategory extends Equatable {
         );
   }
 
-  static List<ModelCategory> getDataListKategori(QuerySnapshot data) {
+  static List<ModelCategory> getDataListCategory(QuerySnapshot data) {
     return data.docs.map((map) {
       final dataKetegori = map.data() as Map<String, dynamic>;
       return ModelCategory(
-        nameCategory: dataKetegori['nama_kategori'],
+        nameCategory: dataKetegori['name_category'],
         idCategory: map.id,
-        idBranch: dataKetegori['id_cabang'],
+        idBranch: dataKetegori['id_branch'],
       );
     }).toList();
   }

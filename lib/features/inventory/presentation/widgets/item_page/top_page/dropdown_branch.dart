@@ -7,42 +7,36 @@ import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class UIInventoryDropdownCabang extends StatelessWidget {
+class UIInventoryDropdownBranch extends StatelessWidget {
   final String selectedFilterItem;
   final String selectedStatusItem;
   final String selectedFilterJenisItem;
-  final String selectedFilterKategoriItem;
-  const UIInventoryDropdownCabang({
+  final String selectedFilterCategoryItem;
+  const UIInventoryDropdownBranch({
     super.key,
     required this.selectedFilterItem,
     required this.selectedStatusItem,
     required this.selectedFilterJenisItem,
-    required this.selectedFilterKategoriItem,
+    required this.selectedFilterCategoryItem,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<
-      InventoryBloc,
-      InventoryState,
-      (List<ModelBranch>, String?)
-    >(
+    return BlocSelector<InventoryBloc, InventoryState, List<ModelBranch>?>(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.datacabang, state.selectedIdBranch);
+          return state.dataBranch;
         }
-        return ([], "");
+        return null;
       },
       builder: (context, state) {
-        if (state.$1.isEmpty) {
+        if (state == null) {
           return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
         }
         return DropdownButtonFormField<ModelBranch>(
           style: lv1TextStyle,
-          initialValue: state.$1.firstWhere(
-            (data) => data.getidBranch == state.$2,
-          ),
-          items: state.$1
+          initialValue: state.first,
+          items: state
               .map(
                 (map) => DropdownMenuItem(
                   value: map,
@@ -57,7 +51,7 @@ class UIInventoryDropdownCabang extends StatelessWidget {
                 status: selectedStatusItem,
                 idBranch: value!.getidBranch,
                 filterjenis: selectedFilterJenisItem,
-                filterIDKategori: selectedFilterKategoriItem,
+                filterIDCategory: selectedFilterCategoryItem,
               ),
             );
           },

@@ -29,6 +29,11 @@ dependencies:
   stream_transform: ^2.1.0
   equatable: ^2.0.5
   device_info_plus: ^11.0.0
+  connectivity_plus: ^4.0.0
+  hive: any
+  hive_flutter: any
+  path_provider: ^2.0.15
+  workmanager:  ^0.9.0+3
 
 dev_dependencies:
   flutter_test:

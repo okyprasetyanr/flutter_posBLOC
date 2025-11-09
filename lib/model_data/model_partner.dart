@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
+import 'package:flutter_pos/request/push_data.dart';
 
 enum PartnerType { customer, supplier }
 
@@ -41,7 +43,7 @@ class ModelPartner extends Equatable {
   double get getbalance => _balance;
   String get getidBranch => _idBranch;
   PartnerType get gettype => _type;
-  String get getcreatedAt => _createdAt;
+  String get getcreated => _createdAt;
 
   ModelPartner copyWith({
     String? idBranch,
@@ -71,37 +73,36 @@ class ModelPartner extends Equatable {
   factory ModelPartner.fromMap(Map<String, dynamic> map) {
     return ModelPartner(
       idBranch: map['id_branch'],
-      id: map['id'] ?? '',
-      name: map['name'] ?? '',
-      phone: map['phone'] ?? '',
+      id: map['id_partner'],
+      name: map['name_partner'],
+      phone: map['phone_partner'],
       email: map['email'],
-      balance: (map['balance'] ?? 0).toDouble(),
+      balance: map['balance'],
       type: PartnerType.values.firstWhere(
         (e) => e.name == map['type'],
         orElse: () => PartnerType.customer,
       ),
-      createdAt: map['createdAt'],
+      createdAt: map['created'],
     );
   }
 
   Future<void> pushDataPartner() async {
-    await FirebaseFirestore.instance
-        .collection('partner')
-        .doc(_id)
-        .set(
-          convertToMapPartner(
-            ModelPartner(
-              idBranch: _idBranch,
-              id: _id,
-              name: _name,
-              phone: _phone,
-              email: _email,
-              balance: _balance,
-              type: _type,
-              createdAt: _createdAt,
-            ),
-          ),
-        );
+    pushWorkerDataPartner(
+      collection: 'partner',
+      id: _id,
+      dataPartner: convertToMapPartner(
+        ModelPartner(
+          idBranch: _idBranch,
+          id: _id,
+          name: _name,
+          phone: _phone,
+          email: _email,
+          balance: _balance,
+          type: _type,
+          createdAt: _createdAt,
+        ),
+      ),
+    );
   }
 
   static List<ModelPartner> getDataListPartner(QuerySnapshot data) {
@@ -109,16 +110,16 @@ class ModelPartner extends Equatable {
       final dataPartner = map.data() as Map<String, dynamic>;
       return ModelPartner(
         idBranch: dataPartner['id_branch'],
-        id: dataPartner['id'],
-        name: dataPartner['name'],
-        phone: dataPartner['phone'],
-        email: dataPartner['email'],
-        balance: (dataPartner['balance'] ?? 0).toDouble(),
+        id: dataPartner['id_partner'],
+        name: dataPartner['name_partner'],
+        phone: dataPartner['phone_partner'],
+        email: dataPartner['email_partner'],
+        balance: dataPartner['balance_partner'],
         type: PartnerType.values.firstWhere(
           (e) => e.name == dataPartner['type'],
           orElse: () => PartnerType.customer,
         ),
-        createdAt: dataPartner['createdAt'],
+        createdAt: dataPartner['created'],
       );
     }).toList();
   }

@@ -97,10 +97,10 @@ class _UITransactionPopUpPriceAndCustomState
                   children: [
                     ValueListenableBuilder<bool>(
                       valueListenable: editprice,
-                      builder: (context, valueEditHarga, child) {
+                      builder: (context, valueEditPrie, child) {
                         return AnimatedPositioned(
                           bottom: 0,
-                          top: valueEditHarga ? 0 : -80,
+                          top: valueEditPrie ? 0 : -80,
                           left: 0,
                           right: 0,
                           duration: Duration(milliseconds: 500),

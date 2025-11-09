@@ -11,9 +11,9 @@ class UserModel {
   factory UserModel.getFirestore(DocumentSnapshot data) {
     Map dataUser = data.data() as Map<String, dynamic>;
     return UserModel(
-      nameCompany: dataUser['nama_perusahaan'],
-      numTelpCompany: dataUser['no_telp_perusahaan'],
-      join: dataUser['bergabung'],
+      nameCompany: dataUser['name_company'],
+      numTelpCompany: dataUser['phone_company'],
+      join: dataUser['join'],
     );
   }
 }

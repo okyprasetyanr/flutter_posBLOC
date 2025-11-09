@@ -5,12 +5,12 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 class LayoutTopBottomMainMenu extends StatelessWidget {
   final Widget widgetTop;
   final Widget widgetBottom;
-  final String namaPerusahaan;
+  final String nameCompany;
   const LayoutTopBottomMainMenu({
     super.key,
     required this.widgetTop,
     required this.widgetBottom,
-    required this.namaPerusahaan,
+    required this.nameCompany,
   });
 
   @override
@@ -120,7 +120,7 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
             children: [
               Text("Pesan Kenyang!", style: labelTextStyle),
               Text(
-                "Welcome $namaPerusahaan, jualan lagi kita!",
+                "Welcome $nameCompany, jualan lagi kita!",
                 style: lv1TextStyle,
               ),
             ],
@@ -136,7 +136,10 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         title: Column(
-          children: [leading, Text(text, style: lv0TextStyle, maxLines: 1)],
+          children: [
+            leading,
+            Text(text, style: lv0TextStyle, maxLines: 1),
+          ],
         ),
       ),
     );

@@ -6,8 +6,10 @@ import 'package:flutter_pos/features/transaction/presentation/page/ui_transactio
 import 'package:flutter_pos/features/transaction/presentation/page/ui_transaction_success.dart';
 import 'package:flutter_pos/main.dart';
 import 'package:flutter_pos/screen_main_menu.dart';
+import 'package:flutter_pos/screen_signup.dart';
 
 final routesPage = {
+  '/sign-up': (context) => const ScreenSignup(),
   '/batch': (context) => const UiBatch(),
   '/partner': (context) => const UIPartner(),
   '/login': (context) => const ScreenLogin(),

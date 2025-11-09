@@ -32,13 +32,13 @@ class DataUserRepositoryCache {
     ]);
 
     for (var a in dataBranch!) {
-      print("Log DataUserRepositoryCache cabang: $a");
+      print("Log DataUserRepositoryCache branch: $a");
     }
     for (var a in dataItem!) {
       print("Log DataUserRepositoryCache item: $a");
     }
     for (var a in dataCategory!) {
-      print("Log DataUserRepositoryCache kategori: $a");
+      print("Log DataUserRepositoryCache Category: $a");
     }
     for (var a in dataTransactionSell!) {
       print("Log DataUserRepositoryCache transactionSell: $a");

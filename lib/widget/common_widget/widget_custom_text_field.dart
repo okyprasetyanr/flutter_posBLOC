@@ -6,8 +6,11 @@ Widget customTextField(
   TextEditingController controller,
   bool enable, {
   TextInputType? inputType,
+  BuildContext? context,
+  FormFieldValidator<String>? validator,
 }) {
   return TextFormField(
+    validator: validator,
     keyboardType: inputType ?? TextInputType.text,
     enabled: enable,
     controller: controller,
@@ -19,6 +22,7 @@ Widget customTextField(
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+      errorStyle: lv05TextStyleRed,
     ),
   );
 }

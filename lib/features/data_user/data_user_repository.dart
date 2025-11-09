@@ -15,7 +15,7 @@ class DataUserRepository {
         .collection('users')
         .doc(UserSession.getUidUser())
         .get();
-    return ModelBranch.getDataListCabang(data);
+    return ModelBranch.getDataListBranch(data);
   }
 
   Future<List<ModelItem>> getItem() async {
@@ -28,11 +28,11 @@ class DataUserRepository {
 
   Future<List<ModelCategory>> getCategory() async {
     final data = await _db
-        .collection("kategori")
+        .collection("category")
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
-    return ModelCategory.getDataListKategori(data);
+    return ModelCategory.getDataListCategory(data);
   }
 
   Future<List<ModelPartner>> getPartner() async {

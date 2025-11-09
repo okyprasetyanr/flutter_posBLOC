@@ -1,37 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/condiment_switch.dart';
+import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 
 class UIInventoryFormFieldItem extends StatelessWidget {
-  final TextEditingController namaItemController;
-  final TextEditingController kodeBarcodeController;
-  final TextEditingController hargaItemController;
+  final TextEditingController nameItemController;
+  final TextEditingController codeBarcodeController;
+  final TextEditingController priceItemController;
+  final GlobalKey<FormState> formKey;
   const UIInventoryFormFieldItem({
     super.key,
-    required this.namaItemController,
-    required this.kodeBarcodeController,
-    required this.hargaItemController,
+    required this.nameItemController,
+    required this.codeBarcodeController,
+    required this.priceItemController,
+    required this.formKey,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        customTextField("Nama Item", namaItemController, true),
-        const SizedBox(height: 10),
-        customTextField("Kode/Barcode", kodeBarcodeController, true),
-        const SizedBox(height: 10),
-        Row(
+    return BlocListener<InventoryBloc, InventoryState>(
+      listener: (context, state) {
+        if (state is InventoryLoaded) {
+          nameItemController.text = state.dataSelectedItem?.getnameItem ?? "";
+          codeBarcodeController.text = state.dataSelectedItem?.getBarcode ?? "";
+          priceItemController.text = formatQtyOrPrice(
+            state.dataSelectedItem?.getpriceItem ?? 0,
+          );
+        }
+      },
+      child: Form(
+        key: formKey,
+        child: Column(
           children: [
-            Expanded(
-              flex: 3,
-              child: customTextField("Harga", hargaItemController, true),
+            customTextField("Nama Item", nameItemController, true),
+            const SizedBox(height: 10),
+            customTextField(
+              "Kode/Barcode",
+              codeBarcodeController,
+              true,
+              validator: (value) {
+                final bloc = context.read<InventoryBloc>().state;
+                if (bloc is InventoryLoaded) {
+                  bool duplicated = bloc.dataItem.any(
+                    (element) => element.getBarcode == value,
+                  );
+                  if (duplicated) {
+                    return 'Kode sudah dipakai';
+                  }
+                }
+                return null;
+              },
             ),
-            const SizedBox(width: 10),
-            Flexible(flex: 2, fit: FlexFit.loose, child: CondimentSwitch()),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: customTextField("Harga", priceItemController, true),
+                ),
+                const SizedBox(width: 10),
+                Flexible(flex: 2, fit: FlexFit.loose, child: CondimentSwitch()),
+              ],
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

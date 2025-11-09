@@ -137,13 +137,13 @@ final lv1TextStyleBold = GoogleFonts.poppins(
   fontSize: 12,
 );
 
-final lv05textStyleHarga = GoogleFonts.poppins(
+final lv05textStylePrice = GoogleFonts.poppins(
   color: AppColor.primary,
   fontWeight: FontWeight.w600,
   fontSize: 10,
 );
 
-final lv05textStyleHargaCondiment = GoogleFonts.poppins(
+final lv05textStylePriceCondiment = GoogleFonts.poppins(
   color: Colors.orange,
   fontWeight: FontWeight.w600,
   fontSize: 10,
@@ -179,7 +179,7 @@ final lv2TextStyle = GoogleFonts.poppins(
   fontSize: 16,
 );
 
-final lv2textStyleHarga = GoogleFonts.poppins(
+final lv2textStylePrice = GoogleFonts.poppins(
   color: AppColor.primary,
   fontWeight: FontWeight.w900,
   fontSize: 12,

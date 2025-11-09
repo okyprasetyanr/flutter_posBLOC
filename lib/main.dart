@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/connection/authentication_account.dart';
+import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -14,12 +15,23 @@ import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:workmanager/workmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+  await Hive.openBox('firestoreQueue'); // simpan queue
+
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+  Workmanager().registerPeriodicTask(
+    "1",
+    "firestoreWorker",
+    frequency: Duration(minutes: 15), // minimal 15 menit di iOS
+  );
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final dataUserRepo = DataUserRepository();
   final repo = DataUserRepositoryCache(dataUserRepo);
@@ -42,6 +54,13 @@ void main() async {
       ),
     ),
   );
+}
+
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    await FirestoreWorker.processQueue();
+    return Future.value(true);
+  });
 }
 
 class ScreenLogin extends StatefulWidget {
@@ -235,30 +254,11 @@ class _MainAppState extends State<ScreenLogin> {
                                     elevation: 10,
                                   ),
                                   onPressed: () {
-                                    FirebaseAuth.instance
-                                        .signInWithEmailAndPassword(
-                                          email: "demo@gmail.com",
-                                          password: "12345678",
-                                        )
-                                        .then((userCredential) async {
-                                          String uid = userCredential.user!.uid;
-                                          SharedPreferences pref =
-                                              await SharedPreferences.getInstance();
-                                          await pref.setString('uid_user', uid);
-                                          if (!mounted) return;
-                                          navUpDownTransition(
-                                            context,
-                                            '/mainmenu',
-                                            true,
-                                          );
-                                        })
-                                        .catchError((error) {
-                                          if (!mounted) return;
-                                          customSnackBar(
-                                            context,
-                                            "Login Gagal: $error",
-                                          );
-                                        });
+                                    authenticatorAcoount(
+                                      email: "demo@gmail.com",
+                                      password: "12345678",
+                                      context: context,
+                                    );
                                   },
                                   child: Text('Login', style: buttonTextStyle),
                                 ),
@@ -274,11 +274,11 @@ class _MainAppState extends State<ScreenLogin> {
                                     elevation: 10,
                                   ),
                                   onPressed: () {
-                                    // navUpDownTransition(
-                                    //   context,
-                                    //   ScreenSignup(),
-                                    //   false,
-                                    // );
+                                    navUpDownTransition(
+                                      context,
+                                      '/sign-up',
+                                      false,
+                                    );
                                   },
                                   child: Text(
                                     'Sign-Up',

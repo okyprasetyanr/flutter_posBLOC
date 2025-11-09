@@ -8,8 +8,8 @@ import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class UITransactionListViewKategori extends StatelessWidget {
-  const UITransactionListViewKategori({super.key});
+class UITransactionListViewCategory extends StatelessWidget {
+  const UITransactionListViewCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class UITransactionListViewKategori extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: state.length,
             itemBuilder: (context, index) {
-              final kategori = state[index];
+              final category = state[index];
 
               return Padding(
                 padding: const EdgeInsets.only(right: 7),
@@ -58,8 +58,8 @@ class UITransactionListViewKategori extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         context.read<TransactionBloc>().add(
-                          TransactionSelectedKategoriItem(
-                            selectedKategori: kategori,
+                          TransactionSelectedCategoryItem(
+                            selectedCategory: category,
                           ),
                         );
                       },
@@ -84,7 +84,7 @@ class UITransactionListViewKategori extends StatelessWidget {
                               }
 
                               final validasiSelected =
-                                  kategori.getidCategory ==
+                                  category.getidCategory ==
                                   stateSelected.getidCategory;
                               final backgroundColor = validasiSelected
                                   ? AppColor.primary
@@ -100,7 +100,7 @@ class UITransactionListViewKategori extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsetsGeometry.all(5),
                                   child: Text(
-                                    kategori.getnameCategory,
+                                    category.getnameCategory,
                                     style: textColor,
                                   ),
                                 ),

@@ -7,8 +7,8 @@ import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class ListViewKategori extends StatelessWidget {
-  const ListViewKategori({super.key});
+class ListViewCategory extends StatelessWidget {
+  const ListViewCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ListViewKategori extends StatelessWidget {
       (List<ModelCategory>?, String?)
     >(
       selector: (state) => state is InventoryLoaded
-          ? (state.dataKategori, state.selectedIdBranch)
+          ? (state.dataCategory, state.selectedIdBranch)
           : (null, null),
       builder: (context, state) {
         if (state.$1 == null) {
@@ -58,7 +58,7 @@ class ListViewKategori extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       context.read<InventoryBloc>().add(
-                        InvSelectedKategori(selectedKategori: category),
+                        InvSelectedCategory(selectedCategory: category),
                       );
                     },
                     child: Dismissible(

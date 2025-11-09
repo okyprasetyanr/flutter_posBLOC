@@ -23,16 +23,16 @@ class ModelBranch extends Equatable {
   set setaddressBranch(String value) => _addressBranch;
   set setidBranch(String value) => _idBranch;
 
-  static List<ModelBranch> getDataListCabang(DocumentSnapshot data) {
+  static List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
     Map dataUser = data.data() as Map<String, dynamic>;
-    List listcabang = dataUser['cabang'] ?? [];
-    return listcabang
+    List listbranch = dataUser['branch'] ?? [];
+    return listbranch
         .map(
           (map) => ModelBranch(
-            areaBranch: map['daerah_cabang'],
-            numTelpBranch: map['no_telephone_cabang'],
-            addressBranch: map['alamat_cabang'],
-            idBranch: map['id_cabang'],
+            areaBranch: map['area_branch'],
+            numTelpBranch: map['phone_branch'],
+            addressBranch: map['address_branch'],
+            idBranch: map['id_branch'],
           ),
         )
         .toList();

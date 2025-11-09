@@ -16,7 +16,7 @@ class ScreenMainMenu extends StatefulWidget {
 
 class _ScreenMainMenuState extends State<ScreenMainMenu> {
   bool loading = true;
-  String? namaPerusahaan;
+  String? nameCompany;
   @override
   void initState() {
     super.initState();
@@ -29,10 +29,10 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
     final repo = context.read<DataUserRepositoryCache>();
     await UserSession.init(repo);
 
-    getNamaPerusahaan();
+    getNameCompany();
   }
 
-  Future<void> getNamaPerusahaan() async {
+  Future<void> getNameCompany() async {
     UserSession.getUidUser();
     DocumentSnapshot data = await FirebaseFirestore.instance
         .collection("users")
@@ -40,7 +40,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
         .get();
     if (data.exists) {
       setState(() {
-        namaPerusahaan = data['nama_perusahaan'];
+        nameCompany = data['name_company'];
       });
     }
   }
@@ -51,7 +51,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
       body: LayoutTopBottomMainMenu(
         widgetTop: layoutTop(context),
         widgetBottom: layoutBottom(),
-        namaPerusahaan: namaPerusahaan ?? "Mohon Tunggu",
+        nameCompany: nameCompany ?? "Mohon Tunggu",
       ),
     );
   }

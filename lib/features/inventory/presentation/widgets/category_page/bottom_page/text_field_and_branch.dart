@@ -5,12 +5,12 @@ import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 
 class UICategoryTextFieldAndBranch extends StatelessWidget {
-  final TextEditingController namaKategoriController;
-  final VoidCallback resetKategoriForm;
+  final TextEditingController nameCategoryController;
+  final VoidCallback resetCategoryForm;
   const UICategoryTextFieldAndBranch({
     super.key,
-    required this.namaKategoriController,
-    required this.resetKategoriForm,
+    required this.nameCategoryController,
+    required this.resetCategoryForm,
   });
 
   @override
@@ -23,17 +23,17 @@ class UICategoryTextFieldAndBranch extends StatelessWidget {
             listenWhen: (previous, current) =>
                 previous is InventoryLoaded &&
                 current is InventoryLoaded &&
-                previous.dataSelectedKategori != current.dataSelectedKategori,
+                previous.dataSelectedCategory != current.dataSelectedCategory,
             listener: (context, state) {
               if (state is InventoryLoaded &&
-                  state.dataSelectedKategori != null) {
-                namaKategoriController.text =
-                    state.dataSelectedKategori!.getnameCategory;
+                  state.dataSelectedCategory != null) {
+                nameCategoryController.text =
+                    state.dataSelectedCategory!.getnameCategory;
               }
             },
             child: customTextField(
               "Nama Kategori",
-              namaKategoriController,
+              nameCategoryController,
               true,
             ),
           ),
@@ -46,7 +46,7 @@ class UICategoryTextFieldAndBranch extends StatelessWidget {
             TextEditingController(
               text: context.select<InventoryBloc, String?>(
                 (data) => data.state is InventoryLoaded
-                    ? (data.state as InventoryLoaded).daerahCabang
+                    ? (data.state as InventoryLoaded).areaBranch
                     : "",
               ),
             ),

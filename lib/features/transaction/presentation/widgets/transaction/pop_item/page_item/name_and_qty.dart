@@ -29,17 +29,14 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                   TransactionState,
                   ModelItemOrdered?
                 >(
-                  selector: (stateNama) {
-                    if (stateNama is TransactionLoaded) {
-                      return stateNama.selectedItem;
+                  selector: (state) {
+                    if (state is TransactionLoaded) {
+                      return state.selectedItem;
                     }
                     return null;
                   },
-                  builder: (context, stateNama) {
-                    return Text(
-                      stateNama?.getnameItem ?? "",
-                      style: lv05TextStyle,
-                    );
+                  builder: (context, state) {
+                    return Text(state?.getnameItem ?? "", style: lv05TextStyle);
                   },
                 ),
           ),

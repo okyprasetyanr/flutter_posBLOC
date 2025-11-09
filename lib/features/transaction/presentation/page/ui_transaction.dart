@@ -5,9 +5,9 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/dropdown_cabang.dart';
+import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/dropdown_branch.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/grid_view_item.dart';
-import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/list_view_kategori.dart';
+import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/list_view_category.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/saved_cart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -202,11 +202,11 @@ class _UITransactionState extends State<UITransaction> {
                   flex: 6,
                   child: SizedBox(
                     height: 27,
-                    child: UITransactionListViewKategori(),
+                    child: UITransactionListViewCategory(),
                   ),
                 ),
                 const SizedBox(width: 5),
-                SizedBox(width: 140, child: UITransactionDropDownCabang()),
+                SizedBox(width: 140, child: UITransactionDropDownBranch()),
                 BlocSelector<TransactionBloc, TransactionState, bool>(
                   selector: (state) {
                     if (state is TransactionLoaded) {

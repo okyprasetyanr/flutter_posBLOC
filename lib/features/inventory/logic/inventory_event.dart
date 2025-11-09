@@ -8,27 +8,27 @@ class InvGetData extends InventoryEvent {
   final String filter;
   final String status;
   final String filterjenis;
-  final String filterIDKategori;
+  final String filterIDCategory;
 
   InvGetData({
     required this.filter,
     required this.status,
     required this.idBranch,
     required this.filterjenis,
-    required this.filterIDKategori,
+    required this.filterIDCategory,
   });
 }
 
-class InvSelectedKategori extends InventoryEvent {
-  final ModelCategory selectedKategori;
+class InvSelectedCategory extends InventoryEvent {
+  final ModelCategory selectedCategory;
 
-  InvSelectedKategori({required this.selectedKategori});
+  InvSelectedCategory({required this.selectedCategory});
 }
 
-class InvSelectedKategoriItem extends InventoryEvent {
-  final ModelCategory? dataKategoriItem;
+class InvSelectedCategoryItem extends InventoryEvent {
+  final ModelCategory? dataCategoryItem;
 
-  InvSelectedKategoriItem({required this.dataKategoriItem});
+  InvSelectedCategoryItem({required this.dataCategoryItem});
 }
 
 class InvSelectedItem extends InventoryEvent {
@@ -45,13 +45,13 @@ class InvFilterItem extends InventoryEvent {
   final String filter;
   final String status;
   final String filterjenis;
-  final String filterIDKategori;
+  final String filterIDCategory;
 
   InvFilterItem({
     required this.filter,
     required this.status,
     required this.filterjenis,
-    required this.filterIDKategori,
+    required this.filterIDCategory,
   });
 }
 

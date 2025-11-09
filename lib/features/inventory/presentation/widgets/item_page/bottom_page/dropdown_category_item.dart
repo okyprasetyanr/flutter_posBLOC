@@ -1,42 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
-import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class DropdownKategoriItem extends StatelessWidget {
-  const DropdownKategoriItem({super.key});
+class DropdownCategoryItem extends StatelessWidget {
+  final ValueNotifier<String?> idCategory;
+  const DropdownCategoryItem({super.key, required this.idCategory});
 
   @override
   Widget build(BuildContext context) {
     return BlocSelector<
       InventoryBloc,
       InventoryState,
-      (List<ModelCategory>?, ModelCategory?)
+      (List<ModelCategory>, String?)
     >(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.dataKategori, state.dataSelectedKategoriItem);
+          return (
+            state.dataCategory,
+            state.dataSelectedItem?.getidCategoryiItem,
+          );
         }
-        return (null, null);
+        return ([], null);
       },
-      builder: (contextBloc, stateBLoc) {
-        if (stateBLoc.$1 == null) {
+      builder: (context, state) {
+        if (state.$1.isEmpty) {
           return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
         }
-        final blocState = contextBloc.read<InventoryBloc>().state;
-        final idBranch = blocState is InventoryLoaded
-            ? blocState.selectedIdBranch
-            : "";
-        final initselection = stateBLoc.$2 != null
-            ? stateBLoc.$1!.firstWhere((element) {
-                return element.getidCategory == stateBLoc.$2!.getidCategory;
-              })
-            : null;
-        debugPrint("Log UIInventory initselection: $initselection");
+        if (state.$2 != null) {
+          idCategory.value = state.$2!;
+        }
         return DropdownButtonFormField<ModelCategory?>(
           decoration: InputDecoration(
             isDense: true,
@@ -48,10 +44,13 @@ class DropdownKategoriItem extends StatelessWidget {
             label: Text("Pilih Status", style: lv1TextStyle),
             floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
-          initialValue: initselection,
+          initialValue: state.$2 != null
+              ? state.$1.firstWhere(
+                  (element) => element.getidCategory == state.$2,
+                )
+              : null,
           hint: Text("Kategori...", style: lv05TextStyle),
-          items: stateBLoc.$1!
-              .where((data) => data.getidBranch == idBranch)
+          items: state.$1
               .map(
                 (map) => DropdownMenuItem<ModelCategory>(
                   value: map,
@@ -60,9 +59,7 @@ class DropdownKategoriItem extends StatelessWidget {
               )
               .toList(),
           onChanged: (value) {
-            context.read<InventoryBloc>().add(
-              InvSelectedKategoriItem(dataKategoriItem: value),
-            );
+            idCategory.value = value!.getidCategory;
           },
         );
       },

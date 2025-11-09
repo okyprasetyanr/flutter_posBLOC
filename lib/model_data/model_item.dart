@@ -8,7 +8,7 @@ class ModelItem extends Equatable {
       _idCategoryItem,
       _urlImage,
       _idBranch,
-      _dateItem,
+      _created,
       _barcode;
   final double _priceItem, _qtyItem;
   final bool _statusCondiment, _statusItem;
@@ -24,7 +24,7 @@ class ModelItem extends Equatable {
     required String idBranch,
     required String barcode,
     required bool statusItem,
-    required String dateItem,
+    required String created,
   }) : _nameItem = nameItem,
        _idItem = idItem,
        _priceItem = priceItem,
@@ -35,7 +35,7 @@ class ModelItem extends Equatable {
        _barcode = barcode,
        _qtyItem = qtyItem,
        _statusItem = statusItem,
-       _dateItem = dateItem;
+       _created = created;
 
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
@@ -47,7 +47,7 @@ class ModelItem extends Equatable {
   String get getidBranch => _idBranch;
   String get getBarcode => _barcode;
   bool get getStatusItem => _statusItem;
-  String get getDateItem => _dateItem;
+  String get getDateItem => _created;
 
   ModelItem copyWith({
     double? qtyItem,
@@ -73,7 +73,7 @@ class ModelItem extends Equatable {
       idBranch: idBranch ?? this._idBranch,
       barcode: barcode ?? this._barcode,
       statusItem: statusItem ?? this._statusItem,
-      dateItem: dateItem ?? this._dateItem,
+      created: dateItem ?? this._created,
     );
   }
 
@@ -94,7 +94,7 @@ class ModelItem extends Equatable {
               idBranch: _idBranch,
               barcode: _barcode,
               statusItem: _statusItem,
-              dateItem: _dateItem,
+              created: _created,
             ),
           ),
         );
@@ -104,17 +104,17 @@ class ModelItem extends Equatable {
     return data.docs.map((map) {
       final dataItem = map.data() as Map<String, dynamic>;
       return ModelItem(
-        nameItem: dataItem['nama_item'],
+        nameItem: dataItem['name_item'],
         idItem: dataItem['id_item'],
-        priceItem: dataItem['harga_item'].toDouble(),
-        idCategoryItem: dataItem['id_kategori'],
+        priceItem: dataItem['price_item'].toDouble(),
+        idCategoryItem: dataItem['id_category'],
         statusCondiment: dataItem['status_condiment'],
-        urlImage: dataItem['url_gambar'],
+        urlImage: dataItem['url_image'],
         qtyItem: dataItem['qty_item'].toDouble(),
-        idBranch: dataItem['id_cabang'],
+        idBranch: dataItem['id_branch'],
         barcode: dataItem['barcode'],
         statusItem: dataItem['status_item'],
-        dateItem: dataItem['tanggal_item'],
+        created: dataItem['created'],
       );
     }).toList();
   }
@@ -131,6 +131,6 @@ class ModelItem extends Equatable {
     _barcode,
     _qtyItem,
     _statusItem,
-    _dateItem,
+    _created,
   ];
 }

@@ -38,10 +38,10 @@ class TransactionSearchItem extends TransactionEvent {
   TransactionSearchItem({required this.text});
 }
 
-class TransactionSelectedKategoriItem extends TransactionEvent {
-  final ModelCategory selectedKategori;
+class TransactionSelectedCategoryItem extends TransactionEvent {
+  final ModelCategory selectedCategory;
 
-  TransactionSelectedKategoriItem({required this.selectedKategori});
+  TransactionSelectedCategoryItem({required this.selectedCategory});
 }
 
 class TransactionUpdateOrderedItem extends TransactionEvent {

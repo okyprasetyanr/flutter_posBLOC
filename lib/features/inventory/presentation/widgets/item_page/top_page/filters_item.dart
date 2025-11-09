@@ -10,18 +10,18 @@ class UIFiltersItem extends StatelessWidget {
   final List<String> filters;
   final List<String> statusItem;
   final List<String> filterjenis;
-  final List<ModelCategory> filterkategori;
+  final List<ModelCategory> filterCategory;
 
   final String? selectedFilterItem;
   final String? selectedStatusItem;
   final String? selectedFilterJenisItem;
-  final String? selectedFilterKategoriItem;
+  final String? selectedFilterCategoryItem;
 
   final Function({
     required String filter,
     required String status,
     required String filterjenis,
-    required String filterIDKategori,
+    required String filterIDCategory,
   })
   onFilterChangedCallBack;
 
@@ -30,11 +30,11 @@ class UIFiltersItem extends StatelessWidget {
     required this.filters,
     required this.statusItem,
     required this.filterjenis,
-    required this.filterkategori,
+    required this.filterCategory,
     required this.selectedFilterItem,
     required this.selectedStatusItem,
     required this.selectedFilterJenisItem,
-    required this.selectedFilterKategoriItem,
+    required this.selectedFilterCategoryItem,
     required this.onFilterChangedCallBack,
   });
 
@@ -79,7 +79,7 @@ class UIFiltersItem extends StatelessWidget {
                   filter: value,
                   status: selectedStatusItem ?? "",
                   filterjenis: selectedFilterJenisItem ?? "",
-                  filterIDKategori: selectedFilterKategoriItem ?? "",
+                  filterIDCategory: selectedFilterCategoryItem ?? "",
                 );
               },
             ),
@@ -101,11 +101,11 @@ class UIFiltersItem extends StatelessWidget {
                 label: Text("Pilih Kategori", style: lv1TextStyle),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: filterkategori.firstWhere(
-                (data) => data.getidCategory == selectedFilterKategoriItem,
-                orElse: () => filterkategori.first,
+              initialValue: filterCategory.firstWhere(
+                (data) => data.getidCategory == selectedFilterCategoryItem,
+                orElse: () => filterCategory.first,
               ),
-              items: filterkategori
+              items: filterCategory
                   .where(
                     (data) =>
                         data.getidBranch == "0" ||
@@ -126,7 +126,7 @@ class UIFiltersItem extends StatelessWidget {
                   )
                   .toList(),
               onTap: () {
-                if (filterkategori.isEmpty) {
+                if (filterCategory.isEmpty) {
                   customSnackBar(context, "Cabang tidak memiliki Kategori");
                 }
               },
@@ -136,7 +136,7 @@ class UIFiltersItem extends StatelessWidget {
                   filter: selectedFilterItem ?? "",
                   status: selectedStatusItem ?? "",
                   filterjenis: selectedFilterJenisItem ?? "",
-                  filterIDKategori: value.getidCategory,
+                  filterIDCategory: value.getidCategory,
                 );
               },
             ),
@@ -173,7 +173,7 @@ class UIFiltersItem extends StatelessWidget {
                   filter: selectedFilterItem ?? "",
                   status: value,
                   filterjenis: selectedFilterJenisItem ?? "",
-                  filterIDKategori: selectedFilterKategoriItem ?? "",
+                  filterIDCategory: selectedFilterCategoryItem ?? "",
                 );
               },
             ),

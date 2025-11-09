@@ -7,8 +7,8 @@ import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class UITransactionDropDownCabang extends StatelessWidget {
-  const UITransactionDropDownCabang({super.key});
+class UITransactionDropDownBranch extends StatelessWidget {
+  const UITransactionDropDownBranch({super.key});
 
   @override
   Widget build(BuildContext context) {

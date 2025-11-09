@@ -10,14 +10,13 @@ import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/button_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_category_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/form_field_item.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/dropdown_cabang.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/dropdown_branch.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/filters_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/button_kategori.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/bottom_page/text_field_and_branch.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/kategori_page/top_page/list_view_kategori.dart';
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/bottom_page/button_category.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/bottom_page/text_field_and_branch.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/list_view_category.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
@@ -41,39 +40,38 @@ class _UIInventoryState extends State<UIInventory> {
     "Stock -",
   ];
   List<String> statusItem = ["Active", "Deactive"];
-  List<String> filterjenis = ["All", "Condiment", "Normal"];
-  List<ModelCategory> filterkategori = [
+  List<String> filterTypeItem = ["All", "Condiment", "Normal"];
+  List<ModelCategory> filterCategory = [
     ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
   ];
-
+  final selectedIdCategoryItem = ValueNotifier<String?>(null);
   String? selectedFilterItem;
   String? selectedStatusItem;
   String? selectedFilterJenisItem;
-  String? selectedFilterKategoriItem;
-  TextEditingController namaItemController = TextEditingController();
-  TextEditingController cabangItemController = TextEditingController();
-  TextEditingController hargaItemController = TextEditingController();
-  TextEditingController kodeBarcodeController = TextEditingController();
-  TextEditingController namaKategoriController = TextEditingController();
+  String? selectedFilterCategoryItem;
+
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController nameItemController = TextEditingController();
+  TextEditingController branchItemController = TextEditingController();
+  TextEditingController priceItemController = TextEditingController();
+  TextEditingController codeBarcodeController = TextEditingController();
+  TextEditingController nameCategoryController = TextEditingController();
   final isOpen = ValueNotifier<bool>(false);
   final currentPage = ValueNotifier<bool>(true);
 
   PageController pageControllerTop = PageController();
   PageController pageControllerBottom = PageController();
 
-  StreamSubscription? _inventorySub;
-
   @override
   void dispose() {
     if (mounted) {
       isOpen.dispose();
       currentPage.dispose();
-      _inventorySub?.cancel();
-      namaItemController.dispose();
-      cabangItemController.dispose();
-      hargaItemController.dispose();
-      kodeBarcodeController.dispose();
-      namaKategoriController.dispose();
+      nameItemController.dispose();
+      branchItemController.dispose();
+      priceItemController.dispose();
+      codeBarcodeController.dispose();
+      nameCategoryController.dispose();
       pageControllerTop.dispose();
       pageControllerBottom.dispose();
     }
@@ -109,8 +107,8 @@ class _UIInventoryState extends State<UIInventory> {
   Future<void> _initData() async {
     selectedFilterItem = filters.first;
     selectedStatusItem = statusItem.first;
-    selectedFilterJenisItem = filterjenis.first;
-    selectedFilterKategoriItem = filterkategori.first.getidCategory;
+    selectedFilterJenisItem = filterTypeItem.first;
+    selectedFilterCategoryItem = filterCategory.first.getidCategory;
 
     final bloc = context.read<InventoryBloc>();
     bloc.add(
@@ -118,7 +116,7 @@ class _UIInventoryState extends State<UIInventory> {
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
         filterjenis: selectedFilterJenisItem!,
-        filterIDKategori: selectedFilterKategoriItem!,
+        filterIDCategory: selectedFilterCategoryItem!,
       ),
     );
     bloc.add(
@@ -127,37 +125,9 @@ class _UIInventoryState extends State<UIInventory> {
         filter: selectedFilterItem!,
         status: selectedStatusItem!,
         filterjenis: selectedFilterJenisItem!,
-        filterIDKategori: selectedFilterKategoriItem!,
+        filterIDCategory: selectedFilterCategoryItem!,
       ),
     );
-
-    await _inventorySub?.cancel();
-    _inventorySub = bloc.stream.listen((state) {
-      if (state is InventoryLoaded) {
-        if (state.dataSelectedItem != null) {
-          namaItemController.text = state.dataSelectedItem!.getnameItem;
-          kodeBarcodeController.text = state.dataSelectedItem!.getBarcode;
-          hargaItemController.text =
-              "${formatQtyOrPrice(state.dataSelectedItem!.getpriceItem)}";
-
-          bloc.add(
-            InvCondimentForm(
-              condimentForm: state.dataSelectedItem!.getstatusCondiment,
-            ),
-          );
-
-          bloc.add(
-            InvSelectedKategoriItem(
-              dataKategoriItem: state.dataKategori.firstWhere(
-                (element) =>
-                    element.getidCategory ==
-                    state.dataSelectedItem!.getidCategoryiItem,
-              ),
-            ),
-          );
-        }
-      }
-    });
   }
 
   Future<void> _onRefresh() async {
@@ -165,7 +135,7 @@ class _UIInventoryState extends State<UIInventory> {
     bloc.add(InvResetItemForm());
     bloc.add(InvResetCategoryForm());
     _resetItemForm();
-    namaKategoriController.clear();
+    nameCategoryController.clear();
 
     await context.read<DataUserRepositoryCache>().initItem();
     await context.read<DataUserRepositoryCache>().initCategory();
@@ -177,12 +147,12 @@ class _UIInventoryState extends State<UIInventory> {
   @override
   Widget build(BuildContext context) {
     context.select<InventoryBloc, List<ModelCategory>>((value) {
-      final dataKategori = value.state is InventoryLoaded
-          ? (value.state as InventoryLoaded).dataKategori
+      final dataCategory = value.state is InventoryLoaded
+          ? (value.state as InventoryLoaded).dataCategory
           : null;
-      return filterkategori = [
-        filterkategori.first,
-        if (dataKategori != null) ...dataKategori,
+      return filterCategory = [
+        filterCategory.first,
+        if (dataCategory != null) ...dataCategory,
       ];
     });
     return PopScope(
@@ -286,11 +256,11 @@ class _UIInventoryState extends State<UIInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UIInventorySearchAndCabang(
+                  UIInventorySearchAndBranch(
                     selectedFilterItem: selectedFilterItem,
                     selectedStatusItem: selectedStatusItem,
                     selectedFilterJenisItem: selectedFilterJenisItem,
-                    selectedFilterKategoriItem: selectedFilterKategoriItem,
+                    selectedFilterCategoryItem: selectedFilterCategoryItem,
                   ),
 
                   const SizedBox(height: 10),
@@ -298,30 +268,30 @@ class _UIInventoryState extends State<UIInventory> {
                   UIFiltersItem(
                     filters: filters,
                     statusItem: statusItem,
-                    filterjenis: filterjenis,
-                    filterkategori: filterkategori,
+                    filterjenis: filterTypeItem,
+                    filterCategory: filterCategory,
                     selectedFilterItem: selectedFilterItem,
                     selectedStatusItem: selectedStatusItem,
                     selectedFilterJenisItem: selectedFilterJenisItem,
-                    selectedFilterKategoriItem: selectedFilterKategoriItem,
+                    selectedFilterCategoryItem: selectedFilterCategoryItem,
                     onFilterChangedCallBack:
                         ({
                           required String filter,
                           required String status,
                           required String filterjenis,
-                          required String filterIDKategori,
+                          required String filterIDCategory,
                         }) {
                           selectedFilterItem = filter;
                           selectedStatusItem = status;
                           selectedFilterJenisItem = filterjenis;
-                          selectedFilterKategoriItem = filterIDKategori;
+                          selectedFilterCategoryItem = filterIDCategory;
 
                           context.read<InventoryBloc>().add(
                             InvFilterItem(
                               filter: filter,
                               status: status,
                               filterjenis: filterjenis,
-                              filterIDKategori: filterIDKategori,
+                              filterIDCategory: filterIDCategory,
                             ),
                           );
                         },
@@ -339,14 +309,14 @@ class _UIInventoryState extends State<UIInventory> {
                   Container(
                     padding: const EdgeInsets.only(left: 10),
                     width: 150,
-                    child: UIInventoryDropdownCabang(
+                    child: UIInventoryDropdownBranch(
                       selectedFilterItem: selectedFilterItem!,
                       selectedStatusItem: selectedStatusItem!,
                       selectedFilterJenisItem: selectedFilterJenisItem!,
-                      selectedFilterKategoriItem: selectedFilterKategoriItem!,
+                      selectedFilterCategoryItem: selectedFilterCategoryItem!,
                     ),
                   ),
-                  Expanded(child: ListViewKategori()),
+                  Expanded(child: ListViewCategory()),
                 ],
               ),
             ],
@@ -379,7 +349,7 @@ class _UIInventoryState extends State<UIInventory> {
                         duration: const Duration(milliseconds: 500),
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            _resetKategoriForm();
+                            _resetCategoryForm();
                           },
                           style: ButtonStyle(
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -453,8 +423,8 @@ class _UIInventoryState extends State<UIInventory> {
                                     ),
                                   ),
                                   style: lv05TextStyle,
-                                  initialValue: filterjenis.first,
-                                  items: filterjenis
+                                  initialValue: filterTypeItem.first,
+                                  items: filterTypeItem
                                       .map(
                                         (map) => DropdownMenuItem(
                                           value: map,
@@ -472,8 +442,8 @@ class _UIInventoryState extends State<UIInventory> {
                                         filter: selectedFilterItem!,
                                         status: selectedStatusItem!,
                                         filterjenis: selectedFilterJenisItem!,
-                                        filterIDKategori:
-                                            selectedFilterKategoriItem!,
+                                        filterIDCategory:
+                                            selectedFilterCategoryItem!,
                                       ),
                                     );
                                   },
@@ -508,14 +478,19 @@ class _UIInventoryState extends State<UIInventory> {
                       ),
                       children: [
                         UIInventoryFormFieldItem(
-                          namaItemController: namaItemController,
-                          kodeBarcodeController: kodeBarcodeController,
-                          hargaItemController: hargaItemController,
+                          formKey: _formKey,
+                          nameItemController: nameItemController,
+                          codeBarcodeController: codeBarcodeController,
+                          priceItemController: priceItemController,
                         ),
                         const SizedBox(height: 10),
                         Row(
                           children: [
-                            Expanded(child: DropdownKategoriItem()),
+                            Expanded(
+                              child: DropdownCategoryItem(
+                                idCategory: selectedIdCategoryItem,
+                              ),
+                            ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: customTextField(
@@ -524,7 +499,7 @@ class _UIInventoryState extends State<UIInventory> {
                                   text: context.select<InventoryBloc, String>(
                                     (value) => value.state is InventoryLoaded
                                         ? (value.state as InventoryLoaded)
-                                                  .daerahCabang ??
+                                                  .areaBranch ??
                                               ""
                                         : "",
                                   ),
@@ -542,9 +517,11 @@ class _UIInventoryState extends State<UIInventory> {
                     flex: 1,
                     fit: FlexFit.loose,
                     child: UIInventoryButtonItem(
-                      namaItemController: namaItemController,
-                      hargaItemController: hargaItemController,
-                      kodeBarcodeController: kodeBarcodeController,
+                      formKey: _formKey,
+                      nameItemController: nameItemController,
+                      priceItemController: priceItemController,
+                      codeBarcodeController: codeBarcodeController,
+                      selectedIdCategoryItem: selectedIdCategoryItem,
                       resetItemForm: () {
                         _resetItemForm();
                       },
@@ -558,15 +535,15 @@ class _UIInventoryState extends State<UIInventory> {
                 children: [
                   const SizedBox(height: 10),
                   UICategoryTextFieldAndBranch(
-                    namaKategoriController: namaKategoriController,
-                    resetKategoriForm: _resetKategoriForm,
+                    nameCategoryController: nameCategoryController,
+                    resetCategoryForm: _resetCategoryForm,
                   ),
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: UIKategoriButtonKategori(
-                      nameCategoryController: namaKategoriController,
-                      resetKategoriForm: () => _resetKategoriForm(),
+                    child: UICategoryButtonCategory(
+                      nameCategoryController: nameCategoryController,
+                      resetCategoryForm: () => _resetCategoryForm(),
                     ),
                   ),
                   const Spacer(),
@@ -578,7 +555,7 @@ class _UIInventoryState extends State<UIInventory> {
                         horizontal: 20,
                       ),
                       child: Text(
-                        "PANDUAN:\nUntuk hapus Kategori, silahkan klik dan tahan Kategori yang diinginkan",
+                        "PANDUAN:\nUntuk hapus Kategori, silahkan geser kiri Kategori yang diinginkan.",
                         style: lv05TextStyle,
                         textAlign: TextAlign.center,
                       ),
@@ -625,15 +602,16 @@ class _UIInventoryState extends State<UIInventory> {
   }
 
   void _resetItemForm() {
+    _formKey.currentState!.reset();
     final bloc = context.read<InventoryBloc>();
     bloc.add(InvResetItemForm());
-    namaItemController.clear();
-    hargaItemController.clear();
-    kodeBarcodeController.clear();
+    nameItemController.clear();
+    priceItemController.clear();
+    codeBarcodeController.clear();
   }
 
-  void _resetKategoriForm() {
+  void _resetCategoryForm() {
     context.read<InventoryBloc>().add(InvResetCategoryForm());
-    namaKategoriController.clear();
+    nameCategoryController.clear();
   }
 }

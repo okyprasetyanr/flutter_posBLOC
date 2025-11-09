@@ -122,7 +122,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                         Text(
                                                           "(${item.getdiscountItem}%)",
                                                           style:
-                                                              lv05textStyleHargaCondiment,
+                                                              lv05textStylePriceCondiment,
                                                         ),
                                                         const SizedBox(
                                                           width: 10,
@@ -132,7 +132,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                             item.getsubTotal,
                                                           ),
                                                           style:
-                                                              lv05textStyleHarga,
+                                                              lv05textStylePrice,
                                                         ),
                                                       ],
                                                     ),
@@ -171,7 +171,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                                   .getsubTotal,
                                                             ),
                                                             style:
-                                                                lv05textStyleHargaCondiment,
+                                                                lv05textStylePriceCondiment,
                                                           ),
                                                         ],
                                                       );

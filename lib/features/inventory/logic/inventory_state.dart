@@ -18,69 +18,69 @@ class InventoryError extends InventoryState {
 
 class InventoryLoaded extends InventoryState with EquatableMixin {
   final String? selectedIdBranch;
-  final String? daerahCabang;
+  final String? areaBranch;
   final String? selectedFilterItem;
   final String? selectedStatusItem;
   final String? selectedFilterJenisItem;
-  final String? selectedFilterIDKategoriItem;
+  final String? selectedFilterIDCategoryItem;
   final bool condimentForm;
-  final List<ModelBranch> datacabang;
+  final List<ModelBranch>? dataBranch;
   final List<ModelItem> dataItem;
-  final List<ModelCategory> dataKategori;
+  final List<ModelCategory> dataCategory;
   final List<ModelItem> filteredDataItem;
-  final ModelCategory? dataSelectedKategori;
+  final ModelCategory? dataSelectedCategory;
   final ModelItem? dataSelectedItem;
-  final ModelCategory? dataSelectedKategoriItem;
+  final ModelCategory? dataSelectedCategoryItem;
 
   InventoryLoaded({
-    this.dataSelectedKategoriItem,
-    this.selectedFilterIDKategoriItem,
+    this.dataSelectedCategoryItem,
+    this.selectedFilterIDCategoryItem,
     this.selectedFilterJenisItem,
     this.selectedFilterItem,
     this.selectedStatusItem,
     this.condimentForm = false,
-    this.dataSelectedKategori,
+    this.dataSelectedCategory,
     this.dataSelectedItem,
     this.selectedIdBranch,
-    this.daerahCabang,
-    this.datacabang = const [],
+    this.areaBranch,
+    this.dataBranch,
     this.dataItem = const [],
-    this.dataKategori = const [],
+    this.dataCategory = const [],
     this.filteredDataItem = const [],
   });
 
   InventoryLoaded copyWith({
     String? idBranch,
-    String? daerahCabang,
+    String? areaBranch,
     String? selectedFilterItem,
     String? selectedStatusItem,
     String? selectedFilterJenisItem,
-    String? selectedFilterIDKategoriItem,
+    String? selectedFilterIDCategoryItem,
     bool? condimentForm,
-    List<ModelBranch>? datacabang,
+    List<ModelBranch>? dataBranch,
     List<ModelItem>? dataItem,
-    List<ModelCategory>? dataKategori,
+    List<ModelCategory>? dataCategory,
     List<ModelItem>? filteredDataItem,
-    ModelCategory? dataSelectedKategoriItem,
-    ModelCategory? dataSelectedKategori,
+    ModelCategory? dataSelectedCategoryItem,
+    ModelCategory? dataSelectedCategory,
     ModelItem? dataSelectedItem,
   }) {
     return InventoryLoaded(
-      selectedFilterIDKategoriItem:
-          selectedFilterIDKategoriItem ?? this.selectedFilterIDKategoriItem,
+      selectedFilterIDCategoryItem:
+          selectedFilterIDCategoryItem ?? this.selectedFilterIDCategoryItem,
       selectedFilterItem: selectedFilterItem ?? this.selectedFilterItem,
       selectedFilterJenisItem:
           selectedFilterJenisItem ?? this.selectedFilterJenisItem,
       selectedStatusItem: selectedStatusItem ?? this.selectedStatusItem,
       condimentForm: condimentForm ?? this.condimentForm,
       selectedIdBranch: idBranch ?? this.selectedIdBranch,
-      daerahCabang: daerahCabang ?? this.daerahCabang,
-      datacabang: datacabang ?? this.datacabang,
+      areaBranch: areaBranch ?? this.areaBranch,
+      dataBranch: dataBranch ?? this.dataBranch,
       dataItem: dataItem ?? this.dataItem,
-      dataKategori: dataKategori ?? this.dataKategori,
+      dataCategory: dataCategory ?? this.dataCategory,
       filteredDataItem: filteredDataItem ?? this.filteredDataItem,
-      dataSelectedKategori: dataSelectedKategori,
-      dataSelectedKategoriItem: dataSelectedKategoriItem,
+      dataSelectedCategory: dataSelectedCategory,
+      dataSelectedCategoryItem: dataSelectedCategoryItem,
       dataSelectedItem: dataSelectedItem,
     );
   }
@@ -88,18 +88,18 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   @override
   List<Object?> get props => [
     selectedIdBranch,
-    daerahCabang,
+    areaBranch,
     selectedFilterItem,
     selectedStatusItem,
     selectedFilterJenisItem,
-    selectedFilterIDKategoriItem,
+    selectedFilterIDCategoryItem,
     condimentForm,
-    datacabang,
+    dataBranch,
     dataItem,
-    dataKategori,
+    dataCategory,
     filteredDataItem,
-    dataSelectedKategoriItem,
-    dataSelectedKategori,
+    dataSelectedCategoryItem,
+    dataSelectedCategory,
     dataSelectedItem,
   ];
 }

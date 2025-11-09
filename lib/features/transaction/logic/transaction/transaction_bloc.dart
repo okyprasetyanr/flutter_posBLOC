@@ -23,7 +23,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       _onSellSearchItem,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
-    on<TransactionSelectedKategoriItem>(_onSelectedKategoriItem);
+    on<TransactionSelectedCategoryItem>(_onSelectedCategoryItem);
     on<TransactionSelectedItem>(_onSelectedItem);
     on<TransactionSelectedCondiment>(_onSelectedCondiment);
     on<TransactionResetSelectedItem>(_onResetSelectedItem);
@@ -45,15 +45,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         : TransactionLoaded();
     emit(TransactionLoading());
 
-    final listCabang = repo.getBranch();
+    final listBranch = repo.getBranch();
 
-    String idBranch = event.idBranch ?? listCabang.first.getidBranch;
+    String idBranch = event.idBranch ?? listBranch.first.getidBranch;
     final listItem = repo
         .getItem(idBranch)
         .where((element) => element.getStatusItem)
         .toList();
     listItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
-    List<ModelCategory> listKategori = [
+    List<ModelCategory> listCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...repo.getCategory(idBranch),
     ];
@@ -70,8 +70,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         )
         .toList();
 
-    ModelCategory selectedIdKategori =
-        currentState.selectedCategory ?? listKategori.first;
+    ModelCategory selectedIdCategory =
+        currentState.selectedCategory ?? listCategory.first;
     emit(
       currentState.copyWith(
         dataTransactionSaved: dataTransactionSaved,
@@ -80,10 +80,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             ? listItem.where((element) => !element.getstatusCondiment).toList()
             : listItem,
         selectedIDBranch: idBranch,
-        selectedCategory: selectedIdKategori,
-        dataBranch: listCabang,
+        selectedCategory: selectedIdCategory,
+        dataBranch: listBranch,
         dataItem: listItem,
-        dataCategory: listKategori,
+        dataCategory: listCategory,
       ),
     );
   }
@@ -116,7 +116,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  _sellFilterItem(String? idkategori) {
+  _sellFilterItem(String? idCategory) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       List<ModelItem> list = List.from(
@@ -127,11 +127,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       if (currentState.isSell) {
         list = list.where((element) => !element.getstatusCondiment).toList();
       }
-      String finalidkategori =
-          idkategori ?? currentState.selectedCategory!.getidCategory;
-      if (finalidkategori != "0") {
+      String finalidCategory =
+          idCategory ?? currentState.selectedCategory!.getidCategory;
+      if (finalidCategory != "0") {
         list = list
-            .where((element) => element.getidCategoryiItem == finalidkategori)
+            .where((element) => element.getidCategoryiItem == finalidCategory)
             .toList();
       } else {
         list;
@@ -140,16 +140,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  FutureOr<void> _onSelectedKategoriItem(
-    TransactionSelectedKategoriItem event,
+  FutureOr<void> _onSelectedCategoryItem(
+    TransactionSelectedCategoryItem event,
     Emitter<TransactionState> emit,
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       emit(
         currentState.copyWith(
-          selectedCategory: event.selectedKategori,
-          filteredItem: _sellFilterItem(event.selectedKategori.getidCategory),
+          selectedCategory: event.selectedCategory,
+          filteredItem: _sellFilterItem(event.selectedCategory.getidCategory),
         ),
       );
     }

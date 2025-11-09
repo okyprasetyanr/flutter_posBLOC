@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CustomDropDownCabang extends StatelessWidget {
+class CustomDropDownBranch extends StatelessWidget {
   final int i;
-  final TextEditingController daerahcabang;
-  final TextEditingController alamatcabang;
-  final TextEditingController notelephone;
+  final TextEditingController areaBranch;
+  final TextEditingController addressBranch;
+  final TextEditingController phoneBranch;
 
-  const CustomDropDownCabang({
+  const CustomDropDownBranch({
     super.key,
     required this.i,
-    required this.daerahcabang,
-    required this.alamatcabang,
-    required this.notelephone,
+    required this.areaBranch,
+    required this.addressBranch,
+    required this.phoneBranch,
   });
 
   @override
@@ -32,7 +32,7 @@ class CustomDropDownCabang extends StatelessWidget {
             customTextFieldSignUp(
               "Daerah Cabang",
               "Masukkan daerah...",
-              daerahcabang,
+              areaBranch,
               validator: (value) => null,
               keyboardType: TextInputType.none,
             ),
@@ -40,7 +40,7 @@ class CustomDropDownCabang extends StatelessWidget {
             customTextFieldSignUp(
               "Alamat Cabang",
               "Masukkan alamat...",
-              alamatcabang,
+              addressBranch,
               validator: (value) => null,
               keyboardType: TextInputType.none,
             ),
@@ -48,7 +48,7 @@ class CustomDropDownCabang extends StatelessWidget {
             customTextFieldSignUp(
               "No. Telepon",
               "Masukkan no telepon...",
-              notelephone,
+              phoneBranch,
               validator: (value) => null,
               keyboardType: TextInputType.number,
             ),

@@ -99,7 +99,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               formatUang(items[index].getpriceItem),
-                              style: lv05textStyleHarga,
+                              style: lv05textStylePrice,
                               textAlign: TextAlign.left,
                             ),
                           ),

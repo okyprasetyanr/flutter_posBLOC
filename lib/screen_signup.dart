@@ -19,29 +19,29 @@ class ScreenSignup extends StatefulWidget {
 class _ScreenSignupState extends State<ScreenSignup> {
   final DatabaseReference databaseref = FirebaseDatabase.instance.ref();
   TextEditingController password = TextEditingController();
-  TextEditingController namaperusahaan = TextEditingController();
-  TextEditingController emailperusahaan = TextEditingController();
-  TextEditingController notelephoneperusahaan = TextEditingController();
-  List<TextEditingController> daerahcabang = [];
-  List<TextEditingController> alamatcabang = [];
-  List<TextEditingController> notelephone = [];
+  TextEditingController nameCompany = TextEditingController();
+  TextEditingController emailCompany = TextEditingController();
+  TextEditingController phoneCompany = TextEditingController();
+  List<TextEditingController> areaBranch = [];
+  List<TextEditingController> adressBranch = [];
+  List<TextEditingController> phoneBranch = [];
   String? selectedDay;
   String? selectedMonth;
   String? selectedYear;
-  String? selectedcabang = "1";
+  String? selectedBranch = "1";
   @override
   void dispose() {
     password.dispose();
-    namaperusahaan.dispose();
-    emailperusahaan.dispose();
-    notelephoneperusahaan.dispose();
-    for (var c in daerahcabang) {
+    nameCompany.dispose();
+    emailCompany.dispose();
+    phoneCompany.dispose();
+    for (var c in areaBranch) {
       c.dispose();
     }
-    for (var c in alamatcabang) {
+    for (var c in adressBranch) {
       c.dispose();
     }
-    for (var c in notelephone) {
+    for (var c in phoneBranch) {
       c.dispose();
     }
     super.dispose();
@@ -50,12 +50,12 @@ class _ScreenSignupState extends State<ScreenSignup> {
   @override
   void initState() {
     super.initState();
-    if (selectedcabang != null) {
-      int totalcabang = int.tryParse(selectedcabang!) ?? 1;
-      for (int i = 0; i < totalcabang; i++) {
-        daerahcabang.add(TextEditingController());
-        alamatcabang.add(TextEditingController());
-        notelephone.add(TextEditingController());
+    if (selectedBranch != null) {
+      int totalBranch = int.tryParse(selectedBranch!) ?? 1;
+      for (int i = 0; i < totalBranch; i++) {
+        areaBranch.add(TextEditingController());
+        adressBranch.add(TextEditingController());
+        phoneBranch.add(TextEditingController());
       }
     }
   }
@@ -80,8 +80,8 @@ class _ScreenSignupState extends State<ScreenSignup> {
     ];
     List<String> years = List.generate(100, (index) => '${2025 - index}');
     final formKey = GlobalKey<FormState>();
-    List<String> cabang = ["1", "2", "3"];
-    selectedcabang ??= "1";
+    List<String> branch = ["1", "2", "3"];
+    selectedBranch ??= "1";
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -110,7 +110,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                       child: customTextFieldSignUp(
                         "E-mail",
                         "email@...",
-                        emailperusahaan,
+                        emailCompany,
                         validator: (value) => null,
                         keyboardType: TextInputType.emailAddress,
                       ),
@@ -266,7 +266,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                 customTextFieldSignUp(
                                   "Nama Perusahaan",
                                   "Perusahaan...",
-                                  namaperusahaan,
+                                  nameCompany,
                                   validator: (value) => null,
                                   keyboardType: TextInputType.none,
                                 ),
@@ -281,14 +281,14 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                         borderRadius: BorderRadius.circular(15),
                                         child: DropdownButtonFormField<String>(
                                           isExpanded: false,
-                                          initialValue: selectedcabang,
+                                          initialValue: selectedBranch,
                                           hint: Center(
                                             child: Text(
-                                              "$selectedcabang",
+                                              "$selectedBranch",
                                               style: hintTextStyle,
                                             ),
                                           ),
-                                          items: cabang
+                                          items: branch
                                               .map(
                                                 (m) => DropdownMenuItem(
                                                   value: m,
@@ -298,19 +298,19 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                               .toList(),
                                           onChanged: (value) {
                                             setState(() {
-                                              selectedcabang = value;
+                                              selectedBranch = value;
                                               int total =
                                                   int.tryParse(value ?? "0") ??
                                                   0;
-                                              daerahcabang = List.generate(
+                                              areaBranch = List.generate(
                                                 total,
                                                 (_) => TextEditingController(),
                                               );
-                                              alamatcabang = List.generate(
+                                              adressBranch = List.generate(
                                                 total,
                                                 (_) => TextEditingController(),
                                               );
-                                              notelephone = List.generate(
+                                              phoneBranch = List.generate(
                                                 total,
                                                 (_) => TextEditingController(),
                                               );
@@ -333,7 +333,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                       child: customTextFieldSignUp(
                                         "No. Telephone",
                                         "08...",
-                                        notelephoneperusahaan,
+                                        phoneCompany,
                                         validator: (value) => null,
                                         keyboardType: TextInputType.number,
                                       ),
@@ -344,12 +344,12 @@ class _ScreenSignupState extends State<ScreenSignup> {
 
                                 Column(
                                   children: List.generate(
-                                    int.tryParse(selectedcabang ?? "1") ?? 1,
-                                    (index) => CustomDropDownCabang(
+                                    int.tryParse(selectedBranch ?? "1") ?? 1,
+                                    (index) => CustomDropDownBranch(
                                       i: index + 1,
-                                      daerahcabang: daerahcabang[index],
-                                      alamatcabang: alamatcabang[index],
-                                      notelephone: notelephone[index],
+                                      areaBranch: areaBranch[index],
+                                      addressBranch: adressBranch[index],
+                                      phoneBranch: phoneBranch[index],
                                     ),
                                   ),
                                 ),
@@ -387,7 +387,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                         UserCredential userCredential = await FirebaseAuth
                             .instance
                             .createUserWithEmailAndPassword(
-                              email: emailperusahaan.text,
+                              email: emailCompany.text,
                               password: password.text,
                             );
 
@@ -398,24 +398,23 @@ class _ScreenSignupState extends State<ScreenSignup> {
                         final ref = FirebaseFirestore.instance.collection(
                           "users",
                         );
-                        int totalcabang = int.tryParse(selectedcabang!) ?? 1;
-                        List<Map<String, dynamic>> mapCabang = [];
+                        int totalBranch = int.tryParse(selectedBranch!) ?? 1;
+                        List<Map<String, dynamic>> mapBranch = [];
 
-                        for (int i = 0; i < totalcabang; i++) {
-                          mapCabang.add({
-                            "id_cabang": Uuid().v4(),
-                            "daerah_cabang": daerahcabang[i].text,
-                            "alamat_cabang": alamatcabang[i].text,
-                            "no_telephone_cabang": notelephone[i].text,
+                        for (int i = 0; i < totalBranch; i++) {
+                          mapBranch.add({
+                            "id_branch": Uuid().v4(),
+                            "area_branch": areaBranch[i].text,
+                            "address_branch": adressBranch[i].text,
+                            "phone_branch": phoneBranch[i].text,
                           });
                         }
 
                         await ref.doc(iduser).set({
-                          "nama_perusahaan": namaperusahaan.text,
-                          "no_telp_perusahaan": notelephoneperusahaan.text,
-                          "bergabung":
-                              "$selectedYear-$selectedMonth-$selectedDay",
-                          "cabang": mapCabang,
+                          "name_company": nameCompany.text,
+                          "phone_company": phoneCompany.text,
+                          "join": "$selectedYear-$selectedMonth-$selectedDay",
+                          "branch": mapBranch,
                         });
 
                         if (!mounted) return;

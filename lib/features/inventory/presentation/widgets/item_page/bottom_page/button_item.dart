@@ -11,28 +11,24 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class UIInventoryButtonItem extends StatelessWidget {
-  final TextEditingController namaItemController;
-  final TextEditingController hargaItemController;
-  final TextEditingController kodeBarcodeController;
+  final TextEditingController nameItemController;
+  final TextEditingController priceItemController;
+  final TextEditingController codeBarcodeController;
+  final ValueNotifier<String?> selectedIdCategoryItem;
   final VoidCallback resetItemForm;
+  final GlobalKey<FormState> formKey;
   const UIInventoryButtonItem({
     super.key,
-    required this.namaItemController,
-    required this.hargaItemController,
-    required this.kodeBarcodeController,
+    required this.nameItemController,
+    required this.priceItemController,
+    required this.codeBarcodeController,
     required this.resetItemForm,
+    required this.selectedIdCategoryItem,
+    required this.formKey,
   });
 
   @override
   Widget build(BuildContext context) {
-    String? selectedKategori = context.select<InventoryBloc, String?>(
-      (bloc) => bloc.state is InventoryLoaded
-          ? (bloc.state as InventoryLoaded)
-                .dataSelectedKategoriItem
-                ?.getidCategory
-          : null,
-    );
-
     return Padding(
       padding: EdgeInsetsGeometry.only(bottom: 5),
       child: Row(
@@ -68,11 +64,17 @@ class UIInventoryButtonItem extends StatelessWidget {
           Expanded(
             child: ElevatedButton.icon(
               onPressed: () {
-                if (namaItemController.text.isEmpty ||
-                    hargaItemController.text.isEmpty ||
-                    kodeBarcodeController.text.isEmpty ||
-                    selectedKategori == null) {
-                  customSnackBar(context, "Data belum lengkap!");
+                if (!formKey.currentState!.validate()) {
+                  customSnackBar(context, "Kode/Barcode sudah digunakan!");
+                } else if (nameItemController.text.isEmpty ||
+                    priceItemController.text.isEmpty ||
+                    codeBarcodeController.text.isEmpty ||
+                    selectedIdCategoryItem.value == null) {
+                  formKey.currentState!.reset();
+                  customSnackBar(
+                    context,
+                    "Data belum lengkap atau tidak sesuai!",
+                  );
                 } else {
                   final bloc = context.read<InventoryBloc>().state;
                   if (bloc is InventoryLoaded) {
@@ -81,21 +83,21 @@ class UIInventoryButtonItem extends StatelessWidget {
                         : bloc.dataSelectedItem!.getidItem;
                     final data = ModelItem(
                       qtyItem: 0,
-                      nameItem: namaItemController.text,
+                      nameItem: nameItemController.text,
                       idItem: idUser,
-                      priceItem: double.tryParse(hargaItemController.text)!,
-                      idCategoryItem: selectedKategori,
+                      priceItem: double.tryParse(priceItemController.text)!,
+                      idCategoryItem: selectedIdCategoryItem.value!,
                       statusCondiment: bloc.condimentForm,
                       urlImage: "",
                       idBranch: bloc.selectedIdBranch!,
-                      barcode: kodeBarcodeController.text,
+                      barcode: codeBarcodeController.text,
                       statusItem: true,
-                      dateItem: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                      created: DateFormat('yyyy-MM-dd').format(DateTime.now()),
                     );
                     context.read<InventoryBloc>().add(
                       InvUploadItem(item: data),
                     );
-
+                    print("Log UIInventory: Simpan: $data");
                     resetItemForm();
                   }
                 }

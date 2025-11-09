@@ -9,13 +9,13 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:uuid/uuid.dart';
 
-class UIKategoriButtonKategori extends StatelessWidget {
+class UICategoryButtonCategory extends StatelessWidget {
   final TextEditingController nameCategoryController;
-  final VoidCallback resetKategoriForm;
-  const UIKategoriButtonKategori({
+  final VoidCallback resetCategoryForm;
+  const UICategoryButtonCategory({
     super.key,
     required this.nameCategoryController,
-    required this.resetKategoriForm,
+    required this.resetCategoryForm,
   });
 
   @override
@@ -23,7 +23,7 @@ class UIKategoriButtonKategori extends StatelessWidget {
     return BlocSelector<InventoryBloc, InventoryState, ModelCategory?>(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return state.dataSelectedKategori;
+          return state.dataSelectedCategory;
         }
         return null;
       },
@@ -45,7 +45,7 @@ class UIKategoriButtonKategori extends StatelessWidget {
               InvUploadCategory(category: category),
             );
 
-            resetKategoriForm();
+            resetCategoryForm();
           },
           style: ElevatedButton.styleFrom(
             iconColor: Colors.white,
