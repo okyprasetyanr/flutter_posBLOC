@@ -69,14 +69,14 @@ class ModelPartner extends Equatable {
     );
   }
 
-  factory ModelPartner.fromMap(Map<String, dynamic> map) {
+  factory ModelPartner.fromMap(Map<String, dynamic> map, String id) {
     return ModelPartner(
       idBranch: map['id_branch'],
-      id: map['id_partner'],
+      id: id,
       name: map['name_partner'],
       phone: map['phone_partner'],
-      email: map['email'],
-      balance: map['balance'],
+      email: map['email_partner'],
+      balance: map['balance_partner'],
       type: PartnerType.values.firstWhere(
         (e) => e.name == map['type'],
         orElse: () => PartnerType.customer,
@@ -107,19 +107,7 @@ class ModelPartner extends Equatable {
   static List<ModelPartner> getDataListPartner(QuerySnapshot data) {
     return data.docs.map((map) {
       final dataPartner = map.data() as Map<String, dynamic>;
-      return ModelPartner(
-        idBranch: dataPartner['id_branch'],
-        id: dataPartner['id_partner'],
-        name: dataPartner['name_partner'],
-        phone: dataPartner['phone_partner'],
-        email: dataPartner['email_partner'],
-        balance: dataPartner['balance_partner'],
-        type: PartnerType.values.firstWhere(
-          (e) => e.name == dataPartner['type'],
-          orElse: () => PartnerType.customer,
-        ),
-        createdAt: dataPartner['created'],
-      );
+      return ModelPartner.fromMap(dataPartner, map.id);
     }).toList();
   }
 

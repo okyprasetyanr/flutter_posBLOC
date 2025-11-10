@@ -47,26 +47,36 @@ class FirestoreWorker {
         return;
       }
 
+      final writeBatch = _firestore.batch();
+      final keysToDelete = <dynamic>[];
+
       debugPrint('Log FirestoreWorker: Proses Push ${keys.length}');
       for (var key in keys) {
         final item = box.get(key);
         if (item == null) continue;
 
         try {
-          await _firestore
+          final docRef = _firestore
               .collection(item['collection'])
-              .doc(item['docId'])
-              .set(item['data']);
-          await box.delete(key);
+              .doc(item['docId']);
+          writeBatch.set(docRef, item['data']);
+          keysToDelete.add(key);
           debugPrint(
-            'Log FirestoreWorker: Terkirim ${item['collection']}/${item['docId']}',
+            'Log FirestoreWorker: Queued ${item['collection']}/${item['docId']}',
           );
         } catch (e) {
           debugPrint(
-            'Log FirestoreWorker: Gagal ${item['collection']}/${item['docId']}: $e',
+            'Log FirestoreWorker: Gagal Queue ${item['collection']}/${item['docId']}: $e',
           );
         }
       }
+
+      await writeBatch.commit();
+      for (var key in keysToDelete) {
+        await box.delete(key);
+      }
+
+      debugPrint('Log FirestoreWorker: ✅ Semua data berhasil dikirim.');
     } catch (e) {
       debugPrint('Log FirestoreWorker: Error $e');
     } finally {

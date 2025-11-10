@@ -31,24 +31,24 @@ class DataUserRepositoryCache {
       initBatch(),
     ]);
 
-    for (var a in dataBranch!) {
-      debugPrint("Log DataUserRepositoryCache branch: $a");
-    }
-    for (var a in dataItem!) {
-      debugPrint("Log DataUserRepositoryCache item: $a");
-    }
-    for (var a in dataCategory!) {
-      debugPrint("Log DataUserRepositoryCache Category: $a");
-    }
-    for (var a in dataTransactionSell!) {
-      debugPrint("Log DataUserRepositoryCache transactionSell: $a");
-    }
-    for (var a in dataTransactionBuy!) {
-      debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
-    }
-    for (var a in dataBatch!) {
-      debugPrint("Log DataUserRepositoryCache dataItemBatch: $a");
-    }
+    // for (var a in dataBranch!) {
+    //   debugPrint("Log DataUserRepositoryCache branch: $a");
+    // }
+    // for (var a in dataItem!) {
+    //   debugPrint("Log DataUserRepositoryCache item: $a");
+    // }
+    // for (var a in dataCategory!) {
+    //   debugPrint("Log DataUserRepositoryCache Category: $a");
+    // }
+    // for (var a in dataTransactionSell!) {
+    //   debugPrint("Log DataUserRepositoryCache transactionSell: $a");
+    // }
+    // for (var a in dataTransactionBuy!) {
+    //   debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
+    // }
+    // for (var a in dataBatch!) {
+    //   debugPrint("Log DataUserRepositoryCache dataItemBatch: $a");
+    // }
 
     return true;
   }
@@ -75,6 +75,9 @@ class DataUserRepositoryCache {
 
   Future<void> initPartner() async {
     dataPartner = await repo.getPartner();
+    for (var a in dataPartner!) {
+      debugPrint("Log DataUserRepositoryCache partner: $a");
+    }
   }
 
   Future<void> initBatch() async {

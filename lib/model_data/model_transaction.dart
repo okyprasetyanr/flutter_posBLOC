@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
+import 'package:flutter_pos/model_data/model_data_counter.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
@@ -154,7 +156,7 @@ class ModelTransaction extends Equatable {
 
   Future<void> pushDataTransaction({
     required bool isSell,
-    required List<ModelBatch> dataBatch,
+    required DataUserRepositoryCache dataRepo,
   }) async {
     if (!isSell) {
       List<ModelItemBatch> convertToItemBatch = [];
@@ -204,44 +206,65 @@ class ModelTransaction extends Equatable {
 
       await writeBatch.commit();
 
-      dataBatch.add(newBatch);
+      dataRepo.dataBatch!.add(newBatch);
 
+      ModelCounter.pushDataCounter(
+        ModelCounter(
+          counterSell: 0,
+          counterBuy: 1,
+          counterIncome: 0,
+          counterExpense: 0,
+          idBranch: _idBranch,
+        ),
+      );
     } else {
-      reduceQtyFIFO(dataBatch: dataBatch);
+      reduceQtyFIFO(dataBatch: dataRepo.dataBatch!);
     }
+
+    final dataTransaction = isSell
+        ? dataRepo.dataTransactionSell
+        : dataRepo.dataTransactionBuy;
+
+    final transaction = ModelTransaction(
+      statusTransaction: _statusTransaction,
+      idBranch: _idBranch,
+      date: _date,
+      note: _note,
+      invoice: _invoice,
+      namePartner: _namePartner,
+      idPartner: _idPartner,
+      nameOperator: _nameOperator,
+      idOperator: _idOperator,
+      paymentMethod: _paymentMethod,
+      discount: _discount,
+      ppn: _ppn,
+      totalItem: _totalItem,
+      charge: _charge,
+      subTotal: _subTotal,
+      billPaid: _billPaid,
+      totalCharge: _totalCharge,
+      totalPpn: _totalPpn,
+      totalDiscount: _totalDiscount,
+      total: _total,
+      itemsOrdered: [],
+      dataSplit: [],
+    );
+
+    dataTransaction!.add(
+      transaction.copyWith(
+        itemsOrdered: _itemsOrdered,
+        dataSplit: _dataSplit,
+        statusTransaction: _statusTransaction,
+      ),
+    );
+
+    debugPrint("Log ModelTransaction: Cek Transaksi: $dataTransaction");
 
     final transRef = FirebaseFirestore.instance
         .collection(isSell ? "transaction_sell" : "transaction_buy")
         .doc(_invoice);
     final writeBatch = FirebaseFirestore.instance.batch();
-
-    await transRef.set(
-      convertToMapTransaction(
-        ModelTransaction(
-          idBranch: _idBranch,
-          date: _date,
-          note: _note,
-          invoice: _invoice,
-          namePartner: _namePartner,
-          idPartner: _idPartner,
-          nameOperator: _nameOperator,
-          idOperator: _idOperator,
-          paymentMethod: _paymentMethod,
-          discount: _discount,
-          ppn: _ppn,
-          totalItem: _totalItem,
-          charge: _charge,
-          subTotal: _subTotal,
-          billPaid: _billPaid,
-          totalCharge: _totalCharge,
-          totalPpn: _totalPpn,
-          totalDiscount: _totalDiscount,
-          total: _total,
-          itemsOrdered: [],
-          dataSplit: [],
-        ),
-      ),
-    );
+    writeBatch.set(transRef, convertToMapTransaction(transaction));
 
     final itemsRef = transRef.collection("items_ordered");
 
@@ -390,7 +413,7 @@ class ModelTransaction extends Equatable {
           dataSplit: splitData,
           date: dataTransaction['date'],
           note: dataTransaction['note'],
-          invoice: dataTransaction['invoice'],
+          invoice: map.id,
           namePartner: dataTransaction['name_partner'],
           idPartner: dataTransaction['id_partner'],
           nameOperator: dataTransaction['name_operator'],

@@ -54,7 +54,7 @@ class ModelBatch extends Equatable {
           final itemData = itemDoc.data();
 
           return ModelItemBatch(
-            invoice: itemData['invoice'],
+            invoice: itemDoc.id,
             idBranch: itemData['id_branch'],
             idItem: itemData['id_item'],
             idOrdered: itemData['id_ordered'],
@@ -73,7 +73,7 @@ class ModelBatch extends Equatable {
         }).toList();
 
         return ModelBatch(
-          invoice: dataBatch['invoice'],
+          invoice: map.id,
           idBranch: dataBatch['id_branch'],
           date_buy: dataBatch['date_buy'],
           items_batch: itemsBatch,

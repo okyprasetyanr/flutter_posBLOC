@@ -186,9 +186,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     add(InvResetItemForm());
     await event.item.pushDataItem();
 
-    debugPrint(
-      "Log InventoryBloc: PushData: ${event.item} : a5d09acd-40f0-473d-8b40-bab30a9f036b",
-    );
+    debugPrint("Log InventoryBloc: PushData: ${event.item}");
     final currentState = state;
     if (currentState is InventoryLoaded) {
       final edit = repoCache.dataItem!.any(
@@ -280,7 +278,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    debugPrint("Log InventoryBloc SelectedCategoryItem: ${event.dataCategoryItem}");
+    debugPrint(
+      "Log InventoryBloc SelectedCategoryItem: ${event.dataCategoryItem}",
+    );
     emit(
       currentState.copyWith(dataSelectedCategoryItem: event.dataCategoryItem),
     );

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_data_counter.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
@@ -37,7 +38,7 @@ class DataUserRepository {
 
   Future<List<ModelPartner>> getPartner() async {
     final data = await _db
-        .collection("partner")
+        .collection("partners")
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
@@ -69,5 +70,11 @@ class DataUserRepository {
         .get();
 
     return ModelBatch.getDataListBatch(data);
+  }
+
+  Future<ModelCounter> getCounter() async {
+    final data = await _db.collection("counter").doc(UserSession.uidUser).get();
+
+    return ModelCounter.getDataCounter(data);
   }
 }

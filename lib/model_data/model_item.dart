@@ -105,7 +105,7 @@ class ModelItem extends Equatable {
       final dataItem = map.data() as Map<String, dynamic>;
       return ModelItem(
         nameItem: dataItem['name_item'],
-        idItem: dataItem['id_item'],
+        idItem: map.id,
         priceItem: dataItem['price_item'].toDouble(),
         idCategoryItem: dataItem['id_category'],
         statusCondiment: dataItem['status_condiment'],

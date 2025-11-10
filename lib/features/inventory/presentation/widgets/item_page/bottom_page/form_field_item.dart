@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/condiment_switch.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 
 class UIInventoryFormFieldItem extends StatelessWidget {
@@ -25,10 +25,16 @@ class UIInventoryFormFieldItem extends StatelessWidget {
     return BlocListener<InventoryBloc, InventoryState>(
       listener: (context, state) {
         if (state is InventoryLoaded) {
-          nameItemController.text = state.dataSelectedItem?.getnameItem ?? "";
-          codeBarcodeController.text = state.dataSelectedItem?.getBarcode ?? "";
+          final dataSelectedItem = state.dataSelectedItem;
+          nameItemController.text = dataSelectedItem?.getnameItem ?? "";
+          codeBarcodeController.text = dataSelectedItem?.getBarcode ?? "";
           priceItemController.text = formatQtyOrPrice(
-            state.dataSelectedItem?.getpriceItem ?? 0,
+            dataSelectedItem?.getpriceItem ?? 0,
+          );
+          context.read<InventoryBloc>().add(
+            InvCondimentForm(
+              condimentForm: dataSelectedItem?.getstatusCondiment ?? false,
+            ),
           );
         }
       },
@@ -44,7 +50,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
               true,
               validator: (value) {
                 final bloc = context.read<InventoryBloc>().state;
-                if (bloc is InventoryLoaded) {
+                if (bloc is InventoryLoaded && bloc.dataSelectedItem == null) {
                   bool duplicated = bloc.dataItem.any(
                     (element) => element.getBarcode == value,
                   );

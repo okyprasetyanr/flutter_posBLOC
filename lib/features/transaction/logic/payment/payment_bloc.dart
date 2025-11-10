@@ -288,9 +288,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final transaction = currentState.transaction_sell!.copyWith(
         statusTransaction: statusTransaction(index: event.index),
       );
+      final bloc = event.context.read<DataUserRepositoryCache>();
       await transaction.pushDataTransaction(
         isSell: currentState.isSell,
-        dataBatch: event.context.read<DataUserRepositoryCache>().dataBatch!,
+        dataRepo: bloc,
       );
     }
 

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_data_counter.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
@@ -29,7 +29,6 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
     'total_ppn': transaction.gettotalPpn,
     'payment_method': transaction.getpaymentMethod,
     'date': transaction.getdate,
-    'invoice': transaction.getinvoice,
     'name_partner': transaction.getnamePartner,
     'id_partner': transaction.getidPartner,
     'name_operator': transaction.getnameOperator,
@@ -50,7 +49,6 @@ Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
     'name_item': _itemsOrdered.getnameItem,
     'id_item': _itemsOrdered.getidItem,
     'id_branch': _itemsOrdered.getidBranch,
-    'id_ordered': _itemsOrdered.getidOrdered,
     'qty_item': _itemsOrdered.getqtyItem,
     'price_item': _itemsOrdered.getpriceItem,
     'price_item_final': _itemsOrdered.getpriceItemFinal,
@@ -58,7 +56,6 @@ Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
     'id_category_item': _itemsOrdered.getidCategoryItem,
     'id_condiment': _itemsOrdered.getidCondiment,
     'note': _itemsOrdered.getNote,
-    'condiment': convertToMapCondimentOrdered(_itemsOrdered.getCondiment),
   };
 }
 
@@ -71,7 +68,6 @@ List<Map<String, dynamic>> convertToMapCondimentOrdered(
       'name_item': condiment.getnameItem,
       'id_item': condiment.getidItem,
       'id_branch': condiment.getidBranch,
-      'id_ordered': condiment.getidOrdered,
       'qty_item': condiment.getqtyItem,
       'price_item': condiment.getpriceItem,
       'price_item_final': condiment.getpriceItemFinal,
@@ -89,7 +85,6 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
     'uid_user': UserSession.getUidUser(),
     'name_item': item.getnameItem,
     'price_item': item.getpriceItem,
-    'id_item': item.getidItem,
     'id_category': item.getidCategoryiItem,
     'status_condiment': item.getstatusCondiment,
     'url_image': item.geturlImage,
@@ -104,7 +99,6 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
 Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
   return {
     'uid_user': UserSession.getUidUser(),
-    'invoice': batch.getinvoice,
     'id_branch': batch.getidBranch,
     'date_buy': batch.getdate_buy,
   };
@@ -115,11 +109,9 @@ Map<String, dynamic> convertToMapItemBatch(
   String invoice,
 ) {
   return {
-    'invoice': invoice,
     'name_item': itemBatch.getnameItem,
     'id_branch': itemBatch.getidBranch,
     'id_item': itemBatch.getidItem,
-    'id_ordered': itemBatch.getidOrdered,
     'id_category_item': itemBatch.getidCategoryItem,
     'note': itemBatch.getnote,
     'date_buy': itemBatch.getdateBuy,
@@ -137,7 +129,6 @@ Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
     'id_branch': partner.getidBranch,
     'uid_user': UserSession.getUidUser(),
-    'id_partner': partner.getid,
     'name_partner': partner.getname,
     'phone_partner': partner.getphone,
     'email_partner': partner.getemail,
@@ -151,11 +142,15 @@ Map<String, dynamic> convertToMapCategory(ModelCategory category) {
   return {
     'name_category': category.getnameCategory,
     'id_category': category.getidCategory,
-    'id_branch': category.getidBranch,
     'uid_user': UserSession.getUidUser(),
   };
 }
 
-Map<String, dynamic> convertToMap(Widget toContext, String text) {
-  return {'toContext': toContext, 'text_menu': text};
+Map<String, dynamic> convertToMapCounter(ModelCounter dataCounter) {
+  return {
+    'counter_sell': dataCounter.getcounterSell,
+    'counter_buy': dataCounter.getcounterBuy,
+    'counter_income': dataCounter.getcounterIncome,
+    'counter_expense': dataCounter.getcounterExpense,
+  };
 }
