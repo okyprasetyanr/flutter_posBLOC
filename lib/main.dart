@@ -19,22 +19,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Hive.initFlutter();
-  await Hive.openBox('firestoreQueue'); // simpan queue
+  await Hive.openBox('firestoreQueue');
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  _listenConnection();
 
   Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
   Workmanager().registerPeriodicTask(
     "1",
     "firestoreWorker",
-    frequency: Duration(minutes: 15), // minimal 15 menit di iOS
+    frequency: Duration(minutes: 15),
   );
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final dataUserRepo = DataUserRepository();
   final repo = DataUserRepositoryCache(dataUserRepo);
+
   runApp(
     RepositoryProvider.value(
       value: repo,
@@ -56,9 +61,29 @@ void main() async {
   );
 }
 
+void _listenConnection() {
+  Connectivity().onConnectivityChanged.listen((
+    ConnectivityResult result,
+  ) async {
+    if (result == ConnectivityResult.mobile ||
+        result == ConnectivityResult.wifi) {
+      debugPrint("Log Main: Internet hidup");
+      await FirestoreWorker.processQueueHive();
+    }
+  });
+}
+
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    await FirestoreWorker.processQueue();
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await Hive.initFlutter();
+    await Hive.openBox('firestoreQueue');
+
+    await FirestoreWorker.processQueueHive();
+    debugPrint('Log Main: FirestoreWorker masuk');
     return Future.value(true);
   });
 }

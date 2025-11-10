@@ -97,7 +97,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                     context.read<InventoryBloc>().add(
                       InvUploadItem(item: data),
                     );
-                    print("Log UIInventory: Simpan: $data");
+                    debugPrint("Log UIInventory: Simpan: $data");
                     resetItemForm();
                   }
                 }

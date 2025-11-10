@@ -206,7 +206,6 @@ class ModelTransaction extends Equatable {
 
       dataBatch.add(newBatch);
 
-      print("cek aja datanya ${newBatch}");
     } else {
       reduceQtyFIFO(dataBatch: dataBatch);
     }
@@ -336,7 +335,6 @@ class ModelTransaction extends Equatable {
     }
 
     await batchWrite.commit();
-    print("✅ Semua qtyItem_out berhasil diupdate ke Firestore!");
   }
 
   static Future<List<ModelTransaction>> getDataListTransaction(

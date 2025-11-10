@@ -32,22 +32,22 @@ class DataUserRepositoryCache {
     ]);
 
     for (var a in dataBranch!) {
-      print("Log DataUserRepositoryCache branch: $a");
+      debugPrint("Log DataUserRepositoryCache branch: $a");
     }
     for (var a in dataItem!) {
-      print("Log DataUserRepositoryCache item: $a");
+      debugPrint("Log DataUserRepositoryCache item: $a");
     }
     for (var a in dataCategory!) {
-      print("Log DataUserRepositoryCache Category: $a");
+      debugPrint("Log DataUserRepositoryCache Category: $a");
     }
     for (var a in dataTransactionSell!) {
-      print("Log DataUserRepositoryCache transactionSell: $a");
+      debugPrint("Log DataUserRepositoryCache transactionSell: $a");
     }
     for (var a in dataTransactionBuy!) {
-      print("Log DataUserRepositoryCache transactionBuy: $a");
+      debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
     }
     for (var a in dataBatch!) {
-      print("Log DataUserRepositoryCache dataItemBatch: $a");
+      debugPrint("Log DataUserRepositoryCache dataItemBatch: $a");
     }
 
     return true;

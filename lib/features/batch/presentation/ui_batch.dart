@@ -58,7 +58,7 @@ class _UiBatchState extends State<UiBatch> {
         return null;
       },
       builder: (context, state) {
-        print("Log UIBatch: itemBatch: $state");
+        debugPrint("Log UIBatch: itemBatch: $state");
         return state == null || state.isEmpty
             ? Center(
                 child: Text(

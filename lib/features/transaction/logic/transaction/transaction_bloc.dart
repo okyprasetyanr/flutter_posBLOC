@@ -177,7 +177,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      print("Log TransactionBloc: _onResetSelectedItem: masuk");
+      debugPrint("Log TransactionBloc: _onResetSelectedItem: masuk");
       emit(currentState.copyWith(selectedItem: null, editSelectedItem: false));
     }
   }
@@ -274,7 +274,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       if (event.expiredDate != null) {
         expiredDate = event.expiredDate!;
-        print("Log TransactionBloc: ExpiredDate value: $expiredDate}");
+        debugPrint("Log TransactionBloc: ExpiredDate value: $expiredDate}");
       }
 
       if (event.mode != null) {
@@ -284,14 +284,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           qty--;
         }
       }
-      print("Log TransactionBloc: AdjustItem value: ${event.note}");
+      debugPrint("Log TransactionBloc: AdjustItem value: ${event.note}");
       if (event.customprice != null && event.customprice != 0) {
-        print("Log TransactionBloc: test Nominal");
+        debugPrint("Log TransactionBloc: test Nominal");
         price = event.customprice!;
       }
       if (event.discount != null) {
         discount = event.discount!;
-        print("Log TransactionBloc: Diskon value: $discount");
+        debugPrint("Log TransactionBloc: Diskon value: $discount");
       }
       if (event.qty != null) {
         qty = event.qty!;
@@ -337,7 +337,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      print("Log TransactionBloc: ResetOrderedItem");
+      debugPrint("Log TransactionBloc: ResetOrderedItem");
       emit(
         currentState.copyWith(
           selectedItem: null,

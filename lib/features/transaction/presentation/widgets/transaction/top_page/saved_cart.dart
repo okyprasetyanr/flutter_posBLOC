@@ -51,7 +51,7 @@ class UITransactionSavedCart extends StatelessWidget {
                         final transaction = state[index];
                         return InkWell(
                           onTap: () {
-                            print(
+                            debugPrint(
                               "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
                             );
                             context.read<TransactionBloc>().add(

@@ -13,7 +13,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final DataUserRepositoryCache repoCache;
 
   InventoryBloc(this.repoCache) : super(InventoryInitial()) {
-    print("Log InventoryBloc: Masuk Bloc");
+    debugPrint("Log InventoryBloc: Masuk Bloc");
     on<InvGetData>(_onGetData);
 
     on<InvFilterItem>(_onFilteredItem);
@@ -280,7 +280,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    print("Log InventoryBloc SelectedCategoryItem: ${event.dataCategoryItem}");
+    debugPrint("Log InventoryBloc SelectedCategoryItem: ${event.dataCategoryItem}");
     emit(
       currentState.copyWith(dataSelectedCategoryItem: event.dataCategoryItem),
     );
@@ -293,7 +293,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? (state as InventoryLoaded)
         : InventoryLoaded();
-    print("Log InventoryBloc SelectedItem: ${event.selectedItem}");
+    debugPrint("Log InventoryBloc SelectedItem: ${event.selectedItem}");
     emit(currentState.copyWith(dataSelectedItem: event.selectedItem));
   }
 
@@ -305,7 +305,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    print("Log InventoryBloc: resetSelectedItem: masuk");
+    debugPrint("Log InventoryBloc: resetSelectedItem: masuk");
     emit(
       currentState.copyWith(
         dataSelectedItem: null,
@@ -354,7 +354,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? state as InventoryLoaded
         : InventoryLoaded();
-    print(
+    debugPrint(
       "Log InventoryBloc CondimentForm: ${event.condimentForm} ${currentState.dataSelectedItem}",
     );
 

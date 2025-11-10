@@ -141,7 +141,7 @@ class _UIInventoryState extends State<UIInventory> {
     await context.read<DataUserRepositoryCache>().initCategory();
 
     _initData();
-    print("UI Inventory: initData");
+    debugPrint("UI Inventory: initData");
   }
 
   @override

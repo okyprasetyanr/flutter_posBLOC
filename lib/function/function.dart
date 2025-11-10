@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,9 +45,9 @@ Future<void> checkAndroidVersion() async {
   final androidInfo = await deviceInfo.androidInfo;
   final sdkInt = androidInfo.version.sdkInt;
 
-  print('Android SDK version: $sdkInt');
-  print('Device: ${androidInfo.model}');
-  print('Brand: ${androidInfo.brand}');
+  debugPrint('Android SDK version: $sdkInt');
+  debugPrint('Device: ${androidInfo.model}');
+  debugPrint('Brand: ${androidInfo.brand}');
 }
 
 String generateInvoice({String? branchId, String? operatorId, int? queue}) {

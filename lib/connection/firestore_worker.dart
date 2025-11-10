@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -17,26 +18,59 @@ class FirestoreWorker {
       'docId': docId,
       'data': data,
     });
-    print('✅ Data queued for $collection/$docId');
+    debugPrint('Log FirestoreWorker: Simpan Hive: $collection/$docId');
   }
 
-  static Future<void> processQueue() async {
-    final conn = await Connectivity().checkConnectivity();
-    if (conn == ConnectivityResult.none) return; // offline, skip dulu
+  static bool _isProcessingPush = false;
 
-    final keys = _box.keys.toList();
-    for (var key in keys) {
-      final item = _box.get(key);
-      try {
-        await _firestore
-            .collection(item['collection'])
-            .doc(item['docId'])
-            .set(item['data']);
-        await _box.delete(key);
-        print('✅ Sent ${item['collection']}/${item['docId']}');
-      } catch (e) {
-        print('❌ Failed to send: $e');
+  static Future<void> processQueueHive() async {
+    if (_isProcessingPush) {
+      debugPrint('Log FirestoreWorker: Skipped');
+      return;
+    }
+
+    _isProcessingPush = true;
+    try {
+      final conn = await Connectivity().checkConnectivity();
+      if (conn == ConnectivityResult.none) {
+        debugPrint('Log FirestoreWorker: Skipped Offline');
+        _isProcessingPush = false;
+        return;
       }
+
+      final box = _box;
+      final keys = box.keys.toList();
+
+      if (keys.isEmpty) {
+        debugPrint('Log FirestoreWorker: Hive Kosong');
+        _isProcessingPush = false;
+        return;
+      }
+
+      debugPrint('Log FirestoreWorker: Proses Push ${keys.length}');
+      for (var key in keys) {
+        final item = box.get(key);
+        if (item == null) continue;
+
+        try {
+          await _firestore
+              .collection(item['collection'])
+              .doc(item['docId'])
+              .set(item['data']);
+          await box.delete(key);
+          debugPrint(
+            'Log FirestoreWorker: Terkirim ${item['collection']}/${item['docId']}',
+          );
+        } catch (e) {
+          debugPrint(
+            'Log FirestoreWorker: Gagal ${item['collection']}/${item['docId']}: $e',
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Log FirestoreWorker: Error $e');
+    } finally {
+      _isProcessingPush = false;
     }
   }
 }

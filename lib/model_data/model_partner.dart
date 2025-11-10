@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/request/push_data.dart';
 

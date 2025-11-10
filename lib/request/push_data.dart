@@ -5,5 +5,6 @@ Future<void> pushWorkerDataPartner({
   required String id,
   required Map<String, dynamic> dataPartner,
 }) async {
-  await FirestoreWorker.enqueue('partner', id, dataPartner);
+  await FirestoreWorker.enqueue(collection, id, dataPartner);
+  await FirestoreWorker.processQueueHive();
 }
