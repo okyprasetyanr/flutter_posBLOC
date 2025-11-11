@@ -22,21 +22,34 @@ class UIInventoryDropdownBranch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<InventoryBloc, InventoryState, List<ModelBranch>?>(
+    return BlocSelector<
+      InventoryBloc,
+      InventoryState,
+      (List<ModelBranch>?, String?)
+    >(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return state.dataBranch;
+          return (state.dataBranch, state.selectedIdBranch);
         }
-        return null;
+        return (null, null);
       },
       builder: (context, state) {
-        if (state == null) {
+        if (state.$1 == null) {
           return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
         }
         return DropdownButtonFormField<ModelBranch>(
-          style: lv1TextStyle,
-          initialValue: state.first,
-          items: state
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(vertical: 4),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+            label: Text("Pilih Cabang", style: lv1TextStyle),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+          ),
+          style: lv05TextStyle,
+          initialValue: state.$1!.firstWhere(
+            (element) => element.getidBranch == state.$2,
+          ),
+          items: state.$1!
               .map(
                 (map) => DropdownMenuItem(
                   value: map,

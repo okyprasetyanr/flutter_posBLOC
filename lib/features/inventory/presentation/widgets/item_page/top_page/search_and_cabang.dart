@@ -54,15 +54,19 @@ class UIInventorySearchAndBranch extends StatelessWidget {
           Expanded(
             flex: 2,
             child:
-                BlocSelector<InventoryBloc, InventoryState, List<ModelBranch>?>(
+                BlocSelector<
+                  InventoryBloc,
+                  InventoryState,
+                  (List<ModelBranch>?, String?)
+                >(
                   selector: (state) {
                     if (state is InventoryLoaded) {
-                      return state.dataBranch;
+                      return (state.dataBranch, state.selectedIdBranch);
                     }
-                    return null;
+                    return (null, null);
                   },
                   builder: (context, state) {
-                    if (state == null) {
+                    if (state.$1 == null) {
                       return const SpinKitThreeBounce(
                         color: Colors.blue,
                         size: 30.0,
@@ -79,8 +83,10 @@ class UIInventorySearchAndBranch extends StatelessWidget {
                         label: Text("Pilih Cabang", style: lv1TextStyle),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
-                      initialValue: state.first,
-                      items: state
+                      initialValue: state.$1!.firstWhere(
+                        (element) => element.getidBranch == state.$2,
+                      ),
+                      items: state.$1!
                           .map(
                             (map) => DropdownMenuItem(
                               value: map,

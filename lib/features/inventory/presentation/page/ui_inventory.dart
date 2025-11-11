@@ -10,7 +10,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/button_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_category_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/form_field_item.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/dropdown_branch.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/dropdown_branch.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/filters_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
@@ -306,6 +306,7 @@ class _UIInventoryState extends State<UIInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 10),
                   Container(
                     padding: const EdgeInsets.only(left: 10),
                     width: 150,

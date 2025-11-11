@@ -39,7 +39,6 @@ class ModelBatch extends Equatable {
 
   static Future<List<ModelBatch>> getDataListBatch(QuerySnapshot data) async {
     final firestore = FirebaseFirestore.instance;
-
     return await Future.wait(
       data.docs.map((map) async {
         final dataBatch = map.data() as Map<String, dynamic>;
@@ -57,7 +56,7 @@ class ModelBatch extends Equatable {
             invoice: itemDoc.id,
             idBranch: itemData['id_branch'],
             idItem: itemData['id_item'],
-            idOrdered: itemData['id_ordered'],
+            idOrdered: itemDoc.id,
             nameItem: itemData['name_item'],
             idCategoryItem: itemData['id_category_item'],
             note: itemData['note'],

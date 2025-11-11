@@ -246,6 +246,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       final category = repoCache.getCategory(event.category.getidBranch);
       category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
 
+      debugPrint("Log InvBloc: UploadCategory: $category");
+
       emit(currentState.copyWith(dataCategory: category));
     }
   }

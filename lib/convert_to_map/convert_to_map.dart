@@ -141,7 +141,7 @@ Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
 Map<String, dynamic> convertToMapCategory(ModelCategory category) {
   return {
     'name_category': category.getnameCategory,
-    'id_category': category.getidCategory,
+    'id_branch': category.getidBranch,
     'uid_user': UserSession.getUidUser(),
   };
 }

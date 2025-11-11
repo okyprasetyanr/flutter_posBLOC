@@ -356,8 +356,15 @@ class ModelTransaction extends Equatable {
 
       dataBatch[i] = batch.copyWith(items_batch: updatedItems);
     }
+    bool isFound = false;
+    for (final batch in dataBatch) {
+      isFound = dataItemBatch.any((x) => x.getinvoice == batch.getinvoice);
+    }
+    try{
+      await batchWrite.commit();
+    }catch(e){
 
-    await batchWrite.commit();
+    }
   }
 
   static Future<List<ModelTransaction>> getDataListTransaction(
@@ -367,7 +374,7 @@ class ModelTransaction extends Equatable {
     final firestore = FirebaseFirestore.instance;
     final String collection = isSell ? 'transaction_sell' : 'transaction_buy';
 
-    final transactions = await Future.wait(
+    return await Future.wait(
       data.docs.map((map) async {
         final dataTransaction = map.data() as Map<String, dynamic>;
 
@@ -382,6 +389,8 @@ class ModelTransaction extends Equatable {
             final condimentSnapshot = await firestore
                 .collection(collection)
                 .doc(map.id)
+                .collection('items_ordered')
+                .doc(itemDoc.id)
                 .collection('condiment')
                 .get();
 
@@ -395,7 +404,6 @@ class ModelTransaction extends Equatable {
             return ModelItemOrdered.fromMap(itemDoc.data(), condiments, false);
           }),
         );
-
         final splitSnapshot = await firestore
             .collection(collection)
             .doc(map.id)
@@ -441,8 +449,6 @@ class ModelTransaction extends Equatable {
         );
       }),
     );
-
-    return transactions;
   }
 
   @override

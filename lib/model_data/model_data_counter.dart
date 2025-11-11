@@ -41,30 +41,29 @@ class ModelCounter {
   static Future<void> pushDataCounter(ModelCounter dataCounter) async {
     final writeBatch = FirebaseFirestore.instance.batch();
 
-    final counterRef = FirebaseFirestore.instance
-        .collection('counter')
-        .doc(UserSession.getUidUser());
-
     final datacounterRef = FirebaseFirestore.instance
         .collection('counter')
         .doc(UserSession.getUidUser())
         .collection('branch')
         .doc(dataCounter.getidBranch);
 
-    writeBatch.set(counterRef, {'dummy': ""});
     writeBatch.set(datacounterRef, convertToMapCounter(dataCounter));
     await writeBatch.commit();
   }
 
-  static ModelCounter getDataCounter(
-    DocumentSnapshot<Map<String, dynamic>> dataCounter,
+  static List<ModelCounter> getDataCounter(
+    QuerySnapshot<Map<String, dynamic>> dataCounter,
   ) {
-    return ModelCounter(
-      idBranch: dataCounter.id,
-      counterSell: dataCounter['counter_sell'],
-      counterBuy: dataCounter['counter_buy'],
-      counterIncome: dataCounter['counter_income'],
-      counterExpense: dataCounter['counter_expense'],
-    );
+    return dataCounter.docs
+        .map(
+          (counter) => ModelCounter(
+            idBranch: counter.id,
+            counterSell: counter['counter_sell'],
+            counterBuy: counter['counter_buy'],
+            counterIncome: counter['counter_income'],
+            counterExpense: counter['counter_expense'],
+          ),
+        )
+        .toList();
   }
 }

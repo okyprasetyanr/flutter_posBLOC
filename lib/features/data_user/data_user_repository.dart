@@ -21,7 +21,7 @@ class DataUserRepository {
 
   Future<List<ModelItem>> getItem() async {
     final data = await _db
-        .collection("items")
+        .collection('items')
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
     return ModelItem.getDataListItem(data);
@@ -29,7 +29,7 @@ class DataUserRepository {
 
   Future<List<ModelCategory>> getCategory() async {
     final data = await _db
-        .collection("category")
+        .collection('category')
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
@@ -38,7 +38,7 @@ class DataUserRepository {
 
   Future<List<ModelPartner>> getPartner() async {
     final data = await _db
-        .collection("partners")
+        .collection('partners')
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
@@ -47,7 +47,7 @@ class DataUserRepository {
 
   Future<List<ModelTransaction>> getTransactionSell() async {
     final data = await _db
-        .collection("transaction_sell")
+        .collection('transaction_sell')
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
@@ -56,7 +56,7 @@ class DataUserRepository {
 
   Future<List<ModelTransaction>> getTransactionBuy() async {
     final data = await _db
-        .collection("transaction_buy")
+        .collection('transaction_buy')
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
@@ -65,15 +65,19 @@ class DataUserRepository {
 
   Future<List<ModelBatch>> getBatch() async {
     final data = await _db
-        .collection("batch")
+        .collection('batch')
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
 
     return ModelBatch.getDataListBatch(data);
   }
 
-  Future<ModelCounter> getCounter() async {
-    final data = await _db.collection("counter").doc(UserSession.uidUser).get();
+  Future<List<ModelCounter>> getCounter() async {
+    final data = await _db
+        .collection('counter')
+        .doc(UserSession.uidUser)
+        .collection('branch')
+        .get();
 
     return ModelCounter.getDataCounter(data);
   }
