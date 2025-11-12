@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_data_counter.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
@@ -218,7 +219,9 @@ class ModelTransaction extends Equatable {
         ),
       );
     } else {
-      reduceQtyFIFO(dataBatch: dataRepo.dataBatch!);
+      if (UserSession.getStatusFifo()!) {
+        reduceQtyFIFO(dataBatch: dataRepo.dataBatch!);
+      }
     }
 
     final dataTransaction = isSell
@@ -356,15 +359,8 @@ class ModelTransaction extends Equatable {
 
       dataBatch[i] = batch.copyWith(items_batch: updatedItems);
     }
-    bool isFound = false;
-    for (final batch in dataBatch) {
-      isFound = dataItemBatch.any((x) => x.getinvoice == batch.getinvoice);
-    }
-    try{
-      await batchWrite.commit();
-    }catch(e){
 
-    }
+    await batchWrite.commit();
   }
 
   static Future<List<ModelTransaction>> getDataListTransaction(
@@ -396,12 +392,21 @@ class ModelTransaction extends Equatable {
 
             final condiments = condimentSnapshot.docs
                 .map(
-                  (condimentDoc) =>
-                      ModelItemOrdered.fromMap(condimentDoc.data(), [], true),
+                  (condimentDoc) => ModelItemOrdered.fromMap(
+                    condimentDoc.data(),
+                    [],
+                    true,
+                    condimentDoc.id,
+                  ),
                 )
                 .toList();
 
-            return ModelItemOrdered.fromMap(itemDoc.data(), condiments, false);
+            return ModelItemOrdered.fromMap(
+              itemDoc.data(),
+              condiments,
+              false,
+              itemDoc.id,
+            );
           }),
         );
         final splitSnapshot = await firestore

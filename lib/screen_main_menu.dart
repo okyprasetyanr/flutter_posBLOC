@@ -15,6 +15,7 @@ class ScreenMainMenu extends StatefulWidget {
 }
 
 class _ScreenMainMenuState extends State<ScreenMainMenu> {
+  final currentPage = PageController();
   bool loading = true;
   String? nameCompany;
   @override
@@ -45,10 +46,23 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
     }
   }
 
+  _pageView(int page) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (currentPage.hasClients) {
+        currentPage.animateToPage(
+          page,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LayoutTopBottomMainMenu(
+        pageview: (page) => _pageView(page),
         widgetTop: layoutTop(context),
         widgetBottom: layoutBottom(),
         nameCompany: nameCompany ?? "Mohon Tunggu",
@@ -57,35 +71,90 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   }
 
   Widget layoutTop(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 3,
-      padding: const EdgeInsets.all(10),
-      shrinkWrap: true,
-      childAspectRatio: 1,
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-
+    return PageView(
+      controller: currentPage,
       children: [
-        gridViewMenu(
-          () {
-            navUpDownTransition(context, '/inventory', false);
-          },
-          Icon(Icons.inventory),
-          "Inventori",
+        GridView.count(
+          crossAxisCount: 3,
+          padding: const EdgeInsets.all(10),
+          shrinkWrap: true,
+          childAspectRatio: 1,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+
+          children: [
+            gridViewMenu(
+              () {
+                navUpDownTransition(context, '/inventory', false);
+              },
+              Icon(Icons.inventory),
+              "Inventori",
+            ),
+            gridViewMenu(
+              () {
+                navUpDownTransition(context, '/sell', false);
+              },
+              Icon(Icons.shopping_cart),
+              "Transaksi",
+            ),
+            gridViewMenu(
+              () {
+                // navUpDownTransition(context, '/partner', false);
+              },
+              Icon(Icons.assignment_outlined),
+              "Laporan",
+            ),
+          ],
         ),
-        gridViewMenu(
-          () {
-            navUpDownTransition(context, '/sell', false);
-          },
-          Icon(Icons.shopping_cart),
-          "Transaksi",
+        GridView.count(
+          crossAxisCount: 3,
+          padding: const EdgeInsets.all(10),
+          shrinkWrap: true,
+          childAspectRatio: 1,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+
+          children: [
+            gridViewMenu(
+              () {
+                navUpDownTransition(context, '/partner', false);
+              },
+              Icon(Icons.inventory),
+              "Data Kontak",
+            ),
+            gridViewMenu(
+              () {
+                // navUpDownTransition(context, '/cahsflow', false);
+              },
+              Icon(Icons.shopping_cart),
+              "Data Alur Kas",
+            ),
+          ],
         ),
-        gridViewMenu(
-          () {
-            navUpDownTransition(context, '/partner', false);
-          },
-          Icon(Icons.assignment_outlined),
-          "Laporan",
+        GridView.count(
+          crossAxisCount: 3,
+          padding: const EdgeInsets.all(10),
+          shrinkWrap: true,
+          childAspectRatio: 1,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+
+          children: [
+            gridViewMenu(
+              () {
+                navUpDownTransition(context, '/historysell', false);
+              },
+              Icon(Icons.inventory),
+              "Riwayat Treansaksi",
+            ),
+            gridViewMenu(
+              () {
+                // navUpDownTransition(context, '/partner', false);
+              },
+              Icon(Icons.assignment_outlined),
+              "Riwayat Kas",
+            ),
+          ],
         ),
       ],
     );
@@ -138,9 +207,11 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
     );
   }
 
-  Widget gridViewMenu(VoidCallback onPressed, Icon icon, String text) {
+  Widget gridViewMenu(VoidCallback onPressed, Icon? icon, String text) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        minimumSize: Size(0, 0),
+        padding: EdgeInsets.symmetric(horizontal: 8),
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
@@ -149,9 +220,9 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon,
+          icon ?? SizedBox(width: 10),
           const SizedBox(height: 5),
-          Text(text, style: lv1TextStyle),
+          Text(text, style: lv05TextStyle, textAlign: TextAlign.center),
         ],
       ),
     );

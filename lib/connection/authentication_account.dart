@@ -24,9 +24,10 @@ Future<String?> authenticatorAcoount({
           String uid = userCredential.user!.uid;
           SharedPreferences pref = await SharedPreferences.getInstance();
           await pref.setString('uid_user', uid);
+          await pref.setBool('fifo', true);
           navUpDownTransition(context, '/mainmenu', true);
         });
-    // sukses -> return null artinya ga ada error
+
     return cred;
   } on FirebaseAuthException catch (e) {
     return _mapFirebaseAuthCodeToKey(e);
@@ -35,7 +36,6 @@ Future<String?> authenticatorAcoount({
   }
 }
 
-// helper: kembalikan key atau message yang konsisten
 String _mapFirebaseAuthCodeToKey(FirebaseAuthException e) {
   switch (e.code) {
     case 'invalid-email':
@@ -55,9 +55,8 @@ String _mapFirebaseAuthCodeToKey(FirebaseAuthException e) {
     case 'weak-password':
       return 'weak-password';
     case 'network-request-failed':
-      // kadang muncul kalau koneksi jelek / config salah
       return 'network-request-failed';
     default:
-      return 'firebase-${e.code}'; // debug: bisa log e.message
+      return 'firebase-${e.code}';
   }
 }

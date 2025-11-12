@@ -28,15 +28,21 @@ String formatQtyOrPrice(double qty) {
 class UserSession {
   static DataUserRepositoryCache? repo;
   static String? uidUser;
+  static bool? fifo;
 
   static Future<void> init(DataUserRepositoryCache repo) async {
     final pref = await SharedPreferences.getInstance();
     uidUser = pref.getString("uid_user");
+    fifo = pref.getBool("fifo");
     await repo.initData();
   }
 
   static String? getUidUser() {
     return uidUser;
+  }
+
+  static bool? getStatusFifo() {
+    return fifo;
   }
 }
 

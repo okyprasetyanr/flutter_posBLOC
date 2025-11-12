@@ -103,6 +103,7 @@ class ModelItemOrdered extends Equatable {
     Map<String, dynamic> items,
     List<ModelItemOrdered> condiment,
     bool isCondiment,
+    String id_ordered,
   ) {
     debugPrint("Log ModelData: Transaction ItemOrdered: ${items}");
 
@@ -114,7 +115,7 @@ class ModelItemOrdered extends Equatable {
       nameItem: items['name_item'],
       idItem: items['id_item'],
       idBranch: items['id_branch'],
-      idOrdered: items['id_ordered'],
+      idOrdered: id_ordered,
       qtyItem: double.tryParse(items['qty_item'].toString())!,
       priceItem: double.tryParse(items['price_item'].toString())!,
       discountItem: int.tryParse(items['discount_item'].toString())!,

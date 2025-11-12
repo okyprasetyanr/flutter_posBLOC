@@ -13,6 +13,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/bottom_page/list_view_ordered_item.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
 class UITransaction extends StatefulWidget {
@@ -130,6 +131,12 @@ class _UITransactionState extends State<UITransaction> {
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
+                    if (!UserSession.getStatusFifo()!) {
+                      return customSnackBar(
+                        context,
+                        'Hanya dapat dilakukan di fitur FIFO!',
+                      );
+                    }
                     context.read<TransactionBloc>().add(
                       TransactionStatusTransaction(),
                     );

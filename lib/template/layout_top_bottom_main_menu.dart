@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
@@ -6,15 +8,18 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
   final Widget widgetTop;
   final Widget widgetBottom;
   final String nameCompany;
+  final Function(int) pageview;
   const LayoutTopBottomMainMenu({
-    super.key,
+    Key? key,
     required this.widgetTop,
     required this.widgetBottom,
     required this.nameCompany,
-  });
+    required this.pageview,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final selectedMenu = ValueNotifier<String>("Main");
     double height = MediaQuery.of(context).size.height;
     double paddingtStatusBar, paddingBottomMain;
     Orientation rotation = MediaQuery.of(context).orientation;
@@ -61,20 +66,31 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
               Row(
                 children: [
                   listTileText(
-                    () {},
-                    Icon(Icons.dashboard_customize_sharp),
+                    () {
+                      pageview(0);
+                      selectedMenu.value = "Main";
+                    },
+                    Icons.dashboard_customize_sharp,
                     "Main",
-                  ),
-                  listTileText(() {}, Icon(Icons.table_chart_rounded), "Data"),
-                  listTileText(
-                    () {},
-                    Icon(Icons.work_history_rounded),
-                    "Histori",
+                    selectedMenu,
                   ),
                   listTileText(
-                    () {},
-                    Icon(Icons.dashboard_customize_rounded),
-                    "Laporan",
+                    () {
+                      pageview(1);
+                      selectedMenu.value = "Data";
+                    },
+                    Icons.table_chart_rounded,
+                    "Data",
+                    selectedMenu,
+                  ),
+                  listTileText(
+                    () {
+                      pageview(2);
+                      selectedMenu.value = "Riwayat";
+                    },
+                    Icons.work_history_rounded,
+                    "Riwayat",
+                    selectedMenu,
                   ),
                 ],
               ),
@@ -130,16 +146,42 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
     ];
   }
 
-  Widget listTileText(VoidCallback onTap, Widget leading, String text) {
+  Widget listTileText(
+    VoidCallback onTap,
+    IconData leading,
+    String text,
+    ValueNotifier selectedMenu,
+  ) {
     return Flexible(
       fit: FlexFit.loose,
       child: ListTile(
         onTap: onTap,
-        title: Column(
-          children: [
-            leading,
-            Text(text, style: lv0TextStyle, maxLines: 1),
-          ],
+        title: ValueListenableBuilder(
+          valueListenable: selectedMenu,
+          builder: (context, value, child) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: text == value
+                    ? Colors.white.withValues(alpha: 0.5)
+                    : Colors.transparent,
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    leading,
+                    color: text == value ? Colors.black : Colors.white,
+                  ),
+                  Text(
+                    text,
+                    style: text == value ? lv05TextStyle : lv05TextStyleWhite,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

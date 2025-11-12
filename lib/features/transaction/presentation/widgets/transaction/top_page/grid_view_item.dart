@@ -10,6 +10,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class UITransactionGridViewItem extends StatelessWidget {
@@ -18,17 +19,21 @@ class UITransactionGridViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String idPesananNota = Uuid().v1();
-    return BlocSelector<TransactionBloc, TransactionState, List<ModelItem>>(
+    return BlocSelector<
+      TransactionBloc,
+      TransactionState,
+      (List<ModelItem>, bool)
+    >(
       selector: (state) {
         if (state is TransactionLoaded) {
-          return state.filteredItem!.toList();
+          return (state.filteredItem!.toList(), state.isSell);
         }
-        return [];
+        return ([], false);
       },
       builder: (context, items) {
         return GridView.builder(
           padding: const EdgeInsets.all(10),
-          itemCount: items.length,
+          itemCount: items.$1.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             mainAxisExtent: 110,
@@ -37,6 +42,7 @@ class UITransactionGridViewItem extends StatelessWidget {
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
+            final item = items.$1[index];
             return Material(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
@@ -48,21 +54,29 @@ class UITransactionGridViewItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     onTap: () {
                       ModelItemOrdered selectedItem = ModelItemOrdered(
-                        priceItemFinal: items[index].getpriceItem,
-                        subTotal: items[index].getpriceItem,
-                        idBranch: items[index].getidBranch,
-                        nameItem: items[index].getnameItem,
-                        idItem: items[index].getidItem,
+                        priceItemFinal: item.getpriceItem,
+                        subTotal: item.getpriceItem,
+                        idBranch: item.getidBranch,
+                        nameItem: item.getnameItem,
+                        idItem: item.getidItem,
                         idOrdered: idPesananNota,
                         qtyItem: 1,
-                        priceItem: items[index].getpriceItem,
+                        priceItem: item.getpriceItem,
                         discountItem: 0,
-                        idCategoryItem: items[index].getidCategoryiItem,
+                        idCategoryItem: item.getidCategoryiItem,
                         idCondiment: Uuid().v4(),
                         note: "",
                         condiment: [],
                       );
 
+                      if (UserSession.getStatusFifo()! &&
+                          item.getqtyItem == 0 &&
+                          items.$2) {
+                        return customSnackBar(
+                          context,
+                          "Mode FIFO: Qty 0 tidak dapat dipilih!",
+                        );
+                      }
                       context.read<TransactionBloc>().add(
                         TransactionSelectedItem(
                           selectedItem: selectedItem,
@@ -89,7 +103,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                           Image.asset("assets/logo.png", height: 50),
                           const SizedBox(height: 5),
                           Text(
-                            items[index].getnameItem,
+                            item.getnameItem,
                             style: lv05TextStyle,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
@@ -98,7 +112,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              formatUang(items[index].getpriceItem),
+                              formatUang(item.getpriceItem),
                               style: lv05textStylePrice,
                               textAlign: TextAlign.left,
                             ),
@@ -109,7 +123,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
                               child: Text(
-                                formatQtyOrPrice(items[index].getqtyItem),
+                                formatQtyOrPrice(item.getqtyItem),
                                 style: lv0TextStyleRED,
                                 textAlign: TextAlign.left,
                               ),
@@ -119,7 +133,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (items[index].getstatusCondiment)
+                  if (item.getstatusCondiment)
                     Positioned(
                       top: -5,
                       right: -15,
