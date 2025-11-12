@@ -6,13 +6,13 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/partner/logic/partner_state.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class UIPartner extends StatefulWidget {
@@ -448,9 +448,10 @@ class _UIPartnerState extends State<UIPartner> {
                           ? PartnerType.customer
                           : PartnerType.supplier
                     : PartnerType.customer,
-                createdAt: DateTime.parse(
-                  DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                ),
+                date: parseDate(date: formatDate(date: DateTime.now())),
+              );
+              debugPrint(
+                "UIPartner: date: ${parseDate(date: formatDate(date: DateTime.now()))},",
               );
               context.read<PartnerBloc>().add(
                 PartnerUploadDataPartner(partner: partner),

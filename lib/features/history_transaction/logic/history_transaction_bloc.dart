@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_pos/function/function.dart';
 
 class HistoryTransactionBloc
     extends Bloc<HistoryTransactionEvent, HistoryTransactionState> {
@@ -28,31 +29,55 @@ class HistoryTransactionBloc
   ) async {
     emit(HistoryTransactionLoading());
 
-    final dateDefault = DateTime.parse(
-      DateFormat('yyyy-MM-dd').format(DateTime.now()),
-    );
-    DateTime dateStart = event.dateStart ?? dateDefault;
-    DateTime dateEnd = event.dateEnd ?? dateDefault;
+    final now = DateTime.now();
+    final dateDefault = DateTime(now.year, now.month, now.day); // Tanpa jam
+
+    final dateStart = event.dateStart != null
+        ? DateTime(
+            event.dateStart!.year,
+            event.dateStart!.month,
+            event.dateStart!.day,
+          )
+        : dateDefault;
+
+    final dateEnd = event.dateEnd != null
+        ? DateTime(
+            event.dateEnd!.year,
+            event.dateEnd!.month,
+            event.dateEnd!.day,
+          )
+        : dateDefault;
+
     final dataBranch = repoCache.getBranch();
     final idBranch = event.idBranch ?? dataBranch.first.getidBranch;
-    final filteredSell = await repoCache.getTransactionSell(idBranch).where((
+
+    DateTime onlyDate(DateTime d) => DateTime(d.year, d.month, d.day);
+
+    bool isSameOrAfter(DateTime a, DateTime b) {
+      final da = onlyDate(a);
+      final db = onlyDate(b);
+      return da.isAtSameMomentAs(db) || da.isAfter(db);
+    }
+
+    bool isSameOrBefore(DateTime a, DateTime b) {
+      final da = onlyDate(a);
+      final db = onlyDate(b);
+      return da.isAtSameMomentAs(db) || da.isBefore(db);
+    }
+
+    final filteredSell = repoCache.getTransactionSell(idBranch).where((
       element,
     ) {
-      return (element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart)) &&
-          (element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isBefore(dateEnd));
+      final d = onlyDate(element.getdate);
+      return isSameOrAfter(d, dateStart) && isSameOrBefore(d, dateEnd);
     }).toList();
 
-    final filteredBuy = await repoCache.getTransactionBuy(idBranch).where((
-      element,
-    ) {
-      return (element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart)) &&
-          (element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isBefore(dateEnd));
+    final filteredBuy = repoCache.getTransactionBuy(idBranch).where((element) {
+      final d = onlyDate(element.getdate);
+      return isSameOrAfter(d, dateStart) && isSameOrBefore(d, dateEnd);
     }).toList();
 
+    debugPrint("Log HistoryTransactionBloc: getData: $filteredSell");
     emit(
       HistoryTransactionLoaded(
         filteredSell: filteredSell,

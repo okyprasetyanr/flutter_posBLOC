@@ -5,9 +5,9 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/request/delete_data.dart';
-import 'package:intl/intl.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final DataUserRepositoryCache repoCache;
@@ -73,7 +73,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         list;
       }
 
-      var formatter = DateFormat('dd-MM-yyyy');
       switch (filter) {
         case "A-Z":
           list.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
@@ -89,16 +88,16 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           break;
         case "Terbaru":
           list.sort(
-            (a, b) => formatter
-                .parse(b.getDateItem.toString())
-                .compareTo(formatter.parse(a.getDateItem.toString())),
+            (a, b) => formatDate(
+              date: b.getDateItem,
+            ).compareTo(formatDate(date: a.getDateItem)),
           );
           break;
         case "Terlama":
           list.sort(
-            (a, b) => formatter
-                .parse(a.getDateItem.toString())
-                .compareTo(formatter.parse(b.getDateItem.toString())),
+            (a, b) => formatDate(
+              date: b.getDateItem,
+            ).compareTo(formatDate(date: a.getDateItem)),
           );
           break;
       }

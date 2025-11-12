@@ -108,8 +108,6 @@ class ModelItemOrdered extends Equatable {
     debugPrint("Log ModelData: Transaction ItemOrdered: ${items}");
 
     return ModelItemOrdered(
-      dateBuy: DateTime.parse(items['date_buy']),
-      expiredDate: DateTime.parse(items['expired_date']),
       priceItemFinal: double.tryParse(items['price_item_final'].toString())!,
       subTotal: double.tryParse(items['sub_total'].toString())!,
       nameItem: items['name_item'],

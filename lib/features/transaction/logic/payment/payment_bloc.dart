@@ -13,7 +13,6 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:intl/intl.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
@@ -169,9 +168,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       debugPrint("Log PaymentBloc: cek SellState");
 
       debugPrint("Log PaymentBloc: cek Faktur");
-      final formattedDate = DateFormat(
-        'yyyy-MM-dd hh:mm:ss',
-      ).format(DateTime.now());
+      final formattedDate = parseDate(date: formatDate(date: DateTime.now()));
 
       List<ModelItemOrdered> itemOrdered = await List.from(
         sellState.itemOrdered ?? [],
@@ -183,9 +180,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
       if (!sellState.isSell) {
         itemOrdered = itemOrdered
-            .map(
-              (item) => item.copyWith(dateBuy: DateTime.parse(formattedDate)),
-            )
+            .map((item) => item.copyWith(dateBuy: formattedDate))
             .toList();
       }
       int itemTotal = 0;
@@ -234,7 +229,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             billPaid: 0,
             note: note,
             paymentMethod: "Cash",
-            date: DateTime.parse(formattedDate),
+            date: formattedDate,
             invoice: invoice,
             namePartner: sellState.selectedPartner?.getname ?? "",
             idPartner: sellState.selectedPartner?.getid ?? "",

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 Future<void> deleteDataPartner(String id) async {
-  await FirebaseFirestore.instance.collection('partner').doc(id).delete();
+  await FirebaseFirestore.instance.collection('partners').doc(id).delete();
 }
 
 Future<void> deleteDataCategory(String id) async {

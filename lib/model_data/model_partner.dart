@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
 enum PartnerType { customer, supplier }
@@ -12,7 +14,7 @@ class ModelPartner extends Equatable {
   final String _email;
   final double _balance;
   final PartnerType _type;
-  final DateTime _createdAt;
+  final DateTime _date;
   final String _idBranch;
 
   const ModelPartner({
@@ -23,13 +25,13 @@ class ModelPartner extends Equatable {
     required String email,
     required double balance,
     required PartnerType type,
-    required DateTime createdAt,
+    required DateTime date,
   }) : _idBranch = idBranch,
        _id = id,
        _name = name,
        _phone = phone,
        _email = email,
-       _createdAt = createdAt,
+       _date = date,
        _balance = balance,
        _type = type;
 
@@ -42,7 +44,7 @@ class ModelPartner extends Equatable {
   double get getbalance => _balance;
   String get getidBranch => _idBranch;
   PartnerType get gettype => _type;
-  DateTime get getcreated => _createdAt;
+  DateTime get getdate => _date;
 
   ModelPartner copyWith({
     String? idBranch,
@@ -54,7 +56,7 @@ class ModelPartner extends Equatable {
     String? notes,
     double? balance,
     PartnerType? type,
-    DateTime? createdAt,
+    DateTime? date,
     String? updatedAt,
   }) {
     return ModelPartner(
@@ -65,7 +67,7 @@ class ModelPartner extends Equatable {
       email: email ?? this._email,
       balance: balance ?? this._balance,
       type: type ?? this._type,
-      createdAt: createdAt ?? this._createdAt,
+      date: date ?? this._date,
     );
   }
 
@@ -81,13 +83,14 @@ class ModelPartner extends Equatable {
         (e) => e.name == map['type'],
         orElse: () => PartnerType.customer,
       ),
-      createdAt: DateTime.parse(map['created']),
+      date: parseDate(date: map['date']),
     );
   }
 
   Future<void> pushDataPartner() async {
+    debugPrint("Log ModelPartner: _date: $_date");
     pushWorkerDataPartner(
-      collection: 'partner',
+      collection: 'partners',
       id: _id,
       dataPartner: convertToMapPartner(
         ModelPartner(
@@ -98,7 +101,7 @@ class ModelPartner extends Equatable {
           email: _email,
           balance: _balance,
           type: _type,
-          createdAt: _createdAt,
+          date: _date,
         ),
       ),
     );
@@ -119,7 +122,7 @@ class ModelPartner extends Equatable {
     _email,
     _balance,
     _type,
-    _createdAt,
+    _date,
     _idBranch,
   ];
 }

@@ -25,7 +25,7 @@ class HistoryTransactionRevisionData extends HistoryTransactionEvent {}
 
 class HistoryTransactionRemoveData extends HistoryTransactionEvent {
   final BuildContext context;
-  final List<Map<String,dynamic>> dateExpired;
+  final List<Map<String, dynamic>> dateExpired;
   HistoryTransactionRemoveData(this.dateExpired, {required this.context});
 }
 

@@ -24,6 +24,12 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   final searchController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
       layoutTop: layoutTop(),
@@ -54,6 +60,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
             Text("Riwayat Transaksi", style: titleTextStyle),
             SizedBox(
               width: 80,
+              height: 40,
               child:
                   BlocSelector<
                     HistoryTransactionBloc,
@@ -118,104 +125,113 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
             ),
           ],
         ),
-        BlocSelector<
-          HistoryTransactionBloc,
-          HistoryTransactionState,
-          List<ModelTransaction>?
-        >(
-          selector: (state) {
-            if (state is HistoryTransactionLoaded) {
-              return state.isSell ? state.filteredSell : state.filteredBuy;
-            }
-            return [];
-          },
-          builder: (context, state) {
-            if (state == null) {
-              return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
-            }
-            return ListView.builder(
-              itemCount: state.length,
-              itemBuilder: (context, index) {
-                final dataTransaction = state[index];
-                return ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(0, 0),
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    context.read<HistoryTransactionBloc>().add(
-                      HistoryTransactionSelectedData(
-                        selectedData: dataTransaction,
-                      ),
+        Expanded(
+          child:
+              BlocSelector<
+                HistoryTransactionBloc,
+                HistoryTransactionState,
+                List<ModelTransaction>?
+              >(
+                selector: (state) {
+                  if (state is HistoryTransactionLoaded) {
+                    return state.isSell
+                        ? state.filteredSell
+                        : state.filteredBuy;
+                  }
+                  return [];
+                },
+                builder: (context, state) {
+                  if (state == null) {
+                    return const SpinKitThreeBounce(
+                      color: Colors.blue,
+                      size: 15.0,
                     );
-                  },
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            dataTransaction.getinvoice,
-                            style: lv05TextStyle,
+                  }
+                  return ListView.builder(
+                    itemCount: state.length,
+                    itemBuilder: (context, index) {
+                      final dataTransaction = state[index];
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(0, 0),
+                          padding: EdgeInsets.all(8),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(8),
                           ),
-                          Text(
-                            dataTransaction.getdate.toString(),
-                            style: lv05TextStyle,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text.rich(
-                              TextSpan(
-                                text: "Status: ",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
+                        ),
+                        onPressed: () {
+                          context.read<HistoryTransactionBloc>().add(
+                            HistoryTransactionSelectedData(
+                              selectedData: dataTransaction,
+                            ),
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  dataTransaction.getinvoice,
+                                  style: lv05TextStyle,
                                 ),
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        "${dataTransaction.getstatusTransaction}",
-                                    style:
-                                        dataTransaction.getstatusTransaction ==
-                                            "Done"
-                                        ? lv05textStylePrice
-                                        : lv05TextStyleRedPrice,
+                                Text(
+                                  dataTransaction.getdate.toString(),
+                                  style: lv05TextStyle,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text.rich(
+                                    TextSpan(
+                                      text: "Status: ",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              "${dataTransaction.getstatusTransaction}",
+                                          style:
+                                              dataTransaction
+                                                      .getstatusTransaction ==
+                                                  "Done"
+                                              ? lv05textStylePrice
+                                              : lv05TextStyleRedPrice,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "${dataTransaction.getpaymentMethod}",
+                                    style: lv05TextStyle,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "${dataTransaction.gettotal}",
+                                    style: lv05textStylePrice,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              "${dataTransaction.getpaymentMethod}",
+                            Text(
+                              "Catatan: ${dataTransaction.getnote}",
                               style: lv05TextStyle,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              "${dataTransaction.gettotal}",
-                              style: lv05textStylePrice,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "Catatan: ${dataTransaction.getnote}",
-                        style: lv05TextStyle,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
         ),
       ],
     );

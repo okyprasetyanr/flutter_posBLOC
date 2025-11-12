@@ -21,34 +21,37 @@ class DataUserRepositoryCache {
   DataUserRepositoryCache(this.repo);
 
   Future<bool> initData() async {
-    // await Future.wait([
-      await initBranch();
-      await initItem();
-      await initCategory();
-      await initPartner();
-      await initTransactionSell();
-      await initTransactionBuy();
-      await initBatch();
-    // ]);
+    await Future.wait([
+      initBranch(),
+      initItem(),
+      initCategory(),
+      initPartner(),
+      initTransactionSell(),
+      initTransactionBuy(),
+      initBatch(),
+    ]);
 
-    // for (var a in dataBranch!) {
-    //   debugPrint("Log DataUserRepositoryCache branch: $a");
-    // }
-    // for (var a in dataItem!) {
-    //   debugPrint("Log DataUserRepositoryCache item: $a");
-    // }
-    // for (var a in dataCategory!) {
-    //   debugPrint("Log DataUserRepositoryCache Category: $a");
-    // }
-    // for (var a in dataTransactionSell!) {
-    //   debugPrint("Log DataUserRepositoryCache transactionSell: $a");
-    // }
-    // for (var a in dataTransactionBuy!) {
-    //   debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
-    // }
-    // for (var a in dataBatch!) {
-    //   debugPrint("Log DataUserRepositoryCache dataItemBatch: $a");
-    // }
+    for (var a in dataBranch!) {
+      debugPrint("Log DataUserRepositoryCache branch: $a");
+    }
+    for (var a in dataItem!) {
+      debugPrint("Log DataUserRepositoryCache item: $a");
+    }
+    for (var a in dataCategory!) {
+      debugPrint("Log DataUserRepositoryCache Category: $a");
+    }
+    for (var a in dataTransactionSell!) {
+      debugPrint("Log DataUserRepositoryCache transactionSell: $a");
+    }
+    for (var a in dataTransactionBuy!) {
+      debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
+    }
+    for (var a in dataBatch!) {
+      debugPrint("Log DataUserRepositoryCache dataItemBatch: $a");
+    }
+    for (var a in dataPartner!) {
+      debugPrint("Log DataUserRepositoryCache dataPartner: $a");
+    }
 
     return true;
   }
@@ -136,6 +139,7 @@ class DataUserRepositoryCache {
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
+
   List<ModelTransaction> getTransactionBuy(String idBranch) {
     return dataTransactionBuy!
         .where((element) => element.getidBranch == idBranch)

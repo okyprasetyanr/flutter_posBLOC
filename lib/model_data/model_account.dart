@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_pos/function/function.dart';
 
 class UserModel {
   final String nameCompany, numTelpCompany;
@@ -14,7 +15,7 @@ class UserModel {
     return UserModel(
       nameCompany: dataUser['name_company'],
       numTelpCompany: dataUser['phone_company'],
-      join: DateTime.parse(dataUser['join']),
+      join: parseDate(date: dataUser['join']),
     );
   }
 }

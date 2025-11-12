@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class ModelBatch extends Equatable {
@@ -52,29 +53,13 @@ class ModelBatch extends Equatable {
         final itemsBatch = itemsSnapshot.docs.map((itemDoc) {
           final itemData = itemDoc.data();
 
-          return ModelItemBatch(
-            invoice: itemDoc.id,
-            idBranch: itemData['id_branch'],
-            idItem: itemData['id_item'],
-            idOrdered: itemDoc.id,
-            nameItem: itemData['name_item'],
-            idCategoryItem: itemData['id_category_item'],
-            note: itemData['note'],
-            date_buy: DateTime.parse(itemData['date_buy']),
-            expiredDate: itemData['expired_date'],
-            discountItem: itemData['discount_item'],
-            qtyItem_in: itemData['qty_item_in'],
-            qtyItem_out: itemData['qty_item_out'],
-            priceItem: itemData['price_item'],
-            subTotal: itemData['sub_total'],
-            priceItemFinal: itemData['price_item_final'],
-          );
+          return ModelItemBatch.fromMapItemsBatch(itemData, itemDoc.id);
         }).toList();
 
         return ModelBatch(
           invoice: map.id,
           idBranch: dataBatch['id_branch'],
-          date_buy: dataBatch['date_buy'],
+          date_buy: parseDate(date: dataBatch['date_buy']),
           items_batch: itemsBatch,
         );
       }).toList(),

@@ -67,3 +67,14 @@ const List<String> listStatusTransaction = ["Done", "Pending", "Revisi"];
 String statusTransaction({int? index}) {
   return listStatusTransaction[index!];
 }
+
+String formatDate({required DateTime date}) {
+  final pattern = 'yyyy-MM-dd HH:mm:ss';
+  return DateFormat(pattern).format(date);
+}
+
+DateTime parseDate({required String date, bool? minute}) {
+  final useMinute = minute ?? true;
+  final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
+  return DateFormat(pattern).parse(date);
+}

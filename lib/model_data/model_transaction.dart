@@ -428,7 +428,7 @@ class ModelTransaction extends Equatable {
           bankName: dataTransaction['bank_name'],
           itemsOrdered: itemsOrdered,
           dataSplit: splitData,
-          date: DateTime.parse(dataTransaction['date']),
+          date: parseDate(date: dataTransaction['date']),
           note: dataTransaction['note'],
           invoice: map.id,
           namePartner: dataTransaction['name_partner'],

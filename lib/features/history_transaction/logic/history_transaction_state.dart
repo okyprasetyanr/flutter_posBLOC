@@ -30,7 +30,7 @@ class HistoryTransactionLoaded extends HistoryTransactionState
     ModelTransaction? selectedData,
     bool? isSell,
   }) => HistoryTransactionLoaded(
-    idBranch: idBranch??this.idBranch,
+    idBranch: idBranch ?? this.idBranch,
     filteredBuy: filteredBuy ?? this.filteredBuy,
     filteredSell: filteredSell ?? this.filteredSell,
     isSell: isSell ?? this.isSell,
@@ -38,5 +38,11 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   );
 
   @override
-  List<Object?> get props => [idBranch,filteredSell, filteredBuy, selectedData, isSell];
+  List<Object?> get props => [
+    idBranch,
+    filteredSell,
+    filteredBuy,
+    selectedData,
+    isSell,
+  ];
 }

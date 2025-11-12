@@ -56,7 +56,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             idBranch: items[index].getidBranch,
                             barcode: items[index].getBarcode,
                             statusItem: true,
-                            created: items[index].getDateItem,
+                            date: items[index].getDateItem,
                           ),
                         ),
                       );

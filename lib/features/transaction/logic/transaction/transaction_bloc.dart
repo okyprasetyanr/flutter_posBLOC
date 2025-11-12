@@ -267,10 +267,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       double price = event.customprice == 0
           ? selectedItem.getpriceItem
           : selectedItem.getpriceItemFinal;
-      String? expiredDate = selectedItem.getexpiredDate.toString();
+      DateTime? expiredDate = selectedItem.getexpiredDate;
 
       if (event.expiredDate != null) {
-        expiredDate = event.expiredDate!;
+        expiredDate = parseDate(date: event.expiredDate!);
         debugPrint("Log TransactionBloc: ExpiredDate value: $expiredDate}");
       }
 
@@ -298,7 +298,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(
         currentState.copyWith(
           selectedItem: selectedItem.copyWith(
-            expiredDate: DateTime.parse(expiredDate),
+            expiredDate: expiredDate,
             qtyItem: qty,
             subTotal: subTotal,
             priceItemFinal: price,

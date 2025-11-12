@@ -4,10 +4,10 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class UIInventoryButtonItem extends StatelessWidget {
@@ -92,9 +92,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                       idBranch: bloc.idBranch!,
                       barcode: codeBarcodeController.text,
                       statusItem: true,
-                      created: DateTime.parse(
-                        DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                      ),
+                      date: parseDate(date: formatDate(date: DateTime.now())),
                     );
                     context.read<InventoryBloc>().add(
                       InvUploadItem(item: data),

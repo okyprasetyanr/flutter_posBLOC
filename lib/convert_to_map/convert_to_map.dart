@@ -28,7 +28,7 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
     'total_discount': transaction.gettotalDiscount,
     'total_ppn': transaction.gettotalPpn,
     'payment_method': transaction.getpaymentMethod,
-    'date': transaction.getdate,
+    'date': formatDate(date: transaction.getdate),
     'name_partner': transaction.getnamePartner,
     'id_partner': transaction.getidPartner,
     'name_operator': transaction.getnameOperator,
@@ -92,7 +92,7 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
     'id_branch': item.getidBranch,
     'barcode': item.getBarcode,
     'status_item': item.getStatusItem,
-    'created': item.getDateItem,
+    'date': formatDate(date: item.getDateItem),
   };
 }
 
@@ -100,7 +100,7 @@ Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
   return {
     'uid_user': UserSession.getUidUser(),
     'id_branch': batch.getidBranch,
-    'date_buy': batch.getdate_buy,
+    'date_buy': formatDate(date: batch.getdate_buy),
   };
 }
 
@@ -109,13 +109,16 @@ Map<String, dynamic> convertToMapItemBatch(
   String invoice,
 ) {
   return {
+    'invoice': itemBatch.getinvoice,
     'name_item': itemBatch.getnameItem,
     'id_branch': itemBatch.getidBranch,
     'id_item': itemBatch.getidItem,
     'id_category_item': itemBatch.getidCategoryItem,
     'note': itemBatch.getnote,
-    'date_buy': itemBatch.getdateBuy,
-    'expired_date': itemBatch.getexpiredDate,
+    'date_buy': formatDate(date: itemBatch.getdateBuy),
+    'expired_date': itemBatch.getexpiredDate != null
+        ? formatDate(date: itemBatch.getexpiredDate!)
+        : null,
     'discount_item': itemBatch.getdiscountItem,
     'qty_item_in': itemBatch.getqtyItem_in,
     'qty_item_out': itemBatch.getqtyItem_out,
@@ -134,7 +137,7 @@ Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
     'email_partner': partner.getemail,
     'balance_partner': partner.getbalance,
     'type': partner.gettype.name,
-    'created': partner.getcreated,
+    'date': formatDate(date: partner.getdate),
   };
 }
 

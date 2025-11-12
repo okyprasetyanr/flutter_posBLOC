@@ -21,7 +21,6 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   }
 
   FutureOr<void> _onGetData(PartnerGetData event, Emitter<PartnerState> emit) {
-    emit(PartnerLoading());
     final currentState = state is PartnerLoaded
         ? state as PartnerLoaded
         : PartnerLoaded();

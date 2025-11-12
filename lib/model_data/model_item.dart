@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
+import 'package:flutter_pos/function/function.dart';
 
 class ModelItem extends Equatable {
   final String _nameItem,
@@ -9,7 +10,7 @@ class ModelItem extends Equatable {
       _urlImage,
       _idBranch,
       _barcode;
-  final DateTime _created;
+  final DateTime _date;
   final double _priceItem, _qtyItem;
   final bool _statusCondiment, _statusItem;
 
@@ -24,7 +25,7 @@ class ModelItem extends Equatable {
     required String idBranch,
     required String barcode,
     required bool statusItem,
-    required DateTime created,
+    required DateTime date,
   }) : _nameItem = nameItem,
        _idItem = idItem,
        _priceItem = priceItem,
@@ -35,7 +36,7 @@ class ModelItem extends Equatable {
        _barcode = barcode,
        _qtyItem = qtyItem,
        _statusItem = statusItem,
-       _created = created;
+       _date = date;
 
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
@@ -47,10 +48,9 @@ class ModelItem extends Equatable {
   String get getidBranch => _idBranch;
   String get getBarcode => _barcode;
   bool get getStatusItem => _statusItem;
-  DateTime get getDateItem => _created;
+  DateTime get getDateItem => _date;
 
   ModelItem copyWith({
-    
     double? qtyItem,
     String? nameItem,
     String? idItem,
@@ -61,7 +61,7 @@ class ModelItem extends Equatable {
     String? idBranch,
     String? barcode,
     bool? statusItem,
-    DateTime? created,
+    DateTime? date,
   }) {
     return ModelItem(
       qtyItem: qtyItem ?? this._qtyItem,
@@ -74,7 +74,7 @@ class ModelItem extends Equatable {
       idBranch: idBranch ?? this._idBranch,
       barcode: barcode ?? this._barcode,
       statusItem: statusItem ?? this._statusItem,
-      created: created ?? this._created,
+      date: date ?? this._date,
     );
   }
 
@@ -95,7 +95,7 @@ class ModelItem extends Equatable {
               idBranch: _idBranch,
               barcode: _barcode,
               statusItem: _statusItem,
-              created: _created,
+              date: _date,
             ),
           ),
         );
@@ -115,7 +115,7 @@ class ModelItem extends Equatable {
         idBranch: dataItem['id_branch'],
         barcode: dataItem['barcode'],
         statusItem: dataItem['status_item'],
-        created: DateTime.parse(dataItem['created']),
+        date: parseDate(date: dataItem['date']),
       );
     }).toList();
   }
@@ -132,6 +132,6 @@ class ModelItem extends Equatable {
     _barcode,
     _qtyItem,
     _statusItem,
-    _created,
+    _date,
   ];
 }

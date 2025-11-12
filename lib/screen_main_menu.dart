@@ -142,7 +142,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
           children: [
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/historysell', false);
+                navUpDownTransition(context, '/historytransaction', false);
               },
               Icon(Icons.inventory),
               "Riwayat Treansaksi",
