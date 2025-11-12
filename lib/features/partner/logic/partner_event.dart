@@ -33,7 +33,7 @@ class PartnerDeletePartner extends PartnerEvent {
 }
 
 class PartnerSelectedBranch extends PartnerEvent {
-  String selectedIdBranch;
+  String idBranch;
 
-  PartnerSelectedBranch({required this.selectedIdBranch});
+  PartnerSelectedBranch({required this.idBranch});
 }

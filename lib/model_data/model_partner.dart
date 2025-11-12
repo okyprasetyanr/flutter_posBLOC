@@ -12,7 +12,7 @@ class ModelPartner extends Equatable {
   final String _email;
   final double _balance;
   final PartnerType _type;
-  final String _createdAt;
+  final DateTime _createdAt;
   final String _idBranch;
 
   const ModelPartner({
@@ -23,7 +23,7 @@ class ModelPartner extends Equatable {
     required String email,
     required double balance,
     required PartnerType type,
-    required String createdAt,
+    required DateTime createdAt,
   }) : _idBranch = idBranch,
        _id = id,
        _name = name,
@@ -42,7 +42,7 @@ class ModelPartner extends Equatable {
   double get getbalance => _balance;
   String get getidBranch => _idBranch;
   PartnerType get gettype => _type;
-  String get getcreated => _createdAt;
+  DateTime get getcreated => _createdAt;
 
   ModelPartner copyWith({
     String? idBranch,
@@ -54,7 +54,7 @@ class ModelPartner extends Equatable {
     String? notes,
     double? balance,
     PartnerType? type,
-    String? createdAt,
+    DateTime? createdAt,
     String? updatedAt,
   }) {
     return ModelPartner(
@@ -81,7 +81,7 @@ class ModelPartner extends Equatable {
         (e) => e.name == map['type'],
         orElse: () => PartnerType.customer,
       ),
-      createdAt: map['created'],
+      createdAt: DateTime.parse(map['created']),
     );
   }
 

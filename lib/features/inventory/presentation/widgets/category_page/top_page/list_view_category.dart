@@ -18,7 +18,7 @@ class ListViewCategory extends StatelessWidget {
       (List<ModelCategory>?, String?)
     >(
       selector: (state) => state is InventoryLoaded
-          ? (state.dataCategory, state.selectedIdBranch)
+          ? (state.dataCategory, state.idBranch)
           : (null, null),
       builder: (context, state) {
         if (state.$1 == null) {

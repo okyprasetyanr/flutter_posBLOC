@@ -19,7 +19,7 @@ class UITransactionDropDownBranch extends StatelessWidget {
     >(
       selector: (state) {
         if (state is TransactionLoaded) {
-          return (state.dataBranch, state.selectedIDBranch);
+          return (state.dataBranch, state.idBranch);
         }
         return ([], "");
       },

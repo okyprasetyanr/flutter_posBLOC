@@ -11,8 +11,8 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
 class ModelTransaction extends Equatable {
-  final String _date,
-      _invoice,
+  final DateTime _date;
+  final String _invoice,
       _namePartner,
       _idPartner,
       _nameOperator,
@@ -36,7 +36,7 @@ class ModelTransaction extends Equatable {
     String? statusTransaction,
     required List<ModelItemOrdered> itemsOrdered,
     required List<ModelSplit> dataSplit,
-    required String date,
+    required DateTime date,
     String? bankName,
     required String note,
     required String invoice,
@@ -80,7 +80,7 @@ class ModelTransaction extends Equatable {
        _idBranch = idBranch;
 
   String get getidBranch => _idBranch;
-  String get getdate => _date;
+  DateTime get getdate => _date;
   String get getinvoice => _invoice;
   String get getnamePartner => _namePartner;
   String get getidPartner => _idPartner;
@@ -107,7 +107,7 @@ class ModelTransaction extends Equatable {
     String? idBranch,
     String? statusTransaction,
     String? bankName,
-    String? date,
+    DateTime? date,
     String? note,
     String? invoice,
     String? namePartner,
@@ -155,72 +155,80 @@ class ModelTransaction extends Equatable {
     );
   }
 
+  Future<void> pushDataBatch(DataUserRepositoryCache dataRepo) async {
+    List<ModelItemBatch> convertToItemBatch = [];
+    for (final itemordered in _itemsOrdered) {
+      debugPrint("Log ModelTransaction: ${itemordered}");
+      convertToItemBatch.add(
+        ModelItemBatch(
+          qtyItem_out: 0,
+          invoice: _invoice,
+          nameItem: itemordered.getnameItem,
+          idBranch: itemordered.getidBranch,
+          idItem: itemordered.getidItem,
+          idOrdered: itemordered.getidOrdered,
+          idCategoryItem: itemordered.getidCategoryItem,
+          note: itemordered.getNote,
+          date_buy: itemordered.getdateBuy!,
+          expiredDate: itemordered.getexpiredDate,
+          discountItem: itemordered.getdiscountItem,
+          qtyItem_in: itemordered.getqtyItem,
+          priceItem: itemordered.getpriceItem,
+          subTotal: itemordered.getsubTotal,
+          priceItemFinal: itemordered.getpriceItemFinal,
+        ),
+      );
+    }
+
+    final newBatch = ModelBatch(
+      invoice: _invoice,
+      idBranch: _idBranch,
+      date_buy: _date,
+      items_batch: convertToItemBatch,
+    );
+
+    final batchRef = FirebaseFirestore.instance
+        .collection("batch")
+        .doc(_invoice);
+
+    await batchRef.set(convertToMapBatch(newBatch));
+
+    final itemsRef = batchRef.collection("items_batch");
+    final writeBatch = FirebaseFirestore.instance.batch();
+
+    for (final itemBatch in convertToItemBatch) {
+      final itemDoc = itemsRef.doc(itemBatch.getidOrdered);
+      writeBatch.set(itemDoc, convertToMapItemBatch(itemBatch, _invoice));
+    }
+
+    await writeBatch.commit();
+
+    dataRepo.dataBatch!.add(newBatch);
+
+    ModelCounter.pushDataCounter(
+      ModelCounter(
+        counterSell: 0,
+        counterBuy: 1,
+        counterIncome: 0,
+        counterExpense: 0,
+        idBranch: _idBranch,
+      ),
+    );
+  }
+
   Future<void> pushDataTransaction({
+    bool? statusRemove,
     required bool isSell,
     required DataUserRepositoryCache dataRepo,
   }) async {
+    final remove = statusRemove ?? false;
     if (!isSell) {
-      List<ModelItemBatch> convertToItemBatch = [];
-      for (final itemordered in _itemsOrdered) {
-        debugPrint("Log ModelTransaction: ${itemordered}");
-        convertToItemBatch.add(
-          ModelItemBatch(
-            qtyItem_out: 0,
-            invoice: _invoice,
-            nameItem: itemordered.getnameItem,
-            idBranch: itemordered.getidBranch,
-            idItem: itemordered.getidItem,
-            idOrdered: itemordered.getidOrdered,
-            idCategoryItem: itemordered.getidCategoryItem,
-            note: itemordered.getNote,
-            date_buy: itemordered.getdateBuy!,
-            expiredDate: itemordered.getexpiredDate,
-            discountItem: itemordered.getdiscountItem,
-            qtyItem_in: itemordered.getqtyItem,
-            priceItem: itemordered.getpriceItem,
-            subTotal: itemordered.getsubTotal,
-            priceItemFinal: itemordered.getpriceItemFinal,
-          ),
-        );
-      }
-
-      final newBatch = ModelBatch(
-        invoice: _invoice,
-        idBranch: _idBranch,
-        date_buy: _date,
-        items_batch: convertToItemBatch,
-      );
-
-      final batchRef = FirebaseFirestore.instance
-          .collection("batch")
-          .doc(_invoice);
-
-      await batchRef.set(convertToMapBatch(newBatch));
-
-      final itemsRef = batchRef.collection("items_batch");
-      final writeBatch = FirebaseFirestore.instance.batch();
-
-      for (final itemBatch in convertToItemBatch) {
-        final itemDoc = itemsRef.doc(itemBatch.getidOrdered);
-        writeBatch.set(itemDoc, convertToMapItemBatch(itemBatch, _invoice));
-      }
-
-      await writeBatch.commit();
-
-      dataRepo.dataBatch!.add(newBatch);
-
-      ModelCounter.pushDataCounter(
-        ModelCounter(
-          counterSell: 0,
-          counterBuy: 1,
-          counterIncome: 0,
-          counterExpense: 0,
-          idBranch: _idBranch,
-        ),
-      );
+      pushDataBatch(dataRepo);
     } else {
       if (UserSession.getStatusFifo()!) {
-        reduceQtyFIFO(dataBatch: dataRepo.dataBatch!);
+        remove
+            ? pushDataBatch(dataRepo)
+            : reduceQtyFIFO(dataBatch: dataRepo.dataBatch!);
       }
     }
 
@@ -309,11 +317,7 @@ class ModelTransaction extends Equatable {
           dataItemBatch
               .where((b) => b.getidItem == transItem.getidItem)
               .toList()
-            ..sort(
-              (a, b) => DateTime.parse(
-                a.getdateBuy,
-              ).compareTo(DateTime.parse(b.getdateBuy)),
-            );
+            ..sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
 
       for (int i = 0; i < itemBatchs.length && qtyItemTrans > 0; i++) {
         final batch = itemBatchs[i];
@@ -424,7 +428,7 @@ class ModelTransaction extends Equatable {
           bankName: dataTransaction['bank_name'],
           itemsOrdered: itemsOrdered,
           dataSplit: splitData,
-          date: dataTransaction['date'],
+          date: DateTime.parse(dataTransaction['date']),
           note: dataTransaction['note'],
           invoice: map.id,
           namePartner: dataTransaction['name_partner'],

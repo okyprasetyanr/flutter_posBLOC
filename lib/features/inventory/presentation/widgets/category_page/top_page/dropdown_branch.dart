@@ -29,7 +29,7 @@ class UIInventoryDropdownBranch extends StatelessWidget {
     >(
       selector: (state) {
         if (state is InventoryLoaded) {
-          return (state.dataBranch, state.selectedIdBranch);
+          return (state.dataBranch, state.idBranch);
         }
         return (null, null);
       },

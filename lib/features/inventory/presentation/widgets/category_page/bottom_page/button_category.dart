@@ -39,7 +39,7 @@ class UICategoryButtonCategory extends StatelessWidget {
               nameCategory: nameCategoryController.text,
               idCategory: idCategory,
               idBranch: (context.read<InventoryBloc>().state as InventoryLoaded)
-                  .selectedIdBranch!,
+                  .idBranch!,
             );
             context.read<InventoryBloc>().add(
               InvUploadCategory(category: category),

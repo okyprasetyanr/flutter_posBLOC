@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  final String nameCompany, numTelpCompany, join;
+  final String nameCompany, numTelpCompany;
+  final DateTime join;
   UserModel({
     required this.nameCompany,
     required this.numTelpCompany,
@@ -13,7 +14,7 @@ class UserModel {
     return UserModel(
       nameCompany: dataUser['name_company'],
       numTelpCompany: dataUser['phone_company'],
-      join: dataUser['join'],
+      join: DateTime.parse(dataUser['join']),
     );
   }
 }

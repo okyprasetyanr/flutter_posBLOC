@@ -4,8 +4,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/widget_sign_up.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/widget/widget_sign_up.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 

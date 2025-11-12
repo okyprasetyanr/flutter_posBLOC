@@ -85,7 +85,10 @@ class _UITransactionPopUpPriceAndCustomState
                           debugPrint(
                             "Log UISell: BlocSelector Harga value: $state",
                           );
-                          return Text(formatUang(state), style: lv05TextStyle);
+                          return Text(
+                            formatPriceRp(state),
+                            style: lv05TextStyle,
+                          );
                         },
                       ),
                 ),

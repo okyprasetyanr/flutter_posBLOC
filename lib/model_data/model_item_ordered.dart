@@ -13,11 +13,11 @@ class ModelItemOrdered extends Equatable {
   final double _qtyItem, _priceItem, _subTotal, _priceItemFinal;
   final List<ModelItemOrdered> _condiment;
 
-  final String? _dateBuy, _expiredDate;
+  final DateTime? _dateBuy, _expiredDate;
 
   ModelItemOrdered({
-    String? dateBuy,
-    String? expiredDate,
+    DateTime? dateBuy,
+    DateTime? expiredDate,
     required double priceItemFinal,
     required double subTotal,
     required String nameItem,
@@ -60,12 +60,12 @@ class ModelItemOrdered extends Equatable {
   String get getidCondiment => _idCondiment;
   String get getNote => _note;
   List<ModelItemOrdered> get getCondiment => _condiment;
-  String? get getdateBuy => _dateBuy;
-  String? get getexpiredDate => _expiredDate;
+  DateTime? get getdateBuy => _dateBuy;
+  DateTime? get getexpiredDate => _expiredDate;
 
   ModelItemOrdered copyWith({
-    String? dateBuy,
-    String? expiredDate,
+    DateTime? dateBuy,
+    DateTime? expiredDate,
     String? nameItem,
     String? idItem,
     String? idBranch,
@@ -108,8 +108,8 @@ class ModelItemOrdered extends Equatable {
     debugPrint("Log ModelData: Transaction ItemOrdered: ${items}");
 
     return ModelItemOrdered(
-      dateBuy: items['date_buy'],
-      expiredDate: items['expired_date'],
+      dateBuy: DateTime.parse(items['date_buy']),
+      expiredDate: DateTime.parse(items['expired_date']),
       priceItemFinal: double.tryParse(items['price_item_final'].toString())!,
       subTotal: double.tryParse(items['sub_total'].toString())!,
       nameItem: items['name_item'],

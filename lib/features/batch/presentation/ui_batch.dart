@@ -161,11 +161,11 @@ class _UiBatchState extends State<UiBatch> {
                                 ),
                                 rowContent(
                                   "Tanggal",
-                                  itemById[index].getdateBuy,
+                                  itemById[index].getdateBuy.toString(),
                                 ),
                                 rowContent(
                                   "Kadaluarsa",
-                                  itemById[index].getexpiredDate ?? "-",
+                                  itemById[index].getexpiredDate?.toString() ?? "-",
                                 ),
                               ],
                             );
@@ -211,7 +211,7 @@ class _UiBatchState extends State<UiBatch> {
                       state.getqtyItem_in - state.getqtyItem_out,
                     ),
                   ),
-                  rowContent("Batch Terbaru", state.getdateBuy),
+                  rowContent("Batch Terbaru", state.getdateBuy.toString()),
                 ],
               );
       },

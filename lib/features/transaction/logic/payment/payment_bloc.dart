@@ -183,7 +183,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
       if (!sellState.isSell) {
         itemOrdered = itemOrdered
-            .map((item) => item.copyWith(dateBuy: formattedDate))
+            .map(
+              (item) => item.copyWith(dateBuy: DateTime.parse(formattedDate)),
+            )
             .toList();
       }
       int itemTotal = 0;
@@ -214,7 +216,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
       final invoice = isNewTransaction
           ? generateInvoice(
-              branchId: sellState.selectedIDBranch!,
+              branchId: sellState.idBranch!,
               queue: 1,
               operatorId: null,
             )
@@ -226,13 +228,13 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           isSell: sellState.isSell,
           itemOrdered: itemOrdered,
           transaction_sell: ModelTransaction(
-            idBranch: sellState.selectedIDBranch!,
+            idBranch: sellState.idBranch!,
             itemsOrdered: itemOrdered,
             dataSplit: [],
             billPaid: 0,
             note: note,
             paymentMethod: "Cash",
-            date: formattedDate,
+            date: DateTime.parse(formattedDate),
             invoice: invoice,
             namePartner: sellState.selectedPartner?.getname ?? "",
             idPartner: sellState.selectedPartner?.getid ?? "",
@@ -301,7 +303,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       sellState.add(TransactionResetSelectedItem());
       sellState.add(
         TransactionGetData(
-          idBranch: (sellState.state as TransactionLoaded).selectedIDBranch,
+          idBranch: (sellState.state as TransactionLoaded).idBranch,
         ),
       );
     }

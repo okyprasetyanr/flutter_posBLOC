@@ -8,8 +8,8 @@ class ModelItem extends Equatable {
       _idCategoryItem,
       _urlImage,
       _idBranch,
-      _created,
       _barcode;
+  final DateTime _created;
   final double _priceItem, _qtyItem;
   final bool _statusCondiment, _statusItem;
 
@@ -24,7 +24,7 @@ class ModelItem extends Equatable {
     required String idBranch,
     required String barcode,
     required bool statusItem,
-    required String created,
+    required DateTime created,
   }) : _nameItem = nameItem,
        _idItem = idItem,
        _priceItem = priceItem,
@@ -47,9 +47,10 @@ class ModelItem extends Equatable {
   String get getidBranch => _idBranch;
   String get getBarcode => _barcode;
   bool get getStatusItem => _statusItem;
-  String get getDateItem => _created;
+  DateTime get getDateItem => _created;
 
   ModelItem copyWith({
+    
     double? qtyItem,
     String? nameItem,
     String? idItem,
@@ -60,7 +61,7 @@ class ModelItem extends Equatable {
     String? idBranch,
     String? barcode,
     bool? statusItem,
-    String? dateItem,
+    DateTime? created,
   }) {
     return ModelItem(
       qtyItem: qtyItem ?? this._qtyItem,
@@ -73,7 +74,7 @@ class ModelItem extends Equatable {
       idBranch: idBranch ?? this._idBranch,
       barcode: barcode ?? this._barcode,
       statusItem: statusItem ?? this._statusItem,
-      created: dateItem ?? this._created,
+      created: created ?? this._created,
     );
   }
 
@@ -114,7 +115,7 @@ class ModelItem extends Equatable {
         idBranch: dataItem['id_branch'],
         barcode: dataItem['barcode'],
         statusItem: dataItem['status_item'],
-        created: dataItem['created'],
+        created: DateTime.parse(dataItem['created']),
       );
     }).toList();
   }

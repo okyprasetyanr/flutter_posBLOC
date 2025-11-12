@@ -147,7 +147,7 @@ class UIPaymentCashPayment extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    formatUang(amount),
+                                    formatPriceRp(amount),
                                     style: value == amount
                                         ? lv05TextStyleWhite
                                         : lv05TextStyle,

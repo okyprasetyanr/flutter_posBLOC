@@ -63,7 +63,7 @@ class _UITransactionPopUpNoteAndSubTotalState
             enabled: false,
             controller: TextEditingController(
               text:
-                  "${formatUang(context.select<TransactionBloc, double?>((value) {
+                  "${formatPriceRp(context.select<TransactionBloc, double?>((value) {
                     final state = value.state;
                     if (state is TransactionLoaded && state.selectedItem != null) {
                       return state.selectedItem!.getsubTotal;

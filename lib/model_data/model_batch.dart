@@ -5,13 +5,13 @@ import 'package:flutter_pos/model_data/model_item_batch.dart';
 class ModelBatch extends Equatable {
   final String _invoice;
   final String _idBranch;
-  final String _dateBuy;
+  final DateTime _dateBuy;
   final List<ModelItemBatch> _itemsBatch;
 
   ModelBatch({
     required String invoice,
     required String idBranch,
-    required String date_buy,
+    required DateTime date_buy,
     required List<ModelItemBatch> items_batch,
   }) : _invoice = invoice,
        _idBranch = idBranch,
@@ -20,13 +20,13 @@ class ModelBatch extends Equatable {
 
   String get getinvoice => _invoice;
   String get getidBranch => _idBranch;
-  String get getdate_buy => _dateBuy;
+  DateTime get getdate_buy => _dateBuy;
   List<ModelItemBatch> get getitems_batch => _itemsBatch;
 
   ModelBatch copyWith({
     String? invoice,
     String? idBranch,
-    String? date_buy,
+    DateTime? date_buy,
     List<ModelItemBatch>? items_batch,
   }) {
     return ModelBatch(
@@ -60,7 +60,7 @@ class ModelBatch extends Equatable {
             nameItem: itemData['name_item'],
             idCategoryItem: itemData['id_category_item'],
             note: itemData['note'],
-            date_buy: itemData['date_buy'],
+            date_buy: DateTime.parse(itemData['date_buy']),
             expiredDate: itemData['expired_date'],
             discountItem: itemData['discount_item'],
             qtyItem_in: itemData['qty_item_in'],

@@ -79,7 +79,7 @@ class UITransactionSuccess extends StatelessWidget {
           },
           builder: (context, state) {
             return Text(
-              "Nominal ${formatUang(state!)}",
+              "Nominal ${formatPriceRp(state!)}",
               style: transactionSuccessPaidTextStyle,
             );
           },
@@ -121,15 +121,15 @@ class UITransactionSuccess extends StatelessWidget {
               rowContent("Tipe", "${state.getpaymentMethod}"),
               rowContent(
                 "Diskon",
-                "(${state.getdiscount}%) -${formatUang(state.gettotalDiscount)}",
+                "(${state.getdiscount}%) -${formatPriceRp(state.gettotalDiscount)}",
               ),
               rowContent(
                 "PPN",
-                "(${state.getppn}%) -${formatUang(state.gettotalPpn)}",
+                "(${state.getppn}%) -${formatPriceRp(state.gettotalPpn)}",
               ),
               rowContent(
                 "Charge",
-                "(${state.getcharge}%) +${formatUang(state.gettotalCharge)}",
+                "(${state.getcharge}%) +${formatPriceRp(state.gettotalCharge)}",
               ),
               rowContent("Status", "Transaksi Sukses"),
             ],

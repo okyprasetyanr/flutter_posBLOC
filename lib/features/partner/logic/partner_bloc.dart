@@ -28,9 +28,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
 
     final branch = currentState.dataBranch ?? repoCache.getBranch();
     final idBranch =
-        event.idBranch ??
-        currentState.selectedIdBranch ??
-        branch.first.getidBranch;
+        event.idBranch ?? currentState.idBranch ?? branch.first.getidBranch;
 
     List<ModelPartner> partner;
     if (event.isCustomer) {
@@ -44,7 +42,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     emit(
       currentState.copyWith(
         dataPartner: partner,
-        selectedIdBranch: idBranch,
+        idBranch: idBranch,
         dataBranch: branch,
         isCustomer: event.isCustomer,
       ),
@@ -119,16 +117,14 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   ) {
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      emit(currentState.copyWith(selectedIdBranch: event.selectedIdBranch));
+      emit(currentState.copyWith(idBranch: event.idBranch));
       add(
         PartnerGetData(
-          idBranch: event.selectedIdBranch,
+          idBranch: event.idBranch,
           isCustomer: currentState.isCustomer,
         ),
       );
-      debugPrint(
-        "Log PartnerBloc: SelectedIdBranch: ${event.selectedIdBranch}",
-      );
+      debugPrint("Log PartnerBloc: SelectedIdBranch: ${event.idBranch}");
     }
   }
 
@@ -143,8 +139,8 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         (element) => element.getid == event.id,
       );
       final dataPartner = event.type.name == "customer"
-          ? await repoCache.getCustomer(currentState.selectedIdBranch!)
-          : await repoCache.getSupplier(currentState.selectedIdBranch!);
+          ? await repoCache.getCustomer(currentState.idBranch!)
+          : await repoCache.getSupplier(currentState.idBranch!);
       dataPartner.sort((a, b) => a.getname.compareTo(b.getname));
       emit(currentState.copyWith(dataPartner: dataPartner));
     }

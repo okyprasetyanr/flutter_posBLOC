@@ -7,9 +7,9 @@ class ModelItemBatch extends Equatable {
       _idOrdered,
       _idCategoryItem,
       _note,
-      _date_buy,
       _invoice;
-  final String? _expiredDate;
+      final DateTime _date_buy;
+      final DateTime? _expiredDate;
   final int _discountItem;
   final double _qtyItem_in,
       _priceItem,
@@ -25,8 +25,8 @@ class ModelItemBatch extends Equatable {
     required String idOrdered,
     required String idCategoryItem,
     required String note,
-    required String date_buy,
-    required String? expiredDate,
+    required DateTime date_buy,
+    required DateTime? expiredDate,
     required int discountItem,
     required double qtyItem_in,
     required double qtyItem_out,
@@ -56,8 +56,8 @@ class ModelItemBatch extends Equatable {
   String get getidOrdered => _idOrdered;
   String get getidCategoryItem => _idCategoryItem;
   String get getnote => _note;
-  String get getdateBuy => _date_buy;
-  String? get getexpiredDate => _expiredDate;
+  DateTime get getdateBuy => _date_buy;
+  DateTime? get getexpiredDate => _expiredDate;
   int get getdiscountItem => _discountItem;
   double get getqtyItem_in => _qtyItem_in;
   double get getqtyItem_out => _qtyItem_out;
@@ -73,8 +73,8 @@ class ModelItemBatch extends Equatable {
     String? idOrdered,
     String? idCategoryItem,
     String? note,
-    String? date_buy,
-    String? expiredDate,
+    DateTime? date_buy,
+    DateTime? expiredDate,
     int? discountItem,
     double? qtyItem_in,
     double? qtyItem_out,
@@ -114,7 +114,7 @@ class ModelItemBatch extends Equatable {
             idOrdered: map['id_ordered'],
             idCategoryItem: map['id_category_item'],
             note: map['note'],
-            date_buy: map['date_buy'],
+            date_buy:DateTime.parse( map['date_buy']),
             expiredDate: map['expired_date'],
             discountItem: map['discount_item'],
             qtyItem_in: map['qty_item_in'],

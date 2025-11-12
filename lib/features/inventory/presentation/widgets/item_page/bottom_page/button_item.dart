@@ -89,10 +89,12 @@ class UIInventoryButtonItem extends StatelessWidget {
                       idCategoryItem: selectedIdCategoryItem.value!,
                       statusCondiment: bloc.condimentForm,
                       urlImage: "",
-                      idBranch: bloc.selectedIdBranch!,
+                      idBranch: bloc.idBranch!,
                       barcode: codeBarcodeController.text,
                       statusItem: true,
-                      created: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                      created: DateTime.parse(
+                        DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                      ),
                     );
                     context.read<InventoryBloc>().add(
                       InvUploadItem(item: data),

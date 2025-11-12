@@ -259,32 +259,32 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
                                   "Sub Total",
-                                  "${formatUang(state.getsubTotal)}",
+                                  "${formatPriceRp(state.getsubTotal)}",
                                 ),
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
                                   "Total Discount (${state.getdiscount}%)",
-                                  "${formatUang(state.gettotalDiscount)}",
+                                  "${formatPriceRp(state.gettotalDiscount)}",
                                 ),
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
                                   "Total PPN (${state.getppn}%)",
-                                  "${formatUang(state.gettotalPpn)}",
+                                  "${formatPriceRp(state.gettotalPpn)}",
                                 ),
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
                                   "Total Charge (${state.getcharge}%)",
-                                  "${formatUang(state.gettotalCharge)}",
+                                  "${formatPriceRp(state.gettotalCharge)}",
                                 ),
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
                                   "Nominal Bayar",
-                                  "${formatUang(state.getbillPaid)}",
+                                  "${formatPriceRp(state.getbillPaid)}",
                                 ),
                                 const SizedBox(height: 10),
                                 _rowContentDetail(
                                   "Total",
-                                  "${formatUang(state.gettotal)}",
+                                  "${formatPriceRp(state.gettotal)}",
                                 ),
                                 const SizedBox(height: 10),
                               ],

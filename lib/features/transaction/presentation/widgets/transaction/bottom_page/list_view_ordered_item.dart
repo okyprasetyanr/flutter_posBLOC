@@ -128,7 +128,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                           width: 10,
                                                         ),
                                                         Text(
-                                                          formatUang(
+                                                          formatPriceRp(
                                                             item.getsubTotal,
                                                           ),
                                                           style:
@@ -166,7 +166,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                           ),
 
                                                           Text(
-                                                            formatUang(
+                                                            formatPriceRp(
                                                               condiment
                                                                   .getsubTotal,
                                                             ),

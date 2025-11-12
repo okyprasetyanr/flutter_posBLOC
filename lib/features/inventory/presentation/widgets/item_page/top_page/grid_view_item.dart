@@ -77,7 +77,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              formatUang(items[index].getpriceItem),
+                              formatPriceRp(items[index].getpriceItem),
                               style: lv05textStylePrice,
                               textAlign: TextAlign.left,
                             ),

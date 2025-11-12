@@ -12,14 +12,14 @@ class PartnerLoaded extends PartnerState with EquatableMixin {
   final List<ModelPartner>? dataPartner;
   final List<ModelBranch>? dataBranch;
   final bool isCustomer;
-  final String? selectedIdBranch;
+  final String? idBranch;
   final ModelPartner? selectedPartner;
 
   PartnerLoaded({
     this.dataBranch = null,
     this.dataPartner = const [],
     this.selectedPartner,
-    this.selectedIdBranch,
+    this.idBranch,
     this.isCustomer = true,
   });
 
@@ -27,14 +27,14 @@ class PartnerLoaded extends PartnerState with EquatableMixin {
     List<ModelBranch>? dataBranch,
     List<ModelPartner>? dataPartner,
     ModelPartner? selectedPartner,
-    String? selectedIdBranch,
+    String? idBranch,
     bool? isCustomer,
   }) {
     return PartnerLoaded(
       dataBranch: dataBranch ?? this.dataBranch,
       dataPartner: dataPartner ?? this.dataPartner,
       selectedPartner: selectedPartner,
-      selectedIdBranch: selectedIdBranch ?? this.selectedIdBranch,
+      idBranch: idBranch ?? this.idBranch,
       isCustomer: isCustomer ?? this.isCustomer,
     );
   }
@@ -42,7 +42,7 @@ class PartnerLoaded extends PartnerState with EquatableMixin {
   @override
   List<Object?> get props => [
     dataPartner,
-    selectedIdBranch,
+    idBranch,
     selectedPartner,
     dataBranch,
     isCustomer,

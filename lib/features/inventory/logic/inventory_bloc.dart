@@ -90,15 +90,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         case "Terbaru":
           list.sort(
             (a, b) => formatter
-                .parse(b.getDateItem)
-                .compareTo(formatter.parse(a.getDateItem)),
+                .parse(b.getDateItem.toString())
+                .compareTo(formatter.parse(a.getDateItem.toString())),
           );
           break;
         case "Terlama":
           list.sort(
             (a, b) => formatter
-                .parse(a.getDateItem)
-                .compareTo(formatter.parse(b.getDateItem)),
+                .parse(a.getDateItem.toString())
+                .compareTo(formatter.parse(b.getDateItem.toString())),
           );
           break;
       }
@@ -159,7 +159,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
     emit(
       InventoryLoaded(
-        selectedIdBranch: idBranch,
+        idBranch: idBranch,
         areaBranch: areaBranch,
         dataBranch: dataBranch,
         dataItem: items,
@@ -378,9 +378,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     );
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      final dataCategory = await repoCache.getCategory(
-        currentState.selectedIdBranch!,
-      );
+      final dataCategory = await repoCache.getCategory(currentState.idBranch!);
       dataCategory.sort(
         (a, b) => a.getnameCategory.compareTo(b.getnameCategory),
       );
@@ -401,7 +399,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         InvGetData(
           filter: currentState.selectedFilterItem!,
           status: currentState.selectedStatusItem!,
-          idBranch: currentState.selectedIdBranch!,
+          idBranch: currentState.idBranch!,
           filterjenis: currentState.selectedFilterJenisItem!,
           filterIDCategory: currentState.selectedFilterIDCategoryItem!,
         ),

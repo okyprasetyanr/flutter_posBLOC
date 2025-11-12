@@ -63,7 +63,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         : repo.getSupplier(idBranch);
 
     List<ModelTransaction> dataTransactionSaved = repo
-        .getTransaction(idBranch)
+        .getTransactionSell(idBranch)
         .where(
           (element) =>
               element.getstatusTransaction == statusTransaction(index: 1),
@@ -97,10 +97,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       if (event.text != "") {
         List<ModelItem> item = List.from(
           currentState.filteredItem!
-              .where(
-                (element) =>
-                    element.getidBranch == currentState.selectedIDBranch,
-              )
+              .where((element) => element.getidBranch == currentState.idBranch)
               .where(
                 (item) => item.getnameItem.toLowerCase().contains(
                   event.text.toLowerCase(),
@@ -121,7 +118,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (currentState is TransactionLoaded) {
       List<ModelItem> list = List.from(
         currentState.dataItem!.where(
-          (element) => element.getidBranch == currentState.selectedIDBranch,
+          (element) => element.getidBranch == currentState.idBranch,
         ),
       );
       if (currentState.isSell) {
@@ -270,7 +267,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       double price = event.customprice == 0
           ? selectedItem.getpriceItem
           : selectedItem.getpriceItemFinal;
-      String? expiredDate = selectedItem.getexpiredDate;
+      String? expiredDate = selectedItem.getexpiredDate.toString();
 
       if (event.expiredDate != null) {
         expiredDate = event.expiredDate!;
@@ -301,7 +298,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(
         currentState.copyWith(
           selectedItem: selectedItem.copyWith(
-            expiredDate: expiredDate,
+            expiredDate: DateTime.parse(expiredDate),
             qtyItem: qty,
             subTotal: subTotal,
             priceItemFinal: price,

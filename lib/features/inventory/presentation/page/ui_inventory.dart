@@ -20,6 +20,7 @@ import 'package:flutter_pos/features/inventory/presentation/widgets/category_pag
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
@@ -215,32 +216,10 @@ class _UIInventoryState extends State<UIInventory> {
                 child: ValueListenableBuilder(
                   valueListenable: currentPage,
                   builder: (context, value, child) {
-                    return Stack(
-                      children: [
-                        AnimatedPositioned(
-                          curve: Curves.easeInOut,
-                          left: value ? -200 : 40,
-                          top: 4,
-                          duration: const Duration(milliseconds: 500),
-                          child: rowContentAnim(
-                            const Icon(Icons.swap_horiz_rounded, size: 25),
-                            Text("Kategori", style: titleTextStyle),
-                          ),
-                        ),
-                        AnimatedPositioned(
-                          curve: Curves.easeInOut,
-                          left: value ? 35 : 300,
-                          top: 4,
-                          duration: const Duration(milliseconds: 500),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: rowContentAnim(
-                              const Icon(Icons.swap_horiz_rounded, size: 25),
-                              Text("Inventori", style: titleTextStyle),
-                            ),
-                          ),
-                        ),
-                      ],
+                    return WidgetAnimatePage(
+                      state: value,
+                      text1: "Inventory",
+                      text2: "Kategori",
                     );
                   },
                 ),

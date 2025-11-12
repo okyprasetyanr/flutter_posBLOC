@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
-String formatUang(double nominal) {
+String formatPriceRp(double nominal) {
   final nominalfinal = "${formatQtyOrPrice(nominal)}"
       .replaceAll("R", "")
       .replaceAll(".", "")

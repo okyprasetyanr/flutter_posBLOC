@@ -131,8 +131,13 @@ class DataUserRepositoryCache {
         .toList();
   }
 
-  List<ModelTransaction> getTransaction(String idBranch) {
+  List<ModelTransaction> getTransactionSell(String idBranch) {
     return dataTransactionSell!
+        .where((element) => element.getidBranch == idBranch)
+        .toList();
+  }
+  List<ModelTransaction> getTransactionBuy(String idBranch) {
+    return dataTransactionBuy!
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }

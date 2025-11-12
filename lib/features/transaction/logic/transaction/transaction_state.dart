@@ -20,7 +20,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   final List<ModelItem>? filteredItem;
   final List<ModelCategory>? dataCategory;
   final List<ModelBranch>? dataBranch;
-  final String? selectedIDBranch;
+  final String? idBranch;
   final ModelCategory? selectedCategory;
   final ModelItemOrdered? selectedItem;
   final ModelPartner? selectedPartner;
@@ -41,7 +41,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     this.dataBranch = const [],
     this.dataItem = const [],
     this.itemOrdered = const [],
-    this.selectedIDBranch,
+    this.idBranch,
     this.selectedCategory,
   });
 
@@ -74,7 +74,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
       dataBranch: dataBranch ?? this.dataBranch,
       dataCategory: dataCategory ?? this.dataCategory,
       filteredItem: filteredItem ?? this.filteredItem,
-      selectedIDBranch: selectedIDBranch ?? this.selectedIDBranch,
+      idBranch: selectedIDBranch ?? this.idBranch,
       selectedCategory: selectedCategory ?? this.selectedCategory,
     );
   }
@@ -90,7 +90,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     filteredItem,
     dataCategory,
     dataBranch,
-    selectedIDBranch,
+    idBranch,
     selectedCategory,
     selectedItem,
     editSelectedItem,

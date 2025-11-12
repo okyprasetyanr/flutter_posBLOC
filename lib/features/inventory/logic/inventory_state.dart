@@ -17,7 +17,7 @@ class InventoryError extends InventoryState {
 }
 
 class InventoryLoaded extends InventoryState with EquatableMixin {
-  final String? selectedIdBranch;
+  final String? idBranch;
   final String? areaBranch;
   final String? selectedFilterItem;
   final String? selectedStatusItem;
@@ -41,7 +41,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     this.condimentForm = false,
     this.dataSelectedCategory,
     this.dataSelectedItem,
-    this.selectedIdBranch,
+    this.idBranch,
     this.areaBranch,
     this.dataBranch,
     this.dataItem = const [],
@@ -73,7 +73,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
           selectedFilterJenisItem ?? this.selectedFilterJenisItem,
       selectedStatusItem: selectedStatusItem ?? this.selectedStatusItem,
       condimentForm: condimentForm ?? this.condimentForm,
-      selectedIdBranch: idBranch ?? this.selectedIdBranch,
+      idBranch: idBranch ?? this.idBranch,
       areaBranch: areaBranch ?? this.areaBranch,
       dataBranch: dataBranch ?? this.dataBranch,
       dataItem: dataItem ?? this.dataItem,
@@ -87,7 +87,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    selectedIdBranch,
+    idBranch,
     areaBranch,
     selectedFilterItem,
     selectedStatusItem,

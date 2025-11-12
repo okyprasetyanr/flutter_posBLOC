@@ -131,7 +131,7 @@ class _UIPartnerState extends State<UIPartner> {
                       (List<ModelBranch>, String?)
                     >(
                       selector: (state) => state is PartnerLoaded
-                          ? (state.dataBranch!, state.selectedIdBranch)
+                          ? (state.dataBranch!, state.idBranch)
                           : ([], ""),
                       builder: (context, state) {
                         if (state.$1.isEmpty) {
@@ -168,7 +168,7 @@ class _UIPartnerState extends State<UIPartner> {
                           onChanged: (value) {
                             context.read<PartnerBloc>().add(
                               PartnerSelectedBranch(
-                                selectedIdBranch: value!.getidBranch,
+                                idBranch: value!.getidBranch,
                               ),
                             );
                           },
@@ -191,7 +191,7 @@ class _UIPartnerState extends State<UIPartner> {
                     >(
                       selector: (state) {
                         if (state is PartnerLoaded) {
-                          return (state.dataPartner, state.selectedIdBranch);
+                          return (state.dataPartner, state.idBranch);
                         }
                         return ([], null);
                       },
@@ -383,8 +383,7 @@ class _UIPartnerState extends State<UIPartner> {
                               ? state.dataBranch
                                     ?.firstWhere(
                                       (element) =>
-                                          element.getidBranch ==
-                                          state.selectedIdBranch,
+                                          element.getidBranch == state.idBranch,
                                     )
                                     .getareaBranch
                               : null,
@@ -438,7 +437,7 @@ class _UIPartnerState extends State<UIPartner> {
                   ? bloc.selectedPartner?.getid ?? Uuid().v4().substring(0, 8)
                   : Uuid().v4().substring(0, 8);
               final partner = ModelPartner(
-                idBranch: bloc is PartnerLoaded ? bloc.selectedIdBranch! : "",
+                idBranch: bloc is PartnerLoaded ? bloc.idBranch! : "",
                 id: idPartner,
                 name: namePartnerController.text,
                 phone: "",
@@ -449,7 +448,9 @@ class _UIPartnerState extends State<UIPartner> {
                           ? PartnerType.customer
                           : PartnerType.supplier
                     : PartnerType.customer,
-                createdAt: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                createdAt: DateTime.parse(
+                  DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                ),
               );
               context.read<PartnerBloc>().add(
                 PartnerUploadDataPartner(partner: partner),

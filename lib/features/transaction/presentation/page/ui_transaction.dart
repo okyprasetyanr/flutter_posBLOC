@@ -13,6 +13,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/bottom_page/list_view_ordered_item.dart';
+import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
@@ -47,9 +48,7 @@ class _UITransactionState extends State<UITransaction> {
     final blocValue = bloc.state;
     bloc.add(
       TransactionGetData(
-        idBranch: (blocValue is TransactionLoaded)
-            ? blocValue.selectedIDBranch
-            : null,
+        idBranch: (blocValue is TransactionLoaded) ? blocValue.idBranch : null,
       ),
     );
   }
@@ -156,43 +155,10 @@ class _UITransactionState extends State<UITransaction> {
                             return false;
                           },
                           builder: (context, state) {
-                            return Stack(
-                              children: [
-                                AnimatedPositioned(
-                                  curve: Curves.easeInOut,
-                                  left: state ? 0 : -200,
-                                  duration: const Duration(milliseconds: 500),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.swap_horiz_rounded,
-                                        size: 25,
-                                      ),
-                                      Text("Penjualan", style: titleTextStyle),
-                                    ],
-                                  ),
-                                ),
-                                AnimatedPositioned(
-                                  curve: Curves.easeInOut,
-                                  left: state ? 300 : 0,
-                                  duration: const Duration(milliseconds: 500),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.swap_horiz_rounded,
-                                          size: 25,
-                                        ),
-                                        Text(
-                                          "Pembelian",
-                                          style: titleTextStyle,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            return WidgetAnimatePage(
+                              state: state,
+                              text1: "Penjualan",
+                              text2: "Pembelian",
                             );
                           },
                         ),
@@ -283,7 +249,7 @@ class _UITransactionState extends State<UITransaction> {
                         SizedBox(
                           width: 80,
                           child: Text(
-                            "${formatUang(state.$2)}",
+                            "${formatPriceRp(state.$2)}",
                             style: lv05TextStyleRedPrice,
                             textAlign: TextAlign.start,
                           ),
