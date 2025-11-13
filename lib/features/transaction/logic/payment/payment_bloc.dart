@@ -16,18 +16,18 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
-    on<PaymentGetTransaction>(_onPaymentGetTransaction);
-    on<PaymentAdjust>(_onPaymentAdjust);
+    on<PaymentGetTransaction>(_onGetTransaction);
+    on<PaymentAdjust>(_onAdjust);
     on<PaymentProcess>(_onPaymentProcess);
-    on<PaymentResetSplit>(_onPaymentResetSplit);
-    on<PaymentResetTransaction>(_onPaymentResetTransaction);
+    on<PaymentResetSplit>(_onResetSplit);
+    on<PaymentResetTransaction>(_onResetTransaction);
     on<PaymentNote>(
       _onPaymentNote,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
   }
 
-  FutureOr<void> _onPaymentResetSplit(
+  FutureOr<void> _onResetSplit(
     PaymentResetSplit event,
     Emitter<PaymentState> emit,
   ) {
@@ -41,7 +41,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  FutureOr<void> _onPaymentAdjust(
+  FutureOr<void> _onAdjust(
     PaymentAdjust event,
     Emitter<PaymentState> emit,
   ) {
@@ -159,7 +159,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  Future<void> _onPaymentGetTransaction(
+  Future<void> _onGetTransaction(
     PaymentGetTransaction event,
     Emitter<PaymentState> emit,
   ) async {
@@ -204,12 +204,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       debugPrint(
         "Log PaymentBloc: dataRevisiOrSaved: ${sellState.selectedTransaction}",
       );
-      final bool isNewTransaction = dataRevisiOrSaved == null;
+      final isNewTransaction = dataRevisiOrSaved == null;
 
       final note = isNewTransaction ? "" : dataRevisiOrSaved.getnote;
       final discount = isNewTransaction ? 0 : dataRevisiOrSaved.getdiscount;
       final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
-      final invoice = isNewTransaction
+      final invoice = isNewTransaction || sellState.revision
           ? generateInvoice(
               branchId: sellState.idBranch!,
               queue: 1,
@@ -266,7 +266,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  FutureOr<void> _onPaymentResetTransaction(
+  FutureOr<void> _onResetTransaction(
     PaymentResetTransaction event,
     Emitter<PaymentState> emit,
   ) {
@@ -291,6 +291,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         dataRepo: bloc,
       );
     }
+
+
 
     final sellState = event.context.read<TransactionBloc>();
     if (sellState.state is TransactionLoaded) {

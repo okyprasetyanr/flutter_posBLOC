@@ -261,13 +261,22 @@ class ModelTransaction extends Equatable {
       dataSplit: [],
     );
 
-    dataTransaction!.add(
-      transaction.copyWith(
-        itemsOrdered: _itemsOrdered,
-        dataSplit: _dataSplit,
-        statusTransaction: _statusTransaction,
-      ),
+    final index = dataTransaction!.indexWhere(
+      (element) => element.getinvoice == _invoice,
     );
+    index != -1
+        ? dataTransaction[index] = dataTransaction[index].copyWith(
+            itemsOrdered: _itemsOrdered,
+            dataSplit: _dataSplit,
+            statusTransaction: _statusTransaction,
+          )
+        : dataTransaction.add(
+            transaction.copyWith(
+              itemsOrdered: _itemsOrdered,
+              dataSplit: _dataSplit,
+              statusTransaction: _statusTransaction,
+            ),
+          );
 
     debugPrint("Log ModelTransaction: Cek Transaksi: $dataTransaction");
 

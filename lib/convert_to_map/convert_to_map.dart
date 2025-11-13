@@ -117,7 +117,7 @@ Map<String, dynamic> convertToMapItemBatch(
     'note': itemBatch.getnote,
     'date_buy': formatDate(date: itemBatch.getdateBuy),
     'expired_date': itemBatch.getexpiredDate != null
-        ? formatDate(date: itemBatch.getexpiredDate!)
+        ? formatDate(date: itemBatch.getexpiredDate!, minute: false)
         : null,
     'discount_item': itemBatch.getdiscountItem,
     'qty_item_in': itemBatch.getqtyItem_in,

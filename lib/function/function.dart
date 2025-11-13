@@ -63,13 +63,19 @@ String generateInvoice({String? branchId, String? operatorId, int? queue}) {
   return "$operator-$branch-$queue-$uuid";
 }
 
-const List<String> listStatusTransaction = ["Done", "Pending", "Revisi"];
+const List<String> listStatusTransaction = [
+  "Sukses",
+  "Tersimpan",
+  "Revisi",
+  "Batal",
+];
 String statusTransaction({int? index}) {
   return listStatusTransaction[index!];
 }
 
-String formatDate({required DateTime date}) {
-  final pattern = 'yyyy-MM-dd HH:mm:ss';
+String formatDate({required DateTime date, bool? minute}) {
+  final useMinute = minute ?? true;
+  final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
   return DateFormat(pattern).format(date);
 }
 

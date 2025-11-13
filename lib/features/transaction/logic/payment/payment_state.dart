@@ -12,19 +12,23 @@ class PaymentLoaded extends PaymentState with EquatableMixin {
   final List<ModelItemOrdered>? itemOrdered;
   final ModelTransaction? transaction_sell;
   final bool isSell;
+  final String? revisionInvoice;
 
   PaymentLoaded({
+    this.revisionInvoice,
     required this.itemOrdered,
     required this.isSell,
     required this.transaction_sell,
   });
 
   PaymentLoaded copyWith({
+    String? revisionInvoice,
     List<ModelItemOrdered>? itemOrdered,
     ModelTransaction? transaction_sell,
     bool? isSell,
   }) {
     return PaymentLoaded(
+      revisionInvoice: revisionInvoice,
       isSell: isSell ?? this.isSell,
       itemOrdered: itemOrdered ?? itemOrdered,
       transaction_sell: transaction_sell,

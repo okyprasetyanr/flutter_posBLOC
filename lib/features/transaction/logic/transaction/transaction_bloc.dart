@@ -43,7 +43,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state is TransactionLoaded
         ? (state as TransactionLoaded)
         : TransactionLoaded();
-    emit(TransactionLoading());
 
     final listBranch = repo.getBranch();
 
@@ -383,7 +382,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         "Log TransactionBloc: LoadedTransaction: ${event.currentTransaction}",
       );
       emit(
-        currentState.copyWith(selectedTransaction: event.currentTransaction),
+        currentState.copyWith(
+          selectedTransaction: event.currentTransaction,
+          revision: event.revision ?? false,
+        ),
       );
     }
   }

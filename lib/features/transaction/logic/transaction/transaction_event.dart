@@ -58,8 +58,9 @@ class TransactionAddOrderedItem extends TransactionEvent {
 
 class TransactionLoadTransaction extends TransactionEvent {
   final ModelTransaction currentTransaction;
+  final bool? revision;
 
-  TransactionLoadTransaction({required this.currentTransaction});
+  TransactionLoadTransaction({this.revision, required this.currentTransaction});
 }
 
 class TransactionAdjustItem extends TransactionEvent {

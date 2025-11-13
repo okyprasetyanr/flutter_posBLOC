@@ -13,6 +13,7 @@ class TransactionInitial extends TransactionState {}
 class TransactionLoading extends TransactionState {}
 
 class TransactionLoaded extends TransactionState with EquatableMixin {
+  final bool revision;
   final List<ModelTransaction> dataTransactionSaved;
   final ModelTransaction? selectedTransaction;
   final bool isSell;
@@ -29,6 +30,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   final List<ModelPartner>? dataPartner;
 
   TransactionLoaded({
+    this.revision = false,
     this.dataTransactionSaved = const [],
     this.isSell = true,
     this.selectedItem,
@@ -46,6 +48,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   });
 
   TransactionLoaded copyWith({
+    bool? revision,
     ModelTransaction? selectedTransaction,
     List<ModelTransaction>? dataTransactionSaved,
     List<ModelPartner>? dataPartner,
@@ -62,6 +65,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     bool? editSelectedItem,
   }) {
     return TransactionLoaded(
+      revision: revision??this.revision,
       selectedTransaction: selectedTransaction ?? this.selectedTransaction,
       dataTransactionSaved: dataTransactionSaved ?? this.dataTransactionSaved,
       selectedPartner: selectedPartner ?? selectedPartner,
@@ -81,6 +85,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    revision,
     selectedTransaction,
     dataTransactionSaved,
     selectedPartner,

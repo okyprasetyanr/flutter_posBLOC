@@ -5,8 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/history_transaction/logic/history_transaction_state.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 
 class HistoryTransactionBloc
     extends Bloc<HistoryTransactionEvent, HistoryTransactionState> {
@@ -21,69 +24,65 @@ class HistoryTransactionBloc
     );
     on<HistoryTransactionSelectedData>(_onSelectedData);
     on<HistoryTransactionResetData>(_onResetData);
+    on<HistoryTransactionRevisionData>(_onRevisionData);
   }
 
   Future<void> _onGetData(
     HistoryTransactionGetData event,
     Emitter<HistoryTransactionState> emit,
   ) async {
-    emit(HistoryTransactionLoading());
+    final currentState = state;
+    if (currentState is HistoryTransactionLoaded) {
+      final now = DateTime.now();
+      final dateDefault = DateTime(now.year, now.month, now.day);
 
-    final now = DateTime.now();
-    final dateDefault = DateTime(now.year, now.month, now.day); // Tanpa jam
+      final dateStart = event.dateStart != null
+          ? DateTime(
+              event.dateStart!.year,
+              event.dateStart!.month,
+              event.dateStart!.day,
+            )
+          : dateDefault;
 
-    final dateStart = event.dateStart != null
-        ? DateTime(
-            event.dateStart!.year,
-            event.dateStart!.month,
-            event.dateStart!.day,
-          )
-        : dateDefault;
+      final dateEnd = event.dateEnd != null
+          ? DateTime(
+              event.dateEnd!.year,
+              event.dateEnd!.month,
+              event.dateEnd!.day,
+            )
+          : dateDefault;
 
-    final dateEnd = event.dateEnd != null
-        ? DateTime(
-            event.dateEnd!.year,
-            event.dateEnd!.month,
-            event.dateEnd!.day,
-          )
-        : dateDefault;
+      final dataBranch = repoCache.getBranch();
+      final idBranch =
+          event.idBranch ??
+          currentState.idBranch ??
+          dataBranch.first.getidBranch;
 
-    final dataBranch = repoCache.getBranch();
-    final idBranch = event.idBranch ?? dataBranch.first.getidBranch;
+      final filteredSell = repoCache.getTransactionSell(idBranch).where((
+        element,
+      ) {
+        return element.getdate.isAfter(dateStart) ||
+            element.getdate.isBefore(dateEnd);
+      }).toList();
 
-    DateTime onlyDate(DateTime d) => DateTime(d.year, d.month, d.day);
+      final filteredBuy = repoCache.getTransactionBuy(idBranch).where((
+        element,
+      ) {
+        return element.getdate.isAfter(dateStart) ||
+            element.getdate.isBefore(dateEnd);
+      }).toList();
 
-    bool isSameOrAfter(DateTime a, DateTime b) {
-      final da = onlyDate(a);
-      final db = onlyDate(b);
-      return da.isAtSameMomentAs(db) || da.isAfter(db);
+      debugPrint("Log HistoryTransactionBloc: getData: $filteredSell");
+      emit(
+        HistoryTransactionLoaded(
+          dateStart: dateStart,
+          dateEnd: dateEnd,
+          idBranch: idBranch,
+          filteredSell: filteredSell,
+          filteredBuy: filteredBuy,
+        ),
+      );
     }
-
-    bool isSameOrBefore(DateTime a, DateTime b) {
-      final da = onlyDate(a);
-      final db = onlyDate(b);
-      return da.isAtSameMomentAs(db) || da.isBefore(db);
-    }
-
-    final filteredSell = repoCache.getTransactionSell(idBranch).where((
-      element,
-    ) {
-      final d = onlyDate(element.getdate);
-      return isSameOrAfter(d, dateStart) && isSameOrBefore(d, dateEnd);
-    }).toList();
-
-    final filteredBuy = repoCache.getTransactionBuy(idBranch).where((element) {
-      final d = onlyDate(element.getdate);
-      return isSameOrAfter(d, dateStart) && isSameOrBefore(d, dateEnd);
-    }).toList();
-
-    debugPrint("Log HistoryTransactionBloc: getData: $filteredSell");
-    emit(
-      HistoryTransactionLoaded(
-        filteredSell: filteredSell,
-        filteredBuy: filteredBuy,
-      ),
-    );
   }
 
   Future<void> _onRemoveData(
@@ -100,26 +99,29 @@ class HistoryTransactionBloc
         (element) => element.getinvoice == invoice,
       );
 
-      dataTransaction[indexdataTrans] = dataTransaction[indexdataTrans]
-          .copyWith(
-            statusTransaction: "Remove",
-            bankName: dataTransaction[indexdataTrans].getbankName,
-          );
-
       final itemOrdered = dataTransaction[indexdataTrans].getitemsOrdered;
+      final dateNow = parseDate(date: DateTime.now().toString(), minute: false);
       for (int i = 0; i < itemOrdered.length; i++) {
         for (final item in event.dateExpired) {
           if (itemOrdered[i].getidOrdered == item['id_ordered']) {
             itemOrdered[i] = itemOrdered[i].copyWith(
-              dateBuy: item['date_buy'],
+              dateBuy: dateNow,
               expiredDate: item['expired_date'],
             );
           }
         }
       }
-      dataTransaction[indexdataTrans] = dataTransaction[indexdataTrans]
-          .copyWith(itemsOrdered: itemOrdered);
 
+      dataTransaction[indexdataTrans] = dataTransaction[indexdataTrans]
+          .copyWith(
+            statusTransaction: statusTransaction(index: 3),
+            bankName: dataTransaction[indexdataTrans].getbankName,
+            itemsOrdered: itemOrdered,
+          );
+
+      debugPrint(
+        "Log HistoryTransaction: hapusData: $dateNow ${dataTransaction[indexdataTrans]}",
+      );
       final bloc = event.context.read<DataUserRepositoryCache>();
       await dataTransaction[indexdataTrans].pushDataTransaction(
         statusRemove: true,
@@ -185,5 +187,19 @@ class HistoryTransactionBloc
         ),
       );
     }
+  }
+
+  FutureOr<void> _onRevisionData(
+    HistoryTransactionRevisionData event,
+    Emitter<HistoryTransactionState> emit,
+  ) {
+    final sellState = event.context.read<TransactionBloc>();
+    final currentState = state as HistoryTransactionLoaded;
+    sellState.add(
+      TransactionLoadTransaction(
+        currentTransaction: currentState.selectedData!,
+      ),
+    );
+    navUpDownTransition(event.context, '/sell', false);
   }
 }
