@@ -31,58 +31,65 @@ class HistoryTransactionBloc
     HistoryTransactionGetData event,
     Emitter<HistoryTransactionState> emit,
   ) async {
-    final currentState = state;
-    if (currentState is HistoryTransactionLoaded) {
-      final now = DateTime.now();
-      final dateDefault = DateTime(now.year, now.month, now.day);
+    final currentState = state is HistoryTransactionLoaded
+        ? (state as HistoryTransactionLoaded)
+        : HistoryTransactionLoaded();
 
-      final dateStart = event.dateStart != null
-          ? DateTime(
-              event.dateStart!.year,
-              event.dateStart!.month,
-              event.dateStart!.day,
-            )
-          : dateDefault;
+    final now = DateTime.now();
+    final dateDefault = DateTime(now.year, now.month, now.day);
 
-      final dateEnd = event.dateEnd != null
-          ? DateTime(
-              event.dateEnd!.year,
-              event.dateEnd!.month,
-              event.dateEnd!.day,
-            )
-          : dateDefault;
+    final dateStart = event.dateStart != null
+        ? DateTime(
+            event.dateStart!.year,
+            event.dateStart!.month,
+            event.dateStart!.day,
+          )
+        : dateDefault;
 
-      final dataBranch = repoCache.getBranch();
-      final idBranch =
-          event.idBranch ??
-          currentState.idBranch ??
-          dataBranch.first.getidBranch;
+    final dateEnd = event.dateEnd != null
+        ? DateTime(
+            event.dateEnd!.year,
+            event.dateEnd!.month,
+            event.dateEnd!.day,
+            23,
+            59,
+            59,
+            999,
+          )
+        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
-      final filteredSell = repoCache.getTransactionSell(idBranch).where((
-        element,
-      ) {
-        return element.getdate.isAfter(dateStart) ||
-            element.getdate.isBefore(dateEnd);
-      }).toList();
+    final dataBranch = repoCache.getBranch();
+    final idBranch =
+        event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
 
-      final filteredBuy = repoCache.getTransactionBuy(idBranch).where((
-        element,
-      ) {
-        return element.getdate.isAfter(dateStart) ||
-            element.getdate.isBefore(dateEnd);
-      }).toList();
+    final filteredSell = repoCache.getTransactionSell(idBranch).where((
+      element,
+    ) {
+      return (element.getdate.isAtSameMomentAs(dateStart) ||
+              element.getdate.isAfter(dateStart)) &&
+          (element.getdate.isAtSameMomentAs(dateEnd) ||
+              element.getdate.isBefore(dateEnd));
+    }).toList();
 
-      debugPrint("Log HistoryTransactionBloc: getData: $filteredSell");
-      emit(
-        HistoryTransactionLoaded(
-          dateStart: dateStart,
-          dateEnd: dateEnd,
-          idBranch: idBranch,
-          filteredSell: filteredSell,
-          filteredBuy: filteredBuy,
-        ),
-      );
-    }
+    final filteredBuy = repoCache.getTransactionBuy(idBranch).where((element) {
+      return (element.getdate.isAtSameMomentAs(dateStart) ||
+              element.getdate.isAfter(dateStart)) &&
+          (element.getdate.isAtSameMomentAs(dateEnd) ||
+              element.getdate.isBefore(dateEnd));
+    }).toList();
+
+    debugPrint(
+      "Log HistoryTransactionBloc: getData: $dateStart $dateEnd $filteredSell",
+    );
+    emit(
+      HistoryTransactionLoaded(
+        dateStart: dateStart,
+        dateEnd: dateEnd,
+        idBranch: idBranch,
+        filteredSell: filteredSell,
+        filteredBuy: filteredBuy,
+      ),
+    );
   }
 
   Future<void> _onRemoveData(
@@ -132,11 +139,6 @@ class HistoryTransactionBloc
       add(HistoryTransactionResetData());
     }
   }
-
-  FutureOr<void> onRevisionData(
-    HistoryTransactionRevisionData event,
-    Emitter<HistoryTransactionState> emit,
-  ) {}
 
   FutureOr<void> _onSearchdata(
     HistoryTransactionSearchData event,
@@ -195,9 +197,11 @@ class HistoryTransactionBloc
   ) {
     final sellState = event.context.read<TransactionBloc>();
     final currentState = state as HistoryTransactionLoaded;
+
     sellState.add(
       TransactionLoadTransaction(
         currentTransaction: currentState.selectedData!,
+        revision: true,
       ),
     );
     navUpDownTransition(event.context, '/sell', false);

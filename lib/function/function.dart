@@ -84,3 +84,9 @@ DateTime parseDate({required String date, bool? minute}) {
   final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
   return DateFormat(pattern).parse(date);
 }
+
+DateTime dateTimeparseDateTime({required String date, bool? minute}) {
+  final useMinute = minute ?? true;
+  final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
+  return DateFormat(pattern).parse(date);
+}
