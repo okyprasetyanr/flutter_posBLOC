@@ -36,13 +36,13 @@ class HistoryTransactionLoaded extends HistoryTransactionState
     ModelTransaction? selectedData,
     bool? isSell,
   }) => HistoryTransactionLoaded(
-    dateEnd: dateEnd ?? this.dateEnd,
-    dateStart: dateFiltered ?? this.dateStart,
+    dateEnd: dateEnd,
+    dateStart: dateFiltered,
     idBranch: idBranch ?? this.idBranch,
     filteredBuy: filteredBuy ?? this.filteredBuy,
     filteredSell: filteredSell ?? this.filteredSell,
     isSell: isSell ?? this.isSell,
-    selectedData: selectedData ?? this.selectedData,
+    selectedData: selectedData,
   );
 
   @override

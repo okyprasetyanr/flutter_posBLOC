@@ -9,6 +9,7 @@ import 'package:flutter_pos/features/transaction/logic/transaction/transaction_b
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 
 class HistoryTransactionBloc
@@ -25,6 +26,7 @@ class HistoryTransactionBloc
     on<HistoryTransactionSelectedData>(_onSelectedData);
     on<HistoryTransactionResetData>(_onResetData);
     on<HistoryTransactionRevisionData>(_onRevisionData);
+    on<HistoryTransactionIsSell>(_onIsSell);
   }
 
   Future<void> _onGetData(
@@ -35,28 +37,9 @@ class HistoryTransactionBloc
         ? (state as HistoryTransactionLoaded)
         : HistoryTransactionLoaded();
 
-    final now = DateTime.now();
-    final dateDefault = DateTime(now.year, now.month, now.day);
+    final dateStart = dateNowYMDStartBLOC(event.dateStart);
 
-    final dateStart = event.dateStart != null
-        ? DateTime(
-            event.dateStart!.year,
-            event.dateStart!.month,
-            event.dateStart!.day,
-          )
-        : dateDefault;
-
-    final dateEnd = event.dateEnd != null
-        ? DateTime(
-            event.dateEnd!.year,
-            event.dateEnd!.month,
-            event.dateEnd!.day,
-            23,
-            59,
-            59,
-            999,
-          )
-        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    final dateEnd = dateNowYMDEndBLOC(event.dateEnd);
 
     final dataBranch = repoCache.getBranch();
     final idBranch =
@@ -81,8 +64,10 @@ class HistoryTransactionBloc
     debugPrint(
       "Log HistoryTransactionBloc: getData: $dateStart $dateEnd $filteredSell",
     );
+
     emit(
       HistoryTransactionLoaded(
+        isSell: currentState.isSell,
         dateStart: dateStart,
         dateEnd: dateEnd,
         idBranch: idBranch,
@@ -149,7 +134,7 @@ class HistoryTransactionBloc
       final listData = currentState.isSell
           ? currentState.filteredSell.toList()
           : currentState.filteredBuy.toList();
-      final filteredData = listData.where((element) {
+      List<ModelTransaction> filteredData = listData.where((element) {
         return element.getinvoice.toLowerCase().contains(
               event.search.toLowerCase(),
             ) ||
@@ -158,6 +143,12 @@ class HistoryTransactionBloc
             ) ||
             element.getnote.toLowerCase().contains(event.search.toLowerCase());
       }).toList();
+
+      if (event.search.isEmpty) {
+        filteredData = currentState.isSell
+            ? repoCache.getTransactionSell(currentState.idBranch!)
+            : repoCache.getTransactionBuy(currentState.idBranch!);
+      }
       final updateFor = currentState.isSell
           ? currentState.copyWith(filteredSell: filteredData)
           : currentState.copyWith(filteredBuy: filteredData);
@@ -205,5 +196,15 @@ class HistoryTransactionBloc
       ),
     );
     navUpDownTransition(event.context, '/sell', false);
+  }
+
+  FutureOr<void> _onIsSell(
+    HistoryTransactionIsSell event,
+    Emitter<HistoryTransactionState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is HistoryTransactionLoaded) {
+      emit(currentState.copyWith(isSell: event.isSell, selectedData: null));
+    }
   }
 }

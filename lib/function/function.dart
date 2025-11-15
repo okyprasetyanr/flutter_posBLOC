@@ -27,21 +27,21 @@ String formatQtyOrPrice(double qty) {
 
 class UserSession {
   static DataUserRepositoryCache? repo;
-  static String? uidUser;
-  static bool? fifo;
+  static String uidUser = "";
+  static bool fifo = false;
 
   static Future<void> init(DataUserRepositoryCache repo) async {
     final pref = await SharedPreferences.getInstance();
-    uidUser = pref.getString("uid_user");
-    fifo = pref.getBool("fifo");
+    uidUser = pref.getString("uid_user")!;
+    fifo = pref.getBool("fifo")!;
     await repo.initData();
   }
 
-  static String? getUidUser() {
+  static String getUidUser() {
     return uidUser;
   }
 
-  static bool? getStatusFifo() {
+  static bool getStatusFifo() {
     return fifo;
   }
 }
@@ -63,13 +63,10 @@ String generateInvoice({String? branchId, String? operatorId, int? queue}) {
   return "$operator-$branch-$queue-$uuid";
 }
 
-const List<String> listStatusTransaction = [
-  "Sukses",
-  "Tersimpan",
-  "Revisi",
-  "Batal",
-];
-String statusTransaction({int? index}) {
+String statusTransaction({
+  int? index,
+  listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"],
+}) {
   return listStatusTransaction[index!];
 }
 
@@ -89,4 +86,24 @@ DateTime dateTimeparseDateTime({required String date, bool? minute}) {
   final useMinute = minute ?? true;
   final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
   return DateFormat(pattern).parse(date);
+}
+
+DateTime dateNowYMDEndBLOC(DateTime? dateTime) {
+  return dateTime != null
+      ? DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59, 999)
+      : dateNowYMDBLOC(status: true);
+}
+
+DateTime dateNowYMDStartBLOC(DateTime? dateTime) {
+  return dateTime != null
+      ? DateTime(dateTime.year, dateTime.month, dateTime.day)
+      : dateNowYMDBLOC();
+}
+
+DateTime dateNowYMDBLOC({bool? status}) {
+  final end = status ?? false;
+  final now = DateTime.now();
+  return end
+      ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
+      : DateTime(now.year, now.month, now.day);
 }

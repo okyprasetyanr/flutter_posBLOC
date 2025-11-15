@@ -21,6 +21,12 @@ class HistoryTransactionSelectedData extends HistoryTransactionEvent {
   HistoryTransactionSelectedData({required this.selectedData});
 }
 
+class HistoryTransactionIsSell extends HistoryTransactionEvent {
+  final bool isSell;
+
+  HistoryTransactionIsSell({required this.isSell});
+}
+
 class HistoryTransactionRevisionData extends HistoryTransactionEvent {
   final BuildContext context;
 
