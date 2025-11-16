@@ -20,7 +20,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   final List<ModelItem>? dataItem;
   final List<ModelItem>? filteredItem;
   final List<ModelCategory>? dataCategory;
-  final List<ModelBranch>? dataBranch;
+  final List<ModelBranch> dataBranch;
   final String? idBranch;
   final ModelCategory? selectedCategory;
   final ModelItemOrdered? selectedItem;
@@ -65,7 +65,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     bool? editSelectedItem,
   }) {
     return TransactionLoaded(
-      revision: revision??this.revision,
+      revision: revision ?? this.revision,
       selectedTransaction: selectedTransaction ?? this.selectedTransaction,
       dataTransactionSaved: dataTransactionSaved ?? this.dataTransactionSaved,
       selectedPartner: selectedPartner ?? selectedPartner,

@@ -69,7 +69,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                         condiment: [],
                       );
 
-                      if (UserSession.getStatusFifo()! &&
+                      if (UserSession.getStatusFifo() &&
                           item.getqtyItem == 0 &&
                           items.$2) {
                         return customSnackBar(

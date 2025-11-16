@@ -225,7 +225,7 @@ class ModelTransaction extends Equatable {
     if (!isSell) {
       pushDataBatch(dataRepo);
     } else {
-      if (UserSession.getStatusFifo()!) {
+      if (UserSession.getStatusFifo()) {
         remove
             ? pushDataBatch(dataRepo)
             : reduceQtyFIFO(dataBatch: dataRepo.dataBatch!);

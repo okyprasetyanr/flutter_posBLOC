@@ -41,10 +41,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  FutureOr<void> _onAdjust(
-    PaymentAdjust event,
-    Emitter<PaymentState> emit,
-  ) {
+  FutureOr<void> _onAdjust(PaymentAdjust event, Emitter<PaymentState> emit) {
     final currentState = state;
     if (currentState is PaymentLoaded) {
       final dataTransaction = currentState.transaction_sell!.copyWith();
@@ -135,9 +132,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
       final totalOrdered = dataTransaction.getsubTotal;
       final totalDiscount = totalOrdered * (discount / 100);
-      final totalPpn = totalOrdered * (ppn / 100);
-      final totalCharge = totalOrdered * (charge / 100);
-      total = totalOrdered - totalDiscount - totalPpn + totalCharge;
+      final afterDiscount = totalOrdered - totalDiscount;
+      final totalPpn = afterDiscount * (ppn / 100);
+      final totalCharge = afterDiscount * (charge / 100);
+      total = afterDiscount + totalPpn + totalCharge;
 
       emit(
         currentState.copyWith(
@@ -291,8 +289,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         dataRepo: bloc,
       );
     }
-
-
 
     final sellState = event.context.read<TransactionBloc>();
     if (sellState.state is TransactionLoaded) {

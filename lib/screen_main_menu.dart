@@ -99,7 +99,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
             ),
             gridViewMenu(
               () {
-                // navUpDownTransition(context, '/partner', false);
+                navUpDownTransition(context, '/report', false);
               },
               Icon(Icons.assignment_outlined),
               "Laporan",

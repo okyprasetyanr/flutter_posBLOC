@@ -130,7 +130,7 @@ class _UITransactionState extends State<UITransaction> {
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
-                    if (!UserSession.getStatusFifo()!) {
+                    if (!UserSession.getStatusFifo()) {
                       return customSnackBar(
                         context,
                         'Hanya dapat dilakukan di fitur FIFO!',
@@ -156,7 +156,7 @@ class _UITransactionState extends State<UITransaction> {
                           },
                           builder: (context, state) {
                             return WidgetAnimatePage(
-                              state: state,
+                              change: state,
                               text1: "Penjualan",
                               text2: "Pembelian",
                             );

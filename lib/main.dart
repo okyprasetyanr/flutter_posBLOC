@@ -10,6 +10,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_bloc.dart';
+import 'package:flutter_pos/features/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/firebase_options.dart';
@@ -52,6 +53,7 @@ void main() async {
           BlocProvider(create: (context) => PartnerBloc(repo)),
           BlocProvider(create: (context) => BatchBloc(repo)),
           BlocProvider(create: (context) => HistoryTransactionBloc(repo)),
+          BlocProvider(create: (context) => ReportBloc(repo)),
         ],
         child: MaterialApp(
           initialRoute: '/login',

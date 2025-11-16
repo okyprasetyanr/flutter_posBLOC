@@ -217,7 +217,7 @@ class _UIInventoryState extends State<UIInventory> {
                   valueListenable: currentPage,
                   builder: (context, value, child) {
                     return WidgetAnimatePage(
-                      state: value,
+                      change: value,
                       text1: "Inventory",
                       text2: "Kategori",
                     );

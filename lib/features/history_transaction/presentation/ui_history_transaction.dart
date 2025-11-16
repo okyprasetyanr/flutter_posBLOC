@@ -87,7 +87,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                         child: Stack(
                           children: [
                             WidgetAnimatePage(
-                              state: state,
+                              change: state,
                               text1: "Penjualan",
                               text2: "Pembelian",
                             ),
@@ -149,6 +149,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                   onPressed: () async {
                     DateTime? pickedDateStart, pickedDateEnd;
                     await customDatePicker(
+                      false,
                       "Tanggal mulai",
                       context,
                       parseDate(
@@ -159,6 +160,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                     );
 
                     await customDatePicker(
+                      true,
                       "Tanggal selesai",
                       context,
                       parseDate(

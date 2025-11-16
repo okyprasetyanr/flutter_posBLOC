@@ -12,6 +12,7 @@ import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:uuid/uuid.dart';
 
@@ -128,10 +129,10 @@ class _UIPartnerState extends State<UIPartner> {
                   : BlocSelector<
                       PartnerBloc,
                       PartnerState,
-                      (List<ModelBranch>, String?)
+                      (List<ModelBranch>, String)
                     >(
                       selector: (state) => state is PartnerLoaded
-                          ? (state.dataBranch!, state.idBranch)
+                          ? (state.dataBranch!, state.idBranch!)
                           : ([], ""),
                       builder: (context, state) {
                         if (state.$1.isEmpty) {
@@ -140,38 +141,15 @@ class _UIPartnerState extends State<UIPartner> {
                             size: 30.0,
                           );
                         }
-                        return DropdownButtonFormField<ModelBranch>(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 4,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            label: Text("Pilih Cabang", style: lv1TextStyle),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          style: lv05TextStyle,
-                          initialValue: state.$1.firstWhere(
-                            (data) => data.getidBranch == state.$2,
-                          ),
-                          items: state.$1
-                              .map(
-                                (map) => DropdownMenuItem(
-                                  value: map,
-                                  child: Text(map.getareaBranch),
+                        return WidgetDropdownBranch(
+                          listBranch: state.$1,
+                          idBranch: state.$2,
+                          selectedIdBranch: (selectedIdBranch) =>
+                              context.read<PartnerBloc>().add(
+                                PartnerSelectedBranch(
+                                  idBranch: selectedIdBranch,
                                 ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            context.read<PartnerBloc>().add(
-                              PartnerSelectedBranch(
-                                idBranch: value!.getidBranch,
                               ),
-                            );
-                          },
                         );
                       },
                     );

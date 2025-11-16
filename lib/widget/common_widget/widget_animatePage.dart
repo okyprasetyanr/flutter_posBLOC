@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class WidgetAnimatePage extends StatelessWidget {
-  final bool state;
+  final bool change;
   final String text1;
   final String text2;
-  const WidgetAnimatePage({super.key, required this.state, required this.text1, required this.text2});
+  const WidgetAnimatePage({
+    super.key,
+    required this.change,
+    required this.text1,
+    required this.text2,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,7 @@ class WidgetAnimatePage extends StatelessWidget {
       children: [
         AnimatedPositioned(
           curve: Curves.easeInOut,
-          left: state ? 0 : -200,
+          left: change ? 0 : -200,
           duration: const Duration(milliseconds: 500),
           child: Row(
             children: [
@@ -24,7 +29,7 @@ class WidgetAnimatePage extends StatelessWidget {
         ),
         AnimatedPositioned(
           curve: Curves.easeInOut,
-          left: state ? 300 : 0,
+          left: change ? 300 : 0,
           duration: const Duration(milliseconds: 500),
           child: Align(
             alignment: Alignment.centerLeft,

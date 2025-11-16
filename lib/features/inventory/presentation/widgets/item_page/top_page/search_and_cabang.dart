@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIInventorySearchAndBranch extends StatelessWidget {
@@ -72,44 +73,19 @@ class UIInventorySearchAndBranch extends StatelessWidget {
                         size: 30.0,
                       );
                     }
-                    return DropdownButtonFormField<ModelBranch>(
-                      style: lv05TextStyle,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        label: Text("Pilih Cabang", style: lv1TextStyle),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
-                      initialValue: state.$1!.firstWhere(
-                        (element) => element.getidBranch == state.$2,
-                      ),
-                      items: state.$1!
-                          .map(
-                            (map) => DropdownMenuItem(
-                              value: map,
-                              child: Text(
-                                map.getareaBranch,
-                                style: lv05TextStyle,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                    return WidgetDropdownBranch(
+                      listBranch: state.$1!,
+                      idBranch: state.$2!,
+                      selectedIdBranch: (SelectedIdBranch) =>
+                          context.read<InventoryBloc>().add(
+                            InvGetData(
+                              idBranch: SelectedIdBranch,
+                              filter: selectedFilterItem!,
+                              status: selectedStatusItem!,
+                              filterjenis: selectedFilterJenisItem!,
+                              filterIDCategory: selectedFilterCategoryItem!,
                             ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        String idBranch = value!.getidBranch;
-                        context.read<InventoryBloc>().add(
-                          InvGetData(
-                            idBranch: idBranch,
-                            filter: selectedFilterItem!,
-                            status: selectedStatusItem!,
-                            filterjenis: selectedFilterJenisItem!,
-                            filterIDCategory: selectedFilterCategoryItem!,
                           ),
-                        );
-                      },
                     );
                   },
                 ),
