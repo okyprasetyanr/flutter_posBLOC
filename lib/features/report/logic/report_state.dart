@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_report.dart';
 
 class ReportState {}
@@ -11,7 +12,9 @@ class ReportLoaded extends ReportState with EquatableMixin {
   final String? idBranch;
   final ModelReport? report;
   final bool isSell;
+  final List<ModelBranch> dataBranch;
   ReportLoaded({
+    this.dataBranch=const [],
     this.report,
     this.dateStart,
     this.dateEnd,
@@ -20,6 +23,7 @@ class ReportLoaded extends ReportState with EquatableMixin {
   });
 
   ReportLoaded copyWith({
+    List<ModelBranch>? dataBranch,
     DateTime? dateStart,
     DateTime? dateEnd,
     String? idBranch,
@@ -27,6 +31,7 @@ class ReportLoaded extends ReportState with EquatableMixin {
     bool? isSell,
   }) {
     return ReportLoaded(
+      dataBranch: dataBranch?? this.dataBranch,
       isSell: isSell ?? this.isSell,
       report: report ?? this.report,
       dateEnd: dateEnd,
@@ -36,5 +41,5 @@ class ReportLoaded extends ReportState with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [dateStart, dateEnd, idBranch, report, isSell];
+  List<Object?> get props => [dateStart, dateEnd, idBranch, report, isSell,dataBranch];
 }

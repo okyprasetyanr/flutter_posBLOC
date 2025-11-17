@@ -12,7 +12,6 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   DataUserRepositoryCache repoCache;
   ReportBloc(this.repoCache) : super(ReportInitial()) {
     on<ReportGetData>(_onGetData);
-
     on<ReportIsSell>(_onIsSell);
   }
 
@@ -103,6 +102,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     emit(
       currentState.copyWith(
+        dataBranch: dataBranch,
         report: report,
         dateStart: dateStart,
         dateEnd: dateEnd,
@@ -116,6 +116,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     emit(
       currentState.copyWith(
         isSell: !currentState.isSell,
+        idBranch: currentState.idBranch,
         dateStart: currentState.dateStart,
         dateEnd: currentState.dateEnd,
       ),

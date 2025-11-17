@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
+
 class WidgetDropdownBranch extends StatelessWidget {
   final List<ModelBranch> listBranch;
   final String idBranch;

@@ -4,11 +4,13 @@ import 'package:flutter_pos/features/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/report/logic/report_event.dart';
 import 'package:flutter_pos/features/report/logic/report_state.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_report.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/date_picker.dart';
 import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIReport extends StatefulWidget {
@@ -56,6 +58,7 @@ class _UIReportState extends State<UIReport> {
                 );
               }
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,78 +81,124 @@ class _UIReportState extends State<UIReport> {
                       ),
                     ],
                   ),
-
-                  BlocSelector<ReportBloc, ReportState, (DateTime?, DateTime?)>(
-                    selector: (state) {
-                      if (state is ReportLoaded) {
-                        return (state.dateStart, state.dateEnd);
-                      }
-                      return (null, null);
-                    },
-                    builder: (context, state) {
-                      return ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          minimumSize: Size(0, 0),
-                          padding: EdgeInsets.all(8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(8),
-                          ),
-                        ),
-                        onPressed: () async {
-                          DateTime? pickedDateStart, pickedDateEnd;
-                          await customDatePicker(
-                            false,
-                            "Tanggal mulai",
-                            context,
-                            parseDate(
-                              date: formatDate(date: DateTime.now()),
-                              minute: false,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BlocSelector<
+                        ReportBloc,
+                        ReportState,
+                        (DateTime?, DateTime?)
+                      >(
+                        selector: (state) {
+                          if (state is ReportLoaded) {
+                            return (state.dateStart, state.dateEnd);
+                          }
+                          return (null, null);
+                        },
+                        builder: (context, state) {
+                          return ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              minimumSize: Size(0, 0),
+                              padding: EdgeInsets.all(8),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadiusGeometry.circular(8),
+                              ),
                             ),
-                            (picked) => pickedDateStart = picked,
-                          );
+                            onPressed: () async {
+                              DateTime? pickedDateStart, pickedDateEnd;
+                              await customDatePicker(
+                                false,
+                                "Tanggal mulai",
+                                context,
+                                parseDate(
+                                  date: formatDate(date: DateTime.now()),
+                                  minute: false,
+                                ),
+                                (picked) => pickedDateStart = picked,
+                              );
 
-                          await customDatePicker(
-                            true,
-                            "Tanggal selesai",
-                            context,
-                            parseDate(
-                              date: formatDate(date: DateTime.now()),
-                              minute: false,
-                            ),
-                            (picked) => pickedDateEnd = picked,
-                          );
+                              await customDatePicker(
+                                true,
+                                "Tanggal selesai",
+                                context,
+                                parseDate(
+                                  date: formatDate(date: DateTime.now()),
+                                  minute: false,
+                                ),
+                                (picked) => pickedDateEnd = picked,
+                              );
 
-                          context.read<ReportBloc>().add(
-                            ReportGetData(
-                              dateStart: pickedDateStart,
-                              dateEnd: pickedDateEnd,
-                              idBranch: null,
+                              context.read<ReportBloc>().add(
+                                ReportGetData(
+                                  dateStart: pickedDateStart,
+                                  dateEnd: pickedDateEnd,
+                                  idBranch: null,
+                                ),
+                              );
+                            },
+                            icon: Icon(Icons.date_range_rounded),
+                            label: Text(
+                              state.$1 == null ||
+                                      formatDate(
+                                                date: state.$1!,
+                                                minute: false,
+                                              ) ==
+                                              formatDate(
+                                                date: DateTime.now(),
+                                                minute: false,
+                                              ) &&
+                                          formatDate(
+                                                date: state.$2!,
+                                                minute: false,
+                                              ) ==
+                                              formatDate(
+                                                date: DateTime.now(),
+                                                minute: false,
+                                              )
+                                  ? "Hari ini"
+                                  : "${formatDate(date: state.$1!, minute: false)} - ${formatDate(date: state.$2!, minute: false)}",
+                              style: lv05TextStyle,
                             ),
                           );
                         },
-                        icon: Icon(Icons.date_range_rounded),
-                        label: Text(
-                          state.$1 == null ||
-                                  formatDate(date: state.$1!, minute: false) ==
-                                          formatDate(
-                                            date: DateTime.now(),
-                                            minute: false,
-                                          ) &&
-                                      formatDate(
-                                            date: state.$2!,
-                                            minute: false,
-                                          ) ==
-                                          formatDate(
-                                            date: DateTime.now(),
-                                            minute: false,
-                                          )
-                              ? "Hari ini"
-                              : "${formatDate(date: state.$1!, minute: false)} - ${formatDate(date: state.$2!, minute: false)}",
-                          style: lv05TextStyle,
-                        ),
-                      );
-                    },
+                      ),
+
+                      Container(
+                        padding: const EdgeInsets.only(left: 10),
+                        width: 150,
+                        child:
+                            BlocSelector<
+                              ReportBloc,
+                              ReportState,
+                              (List<ModelBranch>?, String?)
+                            >(
+                              selector: (state) {
+                                if (state is ReportLoaded) {
+                                  return (state.dataBranch, state.idBranch);
+                                }
+                                return (null, null);
+                              },
+                              builder: (context, state) => state.$1 == null
+                                  ? const SpinKitThreeBounce(
+                                      color: Colors.blue,
+                                      size: 15.0,
+                                    )
+                                  : WidgetDropdownBranch(
+                                      listBranch: state.$1!,
+                                      idBranch: state.$2!,
+                                      selectedIdBranch: (selectedIdBranch) =>
+                                          context.read<ReportBloc>().add(
+                                            ReportGetData(
+                                              dateStart: null,
+                                              dateEnd: null,
+                                              idBranch: selectedIdBranch,
+                                            ),
+                                          ),
+                                    ),
+                            ),
+                      ),
+                    ],
                   ),
 
                   rowContent("Modal Awal", report.getopeningBalance),
