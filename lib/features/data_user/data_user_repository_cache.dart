@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
@@ -15,6 +16,7 @@ class DataUserRepositoryCache {
   List<ModelTransaction>? dataTransactionSell;
   List<ModelTransaction>? dataTransactionBuy;
   List<ModelBatch>? dataBatch;
+  List<ModelFinancial>? dataFinancial;
 
   final DataUserRepository repo;
 
@@ -23,6 +25,7 @@ class DataUserRepositoryCache {
   Future<bool> initData() async {
     await Future.wait([
       initBranch(),
+      initFinancial(),
       initItem(),
       initCategory(),
       initPartner(),
@@ -58,6 +61,10 @@ class DataUserRepositoryCache {
 
   Future<void> initBranch() async {
     dataBranch = await repo.getBranch();
+  }
+
+  Future<void> initFinancial() async {
+    dataFinancial = await repo.getFinancial();
   }
 
   Future<void> initTransactionSell() async {
@@ -122,6 +129,20 @@ class DataUserRepositoryCache {
     return dataPartner!
         .where(
           (element) => element.isCustomer && element.getidBranch == idBranch,
+        )
+        .toList();
+  }
+
+  List<ModelFinancial> getIncome(String idBranch) {
+    return dataFinancial!
+        .where((element) => element.isIncome && element.getidBranch == idBranch)
+        .toList();
+  }
+
+  List<ModelFinancial> getExpense(String idBranch) {
+    return dataFinancial!
+        .where(
+          (element) => element.isExpense && element.getidBranch == idBranch,
         )
         .toList();
   }

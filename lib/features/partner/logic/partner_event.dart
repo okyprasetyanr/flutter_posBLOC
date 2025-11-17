@@ -9,10 +9,10 @@ class PartnerGetData extends PartnerEvent {
   PartnerGetData({this.idBranch, this.isCustomer = true});
 }
 
-class PartnerSelectedCustomer extends PartnerEvent {
+class PartnerSelectedPartner extends PartnerEvent {
   final ModelPartner selectedPartner;
 
-  PartnerSelectedCustomer({required this.selectedPartner});
+  PartnerSelectedPartner({required this.selectedPartner});
 }
 
 class PartnerUploadDataPartner extends PartnerEvent {

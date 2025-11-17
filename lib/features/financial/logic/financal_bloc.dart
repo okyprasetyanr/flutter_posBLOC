@@ -1,147 +1,72 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/partner/logic/partner_event.dart';
-import 'package:flutter_pos/features/partner/logic/partner_state.dart';
+import 'package:flutter_pos/features/financial/logic/financial_event.dart';
+import 'package:flutter_pos/features/financial/logic/financial_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:flutter_pos/request/delete_data.dart';
 
-class FinancialBloc extends Bloc<PartnerEvent, PartnerState> {
+class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
   DataUserRepositoryCache repoCache;
-  FinancialBloc(this.repoCache) : super(PartnerInitial()) {
-    on<PartnerGetData>(_onGetData);
-    on<PartnerSelectedCustomer>(_onSelectedCustomer);
-    on<PartnerUploadDataPartner>(_onUploadataPartner);
-    on<PartnerStatusPartner>(_onStatusPartner);
-    on<PartnerResetSelectedPartner>(_onResetSelectedPartner);
-    on<PartnerSelectedBranch>(_onSelectedBranch);
-    on<PartnerDeletePartner>(_onDeletePartner);
+  FinancialBloc(this.repoCache) : super(FinancialInitial()) {
+    on<FinancialGetData>(_onGetData);
+    on<FinancialSelectedFinancial>(_onSelectedFinancial);
+    on<FinancialUploadDataFinancial>(_onUploadata);
+    on<FinancialStatusFinancial>(_onStatusFinancial);
+    on<FinancialResetSelectedFinancial>(_onResetSelected);
+    on<FinancialDeleteFinancial>(_onDelete);
   }
 
-  FutureOr<void> _onGetData(PartnerGetData event, Emitter<PartnerState> emit) {
-    final currentState = state is PartnerLoaded
-        ? state as PartnerLoaded
-        : PartnerLoaded();
-
-    final branch = currentState.dataBranch ?? repoCache.getBranch();
+  FutureOr<void> _onGetData(
+    FinancialGetData event,
+    Emitter<FinancialState> emit,
+  ) {
+    final currentState = state as FinancialLoaded;
+    final dataBranch = currentState.dataBranch ?? repoCache.getBranch();
     final idBranch =
-        event.idBranch ?? currentState.idBranch ?? branch.first.getidBranch;
-
-    List<ModelPartner> partner;
-    if (event.isCustomer) {
-      partner = repoCache.getCustomer(idBranch);
-      debugPrint("Log PartnerBloc: Customer: $partner");
-    } else {
-      partner = repoCache.getSupplier(idBranch);
-      debugPrint("Log PartnerBloc: Supplier: $partner");
-    }
-    partner.sort((a, b) => a.getname.compareTo(b.getname));
+        event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
+    final isIncome = event.isIncome ?? currentState.isIncome;
+    final dataFinancial = isIncome
+        ? repoCache.getIncome(idBranch)
+        : repoCache.getExpense(idBranch);
     emit(
-      currentState.copyWith(
-        dataPartner: partner,
+      FinancialLoaded(
+        dataBranch: dataBranch,
+        dataFinancial: dataFinancial,
+        filteredFinancial: dataFinancial,
         idBranch: idBranch,
-        dataBranch: branch,
-        isCustomer: event.isCustomer,
+        isIncome: isIncome,
       ),
     );
   }
 
-  FutureOr<void> _onSelectedCustomer(
-    PartnerSelectedCustomer event,
-    Emitter<PartnerState> emit,
+  FutureOr<void> _onSelectedFinancial(
+    FinancialSelectedFinancial event,
+    Emitter<FinancialState> emit,
   ) {
-    final currentState = state;
-    if (currentState is PartnerLoaded) {
-      emit(currentState.copyWith(selectedPartner: event.selectedPartner));
-    }
+    final currentState = state as FinancialLoaded;
+    emit(currentState.copyWith(selectedFinancial: event.selectedFinancial));
   }
 
-  Future<void> _onUploadataPartner(
-    PartnerUploadDataPartner event,
-    Emitter<PartnerState> emit,
-  ) async {
-    await event.partner.pushDataPartner();
-    final currentState = state;
-    if (currentState is PartnerLoaded) {
-      final edit = repoCache.dataPartner!.any(
-        (element) => element.getid == event.partner.getid,
-      );
+  FutureOr<void> _onUploadata(
+    FinancialUploadDataFinancial event,
+    Emitter<FinancialState> emit,
+  ) {}
 
-      if (edit) {
-        final indexCategory = repoCache.dataPartner!.indexWhere(
-          (element) => element.getid == event.partner.getid,
-        );
-
-        repoCache.dataPartner![indexCategory] = event.partner;
-      } else {
-        repoCache.dataPartner!.add(event.partner);
-      }
-      final dataPartner = event.partner.gettype.name == "customer"
-          ? repoCache.getCustomer(event.partner.getidBranch)
-          : repoCache.getSupplier(event.partner.getidBranch);
-      dataPartner.sort((a, b) => a.getname.compareTo(b.getname));
-      add(PartnerResetSelectedPartner());
-      emit(currentState.copyWith(dataPartner: dataPartner));
-    }
-  }
-
-  FutureOr<void> _onStatusPartner(event, Emitter<PartnerState> emit) async {
-    add(PartnerResetSelectedPartner());
-
-    final currentState = state;
-    if (currentState is PartnerLoaded) {
-      final isCustomer = !currentState.isCustomer;
-      emit(currentState.copyWith(isCustomer: isCustomer));
-
-      debugPrint("Log PartnerBloc: isCustomer: $isCustomer");
-      add(PartnerGetData(isCustomer: isCustomer));
-    }
-  }
-
-  FutureOr<void> _onResetSelectedPartner(
-    PartnerResetSelectedPartner event,
-    Emitter<PartnerState> emit,
+  FutureOr<void> _onStatusFinancial(
+    FinancialStatusFinancial event,
+    Emitter<FinancialState> emit,
   ) {
-    final currentState = state;
-    if (currentState is PartnerLoaded) {
-      emit(currentState.copyWith(selectedPartner: null));
-    }
+    final currentState = state as FinancialLoaded;
+    emit(currentState.copyWith(isIncome: !currentState.isIncome));
   }
 
-  FutureOr<void> _onSelectedBranch(
-    PartnerSelectedBranch event,
-    Emitter<PartnerState> emit,
-  ) {
-    final currentState = state;
-    if (currentState is PartnerLoaded) {
-      emit(currentState.copyWith(idBranch: event.idBranch));
-      add(
-        PartnerGetData(
-          idBranch: event.idBranch,
-          isCustomer: currentState.isCustomer,
-        ),
-      );
-      debugPrint("Log PartnerBloc: SelectedIdBranch: ${event.idBranch}");
-    }
-  }
+  FutureOr<void> _onResetSelected(
+    FinancialResetSelectedFinancial event,
+    Emitter<FinancialState> emit,
+  ) {}
 
-  Future<void> _onDeletePartner(
-    PartnerDeletePartner event,
-    Emitter<PartnerState> emit,
-  ) async {
-    await deleteDataPartner(event.id);
-    final currentState = state;
-    if (currentState is PartnerLoaded) {
-      repoCache.dataPartner!.removeWhere(
-        (element) => element.getid == event.id,
-      );
-      final dataPartner = event.type.name == "customer"
-          ? await repoCache.getCustomer(currentState.idBranch!)
-          : await repoCache.getSupplier(currentState.idBranch!);
-      dataPartner.sort((a, b) => a.getname.compareTo(b.getname));
-      emit(currentState.copyWith(dataPartner: dataPartner));
-    }
-  }
+  FutureOr<void> _onDelete(
+    FinancialDeleteFinancial event,
+    Emitter<FinancialState> emit,
+  ) {}
 }

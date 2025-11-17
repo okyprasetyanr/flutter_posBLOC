@@ -219,7 +219,7 @@ class _UIPartnerState extends State<UIPartner> {
                                   child: InkWell(
                                     onTap: () {
                                       context.read<PartnerBloc>().add(
-                                        PartnerSelectedCustomer(
+                                        PartnerSelectedPartner(
                                           selectedPartner: partner,
                                         ),
                                       );

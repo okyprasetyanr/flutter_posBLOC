@@ -12,7 +12,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   DataUserRepositoryCache repoCache;
   PartnerBloc(this.repoCache) : super(PartnerInitial()) {
     on<PartnerGetData>(_onGetData);
-    on<PartnerSelectedCustomer>(_onSelectedCustomer);
+    on<PartnerSelectedPartner>(_onSelectedPartner);
     on<PartnerUploadDataPartner>(_onUploadataPartner);
     on<PartnerStatusPartner>(_onStatusPartner);
     on<PartnerResetSelectedPartner>(_onResetSelectedPartner);
@@ -29,14 +29,10 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? branch.first.getidBranch;
 
-    List<ModelPartner> partner;
-    if (event.isCustomer) {
-      partner = repoCache.getCustomer(idBranch);
-      debugPrint("Log PartnerBloc: Customer: $partner");
-    } else {
-      partner = repoCache.getSupplier(idBranch);
-      debugPrint("Log PartnerBloc: Supplier: $partner");
-    }
+    List<ModelPartner> partner = event.isCustomer
+        ? repoCache.getCustomer(idBranch)
+        : repoCache.getSupplier(idBranch);
+
     partner.sort((a, b) => a.getname.compareTo(b.getname));
     emit(
       currentState.copyWith(
@@ -48,8 +44,8 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     );
   }
 
-  FutureOr<void> _onSelectedCustomer(
-    PartnerSelectedCustomer event,
+  FutureOr<void> _onSelectedPartner(
+    PartnerSelectedPartner event,
     Emitter<PartnerState> emit,
   ) {
     final currentState = state;

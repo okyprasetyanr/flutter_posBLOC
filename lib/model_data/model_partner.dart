@@ -80,7 +80,7 @@ class ModelPartner extends Equatable {
       email: map['email_partner'],
       balance: map['balance_partner'],
       type: PartnerType.values.firstWhere(
-        (e) => e.name == map['type'],
+        (element) => element.name == map['type'],
         orElse: () => PartnerType.customer,
       ),
       date: parseDate(date: map['date']),

@@ -3,6 +3,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_data_counter.dart';
+import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
@@ -17,6 +18,14 @@ class DataUserRepository {
         .doc(UserSession.getUidUser())
         .get();
     return ModelBranch.getDataListBranch(data);
+  }
+
+  Future<List<ModelFinancial>> getFinancial() async {
+    final data = await _db
+        .collection('financial')
+        .where('uid_user', isEqualTo: UserSession.uidUser)
+        .get();
+    return ModelFinancial.getDataListFinancial(data);
   }
 
   Future<List<ModelItem>> getItem() async {
