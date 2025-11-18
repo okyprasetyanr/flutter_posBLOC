@@ -124,7 +124,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
             ),
             gridViewMenu(
               () {
-                // navUpDownTransition(context, '/cahsflow', false);
+                navUpDownTransition(context, '/financial', false);
               },
               Icon(Icons.shopping_cart),
               "Data Alur Kas",

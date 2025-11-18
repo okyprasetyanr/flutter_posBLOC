@@ -15,7 +15,7 @@ import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 
 class UIHistoryTransaction extends StatefulWidget {
   const UIHistoryTransaction({super.key});
@@ -234,10 +234,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                 },
                 builder: (context, state) {
                   if (state == null) {
-                    return const SpinKitThreeBounce(
-                      color: Colors.blue,
-                      size: 15.0,
-                    );
+                    return customSpinKit();
                   }
                   return ListView.builder(
                     itemCount: state.length,

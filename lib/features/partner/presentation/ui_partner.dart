@@ -28,6 +28,8 @@ class _UIPartnerState extends State<UIPartner> {
   final phonePartnerController = TextEditingController();
   final emailPartnerController = TextEditingController();
 
+  List<FocusNode> nodes = List.generate(3, (_) => FocusNode());
+
   @override
   void initState() {
     super.initState();
@@ -126,24 +128,12 @@ class _UIPartnerState extends State<UIPartner> {
             builder: (context, state) {
               return state
                   ? const SpinKitThreeBounce(color: Colors.blue, size: 15.0)
-                  : BlocSelector<
-                      PartnerBloc,
-                      PartnerState,
-                      (List<ModelBranch>, String)
-                    >(
-                      selector: (state) => state is PartnerLoaded
-                          ? (state.dataBranch!, state.idBranch!)
-                          : ([], ""),
+                  : BlocSelector<PartnerBloc, PartnerState, String>(
+                      selector: (state) =>
+                          state is PartnerLoaded ? state.idBranch ?? "" : "",
                       builder: (context, state) {
-                        if (state.$1.isEmpty) {
-                          return SpinKitThreeBounce(
-                            color: Colors.blue,
-                            size: 30.0,
-                          );
-                        }
                         return WidgetDropdownBranch(
-                          listBranch: state.$1,
-                          idBranch: state.$2,
+                          idBranch: state,
                           selectedIdBranch: (selectedIdBranch) =>
                               context.read<PartnerBloc>().add(
                                 PartnerSelectedBranch(
@@ -348,9 +338,13 @@ class _UIPartnerState extends State<UIPartner> {
                       Expanded(
                         flex: 2,
                         child: customTextField(
-                          "Nama Kontak",
-                          namePartnerController,
-                          true,
+                          index: 0,
+                          nodes: nodes,
+                          inputType: TextInputType.text,
+                          context: context,
+                          text: "Nama Kontak",
+                          controller: namePartnerController,
+                          enable: true,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -367,9 +361,15 @@ class _UIPartnerState extends State<UIPartner> {
                               : null,
                           builder: (context, state) {
                             return customTextField(
-                              "Cabang",
-                              TextEditingController(text: state ?? ""),
-                              false,
+                              index: 1,
+                              nodes: nodes,
+                              inputType: TextInputType.text,
+                              context: context,
+                              text: "Cabang",
+                              controller: TextEditingController(
+                                text: state ?? "",
+                              ),
+                              enable: false,
                             );
                           },
                         ),
@@ -381,18 +381,24 @@ class _UIPartnerState extends State<UIPartner> {
                     children: [
                       Expanded(
                         child: customTextField(
-                          "Nomor Kontak",
-                          phonePartnerController,
-                          true,
+                          index: 0,
+                          nodes: nodes,
+                          context: context,
+                          text: "Nomor Kontak",
+                          controller: phonePartnerController,
+                          enable: true,
                           inputType: TextInputType.number,
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: customTextField(
-                          "E-mail",
-                          emailPartnerController,
-                          true,
+                          index: 0,
+                          nodes: nodes,
+                          context: context,
+                          text: "E-mail",
+                          controller: emailPartnerController,
+                          enable: true,
                           inputType: TextInputType.emailAddress,
                         ),
                       ),

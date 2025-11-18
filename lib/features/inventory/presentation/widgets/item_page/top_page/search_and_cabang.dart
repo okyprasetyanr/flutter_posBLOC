@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -54,41 +55,25 @@ class UIInventorySearchAndBranch extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             flex: 2,
-            child:
-                BlocSelector<
-                  InventoryBloc,
-                  InventoryState,
-                  (List<ModelBranch>?, String?)
-                >(
-                  selector: (state) {
-                    if (state is InventoryLoaded) {
-                      return (state.dataBranch, state.idBranch);
-                    }
-                    return (null, null);
-                  },
-                  builder: (context, state) {
-                    if (state.$1 == null) {
-                      return const SpinKitThreeBounce(
-                        color: Colors.blue,
-                        size: 30.0,
-                      );
-                    }
-                    return WidgetDropdownBranch(
-                      listBranch: state.$1!,
-                      idBranch: state.$2!,
-                      selectedIdBranch: (SelectedIdBranch) =>
-                          context.read<InventoryBloc>().add(
-                            InvGetData(
-                              idBranch: SelectedIdBranch,
-                              filter: selectedFilterItem!,
-                              status: selectedStatusItem!,
-                              filterjenis: selectedFilterJenisItem!,
-                              filterIDCategory: selectedFilterCategoryItem!,
-                            ),
-                          ),
-                    );
-                  },
-                ),
+            child: BlocSelector<InventoryBloc, InventoryState, String>(
+              selector: (state) =>
+                  state is InventoryLoaded ? state.idBranch ?? "" : "",
+              builder: (context, state) {
+                return WidgetDropdownBranch(
+                  idBranch: state,
+                  selectedIdBranch: (SelectedIdBranch) =>
+                      context.read<InventoryBloc>().add(
+                        InvGetData(
+                          idBranch: SelectedIdBranch,
+                          filter: selectedFilterItem!,
+                          status: selectedStatusItem!,
+                          filterjenis: selectedFilterJenisItem!,
+                          filterIDCategory: selectedFilterCategoryItem!,
+                        ),
+                      ),
+                );
+              },
+            ),
           ),
         ],
       ),

@@ -26,3 +26,5 @@ class FinancialStatusFinancial extends FinancialEvent {}
 class FinancialResetSelectedFinancial extends FinancialEvent {}
 
 class FinancialDeleteFinancial extends FinancialEvent {}
+
+class FinancialIsIncome extends FinancialEvent {}

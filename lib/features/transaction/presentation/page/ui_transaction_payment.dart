@@ -17,6 +17,7 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UITransactionPayment extends StatefulWidget {
@@ -100,8 +101,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
             },
             builder: (context, state) {
               if (state == null) {
-                return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
-              }
+                return customSpinKit();}
               return SingleChildScrollView(
                 child: Column(
                   children: [

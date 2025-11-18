@@ -12,12 +12,14 @@ class UIInventoryFormFieldItem extends StatelessWidget {
   final TextEditingController codeBarcodeController;
   final TextEditingController priceItemController;
   final GlobalKey<FormState> formKey;
+  final List<FocusNode> nodes;
   const UIInventoryFormFieldItem({
     super.key,
     required this.nameItemController,
     required this.codeBarcodeController,
     required this.priceItemController,
     required this.formKey,
+    required this.nodes,
   });
 
   @override
@@ -42,12 +44,24 @@ class UIInventoryFormFieldItem extends StatelessWidget {
         key: formKey,
         child: Column(
           children: [
-            customTextField("Nama Item", nameItemController, true),
+            customTextField(
+              context: context,
+              index: 0,
+              nodes: nodes,
+              inputType: TextInputType.text,
+              text: "Nama Item",
+              controller: nameItemController,
+              enable: true,
+            ),
             const SizedBox(height: 10),
             customTextField(
-              "Kode/Barcode",
-              codeBarcodeController,
-              true,
+              context: context,
+              index: 1,
+              nodes: nodes,
+              inputType: TextInputType.text,
+              text: "Kode/Barcode",
+              controller: codeBarcodeController,
+              enable: true,
               validator: (value) {
                 final bloc = context.read<InventoryBloc>().state;
                 if (bloc is InventoryLoaded && bloc.dataSelectedItem == null) {
@@ -66,7 +80,15 @@ class UIInventoryFormFieldItem extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: customTextField("Harga", priceItemController, true),
+                  child: customTextField(
+                    context: context,
+                    index: 2,
+                    nodes: nodes,
+                    inputType: TextInputType.text,
+                    text: "Harga",
+                    controller: priceItemController,
+                    enable: true,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Flexible(flex: 2, fit: FlexFit.loose, child: CondimentSwitch()),

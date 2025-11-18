@@ -1,23 +1,23 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
-
 class WidgetDropdownBranch extends StatelessWidget {
-  final List<ModelBranch> listBranch;
   final String idBranch;
   final Function(String) selectedIdBranch;
   WidgetDropdownBranch({
     Key? key,
-    required this.listBranch,
     required this.idBranch,
     required this.selectedIdBranch,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final dataBranch = context.read<DataUserRepositoryCache>().dataBranch!;
     return DropdownButtonFormField<ModelBranch>(
       decoration: InputDecoration(
         isDense: true,
@@ -27,10 +27,11 @@ class WidgetDropdownBranch extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       style: lv05TextStyle,
-      initialValue: listBranch.firstWhere(
+      initialValue: dataBranch.firstWhere(
         (element) => element.getidBranch == idBranch,
+        orElse: null,
       ),
-      items: listBranch
+      items: dataBranch
           .map(
             (map) =>
                 DropdownMenuItem(value: map, child: Text(map.getareaBranch)),

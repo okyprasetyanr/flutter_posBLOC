@@ -15,6 +15,7 @@ class UICategoryTextFieldAndBranch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<FocusNode> nodes = List.generate(2, (_) => FocusNode());
     return Row(
       children: [
         Expanded(
@@ -32,9 +33,13 @@ class UICategoryTextFieldAndBranch extends StatelessWidget {
               }
             },
             child: customTextField(
-              "Nama Kategori",
-              nameCategoryController,
-              true,
+              context: context,
+              index: 0,
+              nodes: nodes,
+              inputType: TextInputType.text,
+              text: "Nama Kategori",
+              controller: nameCategoryController,
+              enable: true,
             ),
           ),
         ),
@@ -42,15 +47,19 @@ class UICategoryTextFieldAndBranch extends StatelessWidget {
         Expanded(
           flex: 1,
           child: customTextField(
-            "Cabang",
-            TextEditingController(
+            context: context,
+            index: 1,
+            nodes: nodes,
+            inputType: TextInputType.text,
+            text: "Cabang",
+            controller: TextEditingController(
               text: context.select<InventoryBloc, String?>(
                 (data) => data.state is InventoryLoaded
                     ? (data.state as InventoryLoaded).areaBranch
                     : "",
               ),
             ),
-            false,
+            enable: false,
           ),
         ),
       ],

@@ -13,3 +13,8 @@ Future<void> deleteDataitem(String id) async {
   debugPrint("Log DeleteData: Item: $id");
   await FirebaseFirestore.instance.collection('items').doc(id).delete();
 }
+
+Future<void> deleteDataFinancial(String id) async {
+  debugPrint("Log DeleteData: Item: $id");
+  await FirebaseFirestore.instance.collection('financial').doc(id).delete();
+}

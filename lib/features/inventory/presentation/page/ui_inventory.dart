@@ -32,6 +32,9 @@ class UIInventory extends StatefulWidget {
 }
 
 class _UIInventoryState extends State<UIInventory> {
+  List<FocusNode> nodes = List.generate(1, (_) => FocusNode());
+  List<FocusNode> nodesForm = List.generate(3, (_) => FocusNode());
+
   List<String> filters = [
     "A-Z",
     "Z-A",
@@ -459,6 +462,7 @@ class _UIInventoryState extends State<UIInventory> {
                       ),
                       children: [
                         UIInventoryFormFieldItem(
+                          nodes: nodesForm,
                           formKey: _formKey,
                           nameItemController: nameItemController,
                           codeBarcodeController: codeBarcodeController,
@@ -475,8 +479,12 @@ class _UIInventoryState extends State<UIInventory> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: customTextField(
-                                "Cabang",
-                                TextEditingController(
+                                index: 0,
+                                nodes: nodes,
+                                inputType: TextInputType.text,
+                                context: context,
+                                text: "Cabang",
+                                controller: TextEditingController(
                                   text: context.select<InventoryBloc, String>(
                                     (value) => value.state is InventoryLoaded
                                         ? (value.state as InventoryLoaded)
@@ -485,7 +493,7 @@ class _UIInventoryState extends State<UIInventory> {
                                         : "",
                                   ),
                                 ),
-                                false,
+                                enable: false,
                               ),
                             ),
                           ],

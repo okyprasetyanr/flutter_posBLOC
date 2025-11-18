@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/transaction/logic/transaction/transaction_e
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 
 class UITransactionListViewCategory extends StatelessWidget {
   const UITransactionListViewCategory({super.key});
@@ -26,8 +26,7 @@ class UITransactionListViewCategory extends StatelessWidget {
       },
       builder: (context, state) {
         if (state == null) {
-          return const SpinKitThreeBounce(color: Colors.blue, size: 15.0);
-        }
+          return customSpinKit(); }
         return ShaderMask(
           shaderCallback: (bounds) {
             return LinearGradient(
@@ -77,10 +76,7 @@ class UITransactionListViewCategory extends StatelessWidget {
                             },
                             builder: (context, stateSelected) {
                               if (stateSelected == null) {
-                                return const SpinKitThreeBounce(
-                                  color: Colors.blue,
-                                  size: 30.0,
-                                );
+                                return customSpinKit();
                               }
 
                               final validasiSelected =

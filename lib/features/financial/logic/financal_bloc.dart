@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/financial/logic/financial_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/request/delete_data.dart';
 
 class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
   DataUserRepositoryCache repoCache;
@@ -14,6 +15,7 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     on<FinancialStatusFinancial>(_onStatusFinancial);
     on<FinancialResetSelectedFinancial>(_onResetSelected);
     on<FinancialDeleteFinancial>(_onDelete);
+    on<FinancialIsIncome>(_onIsIncome);
   }
 
   FutureOr<void> _onGetData(
@@ -68,5 +70,16 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
   FutureOr<void> _onDelete(
     FinancialDeleteFinancial event,
     Emitter<FinancialState> emit,
-  ) {}
+  ) {
+    final currentState = state as FinancialLoaded;
+    deleteDataFinancial(currentState.seletcedFinancial!.getidFinancial);
+  }
+
+  FutureOr<void> _onIsIncome(
+    FinancialIsIncome event,
+    Emitter<FinancialState> emit,
+  ) {
+    final currentState = state as FinancialLoaded;
+    emit(currentState.copyWith(isIncome: !currentState.isIncome));
+  }
 }

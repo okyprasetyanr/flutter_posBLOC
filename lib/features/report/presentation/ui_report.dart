@@ -4,7 +4,6 @@ import 'package:flutter_pos/features/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/report/logic/report_event.dart';
 import 'package:flutter_pos/features/report/logic/report_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_report.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/date_picker.dart';
@@ -167,36 +166,21 @@ class _UIReportState extends State<UIReport> {
                       Container(
                         padding: const EdgeInsets.only(left: 10),
                         width: 150,
-                        child:
-                            BlocSelector<
-                              ReportBloc,
-                              ReportState,
-                              (List<ModelBranch>?, String?)
-                            >(
-                              selector: (state) {
-                                if (state is ReportLoaded) {
-                                  return (state.dataBranch, state.idBranch);
-                                }
-                                return (null, null);
-                              },
-                              builder: (context, state) => state.$1 == null
-                                  ? const SpinKitThreeBounce(
-                                      color: Colors.blue,
-                                      size: 15.0,
-                                    )
-                                  : WidgetDropdownBranch(
-                                      listBranch: state.$1!,
-                                      idBranch: state.$2!,
-                                      selectedIdBranch: (selectedIdBranch) =>
-                                          context.read<ReportBloc>().add(
-                                            ReportGetData(
-                                              dateStart: null,
-                                              dateEnd: null,
-                                              idBranch: selectedIdBranch,
-                                            ),
-                                          ),
-                                    ),
-                            ),
+                        child: BlocSelector<ReportBloc, ReportState, String>(
+                          selector: (state) =>
+                              state is ReportLoaded ? state.idBranch ?? "" : "",
+                          builder: (context, state) => WidgetDropdownBranch(
+                            idBranch: state,
+                            selectedIdBranch: (selectedIdBranch) =>
+                                context.read<ReportBloc>().add(
+                                  ReportGetData(
+                                    dateStart: null,
+                                    dateEnd: null,
+                                    idBranch: selectedIdBranch,
+                                  ),
+                                ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
