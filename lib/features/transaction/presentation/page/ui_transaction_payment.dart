@@ -18,7 +18,6 @@ import 'package:flutter_pos/style_and_transition/transition_navigator/transition
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UITransactionPayment extends StatefulWidget {
   const UITransactionPayment({super.key});
@@ -101,7 +100,8 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
             },
             builder: (context, state) {
               if (state == null) {
-                return customSpinKit();}
+                return customSpinKit();
+              }
               return SingleChildScrollView(
                 child: Column(
                   children: [

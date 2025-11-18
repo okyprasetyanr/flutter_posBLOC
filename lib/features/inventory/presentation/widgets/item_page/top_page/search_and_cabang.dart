@@ -3,11 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIInventorySearchAndBranch extends StatelessWidget {
   final String? selectedFilterItem;

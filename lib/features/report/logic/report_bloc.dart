@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/report/logic/report_event.dart';
@@ -19,21 +20,28 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     final currentState = state is ReportLoaded
         ? state as ReportLoaded
         : ReportLoaded();
+    final dateStart = dateYMDStartBLOC(event.dateStart);
+
+    final dateEnd = dateYMDEndBLOC(event.dateEnd);
+
     final dataBranch = repoCache.getBranch();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
-    final dateStart = dateNowYMDStartBLOC(event.dateStart);
-    final dateEnd = dateNowYMDEndBLOC(event.dateEnd);
-    final dataTransaction = repoCache
-        .getTransactionSell(idBranch)
-        .where(
-          (element) =>
-              element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart) &&
-                  element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isAfter(dateEnd),
-        )
-        .toList();
+
+    final dataTransaction = event.isSell ?? currentState.isSell
+        ? repoCache.getTransactionSell(idBranch).where((element) {
+            return (element.getdate.isAtSameMomentAs(dateStart) ||
+                    element.getdate.isAfter(dateStart)) &&
+                (element.getdate.isAtSameMomentAs(dateEnd) ||
+                    element.getdate.isBefore(dateEnd));
+          }).toList()
+        : repoCache.getTransactionBuy(idBranch).where((element) {
+            return (element.getdate.isAtSameMomentAs(dateStart) ||
+                    element.getdate.isAfter(dateStart)) &&
+                (element.getdate.isAtSameMomentAs(dateEnd) ||
+                    element.getdate.isBefore(dateEnd));
+          }).toList();
+    ;
 
     double qris = 0;
     double debit = 0;
@@ -100,8 +108,12 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       expense: expense,
     );
 
+    debugPrint("Log ReportBloc: report: $dataTransaction");
+    final isSell = event.isSell ?? currentState.isSell;
+
     emit(
       currentState.copyWith(
+        isSell: isSell,
         dataBranch: dataBranch,
         report: report,
         dateStart: dateStart,
@@ -113,13 +125,15 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   FutureOr<void> _onIsSell(ReportIsSell event, Emitter<ReportState> emit) {
     final currentState = state as ReportLoaded;
+    final isSell = currentState.isSell;
     emit(
       currentState.copyWith(
-        isSell: !currentState.isSell,
+        isSell: !isSell,
         idBranch: currentState.idBranch,
         dateStart: currentState.dateStart,
         dateEnd: currentState.dateEnd,
       ),
     );
+    add(ReportGetData(isSell: !isSell));
   }
 }

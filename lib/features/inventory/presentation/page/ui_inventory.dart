@@ -21,6 +21,7 @@ import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button_reset.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
@@ -331,23 +332,10 @@ class _UIInventoryState extends State<UIInventory> {
                         right: value ? -250 : 0,
                         top: 4,
                         duration: const Duration(milliseconds: 500),
-                        child: ElevatedButton.icon(
+                        child: customButtonIconReset(
                           onPressed: () {
                             _resetCategoryForm();
                           },
-                          style: ButtonStyle(
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: const WidgetStatePropertyAll(
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                            ),
-                            minimumSize: const WidgetStatePropertyAll(
-                              Size(0, 30),
-                            ),
-                            backgroundColor: WidgetStatePropertyAll(
-                              Colors.white,
-                            ),
-                          ),
-                          icon: const Icon(Icons.restart_alt_rounded, size: 20),
                           label: Text("Detail Kategori", style: titleTextStyle),
                         ),
                       ),
@@ -356,26 +344,13 @@ class _UIInventoryState extends State<UIInventory> {
                         right: value ? 0 : -200,
                         top: 0,
                         duration: const Duration(milliseconds: 500),
-                        child: ElevatedButton.icon(
+                        child: customButtonIconReset(
                           onPressed: () {
                             context.read<InventoryBloc>().add(
                               InvResetItemForm(),
                             );
                             _resetItemForm();
                           },
-                          style: ButtonStyle(
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: const WidgetStatePropertyAll(
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                            ),
-                            minimumSize: const WidgetStatePropertyAll(
-                              Size(0, 30),
-                            ),
-                            backgroundColor: WidgetStatePropertyAll(
-                              Colors.white,
-                            ),
-                          ),
-                          icon: const Icon(Icons.restart_alt_rounded, size: 20),
                           label: Text("Detail Item", style: titleTextStyle),
                         ),
                       ),
@@ -454,7 +429,7 @@ class _UIInventoryState extends State<UIInventory> {
               Column(
                 children: [
                   Expanded(
-                    flex: 4,
+                    flex: 6,
                     child: ListView(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 5,
@@ -502,9 +477,8 @@ class _UIInventoryState extends State<UIInventory> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  Flexible(
-                    flex: 1,
-                    fit: FlexFit.loose,
+                  Expanded(
+                    flex: 2,
                     child: UIInventoryButtonItem(
                       formKey: _formKey,
                       nameItemController: nameItemController,

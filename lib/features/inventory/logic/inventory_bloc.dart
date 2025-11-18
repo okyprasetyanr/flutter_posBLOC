@@ -188,15 +188,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     debugPrint("Log InventoryBloc: PushData: ${event.item}");
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      final edit = repoCache.dataItem!.any(
+      final indexCategory = repoCache.dataItem!.indexWhere(
         (element) => element.getidItem == event.item.getidItem,
       );
 
-      if (edit) {
-        final indexCategory = repoCache.dataItem!.indexWhere(
-          (element) => element.getidItem == event.item.getidItem,
-        );
-
+      if (indexCategory != -1) {
         repoCache.dataItem![indexCategory] = event.item;
       } else {
         repoCache.dataItem!.add(event.item);
@@ -230,18 +226,16 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     add(InvResetCategoryForm());
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      final edit = currentState.dataCategory.any(
+      final indexCategory = repoCache.dataCategory!.indexWhere(
         (element) => element.getidCategory == event.category.getidCategory,
       );
-      if (edit) {
-        final indexCategory = repoCache.dataCategory!.indexWhere(
-          (element) => element.getidCategory == event.category.getidCategory,
-        );
 
+      if (indexCategory != -1) {
         repoCache.dataCategory![indexCategory] = event.category;
       } else {
         repoCache.dataCategory!.add(event.category);
       }
+
       final category = repoCache.getCategory(event.category.getidBranch);
       category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
 

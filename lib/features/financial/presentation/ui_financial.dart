@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/financial/logic/financal_bloc.dart';
 import 'package:flutter_pos/features/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/financial/logic/financial_state.dart';
@@ -60,51 +61,59 @@ class _UiFinancialState extends State<UiFinancial> {
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Data Keuangan", style: titleTextStyle),
-            BlocSelector<FinancialBloc, FinancialState, bool>(
-              selector: (state) {
-                if (state is FinancialLoaded) {
-                  return state.isIncome;
-                }
-                return true;
-              },
-              builder: (context, state) {
-                return GestureDetector(
-                  onTap: () {
-                    context.read<FinancialBloc>().add(FinancialIsIncome());
-                  },
-                  child: Stack(
-                    children: [
-                      WidgetAnimatePage(
-                        change: state,
-                        text1: "Pendapatan",
-                        text2: "Pengeluaran",
-                      ),
-                    ],
-                  ),
-                );
-              },
+            SizedBox(
+              width: 80,
+              height: 40,
+              child: BlocSelector<FinancialBloc, FinancialState, bool>(
+                selector: (state) {
+                  if (state is FinancialLoaded) {
+                    return state.isIncome;
+                  }
+                  return true;
+                },
+                builder: (context, state) {
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<FinancialBloc>().add(FinancialIsIncome());
+                    },
+                    child: WidgetAnimatePage(
+                      change: state,
+                      text1: "Pendapatan",
+                      text2: "Pengeluaran",
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
         Row(
           children: [
-            customTextField(
-              controller: searchController,
-              enable: true,
-              inputType: TextInputType.text,
-              text: "Search",
+            Expanded(
+              flex: 3,
+              child: customTextField(
+                controller: searchController,
+                enable: true,
+                inputType: TextInputType.text,
+                text: "Search",
+              ),
             ),
-            BlocSelector<FinancialBloc, FinancialState, String>(
-              selector: (state) =>
-                  state is FinancialLoaded ? state.idBranch ?? "" : "",
-              builder: (context, state) {
-                return WidgetDropdownBranch(
-                  idBranch: state,
-                  selectedIdBranch: (selectedIdBranch) {},
-                );
-              },
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child: BlocSelector<FinancialBloc, FinancialState, String>(
+                selector: (state) =>
+                    state is FinancialLoaded ? state.idBranch ?? "" : "",
+                builder: (context, state) {
+                  return WidgetDropdownBranch(
+                    idBranch: state,
+                    selectedIdBranch: (selectedIdBranch) {},
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -140,80 +149,71 @@ class _UiFinancialState extends State<UiFinancial> {
   Widget layoutBottom() {
     return Column(
       children: [
-        customTextField(
-          controller: nameFinancialController,
-          enable: true,
-          inputType: TextInputType.text,
-          text: "Nama Keuangan",
-        ),
-        customTextField(
-          controller: TextEditingController(
-            text:
-                "${context.select<FinancialBloc, String?>((value) {
-                  final state = value.state;
-                  if (state is FinancialLoaded && state.idBranch != null) {
-                    return state.dataBranch!.firstWhere((element) => element.getidBranch == state.idBranch).getareaBranch;
-                  }
-                  return "Mohon Tunggu...";
-                })!}",
-          ),
-          enable: false,
-          inputType: TextInputType.text,
-          text: "Cabang",
-        ),
-
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            customButtonIcon(
-              backgroundColor: Colors.white,
-              icon: Icons.delete_rounded,
-              label: Text("Hapus", style: lv05TextStyleRed),
-              function: () {
-                final bloc =
-                    context.read<FinancialBloc>().state as FinancialLoaded;
-                bloc.seletcedFinancial == null
-                    ? customSnackBar(
-                        context,
-                        "Pilih Keuangan yang ingin diHapus!",
-                      )
-                    : context.read<FinancialBloc>().add(
-                        FinancialDeleteFinancial(),
-                      );
-              },
-            ),
-            customButtonIcon(
-              backgroundColor: Colors.white,
-              icon: Icons.delete_rounded,
-              label: Text(
-                context.select<FinancialBloc, String>((value) {
-                  final state = value.state;
-                  bool edit = false;
-                  if (state is FinancialLoaded) {
-                    edit = state.seletcedFinancial != null;
-                  }
-                  return edit ? "Edit" : "Simpan";
-                }),
-                style: lv05TextStyleRed,
+            Expanded(
+              flex: 3,
+              child: customTextField(
+                controller: nameFinancialController,
+                enable: true,
+                inputType: TextInputType.text,
+                text: "Nama Keuangan",
               ),
-              function: () {
-                final bloc =
-                    context.read<FinancialBloc>().state as FinancialLoaded;
-                final selectedFinancial = bloc.seletcedFinancial;
-                final dataFinancial = ModelFinancial(
-                  type: bloc.isIncome
-                      ? FinancialType.income
-                      : FinancialType.expense,
-                  idFinancial: selectedFinancial?.getidFinancial ?? Uuid().v4(),
-                  nameFinancial: nameFinancialController.text,
-                  idBranch: bloc.idBranch!,
-                );
-                context.read<FinancialBloc>().add(
-                  FinancialUploadDataFinancial(financial: dataFinancial),
-                );
-              },
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child: customTextField(
+                controller: TextEditingController(
+                  text:
+                      "${context.select<FinancialBloc, String?>((value) {
+                        final state = value.state;
+                        if (state is FinancialLoaded && state.idBranch != null) {
+                          return state.dataBranch!.firstWhere((element) => element.getidBranch == state.idBranch).getareaBranch;
+                        }
+                        return "Mohon Tunggu...";
+                      })!}",
+                ),
+                enable: false,
+                inputType: TextInputType.text,
+                text: "Cabang",
+              ),
             ),
           ],
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: customButtonIcon(
+            backgroundColor: AppColor.primary,
+            icon: Icon(Icons.check_rounded, color: Colors.white),
+            label: Text(
+              context.select<FinancialBloc, String>((value) {
+                final state = value.state;
+                bool edit = false;
+                if (state is FinancialLoaded) {
+                  edit = state.seletcedFinancial != null;
+                }
+                return edit ? "Edit" : "Simpan";
+              }),
+              style: lv05TextStyleWhite,
+            ),
+            onPressed: () {
+              final bloc =
+                  context.read<FinancialBloc>().state as FinancialLoaded;
+              final selectedFinancial = bloc.seletcedFinancial;
+              final dataFinancial = ModelFinancial(
+                type: bloc.isIncome
+                    ? FinancialType.income
+                    : FinancialType.expense,
+                idFinancial: selectedFinancial?.getidFinancial ?? Uuid().v4(),
+                nameFinancial: nameFinancialController.text,
+                idBranch: bloc.idBranch!,
+              );
+              context.read<FinancialBloc>().add(
+                FinancialUploadDataFinancial(financial: dataFinancial),
+              );
+            },
+          ),
         ),
       ],
     );

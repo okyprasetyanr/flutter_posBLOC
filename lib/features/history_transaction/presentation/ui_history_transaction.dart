@@ -84,14 +84,10 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                             HistoryTransactionIsSell(isSell: !state),
                           );
                         },
-                        child: Stack(
-                          children: [
-                            WidgetAnimatePage(
-                              change: state,
-                              text1: "Penjualan",
-                              text2: "Pembelian",
-                            ),
-                          ],
+                        child: WidgetAnimatePage(
+                          change: state,
+                          text1: "Penjualan",
+                          text2: "Pembelian",
                         ),
                       );
                     },

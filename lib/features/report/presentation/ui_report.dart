@@ -27,9 +27,7 @@ class _UIReportState extends State<UIReport> {
   }
 
   void _initData() {
-    context.read<ReportBloc>().add(
-      ReportGetData(dateStart: null, dateEnd: null, idBranch: null),
-    );
+    context.read<ReportBloc>().add(ReportGetData());
   }
 
   @override

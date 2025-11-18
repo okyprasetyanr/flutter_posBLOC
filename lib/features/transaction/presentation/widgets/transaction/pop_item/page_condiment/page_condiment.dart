@@ -84,18 +84,14 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                               }
 
                               double qtyitem = 0;
-                              if (stateCondiment.$2!.any(
-                                (element) =>
-                                    state[index].getidItem == element.getidItem,
-                              )) {
-                                qtyitem = stateCondiment.$2!
-                                    .firstWhere(
-                                      (element) =>
-                                          state[index].getidItem ==
-                                          element.getidItem,
-                                    )
-                                    .getqtyItem;
-                              }
+
+                              qtyitem = stateCondiment.$2!
+                                  .firstWhere(
+                                    (element) =>
+                                        state[index].getidItem ==
+                                        element.getidItem,
+                                  )
+                                  .getqtyItem;
 
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,

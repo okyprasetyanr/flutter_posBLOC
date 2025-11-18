@@ -61,19 +61,16 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     await event.partner.pushDataPartner();
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      final edit = repoCache.dataPartner!.any(
+      final indexCategory = repoCache.dataPartner!.indexWhere(
         (element) => element.getid == event.partner.getid,
       );
 
-      if (edit) {
-        final indexCategory = repoCache.dataPartner!.indexWhere(
-          (element) => element.getid == event.partner.getid,
-        );
-
+      if (indexCategory != -1) {
         repoCache.dataPartner![indexCategory] = event.partner;
       } else {
         repoCache.dataPartner!.add(event.partner);
       }
+
       final dataPartner = event.partner.gettype.name == "customer"
           ? repoCache.getCustomer(event.partner.getidBranch)
           : repoCache.getSupplier(event.partner.getidBranch);

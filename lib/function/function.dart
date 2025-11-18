@@ -82,21 +82,15 @@ DateTime parseDate({required String date, bool? minute}) {
   return DateFormat(pattern).parse(date);
 }
 
-DateTime dateTimeparseDateTime({required String date, bool? minute}) {
-  final useMinute = minute ?? true;
-  final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
-  return DateFormat(pattern).parse(date);
-}
-
-DateTime dateNowYMDEndBLOC(DateTime? dateTime) {
+DateTime dateYMDEndBLOC(DateTime? dateTime) {
   return dateTime != null
       ? DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59, 999)
       : dateNowYMDBLOC(status: true);
 }
 
-DateTime dateNowYMDStartBLOC(DateTime? dateTime) {
+DateTime dateYMDStartBLOC(DateTime? dateTime) {
   return dateTime != null
-      ? DateTime(dateTime.year, dateTime.month, dateTime.day)
+      ? DateTime(dateTime.year, dateTime.month, dateTime.day, 00, 00, 00, 000)
       : dateNowYMDBLOC();
 }
 
@@ -105,5 +99,5 @@ DateTime dateNowYMDBLOC({bool? status}) {
   final now = DateTime.now();
   return end
       ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
-      : DateTime(now.year, now.month, now.day);
+      : DateTime(now.year, now.month, now.day, 00, 00, 00, 000);
 }

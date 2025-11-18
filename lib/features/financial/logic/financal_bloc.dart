@@ -18,11 +18,11 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     on<FinancialIsIncome>(_onIsIncome);
   }
 
-  FutureOr<void> _onGetData(
-    FinancialGetData event,
-    Emitter<FinancialState> emit,
-  ) {
-    final currentState = state as FinancialLoaded;
+  void _onGetData(FinancialGetData event, Emitter<FinancialState> emit) {
+    final currentState = state is FinancialLoaded
+        ? state as FinancialLoaded
+        : FinancialLoaded();
+
     final dataBranch = currentState.dataBranch ?? repoCache.getBranch();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
@@ -52,7 +52,19 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
   FutureOr<void> _onUploadata(
     FinancialUploadDataFinancial event,
     Emitter<FinancialState> emit,
-  ) {}
+  ) {
+    event.financial.pushDataFinancial();
+    final dataFinancial = repoCache.dataFinancial!;
+    final indexData = dataFinancial.indexWhere(
+      (element) => element.getidFinancial == event.financial.getidFinancial,
+    );
+
+    if (indexData != -1) {
+      dataFinancial[indexData] = event.financial;
+    } else {
+      dataFinancial.add(event.financial);
+    }
+  }
 
   FutureOr<void> _onStatusFinancial(
     FinancialStatusFinancial event,

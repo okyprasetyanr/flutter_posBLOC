@@ -11,6 +11,8 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 class TransactionListViewOrderedItem extends StatelessWidget {
@@ -208,7 +210,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
           children: [
             Expanded(
               flex: 3,
-              child: ElevatedButton.icon(
+              child: customButtonIcon(
                 onPressed: () {
                   customBottomSheet(context, () {}, (scrollController) {
                     return Column(
@@ -294,45 +296,26 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 icon: Icon(Icons.contacts_rounded, color: Colors.white),
-                style: ButtonStyle(
-                  iconAlignment: IconAlignment.start,
-                  minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                  padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(horizontal: 2, vertical: 10),
-                  ),
-                  backgroundColor: WidgetStatePropertyAll(AppColor.primary),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(10),
-                    ),
-                  ),
-                ),
+                backgroundColor: AppColor.primary,
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
               flex: 2,
-              child: ElevatedButton(
+              child: customButton(
+                backgroundColor: Colors.white,
                 onPressed: () {
                   context.read<TransactionBloc>().add(
                     TransactionResetOrderedItem(),
                   );
                 },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Colors.white),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(10),
-                    ),
-                  ),
-                ),
                 child: Icon(Icons.delete, color: Colors.red),
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
               flex: 2,
-              child: ElevatedButton(
+              child: customButton(
                 onPressed: () {
                   final bloc = context.read<TransactionBloc>();
                   if (bloc.state is TransactionLoaded &&
@@ -342,15 +325,8 @@ class TransactionListViewOrderedItem extends StatelessWidget {
 
                   navUpDownTransition(context, '/sellpayment', false);
                 },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(AppColor.primary),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(10),
-                    ),
-                  ),
-                ),
                 child: Icon(Icons.attach_money_rounded, color: Colors.white),
+                backgroundColor: AppColor.primary,
               ),
             ),
           ],

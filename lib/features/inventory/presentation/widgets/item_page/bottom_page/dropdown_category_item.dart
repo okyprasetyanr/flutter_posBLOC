@@ -5,7 +5,6 @@ import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class DropdownCategoryItem extends StatelessWidget {
   final ValueNotifier<String?> idCategory;
@@ -29,7 +28,8 @@ class DropdownCategoryItem extends StatelessWidget {
       },
       builder: (context, state) {
         if (state.$1.isEmpty) {
-          return customSpinKit();}
+          return customSpinKit();
+        }
         if (state.$2 != null) {
           idCategory.value = state.$2!;
         }

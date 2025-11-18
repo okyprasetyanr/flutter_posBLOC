@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-
+import 'package:collection/collection.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
@@ -27,10 +27,11 @@ class WidgetDropdownBranch extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       style: lv05TextStyle,
-      initialValue: dataBranch.firstWhere(
-        (element) => element.getidBranch == idBranch,
-        orElse: null,
-      ),
+      initialValue: dataBranch.isNotEmpty
+          ? dataBranch.firstWhereOrNull(
+              (element) => element.getidBranch == idBranch,
+            )
+          : null,
       items: dataBranch
           .map(
             (map) =>

@@ -15,7 +15,7 @@ class UITransactionDropDownBranch extends StatelessWidget {
           state is TransactionLoaded ? state.idBranch ?? "" : "",
       builder: (context, state) {
         return WidgetDropdownBranch(
-          idBranch: state!,
+          idBranch: state,
           selectedIdBranch: (selectedIdBranch) => context
               .read<TransactionBloc>()
               .add(TransactionGetData(idBranch: selectedIdBranch)),

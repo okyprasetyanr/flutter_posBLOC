@@ -14,7 +14,7 @@ class ReportLoaded extends ReportState with EquatableMixin {
   final bool isSell;
   final List<ModelBranch> dataBranch;
   ReportLoaded({
-    this.dataBranch=const [],
+    this.dataBranch = const [],
     this.report,
     this.dateStart,
     this.dateEnd,
@@ -31,7 +31,7 @@ class ReportLoaded extends ReportState with EquatableMixin {
     bool? isSell,
   }) {
     return ReportLoaded(
-      dataBranch: dataBranch?? this.dataBranch,
+      dataBranch: dataBranch ?? this.dataBranch,
       isSell: isSell ?? this.isSell,
       report: report ?? this.report,
       dateEnd: dateEnd,
@@ -41,5 +41,12 @@ class ReportLoaded extends ReportState with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [dateStart, dateEnd, idBranch, report, isSell,dataBranch];
+  List<Object?> get props => [
+    dateStart,
+    dateEnd,
+    idBranch,
+    report,
+    isSell,
+    dataBranch,
+  ];
 }

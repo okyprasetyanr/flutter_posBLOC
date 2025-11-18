@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_report_summary.dart';
 
-class ModelReport {
+class ModelReport extends Equatable {
   final double ppnAmount,
       chargeAmount,
       discountAmount,
@@ -36,4 +37,18 @@ class ModelReport {
   String get getopeningBalance => formatPriceRp(openingBalance);
   String get getincome => formatPriceRp(income);
   String get getexpense => formatPriceRp(expense);
+
+  @override
+  List<Object?> get props => [
+    ppnAmount,
+    chargeAmount,
+    discountAmount,
+    grossSales,
+    netSales,
+    cashInDrawer,
+    openingBalance,
+    income,
+    expense,
+    summary,
+  ];
 }

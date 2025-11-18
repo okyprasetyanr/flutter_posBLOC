@@ -7,10 +7,10 @@ import 'package:flutter_pos/features/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/partner/logic/partner_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -409,14 +409,11 @@ class _UIPartnerState extends State<UIPartner> {
             },
           ),
         ),
-
-        const SizedBox(height: 10),
         Align(
           alignment: AlignmentGeometry.centerRight,
-          child: ElevatedButton.icon(
+          child: customButtonIcon(
             onPressed: () {
               final bloc = context.read<PartnerBloc>().state;
-
               final idPartner = bloc is PartnerLoaded
                   ? bloc.selectedPartner?.getid ?? Uuid().v4().substring(0, 8)
                   : Uuid().v4().substring(0, 8);
@@ -442,16 +439,18 @@ class _UIPartnerState extends State<UIPartner> {
               );
               _resetForm();
             },
-            label: Text("Simpan", style: lv05TextStyleWhite),
             icon: Icon(Icons.check_rounded, color: Colors.white),
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(AppColor.primary),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(10),
-                ),
-              ),
+            label: Text(
+              context.select<PartnerBloc, String>((value) {
+                final bloc = value.state;
+                if (bloc is PartnerLoaded) {
+                  return bloc.selectedPartner != null ? "Edit" : "Simpan";
+                }
+                return "Simpan";
+              }),
+              style: lv05TextStyleWhite,
             ),
+            backgroundColor: AppColor.primary,
           ),
         ),
       ],

@@ -1,14 +1,11 @@
 class ReportEvent {}
 
 class ReportGetData extends ReportEvent {
-  DateTime? dateStart;
-  DateTime? dateEnd;
-  String? idBranch;
-  ReportGetData({
-    required this.dateStart,
-    required this.dateEnd,
-    required this.idBranch,
-  });
+  final DateTime? dateStart;
+  final DateTime? dateEnd;
+  final String? idBranch;
+  final bool? isSell;
+  ReportGetData({this.isSell, this.dateStart, this.dateEnd, this.idBranch});
 }
 
 class ReportModalAwal extends ReportEvent {}

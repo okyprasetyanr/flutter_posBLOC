@@ -13,12 +13,14 @@ Widget customTextField({
 }) {
   return TextFormField(
     focusNode: (nodes != null && index != null) ? nodes[index] : null,
-    textInputAction: index == nodes!.length - 1
-        ? TextInputAction.done
-        : TextInputAction.next,
+    textInputAction: (nodes != null && index != null)
+        ? index == nodes.length - 1
+              ? TextInputAction.done
+              : TextInputAction.next
+        : null,
     onFieldSubmitted: (index != null && context != null)
         ? (_) {
-            if (index < nodes.length - 1) {
+            if (index < nodes!.length - 1) {
               FocusScope.of(context).requestFocus(nodes[index + 1]);
             } else {
               FocusScope.of(context).unfocus();

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
-Widget customButtonIcon({
+Widget customButton({
   VoidCallback? onPressed,
-  Widget? label,
   Color? backgroundColor,
-  Icon? icon,
+  Icon? child,
 }) {
   return Padding(
     padding: EdgeInsets.only(left: 5, right: 5, bottom: 5, top: 0),
-    child: ElevatedButton.icon(
+    child: ElevatedButton(
       onPressed: onPressed,
-      label: label ?? const SizedBox.shrink(),
-      icon: icon,
+      child: child,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         minimumSize: WidgetStatePropertyAll(Size(0, 0)),

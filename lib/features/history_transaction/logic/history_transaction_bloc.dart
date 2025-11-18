@@ -37,9 +37,9 @@ class HistoryTransactionBloc
         ? (state as HistoryTransactionLoaded)
         : HistoryTransactionLoaded();
 
-    final dateStart = dateNowYMDStartBLOC(event.dateStart);
+    final dateStart = dateYMDStartBLOC(event.dateStart);
 
-    final dateEnd = dateNowYMDEndBLOC(event.dateEnd);
+    final dateEnd = dateYMDEndBLOC(event.dateEnd);
 
     final dataBranch = repoCache.getBranch();
     final idBranch =

@@ -18,7 +18,7 @@ class FinancialLoaded extends FinancialState with EquatableMixin {
     this.seletcedFinancial,
     this.isIncome = true,
     this.idBranch,
-    this.dataBranch = const [],
+    this.dataBranch,
     this.dataFinancial = const [],
     this.filteredFinancial = const [],
   });
