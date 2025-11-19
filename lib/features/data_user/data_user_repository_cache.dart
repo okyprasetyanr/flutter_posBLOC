@@ -7,6 +7,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 
 class DataUserRepositoryCache {
   List<ModelBranch>? dataBranch;
@@ -17,6 +18,8 @@ class DataUserRepositoryCache {
   List<ModelTransaction>? dataTransactionBuy;
   List<ModelBatch>? dataBatch;
   List<ModelFinancial>? dataFinancial;
+  List<ModelTransactionFinancial>? dataTransIncome;
+  List<ModelTransactionFinancial>? dataTransExpense;
 
   final DataUserRepository repo;
 
@@ -26,6 +29,8 @@ class DataUserRepositoryCache {
     await Future.wait([
       initBranch(),
       initFinancial(),
+      initTransIncome(),
+      initTransExpense(),
       initItem(),
       initCategory(),
       initPartner(),
@@ -65,6 +70,14 @@ class DataUserRepositoryCache {
 
   Future<void> initFinancial() async {
     dataFinancial = await repo.getFinancial();
+  }
+
+  Future<void> initTransIncome() async {
+    dataTransIncome = await repo.getTransIncome();
+  }
+
+  Future<void> initTransExpense() async {
+    dataTransIncome = await repo.getTransExpense();
   }
 
   Future<void> initTransactionSell() async {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 Widget customTextField({
   List<FocusNode>? nodes,
+  String? suffixText,
   int? index,
   String? text,
   TextEditingController? controller,
@@ -34,6 +37,7 @@ Widget customTextField({
     controller: controller,
     style: lv05TextStyle,
     decoration: InputDecoration(
+      suffixText: suffixText,
       floatingLabelBehavior: FloatingLabelBehavior.always,
       label: Text(text!, style: lv1TextStyle),
       hint: Text("$text...", style: lv05TextStyle),
@@ -42,6 +46,18 @@ Widget customTextField({
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
       errorStyle: lv05TextStyleRed,
     ),
+    inputFormatters: suffixText != null
+        ? [
+            FilteringTextInputFormatter.digitsOnly,
+            TextInputFormatter.withFunction((oldValue, newValue) {
+              if (newValue.text.length > 8) {
+                customSnackBar(context!, "Jumlah melebihi batas");
+                return oldValue;
+              }
+              return newValue;
+            }),
+          ]
+        : null,
     onChanged: (value) {
       onChanged != null ? onChanged(value) : null;
     },

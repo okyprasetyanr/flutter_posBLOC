@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/financial/transaction_financial_event.dart';
@@ -35,6 +36,7 @@ class TransFinancialBloc
     );
     emit(
       TransFinancialLoaded(
+        idBranch: idBranch,
         dataBranch: dataBranch,
         dataFinancial: dataFinancial,
         isIncome: isIncome,
@@ -47,15 +49,23 @@ class TransFinancialBloc
     Emitter<TransFinancialState> emit,
   ) {
     final currentState = state as TransFinancialLoaded;
-    final selectedFinancial = event.selectedFinancial.copyWith();
-    emit(currentState.copyWith(selectedFinancial: selectedFinancial));
+    emit(currentState.copyWith(selectedFinancial: event.selectedFinancial));
+    debugPrint(
+      "Log TransFinancialBloc: selectedData: ${event.selectedFinancial}",
+    );
   }
 
   FutureOr<void> _onUploadTrans(
     TransFinancialUploadTrans event,
     Emitter<TransFinancialState> emit,
   ) {
-    event.uploadTransFinancial.pushDataFinancial();
+    final currentState = state as TransFinancialLoaded;
+    final isIncome = currentState.isIncome;
+    event.uploadTransFinancial.pushDataFinancial(isIncome);
+    final updateLocal = isIncome
+        ? repoCache.dataTransIncome
+        : repoCache.dataTransExpense;
+    updateLocal!.add(event.uploadTransFinancial);
     add(TransFinancialResetSelected());
   }
 
@@ -72,6 +82,8 @@ class TransFinancialBloc
     Emitter<TransFinancialState> emit,
   ) {
     final currentState = state as TransFinancialLoaded;
-    emit(currentState.copyWith(isIncome: !currentState.isIncome));
+    final isIncome = !currentState.isIncome;
+    emit(currentState.copyWith(isIncome: isIncome));
+    add(TransFinancialGetData(isIncome: isIncome));
   }
 }

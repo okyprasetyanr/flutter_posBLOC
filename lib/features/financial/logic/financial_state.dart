@@ -12,10 +12,10 @@ class FinancialLoaded extends FinancialState with EquatableMixin {
   final List<ModelBranch>? dataBranch;
   final List<ModelFinancial> dataFinancial;
   final List<ModelFinancial>? filteredFinancial;
-  final ModelFinancial? seletcedFinancial;
+  final ModelFinancial? selectedFinancial;
   final bool isIncome;
   FinancialLoaded({
-    this.seletcedFinancial,
+    this.selectedFinancial,
     this.isIncome = true,
     this.idBranch,
     this.dataBranch,
@@ -31,8 +31,8 @@ class FinancialLoaded extends FinancialState with EquatableMixin {
     List<ModelBranch>? dataBranch,
     List<ModelFinancial>? dataFinancial,
   }) => FinancialLoaded(
-    seletcedFinancial: selectedFinancial,
-    filteredFinancial: filteredFinancial,
+    selectedFinancial: selectedFinancial,
+    filteredFinancial: filteredFinancial ?? this.filteredFinancial,
     isIncome: isIncome ?? this.isIncome,
     idBranch: idBranch ?? this.idBranch,
     dataBranch: dataBranch ?? this.dataBranch,
@@ -41,7 +41,7 @@ class FinancialLoaded extends FinancialState with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    seletcedFinancial,
+    selectedFinancial,
     isIncome,
     idBranch,
     idBranch,

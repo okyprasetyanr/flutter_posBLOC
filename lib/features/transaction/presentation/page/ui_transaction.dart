@@ -288,7 +288,7 @@ class _UITransactionState extends State<UITransaction> {
     ];
 
     return NavigationGesture(
-      currentPage: "inventory",
+      currentPage: "sell",
       attContent: contentNavGesture,
       isOpen: isOpen,
       close: () {

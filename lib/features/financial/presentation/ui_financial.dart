@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
-import 'package:flutter_pos/features/financial/logic/financal_bloc.dart';
+import 'package:flutter_pos/features/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/financial/logic/financial_state.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
@@ -24,7 +24,7 @@ class UiFinancial extends StatefulWidget {
 }
 
 class _UiFinancialState extends State<UiFinancial> {
-  final nameFinancialController = TextEditingController();
+  final nameController = TextEditingController();
   final searchController = TextEditingController();
 
   final List<FocusNode> nodes = List.generate(3, (_) => FocusNode());
@@ -43,7 +43,7 @@ class _UiFinancialState extends State<UiFinancial> {
 
   @override
   void dispose() {
-    nameFinancialController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -60,15 +60,6 @@ class _UiFinancialState extends State<UiFinancial> {
   Widget layoutTop() {
     return Column(
       children: [
-        customButtonIconReset(
-          onPressed: () {
-            context.read<FinancialBloc>().add(
-              FinancialResetSelectedFinancial(),
-            );
-            searchController.clear();
-            nameFinancialController.clear();
-          },
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -119,7 +110,11 @@ class _UiFinancialState extends State<UiFinancial> {
                 builder: (context, state) {
                   return WidgetDropdownBranch(
                     idBranch: state,
-                    selectedIdBranch: (selectedIdBranch) {},
+                    selectedIdBranch: (selectedIdBranch) {
+                      context.read<FinancialBloc>().add(
+                        FinancialGetData(idBranch: selectedIdBranch),
+                      );
+                    },
                   );
                 },
               ),
@@ -144,6 +139,12 @@ class _UiFinancialState extends State<UiFinancial> {
                     return customSpinKit();
                   }
                   return customListGradient(
+                    selectedData: (selectedData) =>
+                        context.read<FinancialBloc>().add(
+                          FinancialSelectedFinancial(
+                            selectedFinancial: selectedData,
+                          ),
+                        ),
                     data: state,
                     getId: (data) => data.getidFinancial,
                     getName: (data) => data.getnameFinancial,
@@ -158,15 +159,35 @@ class _UiFinancialState extends State<UiFinancial> {
   Widget layoutBottom() {
     return Column(
       children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: customButtonIconReset(
+            onPressed: () {
+              context.read<FinancialBloc>().add(
+                FinancialResetSelectedFinancial(),
+              );
+              _resetForm();
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
               flex: 3,
-              child: customTextField(
-                controller: nameFinancialController,
-                enable: true,
-                inputType: TextInputType.text,
-                text: "Nama Kas",
+              child: BlocListener<FinancialBloc, FinancialState>(
+                listener: (context, state) {
+                  if (state is FinancialLoaded) {
+                    nameController.text =
+                        state.selectedFinancial?.getnameFinancial ?? "";
+                  }
+                },
+                child: customTextField(
+                  controller: nameController,
+                  enable: true,
+                  inputType: TextInputType.text,
+                  text: "Nama Kas",
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -200,7 +221,7 @@ class _UiFinancialState extends State<UiFinancial> {
                 final state = value.state;
                 bool edit = false;
                 if (state is FinancialLoaded) {
-                  edit = state.seletcedFinancial != null;
+                  edit = state.selectedFinancial != null;
                 }
                 return edit ? "Edit" : "Simpan";
               }),
@@ -209,13 +230,13 @@ class _UiFinancialState extends State<UiFinancial> {
             onPressed: () {
               final bloc =
                   context.read<FinancialBloc>().state as FinancialLoaded;
-              final selectedFinancial = bloc.seletcedFinancial;
+              final selectedFinancial = bloc.selectedFinancial;
               final dataFinancial = ModelFinancial(
                 type: bloc.isIncome
                     ? FinancialType.income
                     : FinancialType.expense,
                 idFinancial: selectedFinancial?.getidFinancial ?? Uuid().v4(),
-                nameFinancial: nameFinancialController.text,
+                nameFinancial: nameController.text,
                 idBranch: bloc.idBranch!,
               );
               context.read<FinancialBloc>().add(
@@ -226,6 +247,10 @@ class _UiFinancialState extends State<UiFinancial> {
         ),
       ],
     );
+  }
+
+  void _resetForm() {
+    nameController.clear();
   }
 
   Future<void> refreshIndicator() async {}

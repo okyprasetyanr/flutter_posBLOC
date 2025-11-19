@@ -7,7 +7,7 @@ import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/financial/logic/financal_bloc.dart';
+import 'package:flutter_pos/features/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_bloc.dart';

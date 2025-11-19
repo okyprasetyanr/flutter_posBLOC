@@ -102,6 +102,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
             if (widget.currentPage == id) {
               customSnackBar(context, "Anda sudah berada di$text");
             } else {
+              Navigator.pop(context);
               navUpDownTransition(context, toRoute, false);
             }
           },

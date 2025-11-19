@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
 class ModelTransactionFinancial extends Equatable {
   final String invoice, idBranch, idFinancial, nameFinancial, note;
   final DateTime date;
-  final double total;
+  final double amount;
 
   ModelTransactionFinancial({
     required this.idFinancial,
@@ -13,7 +15,8 @@ class ModelTransactionFinancial extends Equatable {
     required this.invoice,
     required this.date,
     required this.note,
-    required this.total,
+    required this.amount,
+    re,
   });
 
   String get getinvoice => invoice;
@@ -22,22 +25,45 @@ class ModelTransactionFinancial extends Equatable {
   String get getnameFinancial => nameFinancial;
   String get getnote => note;
   DateTime get getdate => date;
-  double get gettotal => total;
+  double get getamount => amount;
 
-  Future<void> pushDataFinancial() async {
+  Future<void> pushDataFinancial(bool isIncome) async {
     pushWorkerDataFinancial(
-      collection: 'transaction_financial',
+      collection: isIncome ? 'transaction_income' : 'transaction_expense',
       id: invoice,
       dataTransFinancial: {
-        'id_finance': idFinancial,
+        'id_financial': idFinancial,
         'id_branch': idBranch,
-        'invoice': invoice,
         'name_financial': nameFinancial,
         'get_note': note,
         'date': date,
-        'total': total,
+        'amount': amount,
       },
     );
+  }
+
+  factory ModelTransactionFinancial.fromMap(
+    Map<String, dynamic> data,
+    String id,
+  ) {
+    return ModelTransactionFinancial(
+      idFinancial: data['id_financial'],
+      nameFinancial: data['name_financial'],
+      idBranch: data['id_branch'],
+      invoice: id,
+      date: parseDate(date: data['date']),
+      note: data['date'],
+      amount: double.tryParse(data['amount'])!,
+    );
+  }
+
+  static List<ModelTransactionFinancial> getDataListTransFinancial(
+    QuerySnapshot data,
+  ) {
+    return data.docs.map((map) {
+      final dataFinancial = map.data() as Map<String, dynamic>;
+      return ModelTransactionFinancial.fromMap(dataFinancial, map.id);
+    }).toList();
   }
 
   ModelTransactionFinancial copyWith({
@@ -47,7 +73,7 @@ class ModelTransactionFinancial extends Equatable {
     String? nameFinancial,
     String? note,
     DateTime? date,
-    double? TotpMultiFactorGenerator,
+    double? amount,
   }) => ModelTransactionFinancial(
     idFinancial: idFinancial ?? this.idFinancial,
     nameFinancial: nameFinancial ?? this.nameFinancial,
@@ -55,7 +81,7 @@ class ModelTransactionFinancial extends Equatable {
     invoice: invoice ?? this.invoice,
     date: date ?? this.date,
     note: note ?? this.note,
-    total: total,
+    amount: amount ?? this.amount,
   );
 
   @override
@@ -66,6 +92,6 @@ class ModelTransactionFinancial extends Equatable {
     nameFinancial,
     note,
     date,
-    total,
+    amount,
   ];
 }

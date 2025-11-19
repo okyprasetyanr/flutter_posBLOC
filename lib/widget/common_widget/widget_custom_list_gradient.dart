@@ -5,6 +5,7 @@ Widget customListGradient<T>({
   List<T>? data,
   Function(T data)? getId,
   Function(T data)? getName,
+  Function(T selectedData)? selectedData,
 }) {
   return Padding(
     padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -32,7 +33,9 @@ Widget customListGradient<T>({
                 ? const Color.fromARGB(255, 235, 235, 235)
                 : const Color.fromARGB(255, 221, 221, 221),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                selectedData!(dataIndex);
+              },
               child: Dismissible(
                 key: Key(getId!(dataIndex)),
                 direction: DismissDirection.endToStart,

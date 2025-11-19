@@ -8,6 +8,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 
 class DataUserRepository {
   final _db = FirebaseFirestore.instance;
@@ -26,6 +27,22 @@ class DataUserRepository {
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
     return ModelFinancial.getDataListFinancial(data);
+  }
+
+  Future<List<ModelTransactionFinancial>> getTransIncome() async {
+    final data = await _db
+        .collection('transaction_income')
+        .where('uid_user', isEqualTo: UserSession.uidUser)
+        .get();
+    return ModelTransactionFinancial.getDataListTransFinancial(data);
+  }
+
+  Future<List<ModelTransactionFinancial>> getTransExpense() async {
+    final data = await _db
+        .collection('transaction_expense')
+        .where('uid_user', isEqualTo: UserSession.uidUser)
+        .get();
+    return ModelTransactionFinancial.getDataListTransFinancial(data);
   }
 
   Future<List<ModelItem>> getItem() async {
