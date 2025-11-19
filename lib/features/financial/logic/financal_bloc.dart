@@ -15,7 +15,6 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     on<FinancialStatusFinancial>(_onStatusFinancial);
     on<FinancialResetSelectedFinancial>(_onResetSelected);
     on<FinancialDeleteFinancial>(_onDelete);
-    on<FinancialIsIncome>(_onIsIncome);
   }
 
   void _onGetData(FinancialGetData event, Emitter<FinancialState> emit) {
@@ -64,6 +63,8 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     } else {
       dataFinancial.add(event.financial);
     }
+
+    add(FinancialGetData());
   }
 
   FutureOr<void> _onStatusFinancial(
@@ -77,21 +78,24 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
   FutureOr<void> _onResetSelected(
     FinancialResetSelectedFinancial event,
     Emitter<FinancialState> emit,
-  ) {}
+  ) {
+    final currentState = state as FinancialLoaded;
+    emit(currentState.copyWith(selectedFinancial: null));
+  }
 
   FutureOr<void> _onDelete(
     FinancialDeleteFinancial event,
     Emitter<FinancialState> emit,
   ) {
     final currentState = state as FinancialLoaded;
-    deleteDataFinancial(currentState.seletcedFinancial!.getidFinancial);
-  }
-
-  FutureOr<void> _onIsIncome(
-    FinancialIsIncome event,
-    Emitter<FinancialState> emit,
-  ) {
-    final currentState = state as FinancialLoaded;
-    emit(currentState.copyWith(isIncome: !currentState.isIncome));
+    final selectedFinancial = currentState.seletcedFinancial!;
+    deleteDataFinancial(selectedFinancial.getidFinancial);
+    final dataFinancial = repoCache.dataFinancial!;
+    final indexData = dataFinancial.indexWhere(
+      (element) => element.getidFinancial == selectedFinancial.getidFinancial,
+    );
+    if (indexData != -1) {
+      dataFinancial.removeAt(indexData);
+    }
   }
 }

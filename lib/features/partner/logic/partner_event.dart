@@ -37,3 +37,9 @@ class PartnerSelectedBranch extends PartnerEvent {
 
   PartnerSelectedBranch({required this.idBranch});
 }
+
+class PartnerSearch extends PartnerEvent {
+  final String search;
+
+  PartnerSearch({required this.search});
+}

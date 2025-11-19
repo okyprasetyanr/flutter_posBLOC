@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/partner/logic/partner_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
@@ -18,6 +19,10 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     on<PartnerResetSelectedPartner>(_onResetSelectedPartner);
     on<PartnerSelectedBranch>(_onSelectedBranch);
     on<PartnerDeletePartner>(_onDeletePartner);
+    on<PartnerSearch>(
+      _onSearch,
+      transformer: debounceRestartable(Duration(milliseconds: 400)),
+    );
   }
 
   FutureOr<void> _onGetData(PartnerGetData event, Emitter<PartnerState> emit) {
@@ -36,6 +41,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     partner.sort((a, b) => a.getname.compareTo(b.getname));
     emit(
       currentState.copyWith(
+        filteredPartner: partner,
         dataPartner: partner,
         idBranch: idBranch,
         dataBranch: branch,
@@ -81,8 +87,6 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   }
 
   FutureOr<void> _onStatusPartner(event, Emitter<PartnerState> emit) async {
-    add(PartnerResetSelectedPartner());
-
     final currentState = state;
     if (currentState is PartnerLoaded) {
       final isCustomer = !currentState.isCustomer;
@@ -136,5 +140,20 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
       dataPartner.sort((a, b) => a.getname.compareTo(b.getname));
       emit(currentState.copyWith(dataPartner: dataPartner));
     }
+  }
+
+  FutureOr<void> _onSearch(PartnerSearch event, Emitter<PartnerState> emit) {
+    final currentState = state as PartnerLoaded;
+    final filteredPartner = event.search.isNotEmpty
+        ? currentState.dataPartner!
+              .where(
+                (element) => element.getname.toLowerCase().contains(
+                  event.search.toLowerCase(),
+                ),
+              )
+              .toList()
+        : currentState.dataPartner!.toList();
+    filteredPartner.sort((a, b) => a.getname.compareTo(b.getname));
+    emit(currentState.copyWith(filteredPartner: filteredPartner));
   }
 }

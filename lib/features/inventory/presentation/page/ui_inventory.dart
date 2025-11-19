@@ -336,7 +336,6 @@ class _UIInventoryState extends State<UIInventory> {
                           onPressed: () {
                             _resetCategoryForm();
                           },
-                          label: Text("Detail Kategori", style: titleTextStyle),
                         ),
                       ),
                       AnimatedPositioned(
@@ -351,7 +350,6 @@ class _UIInventoryState extends State<UIInventory> {
                             );
                             _resetItemForm();
                           },
-                          label: Text("Detail Item", style: titleTextStyle),
                         ),
                       ),
                       AnimatedPositioned(

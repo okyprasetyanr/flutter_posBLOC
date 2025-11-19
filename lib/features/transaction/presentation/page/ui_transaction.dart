@@ -86,7 +86,9 @@ class _UITransactionState extends State<UITransaction> {
             Row(
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    isOpen.value = !isOpen.value;
+                  },
                   label: Text("Menu", style: lv05TextStyleWhite),
                   icon: Icon(Icons.menu_rounded, color: Colors.white, size: 20),
                   style: ButtonStyle(
@@ -271,7 +273,18 @@ class _UITransactionState extends State<UITransaction> {
 
   Widget navigationGesture() {
     final contentNavGesture = [
-      {"id": "sell", "toContext": '/sell', "text_menu": "Sell", "onTap": () {}},
+      {
+        "id": "sell",
+        "toContext": '/sell',
+        "text_menu": "Jual-Beli",
+        "onTap": () {},
+      },
+      {
+        "id": "transfinancial",
+        "toContext": '/transfinancial',
+        "text_menu": "Kas",
+        "onTap": () {},
+      },
     ];
 
     return NavigationGesture(
@@ -279,7 +292,7 @@ class _UITransactionState extends State<UITransaction> {
       attContent: contentNavGesture,
       isOpen: isOpen,
       close: () {
-        false;
+        isOpen.value = false;
       },
     );
   }

@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/inventory/presentation/page/ui_inventory.da
 import 'package:flutter_pos/features/partner/presentation/ui_partner.dart';
 import 'package:flutter_pos/features/report/presentation/ui_report.dart';
 import 'package:flutter_pos/features/transaction/presentation/page/ui_transaction.dart';
+import 'package:flutter_pos/features/transaction/presentation/page/ui_transaction_financial.dart';
 import 'package:flutter_pos/features/transaction/presentation/page/ui_transaction_payment.dart';
 import 'package:flutter_pos/features/transaction/presentation/page/ui_transaction_success.dart';
 import 'package:flutter_pos/main.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_pos/screen_main_menu.dart';
 import 'package:flutter_pos/screen_signup.dart';
 
 final routesPage = {
+  '/transfinancial': (context) => const UITransactionFinancial(),
   '/financial': (context) => const UiFinancial(),
   '/report': (context) => const UIReport(),
   '/historytransaction': (context) => const UIHistoryTransaction(),

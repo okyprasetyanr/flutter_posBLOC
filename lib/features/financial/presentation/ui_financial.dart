@@ -9,8 +9,8 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button_reset.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_list_gradient.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
@@ -52,7 +52,7 @@ class _UiFinancialState extends State<UiFinancial> {
     return LayoutTopBottom(
       layoutTop: layoutTop(),
       layoutBottom: layoutBottom(),
-      widgetNavigation: widgetNavigation(),
+      widgetNavigation: null,
       refreshIndicator: refreshIndicator,
     );
   }
@@ -60,10 +60,19 @@ class _UiFinancialState extends State<UiFinancial> {
   Widget layoutTop() {
     return Column(
       children: [
+        customButtonIconReset(
+          onPressed: () {
+            context.read<FinancialBloc>().add(
+              FinancialResetSelectedFinancial(),
+            );
+            searchController.clear();
+            nameFinancialController.clear();
+          },
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Data Keuangan", style: titleTextStyle),
+            Text("Data Kas", style: titleTextStyle),
             SizedBox(
               width: 80,
               height: 40,
@@ -157,7 +166,7 @@ class _UiFinancialState extends State<UiFinancial> {
                 controller: nameFinancialController,
                 enable: true,
                 inputType: TextInputType.text,
-                text: "Nama Keuangan",
+                text: "Nama Kas",
               ),
             ),
             const SizedBox(width: 10),
@@ -218,8 +227,6 @@ class _UiFinancialState extends State<UiFinancial> {
       ],
     );
   }
-
-  Widget? widgetNavigation() {}
 
   Future<void> refreshIndicator() async {}
 }

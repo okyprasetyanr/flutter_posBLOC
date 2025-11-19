@@ -11,6 +11,7 @@ import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button_reset.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -27,6 +28,7 @@ class _UIPartnerState extends State<UIPartner> {
   final namePartnerController = TextEditingController();
   final phonePartnerController = TextEditingController();
   final emailPartnerController = TextEditingController();
+  final searchController = TextEditingController();
 
   List<FocusNode> nodes = List.generate(3, (_) => FocusNode());
 
@@ -38,6 +40,7 @@ class _UIPartnerState extends State<UIPartner> {
 
   @override
   void dispose() {
+    searchController.dispose();
     namePartnerController.dispose();
     emailPartnerController.dispose();
     phonePartnerController.dispose();
@@ -120,31 +123,46 @@ class _UIPartnerState extends State<UIPartner> {
             ),
           ],
         ),
-        Container(
-          padding: const EdgeInsets.only(left: 10),
-          width: 150,
-          child: BlocSelector<PartnerBloc, PartnerState, bool>(
-            selector: (state) => state is PartnerLoading,
-            builder: (context, state) {
-              return state
-                  ? const SpinKitThreeBounce(color: Colors.blue, size: 15.0)
-                  : BlocSelector<PartnerBloc, PartnerState, String>(
-                      selector: (state) =>
-                          state is PartnerLoaded ? state.idBranch ?? "" : "",
-                      builder: (context, state) {
-                        return WidgetDropdownBranch(
-                          idBranch: state,
-                          selectedIdBranch: (selectedIdBranch) =>
-                              context.read<PartnerBloc>().add(
-                                PartnerSelectedBranch(
-                                  idBranch: selectedIdBranch,
-                                ),
-                              ),
+        Row(
+          children: [
+            customTextField(
+              controller: searchController,
+              enable: true,
+              text: "Search",
+              inputType: TextInputType.text,
+              onChanged: (search) => context.read<PartnerBloc>().add(
+                PartnerSearch(search: search),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.only(left: 10),
+              width: 150,
+              child: BlocSelector<PartnerBloc, PartnerState, bool>(
+                selector: (state) => state is PartnerLoading,
+                builder: (context, state) {
+                  return state
+                      ? const SpinKitThreeBounce(color: Colors.blue, size: 15.0)
+                      : BlocSelector<PartnerBloc, PartnerState, String>(
+                          selector: (state) => state is PartnerLoaded
+                              ? state.idBranch ?? ""
+                              : "",
+                          builder: (context, state) {
+                            return WidgetDropdownBranch(
+                              idBranch: state,
+                              selectedIdBranch: (selectedIdBranch) =>
+                                  context.read<PartnerBloc>().add(
+                                    PartnerSelectedBranch(
+                                      idBranch: selectedIdBranch,
+                                    ),
+                                  ),
+                            );
+                          },
                         );
-                      },
-                    );
-            },
-          ),
+                },
+              ),
+            ),
+          ],
         ),
         Expanded(
           child: BlocSelector<PartnerBloc, PartnerState, bool>(
@@ -310,6 +328,14 @@ class _UIPartnerState extends State<UIPartner> {
   Widget layoutBottom() {
     return Column(
       children: [
+        customButtonIconReset(
+          onPressed: () {
+            context.read<PartnerBloc>().add(PartnerResetSelectedPartner());
+            namePartnerController.clear();
+            phonePartnerController.clear();
+            emailPartnerController.clear();
+          },
+        ),
         BlocListener<PartnerBloc, PartnerState>(
           listenWhen: (previous, current) =>
               previous is PartnerLoaded &&

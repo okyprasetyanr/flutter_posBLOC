@@ -6,7 +6,7 @@ class FinancialGetData extends FinancialEvent {
   final bool? isIncome;
   final String? idBranch;
 
-  FinancialGetData({required this.isIncome, required this.idBranch});
+  FinancialGetData({this.isIncome, this.idBranch});
 }
 
 class FinancialSelectedFinancial extends FinancialEvent {

@@ -10,6 +10,7 @@ Widget customTextField({
   TextInputType? inputType,
   BuildContext? context,
   FormFieldValidator<String>? validator,
+  Function(String search)? onChanged,
 }) {
   return TextFormField(
     focusNode: (nodes != null && index != null) ? nodes[index] : null,
@@ -41,5 +42,8 @@ Widget customTextField({
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
       errorStyle: lv05TextStyleRed,
     ),
+    onChanged: (value) {
+      onChanged != null ? onChanged(value) : null;
+    },
   );
 }

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-Widget customButtonIconReset({VoidCallback? onPressed, Widget? label}) {
+Widget customButtonIconReset({VoidCallback? onPressed}) {
   return ElevatedButton.icon(
     onPressed: onPressed,
-    style: ButtonStyle(
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      padding: const WidgetStatePropertyAll(
-        EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(8),
       ),
-      minimumSize: const WidgetStatePropertyAll(Size(0, 30)),
-      backgroundColor: WidgetStatePropertyAll(Colors.white),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      minimumSize: const Size(0, 30),
+      backgroundColor: Colors.white,
     ),
     icon: const Icon(Icons.restart_alt_rounded, size: 20),
-    label: label!,
+    label: Text("Bersihkan"),
   );
 }
