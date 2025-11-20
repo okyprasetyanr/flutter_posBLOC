@@ -14,8 +14,8 @@ class DataUserRepositoryCache {
   List<ModelItem>? dataItem;
   List<ModelCategory>? dataCategory;
   List<ModelPartner>? dataPartner;
-  List<ModelTransaction>? dataTransactionSell;
-  List<ModelTransaction>? dataTransactionBuy;
+  List<ModelTransaction>? dataTransSell;
+  List<ModelTransaction>? dataTransBuy;
   List<ModelBatch>? dataBatch;
   List<ModelFinancial>? dataFinancial;
   List<ModelTransactionFinancial>? dataTransIncome;
@@ -48,10 +48,10 @@ class DataUserRepositoryCache {
     for (var a in dataCategory!) {
       debugPrint("Log DataUserRepositoryCache Category: $a");
     }
-    for (var a in dataTransactionSell!) {
+    for (var a in dataTransSell!) {
       debugPrint("Log DataUserRepositoryCache transactionSell: $a");
     }
-    for (var a in dataTransactionBuy!) {
+    for (var a in dataTransBuy!) {
       debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
     }
     for (var a in dataBatch!) {
@@ -81,11 +81,11 @@ class DataUserRepositoryCache {
   }
 
   Future<void> initTransactionSell() async {
-    dataTransactionSell = await repo.getTransactionSell();
+    dataTransSell = await repo.getTransactionSell();
   }
 
   Future<void> initTransactionBuy() async {
-    dataTransactionBuy = await repo.getTransactionBuy();
+    dataTransBuy = await repo.getTransactionBuy();
   }
 
   Future<void> initItem() async {
@@ -169,19 +169,31 @@ class DataUserRepositoryCache {
   }
 
   List<ModelTransaction> getTransactionSell(String idBranch) {
-    return dataTransactionSell!
+    return dataTransSell!
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelTransaction> getTransactionBuy(String idBranch) {
-    return dataTransactionBuy!
+    return dataTransBuy!
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelBatch> getBatch(String idBranch) {
     return dataBatch!
+        .where((element) => element.getidBranch == idBranch)
+        .toList();
+  }
+
+  List<ModelTransactionFinancial> getTransactionIncome(String idBranch) {
+    return dataTransIncome!
+        .where((element) => element.getidBranch == idBranch)
+        .toList();
+  }
+
+  List<ModelTransactionFinancial> getTransactionExpense(String idBranch) {
+    return dataTransExpense!
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }

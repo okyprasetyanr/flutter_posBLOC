@@ -267,6 +267,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                   final selectedData =
                       (bloc.state as TransFinancialLoaded).selectedFinancial!;
                   final data = ModelTransactionFinancial(
+                    statusTransaction: statusTransaction(index: 0),
                     idFinancial: selectedData.getidFinancial,
                     nameFinancial: selectedData.getnameFinancial,
                     idBranch: selectedData.getidBranch,

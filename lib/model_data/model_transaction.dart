@@ -233,8 +233,8 @@ class ModelTransaction extends Equatable {
     }
 
     final dataTransaction = isSell
-        ? dataRepo.dataTransactionSell
-        : dataRepo.dataTransactionBuy;
+        ? dataRepo.dataTransSell
+        : dataRepo.dataTransBuy;
 
     final transaction = ModelTransaction(
       statusTransaction: _statusTransaction,

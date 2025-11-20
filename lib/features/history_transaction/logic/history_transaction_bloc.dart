@@ -18,15 +18,14 @@ class HistoryTransactionBloc
 
   HistoryTransactionBloc(this.repoCache) : super(HistoryTransactionInitial()) {
     on<HistoryTransactionGetData>(_onGetData);
-    on<HistoryTransactionRemoveData>(_onRemoveData);
+    on<HistoryTransactionCancelData>(_onCancelData);
     on<HistoryTransactionSearchData>(
       _onSearchdata,
       transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
     on<HistoryTransactionSelectedData>(_onSelectedData);
-    on<HistoryTransactionResetData>(_onResetData);
+    on<HistoryTransactionResetSelectedData>(_onResetSelectedData);
     on<HistoryTransactionRevisionData>(_onRevisionData);
-    on<HistoryTransactionIsSell>(_onIsSell);
   }
 
   Future<void> _onGetData(
@@ -37,24 +36,23 @@ class HistoryTransactionBloc
         ? (state as HistoryTransactionLoaded)
         : HistoryTransactionLoaded();
 
-    final dateStart = dateYMDStartBLOC(event.dateStart);
+    final dateStart = event.dateStart != null
+        ? dateYMDStartBLOC(event.dateStart)
+        : dateYMDStartBLOC(currentState.dateStart);
 
-    final dateEnd = dateYMDEndBLOC(event.dateEnd);
+    final dateEnd = event.dateEnd != null
+        ? dateYMDEndBLOC(event.dateEnd)
+        : dateYMDEndBLOC(currentState.dateEnd);
 
     final dataBranch = repoCache.getBranch();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
+    final isIncome = event.isSell ?? currentState.isSell;
+    final dataTransaction = isIncome
+        ? repoCache.getTransactionSell(idBranch)
+        : repoCache.getTransactionBuy(idBranch);
 
-    final filteredSell = repoCache.getTransactionSell(idBranch).where((
-      element,
-    ) {
-      return (element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart)) &&
-          (element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isBefore(dateEnd));
-    }).toList();
-
-    final filteredBuy = repoCache.getTransactionBuy(idBranch).where((element) {
+    final filteredData = dataTransaction.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -62,31 +60,31 @@ class HistoryTransactionBloc
     }).toList();
 
     debugPrint(
-      "Log HistoryTransactionBloc: getData: $dateStart $dateEnd $filteredSell",
+      "Log HistoryTransactionBloc: getData: $dateStart $dateEnd $filteredData",
     );
 
     emit(
       HistoryTransactionLoaded(
-        isSell: currentState.isSell,
+        isSell: isIncome,
         dateStart: dateStart,
         dateEnd: dateEnd,
         idBranch: idBranch,
-        filteredSell: filteredSell,
-        filteredBuy: filteredBuy,
+        filteredData: filteredData,
+        dataTransaction: dataTransaction,
       ),
     );
   }
 
-  Future<void> _onRemoveData(
-    HistoryTransactionRemoveData event,
+  Future<void> _onCancelData(
+    HistoryTransactionCancelData event,
     Emitter<HistoryTransactionState> emit,
   ) async {
     final currentState = state;
     if (currentState is HistoryTransactionLoaded) {
       final invoice = currentState.selectedData!.getinvoice;
       final dataTransaction = currentState.isSell
-          ? repoCache.dataTransactionSell!
-          : repoCache.dataTransactionBuy!;
+          ? repoCache.dataTransSell!
+          : repoCache.dataTransBuy!;
       final indexdataTrans = dataTransaction.indexWhere(
         (element) => element.getinvoice == invoice,
       );
@@ -121,7 +119,7 @@ class HistoryTransactionBloc
         dataRepo: bloc,
       );
 
-      add(HistoryTransactionResetData());
+      add(HistoryTransactionGetData());
     }
   }
 
@@ -131,27 +129,22 @@ class HistoryTransactionBloc
   ) {
     final currentState = state;
     if (currentState is HistoryTransactionLoaded) {
-      final listData = currentState.isSell
-          ? currentState.filteredSell.toList()
-          : currentState.filteredBuy.toList();
+      final listData = currentState.dataTransaction;
+
+      final search = event.search.toLowerCase();
       List<ModelTransaction> filteredData = listData.where((element) {
-        return element.getinvoice.toLowerCase().contains(
-              event.search.toLowerCase(),
-            ) ||
-            element.getnamePartner.toLowerCase().contains(
-              event.search.toLowerCase(),
-            ) ||
-            element.getnote.toLowerCase().contains(event.search.toLowerCase());
+        final invoice = element.getinvoice.toLowerCase();
+        final partner = element.getnamePartner.toLowerCase();
+        final note = element.getnote.toLowerCase();
+        return invoice.contains(search) ||
+            partner.contains(search) ||
+            note.contains(search);
       }).toList();
 
       if (event.search.isEmpty) {
-        filteredData = currentState.isSell
-            ? repoCache.getTransactionSell(currentState.idBranch!)
-            : repoCache.getTransactionBuy(currentState.idBranch!);
+        filteredData = currentState.dataTransaction;
       }
-      final updateFor = currentState.isSell
-          ? currentState.copyWith(filteredSell: filteredData)
-          : currentState.copyWith(filteredBuy: filteredData);
+      final updateFor = currentState.copyWith(filteredData: filteredData);
       emit(updateFor);
     }
   }
@@ -166,19 +159,13 @@ class HistoryTransactionBloc
     }
   }
 
-  FutureOr<void> _onResetData(
-    HistoryTransactionResetData event,
+  FutureOr<void> _onResetSelectedData(
+    HistoryTransactionResetSelectedData event,
     Emitter<HistoryTransactionState> emit,
   ) {
     final currentState = state;
     if (currentState is HistoryTransactionLoaded) {
-      add(
-        HistoryTransactionGetData(
-          dateStart: null,
-          dateEnd: null,
-          idBranch: currentState.idBranch!,
-        ),
-      );
+      emit(currentState.copyWith(selectedData: null));
     }
   }
 
@@ -196,15 +183,5 @@ class HistoryTransactionBloc
       ),
     );
     navUpDownTransition(event.context, '/sell', false);
-  }
-
-  FutureOr<void> _onIsSell(
-    HistoryTransactionIsSell event,
-    Emitter<HistoryTransactionState> emit,
-  ) {
-    final currentState = state;
-    if (currentState is HistoryTransactionLoaded) {
-      emit(currentState.copyWith(isSell: event.isSell, selectedData: null));
-    }
   }
 }

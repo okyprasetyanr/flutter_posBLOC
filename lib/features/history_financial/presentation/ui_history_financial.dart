@@ -2,29 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/history_transaction/logic/history_transaction_bloc.dart';
-import 'package:flutter_pos/features/history_transaction/logic/history_transaction_event.dart';
-import 'package:flutter_pos/features/history_transaction/logic/history_transaction_state.dart';
+import 'package:flutter_pos/features/history_financial/logic/history_financial_bloc.dart';
+import 'package:flutter_pos/features/history_financial/logic/history_financial_event.dart';
+import 'package:flutter_pos/features/history_financial/logic/history_financial_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_item_ordered.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/date_picker.dart';
 import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 
-class UIHistoryTransaction extends StatefulWidget {
-  const UIHistoryTransaction({super.key});
+class UiHistoryFinancial extends StatefulWidget {
+  const UiHistoryFinancial({super.key});
 
   @override
-  State<UIHistoryTransaction> createState() => _UIHistoryTransactionState();
+  State<UiHistoryFinancial> createState() => _UiHistoryFinancialState();
 }
 
-class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
+class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
   final searchController = TextEditingController();
 
   @override
@@ -39,6 +37,8 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
     _initData();
   }
 
+  void _initData() {}
+
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
@@ -49,51 +49,39 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
     );
   }
 
-  Future<void> refreshIndicator() async {
-    await context.read<DataUserRepositoryCache>().initTransactionSell();
-    await context.read<DataUserRepositoryCache>().initTransactionBuy();
-    _initData();
-  }
-
-  void _initData() {
-    context.read<HistoryTransactionBloc>().add(
-      HistoryTransactionGetData(dateStart: null, dateEnd: null, idBranch: null),
-    );
-  }
-
   Widget layoutTop() {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Riwayat Transaksi", style: titleTextStyle),
+            Text("Riwayat Kas", style: titleTextStyle),
             SizedBox(
               width: 80,
               height: 40,
               child:
                   BlocSelector<
-                    HistoryTransactionBloc,
-                    HistoryTransactionState,
+                    HistoryFinancialBloc,
+                    HistoryFinancialState,
                     bool
                   >(
                     selector: (state) {
-                      if (state is HistoryTransactionLoaded) {
-                        return state.isSell;
+                      if (state is HistoryFinancialLoaded) {
+                        return state.isIncome;
                       }
                       return true;
                     },
                     builder: (context, state) {
                       return GestureDetector(
                         onTap: () {
-                          context.read<HistoryTransactionBloc>().add(
-                            HistoryTransactionGetData(isSell: !state),
+                          context.read<HistoryFinancialBloc>().add(
+                            HistoryFinancialGetData(isIncome: !state),
                           );
                         },
                         child: WidgetAnimatePage(
                           change: state,
-                          text1: "Penjualan",
-                          text2: "Pembelian",
+                          text1: "Pendapatan",
+                          text2: "Pengeluaran",
                         ),
                       );
                     },
@@ -119,8 +107,8 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                   ),
                 ),
                 onChanged: (value) {
-                  context.read<HistoryTransactionBloc>().add(
-                    HistoryTransactionSearchData(search: value),
+                  context.read<HistoryFinancialBloc>().add(
+                    HistoryFinancialSearchData(search: value),
                   );
                 },
               ),
@@ -128,12 +116,12 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
             const SizedBox(width: 10),
 
             BlocSelector<
-              HistoryTransactionBloc,
-              HistoryTransactionState,
+              HistoryFinancialBloc,
+              HistoryFinancialState,
               (DateTime?, DateTime?)
             >(
               selector: (state) {
-                if (state is HistoryTransactionLoaded) {
+                if (state is HistoryFinancialLoaded) {
                   return (state.dateStart, state.dateEnd);
                 }
                 return (dateNowYMDBLOC(), dateNowYMDBLOC());
@@ -172,8 +160,8 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                       (picked) => pickedDateEnd = picked,
                     );
 
-                    context.read<HistoryTransactionBloc>().add(
-                      HistoryTransactionGetData(
+                    context.read<HistoryFinancialBloc>().add(
+                      HistoryFinancialGetData(
                         dateStart: pickedDateStart,
                         dateEnd: pickedDateEnd,
                         idBranch: null,
@@ -211,8 +199,8 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
               ),
               onPressed: () {
                 searchController.clear();
-                context.read<HistoryTransactionBloc>().add(
-                  HistoryTransactionResetSelectedData(),
+                context.read<HistoryFinancialBloc>().add(
+                  HistoryFinancialResetSelectedData(),
                 );
               },
               child: Icon(Icons.refresh_rounded),
@@ -222,12 +210,12 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
         Expanded(
           child:
               BlocSelector<
-                HistoryTransactionBloc,
-                HistoryTransactionState,
-                List<ModelTransaction>?
+                HistoryFinancialBloc,
+                HistoryFinancialState,
+                List<ModelTransactionFinancial>?
               >(
                 selector: (state) {
-                  if (state is HistoryTransactionLoaded) {
+                  if (state is HistoryFinancialLoaded) {
                     return state.filteredData;
                   }
                   return [];
@@ -256,8 +244,8 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                             ),
                           ),
                           onPressed: () {
-                            context.read<HistoryTransactionBloc>().add(
-                              HistoryTransactionSelectedData(
+                            context.read<HistoryFinancialBloc>().add(
+                              HistoryFinancialSelectedData(
                                 selectedData: dataTransaction,
                               ),
                             );
@@ -303,14 +291,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      "${dataTransaction.getpaymentMethod}",
-                                      style: lv05TextStyle,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      "${formatPriceRp(dataTransaction.gettotal)}",
+                                      "${formatPriceRp(dataTransaction.getamount)}",
                                       style: lv1TextStylePrimaryPrice,
                                       textAlign: TextAlign.end,
                                     ),
@@ -335,77 +316,21 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
     );
   }
 
-  Future<void> _expiredConfirm(
-    List<ModelItemOrdered> getitemsOrdered, {
-    bool? revisi,
-  }) async {
-    List<Map<String, dynamic>> dataExpiredItem = [];
-    showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Konfirmasi", style: lv2TextStyle),
-        content: Column(
-          children: [
-            Text("Tanggal Kadaluarsa apabila tersedia:", style: lv05TextStyle),
-            ...getitemsOrdered.map((item) {
-              dataExpiredItem.add({'id_ordered': item.getidOrdered});
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("${item.getnameItem}:", style: lv05TextStyle),
-                  WidgetCustomDate(
-                    onSelected: (day, month, year) {
-                      final index = dataExpiredItem.indexWhere(
-                        (element) => element['id_ordered'] == item.getidOrdered,
-                      );
-                      final date = "$year-$month-$day";
-                      dataExpiredItem[index]['expired_date'] = date;
-                    },
-                  ),
-                ],
-              );
-            }),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text("Batal", style: lv1TextStyle),
-          ),
-          TextButton(
-            onPressed: () {
-              context.read<HistoryTransactionBloc>().add(
-                HistoryTransactionCancelData(dataExpiredItem, context: context),
-              );
-              if (revisi != null) {
-                context.read<HistoryTransactionBloc>().add(
-                  HistoryTransactionRevisionData(context: context),
-                );
-              }
-              Navigator.pop(context, true);
-            },
-            child: Text("Hapus", style: lv1TextStyle),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget layoutBottom() {
     return BlocSelector<
-      HistoryTransactionBloc,
-      HistoryTransactionState,
-      (ModelTransaction?, bool)
+      HistoryFinancialBloc,
+      HistoryFinancialState,
+      (ModelTransactionFinancial?, bool)
     >(
       selector: (state) {
-        if (state is HistoryTransactionLoaded) {
-          return (state.selectedData, state.isSell);
+        if (state is HistoryFinancialLoaded) {
+          return (state.selectedData, state.isIncome);
         }
         return (null, true);
       },
       builder: (context, state) {
         if (state.$1 == null) {
-          return Text("Pilih Data transaksi", style: lv05TextStyle);
+          return Text("Pilih Data Kas", style: lv05TextStyle);
         }
         final transaction = state.$1!;
         return Column(
@@ -416,100 +341,18 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                   children: [
                     rowContent("Nomor Faktur", transaction.getinvoice),
                     rowContent("Tanggal", transaction.getdate.toString()),
-                    rowContent("Kontak", transaction.getnamePartner),
-                    rowContent("Pembayaran", transaction.getpaymentMethod),
-                    transaction.getbankName != null
-                        ? rowContent(
-                            "Bank Name",
-                            transaction.getdate.toString(),
-                          )
-                        : const SizedBox.shrink(),
-
-                    rowContent("Operator", transaction.getnameOperator),
                     rowContent("Status", transaction.getstatusTransaction!),
-                    ...transaction.getitemsOrdered.map((item) {
-                      return Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
-                                  style: lv05TextStyle,
-                                ),
-                                Text(
-                                  "${formatPriceRp(item.getsubTotal)}",
-                                  style: lv05TextStyle,
-                                ),
-                              ],
-                            ),
-                            Text("Condiemnt", style: lv05TextStyle),
-                            ...item.getCondiment.map((e) {
-                              return Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
-                                      style: lv05TextStyle,
-                                    ),
-                                    Text(
-                                      "${formatPriceRp(item.getsubTotal)}",
-                                      style: lv05TextStyle,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
-                      );
-                    }),
-                    rowContent(
-                      "Sub Total",
-                      formatPriceRp(transaction.getsubTotal),
-                    ),
-                    rowContent(
-                      "Total Item",
-                      transaction.getitemsOrdered.length.toString(),
-                    ),
-                    rowContent(
-                      "Diskon (${transaction.getdiscount}%)",
-                      formatPriceRp(transaction.gettotalDiscount),
-                    ),
-                    rowContent(
-                      "Diskon (${transaction.getppn}%)",
-                      formatPriceRp(transaction.gettotalPpn),
-                    ),
-                    rowContent(
-                      "Diskon (${transaction.getcharge}%)",
-                      formatPriceRp(transaction.gettotalCharge),
-                    ),
-                    rowContent("Total", formatPriceRp(transaction.gettotal)),
+                    rowContent("Total", formatPriceRp(transaction.getamount)),
                     Row(
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            state.$2
-                                ? transaction.getstatusTransaction ==
-                                          statusTransaction(index: 3)
-                                      ? customSnackBar(
-                                          context,
-                                          "Sudah diBatalkan!",
-                                        )
-                                      : _expiredConfirm(
-                                          transaction.getitemsOrdered,
-                                        )
-                                : UserSession.fifo
-                                ? customSnackBar(
-                                    context,
-                                    "FIFO: Aktif, tidak dapat membatalkan Pembelian",
-                                  )
-                                : _expiredConfirm(state.$1!.getitemsOrdered);
+                            transaction.getstatusTransaction ==
+                                    statusTransaction(index: 3)
+                                ? customSnackBar(context, "Sudah diBatalkan!")
+                                : context.read<HistoryFinancialBloc>().add(
+                                    HistoryFinancialCancelData(),
+                                  );
                           },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.all(8),
@@ -523,72 +366,6 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                             Icons.delete_forever_rounded,
                             color: Colors.red,
                           ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            state.$1!.getstatusTransaction ==
-                                    statusTransaction(index: 3)
-                                ? customSnackBar(
-                                    context,
-                                    "Transaksi sudah dibantalkan!",
-                                  )
-                                : showDialog<bool>(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(
-                                        "Konfirmasi",
-                                        style: lv2TextStyle,
-                                      ),
-                                      content: Text.rich(
-                                        TextSpan(
-                                          text:
-                                              "Revisi ${state.$1!.getinvoice}?",
-                                          style: lv1TextStyle,
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "\nKonfirmasi Revisi berarti membatalkan Transaksi ini dan memulai Revisi.",
-                                              style: lv05TextStyle,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, false),
-                                          child: Text(
-                                            "Batal",
-                                            style: lv1TextStyle,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            Navigator.pop(context, true);
-                                            await _expiredConfirm(
-                                              revisi: true,
-                                              state.$1!.getitemsOrdered,
-                                            );
-                                          },
-                                          child: Text(
-                                            "Hapus",
-                                            style: lv1TextStyle,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
-                          ),
-                          child: Icon(Icons.edit_rounded, color: Colors.black),
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton(
@@ -609,8 +386,8 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                         const SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () {
-                            context.read<HistoryTransactionBloc>().add(
-                              HistoryTransactionResetSelectedData(),
+                            context.read<HistoryFinancialBloc>().add(
+                              HistoryFinancialResetSelectedData(),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -633,5 +410,11 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
         );
       },
     );
+  }
+
+  Future<void> refreshIndicator() async {
+    await context.read<DataUserRepositoryCache>().initTransIncome();
+    await context.read<DataUserRepositoryCache>().initTransExpense();
+    _initData();
   }
 }

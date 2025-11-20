@@ -10,8 +10,8 @@ class HistoryTransactionLoading extends HistoryTransactionState {}
 class HistoryTransactionLoaded extends HistoryTransactionState
     with EquatableMixin {
   final String? idBranch;
-  final List<ModelTransaction> filteredSell;
-  final List<ModelTransaction> filteredBuy;
+  final List<ModelTransaction> filteredData;
+  final List<ModelTransaction> dataTransaction;
   final ModelTransaction? selectedData;
   final bool isSell;
   final DateTime? dateStart;
@@ -20,8 +20,8 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   HistoryTransactionLoaded({
     this.dateEnd,
     this.dateStart,
-    this.filteredSell = const [],
-    this.filteredBuy = const [],
+    this.filteredData = const [],
+    this.dataTransaction = const [],
     this.selectedData,
     this.idBranch,
     this.isSell = true,
@@ -31,16 +31,16 @@ class HistoryTransactionLoaded extends HistoryTransactionState
     DateTime? dateFiltered,
     DateTime? dateEnd,
     String? idBranch,
-    List<ModelTransaction>? filteredSell,
-    List<ModelTransaction>? filteredBuy,
+    List<ModelTransaction>? filteredData,
+    List<ModelTransaction>? dataTransaction,
     ModelTransaction? selectedData,
     bool? isSell,
   }) => HistoryTransactionLoaded(
     dateEnd: dateEnd,
     dateStart: dateFiltered,
     idBranch: idBranch ?? this.idBranch,
-    filteredBuy: filteredBuy ?? this.filteredBuy,
-    filteredSell: filteredSell ?? this.filteredSell,
+    filteredData: filteredData ?? this.filteredData,
+    dataTransaction: dataTransaction ?? this.dataTransaction,
     isSell: isSell ?? this.isSell,
     selectedData: selectedData,
   );
@@ -50,8 +50,8 @@ class HistoryTransactionLoaded extends HistoryTransactionState
     dateStart,
     dateEnd,
     idBranch,
-    filteredSell,
-    filteredBuy,
+    filteredData,
+    dataTransaction,
     selectedData,
     isSell,
   ];

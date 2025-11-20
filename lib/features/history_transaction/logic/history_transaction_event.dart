@@ -7,11 +7,13 @@ class HistoryTransactionGetData extends HistoryTransactionEvent {
   final String? idBranch;
   final DateTime? dateStart;
   final DateTime? dateEnd;
+  final bool? isSell;
 
   HistoryTransactionGetData({
-    required this.dateStart,
-    required this.dateEnd,
-    required this.idBranch,
+    this.isSell,
+    this.dateStart,
+    this.dateEnd,
+    this.idBranch,
   });
 }
 
@@ -21,25 +23,19 @@ class HistoryTransactionSelectedData extends HistoryTransactionEvent {
   HistoryTransactionSelectedData({required this.selectedData});
 }
 
-class HistoryTransactionIsSell extends HistoryTransactionEvent {
-  final bool isSell;
-
-  HistoryTransactionIsSell({required this.isSell});
-}
-
 class HistoryTransactionRevisionData extends HistoryTransactionEvent {
   final BuildContext context;
 
   HistoryTransactionRevisionData({required this.context});
 }
 
-class HistoryTransactionRemoveData extends HistoryTransactionEvent {
+class HistoryTransactionCancelData extends HistoryTransactionEvent {
   final BuildContext context;
   final List<Map<String, dynamic>> dateExpired;
-  HistoryTransactionRemoveData(this.dateExpired, {required this.context});
+  HistoryTransactionCancelData(this.dateExpired, {required this.context});
 }
 
-class HistoryTransactionResetData extends HistoryTransactionEvent {}
+class HistoryTransactionResetSelectedData extends HistoryTransactionEvent {}
 
 class HistoryTransactionPrintData extends HistoryTransactionEvent {}
 
