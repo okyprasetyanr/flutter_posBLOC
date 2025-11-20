@@ -10,16 +10,16 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 
 class DataUserRepositoryCache {
-  List<ModelBranch>? dataBranch;
-  List<ModelItem>? dataItem;
-  List<ModelCategory>? dataCategory;
-  List<ModelPartner>? dataPartner;
-  List<ModelTransaction>? dataTransSell;
-  List<ModelTransaction>? dataTransBuy;
-  List<ModelBatch>? dataBatch;
-  List<ModelFinancial>? dataFinancial;
-  List<ModelTransactionFinancial>? dataTransIncome;
-  List<ModelTransactionFinancial>? dataTransExpense;
+  List<ModelBranch> dataBranch = [];
+  List<ModelItem> dataItem = [];
+  List<ModelCategory> dataCategory = [];
+  List<ModelPartner> dataPartner = [];
+  List<ModelTransaction> dataTransSell = [];
+  List<ModelTransaction> dataTransBuy = [];
+  List<ModelBatch> dataBatch = [];
+  List<ModelFinancial> dataFinancial = [];
+  List<ModelTransactionFinancial> dataTransIncome = [];
+  List<ModelTransactionFinancial> dataTransExpense = [];
 
   final DataUserRepository repo;
 
@@ -39,25 +39,25 @@ class DataUserRepositoryCache {
       initBatch(),
     ]);
 
-    for (var a in dataBranch!) {
+    for (var a in dataBranch) {
       debugPrint("Log DataUserRepositoryCache branch: $a");
     }
-    for (var a in dataItem!) {
+    for (var a in dataItem) {
       debugPrint("Log DataUserRepositoryCache item: $a");
     }
-    for (var a in dataCategory!) {
+    for (var a in dataCategory) {
       debugPrint("Log DataUserRepositoryCache Category: $a");
     }
-    for (var a in dataTransSell!) {
+    for (var a in dataTransSell) {
       debugPrint("Log DataUserRepositoryCache transactionSell: $a");
     }
-    for (var a in dataTransBuy!) {
+    for (var a in dataTransBuy) {
       debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
     }
-    for (var a in dataBatch!) {
+    for (var a in dataBatch) {
       debugPrint("Log DataUserRepositoryCache dataItemBatch: $a");
     }
-    for (var a in dataPartner!) {
+    for (var a in dataPartner) {
       debugPrint("Log DataUserRepositoryCache dataPartner: $a");
     }
 
@@ -74,10 +74,13 @@ class DataUserRepositoryCache {
 
   Future<void> initTransIncome() async {
     dataTransIncome = await repo.getTransIncome();
+    debugPrint(
+      "Log DataUserRepositoryCache dataTransactionIncome: $dataTransIncome",
+    );
   }
 
   Future<void> initTransExpense() async {
-    dataTransIncome = await repo.getTransExpense();
+    dataTransExpense = await repo.getTransExpense();
   }
 
   Future<void> initTransactionSell() async {
@@ -98,7 +101,7 @@ class DataUserRepositoryCache {
 
   Future<void> initPartner() async {
     dataPartner = await repo.getPartner();
-    for (var a in dataPartner!) {
+    for (var a in dataPartner) {
       debugPrint("Log DataUserRepositoryCache partner: $a");
     }
   }
@@ -108,18 +111,18 @@ class DataUserRepositoryCache {
   }
 
   List<ModelBranch> getBranch() {
-    return dataBranch!.toList();
+    return dataBranch.toList();
   }
 
   List<ModelItem> getItem(String idBranch) {
-    final dataItemFinal = dataItem!
+    final dataItemFinal = dataItem
         .where((element) => element.getidBranch == idBranch)
         .toList();
 
     for (int i = 0; i < dataItemFinal.length; i++) {
       final item = dataItemFinal[i];
       double qty = item.getqtyItem;
-      final allBatchItems = dataBatch!
+      final allBatchItems = dataBatch
           .expand((batch) => batch.getitems_batch)
           .where((element) => element.getidItem == item.getidItem);
 
@@ -133,13 +136,13 @@ class DataUserRepositoryCache {
   }
 
   List<ModelCategory> getCategory(String idBranch) {
-    return dataCategory!
+    return dataCategory
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelPartner> getCustomer(String idBranch) {
-    return dataPartner!
+    return dataPartner
         .where(
           (element) => element.isCustomer && element.getidBranch == idBranch,
         )
@@ -147,13 +150,13 @@ class DataUserRepositoryCache {
   }
 
   List<ModelFinancial> getIncome(String idBranch) {
-    return dataFinancial!
+    return dataFinancial
         .where((element) => element.isIncome && element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelFinancial> getExpense(String idBranch) {
-    return dataFinancial!
+    return dataFinancial
         .where(
           (element) => element.isExpense && element.getidBranch == idBranch,
         )
@@ -161,7 +164,7 @@ class DataUserRepositoryCache {
   }
 
   List<ModelPartner> getSupplier(String idBranch) {
-    return dataPartner!
+    return dataPartner
         .where(
           (element) => element.isSupplier && element.getidBranch == idBranch,
         )
@@ -169,31 +172,31 @@ class DataUserRepositoryCache {
   }
 
   List<ModelTransaction> getTransactionSell(String idBranch) {
-    return dataTransSell!
+    return dataTransSell
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelTransaction> getTransactionBuy(String idBranch) {
-    return dataTransBuy!
+    return dataTransBuy
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelBatch> getBatch(String idBranch) {
-    return dataBatch!
+    return dataBatch
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelTransactionFinancial> getTransactionIncome(String idBranch) {
-    return dataTransIncome!
+    return dataTransIncome
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }
 
   List<ModelTransactionFinancial> getTransactionExpense(String idBranch) {
-    return dataTransExpense!
+    return dataTransExpense
         .where((element) => element.getidBranch == idBranch)
         .toList();
   }

@@ -1,5 +1,6 @@
 import 'package:flutter_pos/features/batch/presentation/ui_batch.dart';
 import 'package:flutter_pos/features/financial/presentation/ui_financial.dart';
+import 'package:flutter_pos/features/history_financial/presentation/ui_history_financial.dart';
 import 'package:flutter_pos/features/history_transaction/presentation/ui_history_transaction.dart';
 import 'package:flutter_pos/features/inventory/presentation/page/ui_inventory.dart';
 import 'package:flutter_pos/features/partner/presentation/ui_partner.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_pos/screen_main_menu.dart';
 import 'package:flutter_pos/screen_signup.dart';
 
 final routesPage = {
+  '/historyfinancial': (context) => const UiHistoryFinancial(),
   '/transfinancial': (context) => const UITransactionFinancial(),
   '/financial': (context) => const UiFinancial(),
   '/report': (context) => const UIReport(),

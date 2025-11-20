@@ -21,7 +21,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionGetData>(_onGetData);
     on<TransactionSearchItem>(
       _onSellSearchItem,
-      transformer: debounceRestartable(const Duration(milliseconds: 400)),
+      transformer: debounceRestartable(),
     );
     on<TransactionSelectedCategoryItem>(_onSelectedCategoryItem);
     on<TransactionSelectedItem>(_onSelectedItem);

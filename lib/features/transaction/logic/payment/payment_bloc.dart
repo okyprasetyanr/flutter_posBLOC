@@ -21,10 +21,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<PaymentProcess>(_onPaymentProcess);
     on<PaymentResetSplit>(_onResetSplit);
     on<PaymentResetTransaction>(_onResetTransaction);
-    on<PaymentNote>(
-      _onPaymentNote,
-      transformer: debounceRestartable(const Duration(milliseconds: 400)),
-    );
+    on<PaymentNote>(_onPaymentNote, transformer: debounceRestartable());
   }
 
   FutureOr<void> _onResetSplit(
@@ -163,18 +160,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   ) async {
     final sellState = event.context.read<TransactionBloc>().state;
     if (sellState is TransactionLoaded) {
-      debugPrint("Log PaymentBloc: cek SellState");
-
-      debugPrint("Log PaymentBloc: cek Faktur");
       final formattedDate = parseDate(date: formatDate(date: DateTime.now()));
 
       List<ModelItemOrdered> itemOrdered = await List.from(
         sellState.itemOrdered ?? [],
       );
-
-      for (final dataItemOrdered in itemOrdered) {
-        debugPrint("Log PaymentBloc: ItemOrdered: $dataItemOrdered");
-      }
 
       if (!sellState.isSell) {
         itemOrdered = itemOrdered

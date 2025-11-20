@@ -38,10 +38,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<InvDeleteItem>(_onDeleteItem);
 
-    on<InvSearchitem>(
-      _onSearchItem,
-      transformer: debounceRestartable(const Duration(milliseconds: 400)),
-    );
+    on<InvSearchitem>(_onSearchItem, transformer: debounceRestartable());
   }
 
   List<ModelItem> _filterItem(
@@ -188,14 +185,14 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     debugPrint("Log InventoryBloc: PushData: ${event.item}");
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      final indexCategory = repoCache.dataItem!.indexWhere(
+      final indexCategory = repoCache.dataItem.indexWhere(
         (element) => element.getidItem == event.item.getidItem,
       );
 
       if (indexCategory != -1) {
-        repoCache.dataItem![indexCategory] = event.item;
+        repoCache.dataItem[indexCategory] = event.item;
       } else {
-        repoCache.dataItem!.add(event.item);
+        repoCache.dataItem.add(event.item);
       }
 
       final item = repoCache.getItem(event.item.getidBranch);
@@ -226,14 +223,14 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     add(InvResetCategoryForm());
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      final indexCategory = repoCache.dataCategory!.indexWhere(
+      final indexCategory = repoCache.dataCategory.indexWhere(
         (element) => element.getidCategory == event.category.getidCategory,
       );
 
       if (indexCategory != -1) {
-        repoCache.dataCategory![indexCategory] = event.category;
+        repoCache.dataCategory[indexCategory] = event.category;
       } else {
-        repoCache.dataCategory!.add(event.category);
+        repoCache.dataCategory.add(event.category);
       }
 
       final category = repoCache.getCategory(event.category.getidBranch);
@@ -366,7 +363,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     Emitter<InventoryState> emit,
   ) async {
     await deleteDataCategory(event.id);
-    repoCache.dataCategory!.removeWhere(
+    repoCache.dataCategory.removeWhere(
       (element) => element.getidCategory == event.id,
     );
     final currentState = state;
@@ -385,7 +382,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     Emitter<InventoryState> emit,
   ) async {
     await deleteDataitem(event.id);
-    repoCache.dataItem!.removeWhere((element) => element.getidItem == event.id);
+    repoCache.dataItem.removeWhere((element) => element.getidItem == event.id);
     final currentState = state;
     if (currentState is InventoryLoaded) {
       add(

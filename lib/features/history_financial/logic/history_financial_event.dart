@@ -33,3 +33,9 @@ class HistoryFinancialSearchData extends HistoryFinancialEvent {
 }
 
 class HistoryFinancialCancelData extends HistoryFinancialEvent {}
+
+class HistoryFinancialSelectedFilter extends HistoryFinancialEvent {
+  final int indexFilter;
+
+  HistoryFinancialSelectedFilter({required this.indexFilter});
+}

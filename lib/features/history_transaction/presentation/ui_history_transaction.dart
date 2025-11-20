@@ -10,12 +10,14 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/widget/common_widget/custom_dropdown_filter.dart';
 import 'package:flutter_pos/widget/common_widget/date_picker.dart';
 import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
 class UIHistoryTransaction extends StatefulWidget {
   const UIHistoryTransaction({super.key});
@@ -106,8 +108,9 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
             Expanded(
               child: TextField(
                 controller: searchController,
+                style: lv05TextStyle,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(6),
+                  contentPadding: EdgeInsets.all(10),
                   isDense: true,
                   hintText: "Search...",
                   hintStyle: lv05TextStyle,
@@ -211,14 +214,57 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
               ),
               onPressed: () {
                 searchController.clear();
-                context.read<HistoryTransactionBloc>().add(
-                  HistoryTransactionResetSelectedData(),
-                );
+                final bloc = context.read<HistoryTransactionBloc>();
+                bloc.add(HistoryTransactionResetSelectedData());
+                bloc.add(HistoryTransactionGetData());
               },
               child: Icon(Icons.refresh_rounded),
             ),
           ],
         ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 100,
+              child: WidgetDropDownFilter(
+                filters: ["All", ...listStatusTransaction],
+                text: "Pilih Filter",
+                selectedValue: (indexFilter) {
+                  context.read<HistoryTransactionBloc>().add(
+                    HistoryTransactionSelectedFilter(indexFilter: indexFilter),
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              width: 150,
+              child:
+                  BlocSelector<
+                    HistoryTransactionBloc,
+                    HistoryTransactionState,
+                    String
+                  >(
+                    selector: (state) => state is HistoryTransactionLoaded
+                        ? state.idBranch ?? ""
+                        : "",
+                    builder: (context, state) {
+                      return WidgetDropdownBranch(
+                        idBranch: state,
+                        selectedIdBranch: (selectedIdBranch) =>
+                            context.read<HistoryTransactionBloc>().add(
+                              HistoryTransactionGetData(
+                                idBranch: selectedIdBranch,
+                              ),
+                            ),
+                      );
+                    },
+                  ),
+            ),
+          ],
+        ),
+
         Expanded(
           child:
               BlocSelector<

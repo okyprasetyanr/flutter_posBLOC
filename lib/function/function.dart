@@ -5,6 +5,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
+final listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"];
+final listStatusTransactionFinancial = const ["Sukses", "Batal"];
+final List<String> filters = [
+  "A-Z",
+  "Z-A",
+  "Terbaru",
+  "Terlama",
+  "Stock +",
+  "Stock -",
+];
+final List<String> statusItem = const ["Active", "Deactive"];
+final List<String> filterTypeItem = const ["Condiment", "Normal"];
+
 String formatPriceRp(double nominal) {
   final nominalfinal = "${formatQtyOrPrice(nominal)}"
       .replaceAll("R", "")
@@ -63,10 +76,7 @@ String generateInvoice({String? branchId, String? operatorId, int? queue}) {
   return "$operator-$branch-$queue-$uuid";
 }
 
-String statusTransaction({
-  int? index,
-  listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"],
-}) {
+String statusTransaction({int? index}) {
   return listStatusTransaction[index!];
 }
 

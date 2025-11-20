@@ -17,7 +17,7 @@ class WidgetDropdownBranch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dataBranch = context.read<DataUserRepositoryCache>().dataBranch!;
+    final dataBranch = context.read<DataUserRepositoryCache>().dataBranch;
     return DropdownButtonFormField<ModelBranch>(
       decoration: InputDecoration(
         isDense: true,

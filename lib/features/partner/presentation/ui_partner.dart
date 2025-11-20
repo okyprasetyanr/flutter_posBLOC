@@ -125,13 +125,15 @@ class _UIPartnerState extends State<UIPartner> {
         ),
         Row(
           children: [
-            customTextField(
-              controller: searchController,
-              enable: true,
-              text: "Search",
-              inputType: TextInputType.text,
-              onChanged: (search) => context.read<PartnerBloc>().add(
-                PartnerSearch(search: search),
+            Expanded(
+              child: customTextField(
+                controller: searchController,
+                enable: true,
+                text: "Search",
+                inputType: TextInputType.text,
+                onChanged: (search) => context.read<PartnerBloc>().add(
+                  PartnerSearch(search: search),
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -328,14 +330,18 @@ class _UIPartnerState extends State<UIPartner> {
   Widget layoutBottom() {
     return Column(
       children: [
-        customButtonIconReset(
-          onPressed: () {
-            context.read<PartnerBloc>().add(PartnerResetSelectedPartner());
-            namePartnerController.clear();
-            phonePartnerController.clear();
-            emailPartnerController.clear();
-          },
+        Align(
+          alignment: Alignment.centerRight,
+          child: customButtonIconReset(
+            onPressed: () {
+              context.read<PartnerBloc>().add(PartnerResetSelectedPartner());
+              namePartnerController.clear();
+              phonePartnerController.clear();
+              emailPartnerController.clear();
+            },
+          ),
         ),
+        const SizedBox(height: 15),
         BlocListener<PartnerBloc, PartnerState>(
           listenWhen: (previous, current) =>
               previous is PartnerLoaded &&
@@ -479,6 +485,18 @@ class _UIPartnerState extends State<UIPartner> {
             backgroundColor: AppColor.primary,
           ),
         ),
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+            child: Text(
+              "PANDUAN:\nUntuk hapus Kategori, silahkan geser kiri Kategori yang diinginkan.",
+              style: lv05TextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
       ],
     );
   }

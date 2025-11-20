@@ -65,7 +65,7 @@ class TransFinancialBloc
     final updateLocal = isIncome
         ? repoCache.dataTransIncome
         : repoCache.dataTransExpense;
-    updateLocal!.add(event.uploadTransFinancial);
+    updateLocal.add(event.uploadTransFinancial);
     add(TransFinancialResetSelected());
   }
 

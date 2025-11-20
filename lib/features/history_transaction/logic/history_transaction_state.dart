@@ -16,8 +16,12 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   final bool isSell;
   final DateTime? dateStart;
   final DateTime? dateEnd;
+  final String search;
+  final int indexFilter;
 
   HistoryTransactionLoaded({
+    this.indexFilter = 0,
+    this.search = "",
     this.dateEnd,
     this.dateStart,
     this.filteredData = const [],
@@ -28,16 +32,20 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   });
 
   HistoryTransactionLoaded copyWith({
-    DateTime? dateFiltered,
+    DateTime? dateStart,
     DateTime? dateEnd,
     String? idBranch,
     List<ModelTransaction>? filteredData,
     List<ModelTransaction>? dataTransaction,
     ModelTransaction? selectedData,
     bool? isSell,
+    String? search,
+    int? indexFilter,
   }) => HistoryTransactionLoaded(
+    indexFilter: indexFilter ?? this.indexFilter,
+    search: search ?? this.search,
     dateEnd: dateEnd,
-    dateStart: dateFiltered,
+    dateStart: dateStart,
     idBranch: idBranch ?? this.idBranch,
     filteredData: filteredData ?? this.filteredData,
     dataTransaction: dataTransaction ?? this.dataTransaction,
@@ -47,6 +55,8 @@ class HistoryTransactionLoaded extends HistoryTransactionState
 
   @override
   List<Object?> get props => [
+    search,
+    indexFilter,
     dateStart,
     dateEnd,
     idBranch,

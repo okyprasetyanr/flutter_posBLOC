@@ -54,7 +54,7 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     Emitter<FinancialState> emit,
   ) {
     event.financial.pushDataFinancial();
-    final dataFinancial = repoCache.dataFinancial!;
+    final dataFinancial = repoCache.dataFinancial;
     final indexData = dataFinancial.indexWhere(
       (element) => element.getidFinancial == event.financial.getidFinancial,
     );
@@ -91,7 +91,7 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     final currentState = state as FinancialLoaded;
     final selectedFinancial = currentState.selectedFinancial!;
     deleteDataFinancial(selectedFinancial.getidFinancial);
-    final dataFinancial = repoCache.dataFinancial!;
+    final dataFinancial = repoCache.dataFinancial;
     final indexData = dataFinancial.indexWhere(
       (element) => element.getidFinancial == selectedFinancial.getidFinancial,
     );

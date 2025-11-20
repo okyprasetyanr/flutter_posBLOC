@@ -18,7 +18,6 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
-import 'package:uuid/uuid.dart';
 
 class UITransactionFinancial extends StatefulWidget {
   const UITransactionFinancial({super.key});
@@ -142,7 +141,6 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                 ),
           ),
         ),
-
         Expanded(
           child:
               BlocSelector<
@@ -165,7 +163,9 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                               nameFinancial: selectedData.getnameFinancial,
                               idBranch: selectedData.getidBranch,
                               invoice: "",
-                              date: dateNowYMDBLOC(),
+                              date: parseDate(
+                                date: formatDate(date: DateTime.now()),
+                              ),
                               note: "",
                               amount: 0,
                             );
@@ -271,8 +271,11 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                     idFinancial: selectedData.getidFinancial,
                     nameFinancial: selectedData.getnameFinancial,
                     idBranch: selectedData.getidBranch,
-                    invoice:
-                        "idOP-${UserSession.getUidUser().substring(0, 3)}-1-${Uuid().v4().substring(0, 3)}",
+                    invoice: generateInvoice(
+                      branchId: selectedData.getidBranch,
+                      queue: 1,
+                      operatorId: null,
+                    ),
                     date: selectedData.getdate,
                     note: noteController.text,
                     amount: double.tryParse(amountController.text)!,

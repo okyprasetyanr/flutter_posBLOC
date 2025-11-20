@@ -13,8 +13,12 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
   final bool isIncome;
   final DateTime? dateStart;
   final DateTime? dateEnd;
+  final String search;
+  final int indexFilter;
 
   HistoryFinancialLoaded({
+    this.indexFilter = 0,
+    this.search = "",
     this.dataTransaction = const [],
     this.filteredData = const [],
     this.idBranch,
@@ -32,8 +36,12 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
     bool? isIncome,
     DateTime? dateStart,
     DateTime? dateEnd,
+    String? search,
+    int? indexFilter,
   }) {
     return HistoryFinancialLoaded(
+      indexFilter: indexFilter ?? this.indexFilter,
+      search: search ?? this.search,
       dataTransaction: dataTransaction ?? this.dataTransaction,
       dateEnd: dateEnd,
       dateStart: dateStart,
@@ -46,6 +54,8 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    search,
+    indexFilter,
     dataTransaction,
     filteredData,
     idBranch,

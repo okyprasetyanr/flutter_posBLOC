@@ -44,3 +44,9 @@ class HistoryTransactionSearchData extends HistoryTransactionEvent {
 
   HistoryTransactionSearchData({required this.search});
 }
+
+class HistoryTransactionSelectedFilter extends HistoryTransactionEvent {
+  final int indexFilter;
+
+  HistoryTransactionSelectedFilter({required this.indexFilter});
+}

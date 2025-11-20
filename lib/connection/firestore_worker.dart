@@ -76,7 +76,7 @@ class FirestoreWorker {
         await box.delete(key);
       }
 
-      debugPrint('Log FirestoreWorker: ✅ Semua data berhasil dikirim.');
+      debugPrint('Log FirestoreWorker: Semua data berhasil dikirim.');
     } catch (e) {
       debugPrint('Log FirestoreWorker: Error $e');
     } finally {

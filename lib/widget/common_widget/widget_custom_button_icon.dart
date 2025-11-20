@@ -7,7 +7,7 @@ Widget customButtonIcon({
   Icon? icon,
 }) {
   return Padding(
-    padding: EdgeInsets.only(left: 5, right: 5, bottom: 5, top: 0),
+    padding: EdgeInsets.only(left: 5, right: 0, bottom: 5, top: 0),
     child: ElevatedButton.icon(
       onPressed: onPressed,
       label: label ?? const SizedBox.shrink(),
@@ -16,7 +16,7 @@ Widget customButtonIcon({
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         minimumSize: WidgetStatePropertyAll(Size(0, 0)),
         padding: WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         ),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(

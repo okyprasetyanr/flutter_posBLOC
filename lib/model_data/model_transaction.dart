@@ -203,7 +203,7 @@ class ModelTransaction extends Equatable {
 
     await writeBatch.commit();
 
-    dataRepo.dataBatch!.add(newBatch);
+    dataRepo.dataBatch.add(newBatch);
 
     ModelCounter.pushDataCounter(
       ModelCounter(
@@ -228,7 +228,7 @@ class ModelTransaction extends Equatable {
       if (UserSession.getStatusFifo()) {
         remove
             ? pushDataBatch(dataRepo)
-            : reduceQtyFIFO(dataBatch: dataRepo.dataBatch!);
+            : reduceQtyFIFO(dataBatch: dataRepo.dataBatch);
       }
     }
 
@@ -261,7 +261,7 @@ class ModelTransaction extends Equatable {
       dataSplit: [],
     );
 
-    final index = dataTransaction!.indexWhere(
+    final index = dataTransaction.indexWhere(
       (element) => element.getinvoice == _invoice,
     );
     index != -1

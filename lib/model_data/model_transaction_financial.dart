@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
@@ -40,9 +39,10 @@ class ModelTransactionFinancial extends Equatable {
         'id_financial': idFinancial,
         'id_branch': idBranch,
         'name_financial': nameFinancial,
-        'get_note': note,
-        'date': date,
+        'note': note,
+        'date': formatDate(date: date, minute: true),
         'amount': amount,
+        'uid_user': UserSession.getUidUser(),
       },
     );
   }
@@ -66,7 +66,7 @@ class ModelTransactionFinancial extends Equatable {
       invoice: id,
       date: parseDate(date: data['date']),
       note: data['date'],
-      amount: double.tryParse(data['amount'])!,
+      amount: data['amount'].toDouble(),
     );
   }
 

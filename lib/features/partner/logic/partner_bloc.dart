@@ -19,10 +19,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     on<PartnerResetSelectedPartner>(_onResetSelectedPartner);
     on<PartnerSelectedBranch>(_onSelectedBranch);
     on<PartnerDeletePartner>(_onDeletePartner);
-    on<PartnerSearch>(
-      _onSearch,
-      transformer: debounceRestartable(Duration(milliseconds: 400)),
-    );
+    on<PartnerSearch>(_onSearch, transformer: debounceRestartable());
   }
 
   FutureOr<void> _onGetData(PartnerGetData event, Emitter<PartnerState> emit) {
@@ -67,14 +64,14 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     await event.partner.pushDataPartner();
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      final indexCategory = repoCache.dataPartner!.indexWhere(
+      final indexCategory = repoCache.dataPartner.indexWhere(
         (element) => element.getid == event.partner.getid,
       );
 
       if (indexCategory != -1) {
-        repoCache.dataPartner![indexCategory] = event.partner;
+        repoCache.dataPartner[indexCategory] = event.partner;
       } else {
-        repoCache.dataPartner!.add(event.partner);
+        repoCache.dataPartner.add(event.partner);
       }
 
       final dataPartner = event.partner.gettype.name == "customer"
@@ -131,9 +128,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     await deleteDataPartner(event.id);
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      repoCache.dataPartner!.removeWhere(
-        (element) => element.getid == event.id,
-      );
+      repoCache.dataPartner.removeWhere((element) => element.getid == event.id);
       final dataPartner = event.type.name == "customer"
           ? await repoCache.getCustomer(currentState.idBranch!)
           : await repoCache.getSupplier(currentState.idBranch!);

@@ -9,11 +9,13 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/widget/common_widget/custom_dropdown_filter.dart';
 import 'package:flutter_pos/widget/common_widget/date_picker.dart';
 import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
 class UiHistoryFinancial extends StatefulWidget {
   const UiHistoryFinancial({super.key});
@@ -24,7 +26,6 @@ class UiHistoryFinancial extends StatefulWidget {
 
 class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
   final searchController = TextEditingController();
-
   @override
   void dispose() {
     searchController.dispose();
@@ -37,7 +38,9 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
     _initData();
   }
 
-  void _initData() {}
+  void _initData() {
+    context.read<HistoryFinancialBloc>().add(HistoryFinancialGetData());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,8 +97,9 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
             Expanded(
               child: TextField(
                 controller: searchController,
+                style: lv05TextStyle,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(6),
+                  contentPadding: EdgeInsets.all(10),
                   isDense: true,
                   hintText: "Search...",
                   hintStyle: lv05TextStyle,
@@ -199,11 +203,54 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
               ),
               onPressed: () {
                 searchController.clear();
-                context.read<HistoryFinancialBloc>().add(
-                  HistoryFinancialResetSelectedData(),
-                );
+                final bloc = context.read<HistoryFinancialBloc>();
+                bloc.add(HistoryFinancialResetSelectedData());
+                bloc.add(HistoryFinancialGetData());
               },
               child: Icon(Icons.refresh_rounded),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 100,
+              child: WidgetDropDownFilter(
+                filters: ["All", ...listStatusTransactionFinancial],
+                text: "Pilih Filter",
+                selectedValue: (indexFilter) {
+                  context.read<HistoryFinancialBloc>().add(
+                    HistoryFinancialSelectedFilter(indexFilter: indexFilter),
+                  );
+                  searchController.clear();
+                },
+              ),
+            ),
+            SizedBox(
+              width: 150,
+              child:
+                  BlocSelector<
+                    HistoryFinancialBloc,
+                    HistoryFinancialState,
+                    String
+                  >(
+                    selector: (state) => state is HistoryFinancialLoaded
+                        ? state.idBranch ?? ""
+                        : "",
+                    builder: (context, state) {
+                      return WidgetDropdownBranch(
+                        idBranch: state,
+                        selectedIdBranch: (selectedIdBranch) =>
+                            context.read<HistoryFinancialBloc>().add(
+                              HistoryFinancialGetData(
+                                idBranch: selectedIdBranch,
+                              ),
+                            ),
+                      );
+                    },
+                  ),
             ),
           ],
         ),
