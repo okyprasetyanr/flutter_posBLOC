@@ -15,6 +15,7 @@ import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
 class UiHistoryFinancial extends StatefulWidget {
@@ -95,21 +96,11 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
         Row(
           children: [
             Expanded(
-              child: TextField(
+              child: customTextField(
+                enable: true,
                 controller: searchController,
-                style: lv05TextStyle,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  isDense: true,
-                  hintText: "Cari...",
-                  hintStyle: lv05TextStyle,
-                  labelText: "Cari",
-                  labelStyle: lv05TextStyle,
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                inputType: TextInputType.text,
+                text: "Cari",
                 onChanged: (value) {
                   context.read<HistoryFinancialBloc>().add(
                     HistoryFinancialSearchData(search: value),

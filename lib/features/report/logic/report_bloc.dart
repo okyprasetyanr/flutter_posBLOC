@@ -43,7 +43,6 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
                     element.getdate.isBefore(dateEnd)) &&
                 element.getstatusTransaction == statusTransaction(index: 0);
           }).toList();
-    ;
 
     double qris = 0;
     double debit = 0;

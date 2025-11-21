@@ -124,6 +124,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
         Row(
           children: [
             Expanded(
+              flex: 3,
               child: customTextField(
                 controller: searchController,
                 inputType: TextInputType.text,
@@ -134,6 +135,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                 ),
               ),
             ),
+            const SizedBox(width: 10),
             Expanded(
               flex: 2,
               child:

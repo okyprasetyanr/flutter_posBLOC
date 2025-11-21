@@ -17,6 +17,7 @@ import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
 class UIHistoryTransaction extends StatefulWidget {
@@ -106,21 +107,11 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
         Row(
           children: [
             Expanded(
-              child: TextField(
+              child: customTextField(
                 controller: searchController,
-                style: lv05TextStyle,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  isDense: true,
-                  hintText: "Cari...",
-                  hintStyle: lv05TextStyle,
-                  labelText: "Cari",
-                  labelStyle: lv05TextStyle,
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                enable: true,
+                inputType: TextInputType.text,
+                text: "Cari",
                 onChanged: (value) {
                   context.read<HistoryTransactionBloc>().add(
                     HistoryTransactionSearchData(search: value),

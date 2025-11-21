@@ -38,6 +38,7 @@ class TransFinancialBloc
     );
     emit(
       TransFinancialLoaded(
+        filteredData: dataFinancial,
         idBranch: idBranch,
         dataBranch: dataBranch,
         dataFinancial: dataFinancial,
