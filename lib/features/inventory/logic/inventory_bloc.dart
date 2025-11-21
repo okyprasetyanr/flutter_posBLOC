@@ -6,6 +6,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
@@ -14,145 +15,166 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
   InventoryBloc(this.repoCache) : super(InventoryInitial()) {
     debugPrint("Log InventoryBloc: Masuk Bloc");
-    on<InvGetData>(_onGetData);
+    on<InventoryGetData>(_onGetData);
 
-    on<InvFilterItem>(_onFilteredItem);
+    on<InventoryFilterItem>(_onFilteredItem);
 
-    on<InvUploadItem>(_onUploadItem);
+    on<InventoryUploadItem>(_onUploadItem);
 
-    on<InvSelectedCategory>(_onSelectedCategory);
+    on<InventorySelectedCategory>(_onSelectedCategory);
 
-    on<InvSelectedCategoryItem>(_onSelectedCategoryItem);
+    on<InventorySelectedCategoryItem>(_onSelectedCategoryItem);
 
-    on<InvSelectedItem>(_onSelectedItem);
+    on<InventorySelectedItem>(_onSelectedItem);
 
-    on<InvUploadCategory>(_onUploadCategory);
+    on<InventoryUploadCategory>(_onUploadCategory);
 
-    on<InvResetCategoryForm>(_onResetCategoryForm);
+    on<InventoryResetCategoryForm>(_onResetCategoryForm);
 
-    on<InvResetItemForm>(_onResetItemForm);
+    on<InventoryResetItemForm>(_onResetItemForm);
 
-    on<InvCondimentForm>(_onCondimentForm);
+    on<InventoryCondimentForm>(_onCondimentForm);
 
-    on<InvDeleteCategory>(_onDeleteCategory);
+    on<InventoryDeleteCategory>(_onDeleteCategory);
 
-    on<InvDeleteItem>(_onDeleteItem);
+    on<InventoryDeleteItem>(_onDeleteItem);
 
-    on<InvSearchitem>(_onSearchItem, transformer: debounceRestartable());
+    on<InventorySearchitem>(_onSearchItem, transformer: debounceRestartable());
   }
 
-  List<ModelItem> _filterItem(
-    String status,
-    String filter,
-    String filterjenis,
-    String filterIDCategory, {
+  List<ModelItem> _filterItem({
+    required int status,
+    required int filter,
+    required int filterType,
+    required int filterByCategory,
     List<ModelItem>? items,
   }) {
-    final currentState = state;
-    if (currentState is InventoryLoaded) {
-      List<ModelItem> item = items ?? List.from(currentState.dataItem);
-      List<ModelItem> list = item.where((element) {
-        final isActive = element.getStatusItem;
-        if (status == "Active") return isActive;
-        if (status == "Deactive") return !isActive;
-        return true;
-      }).toList();
+    final currentState = state is InventoryLoaded
+        ? state as InventoryLoaded
+        : InventoryLoaded();
+    List<ModelItem> item = items ?? List.from(currentState.dataItem);
 
-      debugPrint(
-        "Log InventoryBloc: _filteritem: $status,$filter,$filterjenis,$filterIDCategory,$item",
-      );
+    // ["Active", "Deactive"]
+    List<ModelItem> list = item.where((element) {
+      final byStatusItem = status == 0
+          ? element.getStatusItem
+          : !element.getStatusItem;
 
-      if (filterIDCategory != "0") {
-        list = list
-            .where((element) => element.getidCategoryiItem == filterIDCategory)
-            .toList();
-      } else {
-        list;
+      if (filterByCategory > 0) {
+        final byCategory =
+            element.getidCategoryiItem ==
+            filterCategory[filterByCategory].getidCategory;
+        if (!byCategory) return false;
       }
 
-      switch (filter) {
-        case "A-Z":
-          list.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
-          break;
-        case "Z-A":
-          list.sort((a, b) => b.getnameItem.compareTo(a.getnameItem));
-          break;
-        case "Stock +":
-          list.sort((a, b) => a.getqtyItem.compareTo(b.getqtyItem));
-          break;
-        case "Stock -":
-          list.sort((a, b) => b.getqtyItem.compareTo(a.getqtyItem));
-          break;
-        case "Terbaru":
-          list.sort(
-            (a, b) => formatDate(
-              date: b.getDateItem,
-            ).compareTo(formatDate(date: a.getDateItem)),
-          );
-          break;
-        case "Terlama":
-          list.sort(
-            (a, b) => formatDate(
-              date: b.getDateItem,
-            ).compareTo(formatDate(date: a.getDateItem)),
-          );
-          break;
+      // ["All", "Condiment", "Normal"]
+      if (filterType > 0) {
+        final byTypeItem = filterType == 1
+            ? element.getstatusCondiment
+            : !element.getstatusCondiment;
+        if (!byTypeItem) return false;
       }
 
-      return switch (filterjenis) {
-        "Condiment" => list.where((e) => e.getstatusCondiment).toList(),
-        "Normal" => list.where((e) => !e.getstatusCondiment).toList(),
-        _ => list,
-      };
+      return byStatusItem;
+    }).toList();
+
+    // ["A-Z", "Z-A", "Terbaru", "Terlama", "Stock +", "Stock -"];
+    switch (filter) {
+      case 0:
+        list.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
+        break;
+      case 1:
+        list.sort((a, b) => b.getnameItem.compareTo(a.getnameItem));
+        break;
+      case 2:
+        list.sort(
+          (a, b) => formatDate(
+            date: b.getDateItem,
+          ).compareTo(formatDate(date: a.getDateItem)),
+        );
+        break;
+      case 3:
+        list.sort(
+          (a, b) => formatDate(
+            date: b.getDateItem,
+          ).compareTo(formatDate(date: a.getDateItem)),
+        );
+        break;
+      case 4:
+        list.sort((a, b) => a.getqtyItem.compareTo(b.getqtyItem));
+        break;
+      case 5:
+        list.sort((a, b) => b.getqtyItem.compareTo(a.getqtyItem));
+        break;
     }
-    return [];
+
+    return list;
   }
 
   Future<void> _onFilteredItem(
-    InvFilterItem event,
+    InventoryFilterItem event,
     Emitter<InventoryState> emit,
   ) async {
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
-    try {
+    final currentState = state;
+    if (currentState is InventoryLoaded) {
+      final status = event.status ?? currentState.indexStatusItem;
+      final filter = event.filter ?? currentState.indexFilterItem;
+      final filterType = event.filterType ?? currentState.indexFilterTypeItem;
+      final filterByCategory =
+          event.filterByCategory ?? currentState.indexFilterByCategoryItem;
+
       emit(
         currentState.copyWith(
           filteredDataItem: _filterItem(
-            event.status,
-            event.filter,
-            event.filterjenis,
-            event.filterIDCategory,
+            status: status,
+            filter: filter,
+            filterType: filterType,
+            filterByCategory: filterByCategory,
           ),
-          selectedStatusItem: event.status,
-          selectedFilterItem: event.filter,
-          selectedFilterJenisItem: event.filterjenis,
-          selectedFilterIDCategoryItem: event.filterIDCategory,
+          indexStatusItem: status,
+          indexFilterItem: filter,
+          indexFilterTypeItem: filterType,
+          indexFilterIDCategoryItem: filterByCategory,
         ),
       );
-    } catch (e) {
-      emit(InventoryError("Error: Kesalahan Data, $e"));
     }
   }
 
   Future<void> _onGetData(
-    InvGetData event,
+    InventoryGetData event,
     Emitter<InventoryState> emit,
   ) async {
     final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
+        ? state as InventoryLoaded
         : InventoryLoaded();
-
     final dataBranch = currentState.dataBranch ?? repoCache.getBranch();
 
-    final idBranch = event.idBranch ?? dataBranch.first.getidBranch;
+    final idBranch =
+        event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
+
     final areaBranch = dataBranch
         .firstWhere((element) => element.getidBranch == idBranch)
         .getareaBranch;
+    final status = event.status ?? currentState.indexStatusItem;
+    final filter = event.filter ?? currentState.indexFilterItem;
+    final filterType = event.filterType ?? currentState.indexFilterTypeItem;
+    final filterByCategory = event.idBranch != null
+        ? event.filterByCategory ?? currentState.indexFilterByCategoryItem
+        : 0;
+
     final items = repoCache.getItem(idBranch);
     debugPrint("Log InventoryBloc: items: $items");
     final category = repoCache.getCategory(idBranch);
+    filterCategory = [
+      ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
+      ...category,
+    ];
     category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
+
+    debugPrint(
+      "Log InventoryBloc: filter: filter=$filter ,status=$status ,filter=$filterType ,filter=$filterByCategory",
+    );
+
     emit(
       InventoryLoaded(
         idBranch: idBranch,
@@ -162,65 +184,46 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         dataCategory: category,
         filteredDataItem: _filterItem(
           items: items,
-          event.status,
-          event.filter,
-          event.filterjenis,
-          event.filterIDCategory,
+          status: status,
+          filter: filter,
+          filterType: filterType,
+          filterByCategory: filterByCategory,
         ),
-        selectedFilterItem: event.filter,
-        selectedFilterJenisItem: event.filterjenis,
-        selectedStatusItem: event.status,
-        selectedFilterIDCategoryItem: event.filterIDCategory,
+        indexFilterItem: filter,
+        indexFilterTypeItem: filterType,
+        indexStatusItem: status,
+        indexFilterByCategoryItem: filterByCategory,
       ),
     );
   }
 
   FutureOr<void> _onUploadItem(
-    InvUploadItem event,
+    InventoryUploadItem event,
     Emitter<InventoryState> emit,
   ) async {
-    add(InvResetItemForm());
+    add(InventoryResetItemForm());
     await event.item.pushDataItem();
 
     debugPrint("Log InventoryBloc: PushData: ${event.item}");
-    final currentState = state;
-    if (currentState is InventoryLoaded) {
-      final indexCategory = repoCache.dataItem.indexWhere(
-        (element) => element.getidItem == event.item.getidItem,
-      );
+    final indexCategory = repoCache.dataItem.indexWhere(
+      (element) => element.getidItem == event.item.getidItem,
+    );
 
-      if (indexCategory != -1) {
-        repoCache.dataItem[indexCategory] = event.item;
-      } else {
-        repoCache.dataItem.add(event.item);
-      }
-
-      final item = repoCache.getItem(event.item.getidBranch);
-      item.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
-
-      emit(
-        currentState.copyWith(
-          dataSelectedItem: null,
-          condimentForm: false,
-          dataItem: item,
-          filteredDataItem: _filterItem(
-            items: item,
-            currentState.selectedStatusItem!,
-            currentState.selectedFilterItem!,
-            currentState.selectedFilterJenisItem!,
-            currentState.selectedFilterIDCategoryItem!,
-          ),
-        ),
-      );
+    if (indexCategory != -1) {
+      repoCache.dataItem[indexCategory] = event.item;
+    } else {
+      repoCache.dataItem.add(event.item);
     }
+
+    add(InventoryGetData());
   }
 
   FutureOr<void> _onUploadCategory(
-    InvUploadCategory event,
+    InventoryUploadCategory event,
     Emitter<InventoryState> emit,
   ) async {
     await event.category.pushDataCategory();
-    add(InvResetCategoryForm());
+    add(InventoryResetCategoryForm());
     final currentState = state;
     if (currentState is InventoryLoaded) {
       final indexCategory = repoCache.dataCategory.indexWhere(
@@ -233,42 +236,31 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         repoCache.dataCategory.add(event.category);
       }
 
-      final category = repoCache.getCategory(event.category.getidBranch);
-      category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
-
-      debugPrint("Log InvBloc: UploadCategory: $category");
-
-      emit(currentState.copyWith(dataCategory: category));
+      add(InventoryGetData());
     }
   }
 
   FutureOr<void> _onResetCategoryForm(
-    InvResetCategoryForm event,
+    InventoryResetCategoryForm event,
     Emitter<InventoryState> emit,
   ) {
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
+    final currentState = state as InventoryLoaded;
     emit(currentState.copyWith(dataSelectedCategory: null));
   }
 
   FutureOr<void> _onSelectedCategory(
-    InvSelectedCategory event,
+    InventorySelectedCategory event,
     Emitter<InventoryState> emit,
   ) {
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
+    final currentState = state as InventoryLoaded;
     emit(currentState.copyWith(dataSelectedCategory: event.selectedCategory));
   }
 
   FutureOr<void> _onSelectedCategoryItem(
-    InvSelectedCategoryItem event,
+    InventorySelectedCategoryItem event,
     Emitter<InventoryState> emit,
   ) {
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
+    final currentState = state as InventoryLoaded;
 
     debugPrint(
       "Log InventoryBloc SelectedCategoryItem: ${event.dataCategoryItem}",
@@ -279,18 +271,16 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onSelectedItem(
-    InvSelectedItem event,
+    InventorySelectedItem event,
     Emitter<InventoryState> emit,
   ) {
-    final currentState = state is InventoryLoaded
-        ? (state as InventoryLoaded)
-        : InventoryLoaded();
+    final currentState = state as InventoryLoaded;
     debugPrint("Log InventoryBloc SelectedItem: ${event.selectedItem}");
     emit(currentState.copyWith(dataSelectedItem: event.selectedItem));
   }
 
   FutureOr<void> _onResetItemForm(
-    InvResetItemForm event,
+    InventoryResetItemForm event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state is InventoryLoaded
@@ -308,44 +298,35 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onSearchItem(
-    InvSearchitem event,
+    InventorySearchitem event,
     Emitter<InventoryState> emit,
   ) {
-    final currentState = state is InventoryLoaded
-        ? state as InventoryLoaded
-        : InventoryLoaded();
+    final currentState = state as InventoryLoaded;
 
-    if (event.text.isNotEmpty) {
-      final filtered = currentState.dataItem
-          .where(
-            (item) => item.getnameItem.toLowerCase().contains(
-              event.text.toLowerCase(),
-            ),
-          )
-          .toList();
-
-      emit(currentState.copyWith(filteredDataItem: filtered));
-    } else {
-      emit(
-        currentState.copyWith(
-          filteredDataItem: _filterItem(
-            currentState.selectedStatusItem!,
-            currentState.selectedFilterItem!,
-            currentState.selectedFilterJenisItem!,
-            currentState.selectedFilterIDCategoryItem!,
-          ),
-        ),
-      );
-    }
+    final filtered = event.text.isNotEmpty
+        ? currentState.dataItem
+              .where(
+                (item) => item.getnameItem.toLowerCase().contains(
+                  event.text.toLowerCase(),
+                ),
+              )
+              .toList()
+        : currentState.dataItem;
+    final filteredItem = _filterItem(
+      items: filtered,
+      status: currentState.indexStatusItem,
+      filter: currentState.indexFilterItem,
+      filterType: currentState.indexFilterTypeItem,
+      filterByCategory: currentState.indexFilterByCategoryItem,
+    );
+    emit(currentState.copyWith(filteredDataItem: filteredItem));
   }
 
   FutureOr<void> _onCondimentForm(
-    InvCondimentForm event,
+    InventoryCondimentForm event,
     Emitter<InventoryState> emit,
   ) {
-    final currentState = state is InventoryLoaded
-        ? state as InventoryLoaded
-        : InventoryLoaded();
+    final currentState = state as InventoryLoaded;
     debugPrint(
       "Log InventoryBloc CondimentForm: ${event.condimentForm} ${currentState.dataSelectedItem}",
     );
@@ -359,41 +340,22 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   Future<void> _onDeleteCategory(
-    InvDeleteCategory event,
+    InventoryDeleteCategory event,
     Emitter<InventoryState> emit,
   ) async {
     await deleteDataCategory(event.id);
     repoCache.dataCategory.removeWhere(
       (element) => element.getidCategory == event.id,
     );
-    final currentState = state;
-    if (currentState is InventoryLoaded) {
-      final dataCategory = await repoCache.getCategory(currentState.idBranch!);
-      dataCategory.sort(
-        (a, b) => a.getnameCategory.compareTo(b.getnameCategory),
-      );
-
-      emit(currentState.copyWith(dataCategory: dataCategory));
-    }
+    add(InventoryGetData());
   }
 
   Future<void> _onDeleteItem(
-    InvDeleteItem event,
+    InventoryDeleteItem event,
     Emitter<InventoryState> emit,
   ) async {
     await deleteDataitem(event.id);
     repoCache.dataItem.removeWhere((element) => element.getidItem == event.id);
-    final currentState = state;
-    if (currentState is InventoryLoaded) {
-      add(
-        InvGetData(
-          filter: currentState.selectedFilterItem!,
-          status: currentState.selectedStatusItem!,
-          idBranch: currentState.idBranch!,
-          filterjenis: currentState.selectedFilterJenisItem!,
-          filterIDCategory: currentState.selectedFilterIDCategoryItem!,
-        ),
-      );
-    }
+    add(InventoryGetData());
   }
 }

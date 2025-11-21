@@ -44,7 +44,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     onTap: () {
                       context.read<InventoryBloc>().add(
-                        InvSelectedItem(
+                        InventorySelectedItem(
                           selectedItem: ModelItem(
                             qtyItem: items[index].getqtyItem,
                             nameItem: items[index].getnameItem,

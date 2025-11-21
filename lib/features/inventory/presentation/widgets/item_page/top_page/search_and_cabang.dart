@@ -7,17 +7,7 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
 class UIInventorySearchAndBranch extends StatelessWidget {
-  final String? selectedFilterItem;
-  final String? selectedStatusItem;
-  final String? selectedFilterJenisItem;
-  final String? selectedFilterCategoryItem;
-  const UIInventorySearchAndBranch({
-    super.key,
-    required this.selectedFilterItem,
-    required this.selectedStatusItem,
-    required this.selectedFilterJenisItem,
-    required this.selectedFilterCategoryItem,
-  });
+  const UIInventorySearchAndBranch({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +35,9 @@ class UIInventorySearchAndBranch extends StatelessWidget {
                 ),
               ),
               onChanged: (value) {
-                context.read<InventoryBloc>().add(InvSearchitem(text: value));
+                context.read<InventoryBloc>().add(
+                  InventorySearchitem(text: value),
+                );
               },
             ),
           ),
@@ -58,16 +50,9 @@ class UIInventorySearchAndBranch extends StatelessWidget {
               builder: (context, state) {
                 return WidgetDropdownBranch(
                   idBranch: state,
-                  selectedIdBranch: (SelectedIdBranch) =>
-                      context.read<InventoryBloc>().add(
-                        InvGetData(
-                          idBranch: SelectedIdBranch,
-                          filter: selectedFilterItem!,
-                          status: selectedStatusItem!,
-                          filterjenis: selectedFilterJenisItem!,
-                          filterIDCategory: selectedFilterCategoryItem!,
-                        ),
-                      ),
+                  selectedIdBranch: (SelectedIdBranch) => context
+                      .read<InventoryBloc>()
+                      .add(InventoryGetData(idBranch: SelectedIdBranch)),
                 );
               },
             ),

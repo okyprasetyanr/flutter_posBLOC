@@ -42,7 +42,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                     (bloc.state as InventoryLoaded).dataSelectedItem?.getidItem;
               }
               if (idItem != null) {
-                bloc.add(InvDeleteItem(id: idItem));
+                bloc.add(InventoryDeleteItem(id: idItem));
               } else {
                 customSnackBar(context, "Pilih item terlebih dahulu!");
               }
@@ -86,7 +86,9 @@ class UIInventoryButtonItem extends StatelessWidget {
                     statusItem: true,
                     date: parseDate(date: formatDate(date: DateTime.now())),
                   );
-                  context.read<InventoryBloc>().add(InvUploadItem(item: data));
+                  context.read<InventoryBloc>().add(
+                    InventoryUploadItem(item: data),
+                  );
                   debugPrint("Log UIInventory: Simpan: $data");
                   resetItemForm();
                 }

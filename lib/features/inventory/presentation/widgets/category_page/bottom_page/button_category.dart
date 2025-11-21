@@ -43,7 +43,7 @@ class UICategoryButtonCategory extends StatelessWidget {
                   .idBranch!,
             );
             context.read<InventoryBloc>().add(
-              InvUploadCategory(category: category),
+              InventoryUploadCategory(category: category),
             );
 
             resetCategoryForm();

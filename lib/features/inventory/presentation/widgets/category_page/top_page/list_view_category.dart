@@ -58,7 +58,7 @@ class ListViewCategory extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       context.read<InventoryBloc>().add(
-                        InvSelectedCategory(selectedCategory: category),
+                        InventorySelectedCategory(selectedCategory: category),
                       );
                     },
                     child: Dismissible(
@@ -89,7 +89,7 @@ class ListViewCategory extends StatelessWidget {
                               TextButton(
                                 onPressed: () {
                                   context.read<InventoryBloc>().add(
-                                    InvDeleteCategory(
+                                    InventoryDeleteCategory(
                                       id: category.getidCategory,
                                     ),
                                   );

@@ -12,16 +12,11 @@ class UIFiltersItem extends StatelessWidget {
   final List<String> filterjenis;
   final List<ModelCategory> filterCategory;
 
-  final String? selectedFilterItem;
-  final String? selectedStatusItem;
-  final String? selectedFilterJenisItem;
-  final String? selectedFilterCategoryItem;
-
   final Function({
-    required String filter,
-    required String status,
-    required String filterjenis,
-    required String filterIDCategory,
+    int filter,
+    int status,
+    int filterjenis,
+    int filterIDCategory,
   })
   onFilterChangedCallBack;
 
@@ -31,15 +26,12 @@ class UIFiltersItem extends StatelessWidget {
     required this.statusItem,
     required this.filterjenis,
     required this.filterCategory,
-    required this.selectedFilterItem,
-    required this.selectedStatusItem,
-    required this.selectedFilterJenisItem,
-    required this.selectedFilterCategoryItem,
     required this.onFilterChangedCallBack,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.select<InventoryBloc, int>;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -59,7 +51,14 @@ class UIFiltersItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-              initialValue: selectedFilterItem,
+              initialValue:
+                  filters[bloc((value) {
+                    final blocurrentState = value.state;
+                    if (blocurrentState is InventoryLoaded) {
+                      return blocurrentState.indexFilterItem;
+                    }
+                    return 0;
+                  })],
               items: filters
                   .map(
                     (map) => DropdownMenuItem(
@@ -75,12 +74,7 @@ class UIFiltersItem extends StatelessWidget {
                   .toList(),
               onChanged: (value) {
                 if (value == null) return;
-                onFilterChangedCallBack(
-                  filter: value,
-                  status: selectedStatusItem ?? "",
-                  filterjenis: selectedFilterJenisItem ?? "",
-                  filterIDCategory: selectedFilterCategoryItem ?? "",
-                );
+                onFilterChangedCallBack(filter: filters.indexOf(value));
               },
             ),
           ),
@@ -101,10 +95,22 @@ class UIFiltersItem extends StatelessWidget {
                 label: Text("Pilih Kategori", style: lv1TextStyle),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: filterCategory.firstWhere(
-                (data) => data.getidCategory == selectedFilterCategoryItem,
-                orElse: () => filterCategory.first,
-              ),
+              initialValue: () {
+                final index = bloc((value) {
+                  final s = value.state;
+                  if (s is InventoryLoaded) {
+                    return s.indexFilterByCategoryItem;
+                  }
+                  return 0;
+                });
+
+                if (index < 0 || index >= filterCategory.length) {
+                  return filterCategory[0];
+                }
+
+                return filterCategory[index];
+              }(),
+
               items: filterCategory
                   .where(
                     (data) =>
@@ -133,10 +139,7 @@ class UIFiltersItem extends StatelessWidget {
               onChanged: (value) {
                 if (value == null) return;
                 onFilterChangedCallBack(
-                  filter: selectedFilterItem ?? "",
-                  status: selectedStatusItem ?? "",
-                  filterjenis: selectedFilterJenisItem ?? "",
-                  filterIDCategory: value.getidCategory,
+                  filterIDCategory: filterCategory.indexOf(value),
                 );
               },
             ),
@@ -158,7 +161,14 @@ class UIFiltersItem extends StatelessWidget {
                 label: Text("Pilih Status", style: lv1TextStyle),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: selectedStatusItem,
+              initialValue:
+                  statusItem[bloc((value) {
+                    final blocurrentState = value.state;
+                    if (blocurrentState is InventoryLoaded) {
+                      return blocurrentState.indexStatusItem;
+                    }
+                    return 0;
+                  })],
               items: statusItem
                   .map(
                     (map) => DropdownMenuItem(
@@ -169,12 +179,7 @@ class UIFiltersItem extends StatelessWidget {
                   .toList(),
               onChanged: (value) {
                 if (value == null) return;
-                onFilterChangedCallBack(
-                  filter: selectedFilterItem ?? "",
-                  status: value,
-                  filterjenis: selectedFilterJenisItem ?? "",
-                  filterIDCategory: selectedFilterCategoryItem ?? "",
-                );
+                onFilterChangedCallBack(status: statusItem.indexOf(value));
               },
             ),
           ),

@@ -17,7 +17,7 @@ import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/to
 import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/bottom_page/button_category.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/bottom_page/text_field_and_branch.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/list_view_category.dart';
-import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
@@ -36,24 +36,7 @@ class _UIInventoryState extends State<UIInventory> {
   List<FocusNode> nodes = List.generate(1, (_) => FocusNode());
   List<FocusNode> nodesForm = List.generate(3, (_) => FocusNode());
 
-  List<String> filters = [
-    "A-Z",
-    "Z-A",
-    "Terbaru",
-    "Terlama",
-    "Stock +",
-    "Stock -",
-  ];
-  List<String> statusItem = ["Active", "Deactive"];
-  List<String> filterTypeItem = ["All", "Condiment", "Normal"];
-  List<ModelCategory> filterCategory = [
-    ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
-  ];
   final selectedIdCategoryItem = ValueNotifier<String?>(null);
-  String? selectedFilterItem;
-  String? selectedStatusItem;
-  String? selectedFilterJenisItem;
-  String? selectedFilterCategoryItem;
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameItemController = TextEditingController();
@@ -110,35 +93,15 @@ class _UIInventoryState extends State<UIInventory> {
   }
 
   Future<void> _initData() async {
-    selectedFilterItem = filters.first;
-    selectedStatusItem = statusItem.first;
-    selectedFilterJenisItem = filterTypeItem.first;
-    selectedFilterCategoryItem = filterCategory.first.getidCategory;
-
     final bloc = context.read<InventoryBloc>();
-    bloc.add(
-      InvFilterItem(
-        filter: selectedFilterItem!,
-        status: selectedStatusItem!,
-        filterjenis: selectedFilterJenisItem!,
-        filterIDCategory: selectedFilterCategoryItem!,
-      ),
-    );
-    bloc.add(
-      InvGetData(
-        idBranch: null,
-        filter: selectedFilterItem!,
-        status: selectedStatusItem!,
-        filterjenis: selectedFilterJenisItem!,
-        filterIDCategory: selectedFilterCategoryItem!,
-      ),
-    );
+    bloc.add(InventoryFilterItem());
+    bloc.add(InventoryGetData());
   }
 
   Future<void> _onRefresh() async {
     final bloc = context.read<InventoryBloc>();
-    bloc.add(InvResetItemForm());
-    bloc.add(InvResetCategoryForm());
+    bloc.add(InventoryResetItemForm());
+    bloc.add(InventoryResetCategoryForm());
     _resetItemForm();
     nameCategoryController.clear();
 
@@ -152,22 +115,13 @@ class _UIInventoryState extends State<UIInventory> {
 
   @override
   Widget build(BuildContext context) {
-    context.select<InventoryBloc, List<ModelCategory>>((value) {
-      final dataCategory = value.state is InventoryLoaded
-          ? (value.state as InventoryLoaded).dataCategory
-          : null;
-      return filterCategory = [
-        filterCategory.first,
-        if (dataCategory != null) ...dataCategory,
-      ];
-    });
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           Navigator.pop(context);
-          context.read<InventoryBloc>().add(InvResetCategoryForm());
-          context.read<InventoryBloc>().add(InvResetItemForm());
+          context.read<InventoryBloc>().add(InventoryResetCategoryForm());
+          context.read<InventoryBloc>().add(InventoryResetItemForm());
         }
       },
       child: LayoutTopBottom(
@@ -240,42 +194,28 @@ class _UIInventoryState extends State<UIInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UIInventorySearchAndBranch(
-                    selectedFilterItem: selectedFilterItem,
-                    selectedStatusItem: selectedStatusItem,
-                    selectedFilterJenisItem: selectedFilterJenisItem,
-                    selectedFilterCategoryItem: selectedFilterCategoryItem,
-                  ),
+                  UIInventorySearchAndBranch(),
 
                   const SizedBox(height: 10),
 
                   UIFiltersItem(
-                    filters: filters,
+                    filters: filterItem,
                     statusItem: statusItem,
                     filterjenis: filterTypeItem,
                     filterCategory: filterCategory,
-                    selectedFilterItem: selectedFilterItem,
-                    selectedStatusItem: selectedStatusItem,
-                    selectedFilterJenisItem: selectedFilterJenisItem,
-                    selectedFilterCategoryItem: selectedFilterCategoryItem,
                     onFilterChangedCallBack:
                         ({
-                          required String filter,
-                          required String status,
-                          required String filterjenis,
-                          required String filterIDCategory,
+                          int? filter,
+                          int? status,
+                          int? filterjenis,
+                          int? filterIDCategory,
                         }) {
-                          selectedFilterItem = filter;
-                          selectedStatusItem = status;
-                          selectedFilterJenisItem = filterjenis;
-                          selectedFilterCategoryItem = filterIDCategory;
-
                           context.read<InventoryBloc>().add(
-                            InvFilterItem(
+                            InventoryFilterItem(
                               filter: filter,
                               status: status,
-                              filterjenis: filterjenis,
-                              filterIDCategory: filterIDCategory,
+                              filterType: filterjenis,
+                              filterByCategory: filterIDCategory,
                             ),
                           );
                         },
@@ -294,12 +234,7 @@ class _UIInventoryState extends State<UIInventory> {
                   Container(
                     padding: const EdgeInsets.only(left: 10),
                     width: 150,
-                    child: UIInventoryDropdownBranch(
-                      selectedFilterItem: selectedFilterItem!,
-                      selectedStatusItem: selectedStatusItem!,
-                      selectedFilterJenisItem: selectedFilterJenisItem!,
-                      selectedFilterCategoryItem: selectedFilterCategoryItem!,
-                    ),
+                    child: UIInventoryDropdownBranch(),
                   ),
                   Expanded(child: ListViewCategory()),
                 ],
@@ -346,7 +281,7 @@ class _UIInventoryState extends State<UIInventory> {
                         child: customButtonIconReset(
                           onPressed: () {
                             context.read<InventoryBloc>().add(
-                              InvResetItemForm(),
+                              InventoryResetItemForm(),
                             );
                             _resetItemForm();
                           },
@@ -380,7 +315,17 @@ class _UIInventoryState extends State<UIInventory> {
                                     ),
                                   ),
                                   style: lv05TextStyle,
-                                  initialValue: filterTypeItem.first,
+                                  initialValue:
+                                      filterTypeItem[context
+                                          .select<InventoryBloc, int>((value) {
+                                            final blocurrentState = value.state;
+                                            if (blocurrentState
+                                                is InventoryLoaded) {
+                                              return blocurrentState
+                                                  .indexStatusItem;
+                                            }
+                                            return 0;
+                                          })],
                                   items: filterTypeItem
                                       .map(
                                         (map) => DropdownMenuItem(
@@ -393,14 +338,11 @@ class _UIInventoryState extends State<UIInventory> {
                                       )
                                       .toList(),
                                   onChanged: (value) {
-                                    selectedFilterJenisItem = value;
                                     context.read<InventoryBloc>().add(
-                                      InvFilterItem(
-                                        filter: selectedFilterItem!,
-                                        status: selectedStatusItem!,
-                                        filterjenis: selectedFilterJenisItem!,
-                                        filterIDCategory:
-                                            selectedFilterCategoryItem!,
+                                      InventoryFilterItem(
+                                        filterType: filterTypeItem.indexOf(
+                                          value!,
+                                        ),
                                       ),
                                     );
                                   },
@@ -565,14 +507,14 @@ class _UIInventoryState extends State<UIInventory> {
   void _resetItemForm() {
     _formKey.currentState!.reset();
     final bloc = context.read<InventoryBloc>();
-    bloc.add(InvResetItemForm());
+    bloc.add(InventoryResetItemForm());
     nameItemController.clear();
     priceItemController.clear();
     codeBarcodeController.clear();
   }
 
   void _resetCategoryForm() {
-    context.read<InventoryBloc>().add(InvResetCategoryForm());
+    context.read<InventoryBloc>().add(InventoryResetCategoryForm());
     nameCategoryController.clear();
   }
 }

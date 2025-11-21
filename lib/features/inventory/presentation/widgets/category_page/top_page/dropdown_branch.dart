@@ -6,17 +6,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
 class UIInventoryDropdownBranch extends StatelessWidget {
-  final String selectedFilterItem;
-  final String selectedStatusItem;
-  final String selectedFilterJenisItem;
-  final String selectedFilterCategoryItem;
-  const UIInventoryDropdownBranch({
-    super.key,
-    required this.selectedFilterItem,
-    required this.selectedStatusItem,
-    required this.selectedFilterJenisItem,
-    required this.selectedFilterCategoryItem,
-  });
+  const UIInventoryDropdownBranch({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +15,9 @@ class UIInventoryDropdownBranch extends StatelessWidget {
       builder: (context, state) {
         return WidgetDropdownBranch(
           idBranch: state,
-          selectedIdBranch: (selectedIdBranch) =>
-              context.read<InventoryBloc>().add(
-                InvGetData(
-                  filter: selectedFilterItem,
-                  status: selectedStatusItem,
-                  idBranch: selectedIdBranch,
-                  filterjenis: selectedFilterJenisItem,
-                  filterIDCategory: selectedFilterCategoryItem,
-                ),
-              ),
+          selectedIdBranch: (selectedIdBranch) => context
+              .read<InventoryBloc>()
+              .add(InventoryGetData(idBranch: selectedIdBranch)),
         );
       },
     );

@@ -34,7 +34,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
             dataSelectedItem?.getpriceItem ?? 0,
           );
           context.read<InventoryBloc>().add(
-            InvCondimentForm(
+            InventoryCondimentForm(
               condimentForm: dataSelectedItem?.getstatusCondiment ?? false,
             ),
           );

@@ -19,10 +19,10 @@ class InventoryError extends InventoryState {
 class InventoryLoaded extends InventoryState with EquatableMixin {
   final String? idBranch;
   final String? areaBranch;
-  final String? selectedFilterItem;
-  final String? selectedStatusItem;
-  final String? selectedFilterJenisItem;
-  final String? selectedFilterIDCategoryItem;
+  final int indexFilterItem;
+  final int indexStatusItem;
+  final int indexFilterTypeItem;
+  final int indexFilterByCategoryItem;
   final bool condimentForm;
   final List<ModelBranch>? dataBranch;
   final List<ModelItem> dataItem;
@@ -34,10 +34,10 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
 
   InventoryLoaded({
     this.dataSelectedCategoryItem,
-    this.selectedFilterIDCategoryItem,
-    this.selectedFilterJenisItem,
-    this.selectedFilterItem,
-    this.selectedStatusItem,
+    this.indexFilterByCategoryItem = 0,
+    this.indexFilterTypeItem = 0,
+    this.indexFilterItem = 0,
+    this.indexStatusItem = 0,
     this.condimentForm = false,
     this.dataSelectedCategory,
     this.dataSelectedItem,
@@ -52,10 +52,10 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   InventoryLoaded copyWith({
     String? idBranch,
     String? areaBranch,
-    String? selectedFilterItem,
-    String? selectedStatusItem,
-    String? selectedFilterJenisItem,
-    String? selectedFilterIDCategoryItem,
+    int? indexFilterItem,
+    int? indexStatusItem,
+    int? indexFilterTypeItem,
+    int? indexFilterIDCategoryItem,
     bool? condimentForm,
     List<ModelBranch>? dataBranch,
     List<ModelItem>? dataItem,
@@ -66,12 +66,11 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     ModelItem? dataSelectedItem,
   }) {
     return InventoryLoaded(
-      selectedFilterIDCategoryItem:
-          selectedFilterIDCategoryItem ?? this.selectedFilterIDCategoryItem,
-      selectedFilterItem: selectedFilterItem ?? this.selectedFilterItem,
-      selectedFilterJenisItem:
-          selectedFilterJenisItem ?? this.selectedFilterJenisItem,
-      selectedStatusItem: selectedStatusItem ?? this.selectedStatusItem,
+      indexFilterByCategoryItem:
+          indexFilterIDCategoryItem ?? this.indexFilterByCategoryItem,
+      indexFilterItem: indexFilterItem ?? this.indexFilterItem,
+      indexFilterTypeItem: indexFilterTypeItem ?? this.indexFilterTypeItem,
+      indexStatusItem: indexStatusItem ?? this.indexStatusItem,
       condimentForm: condimentForm ?? this.condimentForm,
       idBranch: idBranch ?? this.idBranch,
       areaBranch: areaBranch ?? this.areaBranch,
@@ -89,10 +88,10 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   List<Object?> get props => [
     idBranch,
     areaBranch,
-    selectedFilterItem,
-    selectedStatusItem,
-    selectedFilterJenisItem,
-    selectedFilterIDCategoryItem,
+    indexFilterItem,
+    indexStatusItem,
+    indexFilterTypeItem,
+    indexFilterByCategoryItem,
     condimentForm,
     dataBranch,
     dataItem,

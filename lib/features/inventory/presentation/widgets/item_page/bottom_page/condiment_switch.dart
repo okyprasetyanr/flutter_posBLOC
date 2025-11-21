@@ -21,7 +21,7 @@ class CondimentSwitch extends StatelessWidget {
       builder: (contextBloc, state) {
         return GestureDetector(
           onTap: () => context.read<InventoryBloc>().add(
-            InvCondimentForm(condimentForm: !state),
+            InventoryCondimentForm(condimentForm: !state),
           ),
           child: AnimatedContainer(
             duration: Duration(milliseconds: 500),

@@ -3,90 +3,90 @@ import 'package:flutter_pos/model_data/model_category.dart';
 
 class InventoryEvent {}
 
-class InvGetData extends InventoryEvent {
+class InventoryGetData extends InventoryEvent {
   final String? idBranch;
-  final String filter;
-  final String status;
-  final String filterjenis;
-  final String filterIDCategory;
+  final int? filter;
+  final int? status;
+  final int? filterType;
+  final int? filterByCategory;
 
-  InvGetData({
-    required this.filter,
-    required this.status,
-    required this.idBranch,
-    required this.filterjenis,
-    required this.filterIDCategory,
+  InventoryGetData({
+    this.filter,
+    this.status,
+    this.idBranch,
+    this.filterType,
+    this.filterByCategory,
   });
 }
 
-class InvSelectedCategory extends InventoryEvent {
+class InventorySelectedCategory extends InventoryEvent {
   final ModelCategory selectedCategory;
 
-  InvSelectedCategory({required this.selectedCategory});
+  InventorySelectedCategory({required this.selectedCategory});
 }
 
-class InvSelectedCategoryItem extends InventoryEvent {
+class InventorySelectedCategoryItem extends InventoryEvent {
   final ModelCategory? dataCategoryItem;
 
-  InvSelectedCategoryItem({required this.dataCategoryItem});
+  InventorySelectedCategoryItem({required this.dataCategoryItem});
 }
 
-class InvSelectedItem extends InventoryEvent {
+class InventorySelectedItem extends InventoryEvent {
   final ModelItem selectedItem;
 
-  InvSelectedItem({required this.selectedItem});
+  InventorySelectedItem({required this.selectedItem});
 }
 
-class InvResetCategoryForm extends InventoryEvent {}
+class InventoryResetCategoryForm extends InventoryEvent {}
 
-class InvResetItemForm extends InventoryEvent {}
+class InventoryResetItemForm extends InventoryEvent {}
 
-class InvFilterItem extends InventoryEvent {
-  final String filter;
-  final String status;
-  final String filterjenis;
-  final String filterIDCategory;
+class InventoryFilterItem extends InventoryEvent {
+  final int? filter;
+  final int? status;
+  final int? filterType;
+  final int? filterByCategory;
 
-  InvFilterItem({
-    required this.filter,
-    required this.status,
-    required this.filterjenis,
-    required this.filterIDCategory,
+  InventoryFilterItem({
+    this.filter,
+    this.status,
+    this.filterType,
+    this.filterByCategory,
   });
 }
 
-class InvUploadItem extends InventoryEvent {
+class InventoryUploadItem extends InventoryEvent {
   final ModelItem item;
 
-  InvUploadItem({required this.item});
+  InventoryUploadItem({required this.item});
 }
 
-class InvUploadCategory extends InventoryEvent {
+class InventoryUploadCategory extends InventoryEvent {
   final ModelCategory category;
 
-  InvUploadCategory({required this.category});
+  InventoryUploadCategory({required this.category});
 }
 
-class InvSearchitem extends InventoryEvent {
+class InventorySearchitem extends InventoryEvent {
   final String text;
 
-  InvSearchitem({required this.text});
+  InventorySearchitem({required this.text});
 }
 
-class InvCondimentForm extends InventoryEvent {
+class InventoryCondimentForm extends InventoryEvent {
   final bool condimentForm;
 
-  InvCondimentForm({required this.condimentForm});
+  InventoryCondimentForm({required this.condimentForm});
 }
 
-class InvDeleteCategory extends InventoryEvent {
+class InventoryDeleteCategory extends InventoryEvent {
   final String id;
 
-  InvDeleteCategory({required this.id});
+  InventoryDeleteCategory({required this.id});
 }
 
-class InvDeleteItem extends InventoryEvent {
+class InventoryDeleteItem extends InventoryEvent {
   final String id;
 
-  InvDeleteItem({required this.id});
+  InventoryDeleteItem({required this.id});
 }
