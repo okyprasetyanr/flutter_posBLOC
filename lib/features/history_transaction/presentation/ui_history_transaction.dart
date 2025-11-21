@@ -112,9 +112,9 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   isDense: true,
-                  hintText: "Search...",
+                  hintText: "Cari...",
                   hintStyle: lv05TextStyle,
-                  labelText: "Search",
+                  labelText: "Cari",
                   labelStyle: lv05TextStyle,
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   border: OutlineInputBorder(
@@ -252,12 +252,14 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                     builder: (context, state) {
                       return WidgetDropdownBranch(
                         idBranch: state,
-                        selectedIdBranch: (selectedIdBranch) =>
-                            context.read<HistoryTransactionBloc>().add(
-                              HistoryTransactionGetData(
-                                idBranch: selectedIdBranch,
-                              ),
+                        selectedIdBranch: (selectedIdBranch) {
+                          searchController.clear();
+                          context.read<HistoryTransactionBloc>().add(
+                            HistoryTransactionGetData(
+                              idBranch: selectedIdBranch,
                             ),
+                          );
+                        },
                       );
                     },
                   ),

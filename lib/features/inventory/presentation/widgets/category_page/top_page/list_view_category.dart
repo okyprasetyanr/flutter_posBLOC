@@ -7,8 +7,8 @@ import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class ListViewCategory extends StatelessWidget {
-  const ListViewCategory({super.key});
+class UIInventoryListViewCategory extends StatelessWidget {
+  const UIInventoryListViewCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ListViewCategory extends StatelessWidget {
       (List<ModelCategory>?, String?)
     >(
       selector: (state) => state is InventoryLoaded
-          ? (state.dataCategory, state.idBranch)
+          ? (state.filteredDataCategory, state.idBranch)
           : (null, null),
       builder: (context, state) {
         if (state.$1 == null) {

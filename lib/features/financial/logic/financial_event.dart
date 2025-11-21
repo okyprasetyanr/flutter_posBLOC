@@ -28,3 +28,9 @@ class FinancialResetSelectedFinancial extends FinancialEvent {}
 class FinancialDeleteFinancial extends FinancialEvent {}
 
 class FinancialIsIncome extends FinancialEvent {}
+
+class FinancialSearch extends FinancialEvent {
+  final String search;
+
+  FinancialSearch({required this.search});
+}

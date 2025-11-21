@@ -129,10 +129,10 @@ class _UIPartnerState extends State<UIPartner> {
               child: customTextField(
                 controller: searchController,
                 enable: true,
-                text: "Search",
+                text: "Cari",
                 inputType: TextInputType.text,
-                onChanged: (search) => context.read<PartnerBloc>().add(
-                  PartnerSearch(search: search),
+                onChanged: (value) => context.read<PartnerBloc>().add(
+                  PartnerSearch(search: value),
                 ),
               ),
             ),
@@ -152,12 +152,14 @@ class _UIPartnerState extends State<UIPartner> {
                           builder: (context, state) {
                             return WidgetDropdownBranch(
                               idBranch: state,
-                              selectedIdBranch: (selectedIdBranch) =>
-                                  context.read<PartnerBloc>().add(
-                                    PartnerSelectedBranch(
-                                      idBranch: selectedIdBranch,
-                                    ),
+                              selectedIdBranch: (selectedIdBranch) {
+                                searchController.clear();
+                                context.read<PartnerBloc>().add(
+                                  PartnerSelectedBranch(
+                                    idBranch: selectedIdBranch,
                                   ),
+                                );
+                              },
                             );
                           },
                         );

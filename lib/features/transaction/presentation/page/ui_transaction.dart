@@ -5,7 +5,6 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/dropdown_branch.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/list_view_category.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/top_page/saved_cart.dart';
@@ -15,6 +14,7 @@ import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/bottom_page/list_view_ordered_item.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
 
 class UITransaction extends StatefulWidget {
@@ -112,7 +112,7 @@ class _UITransactionState extends State<UITransaction> {
                     controller: searchController,
                     decoration: InputDecoration(
                       isDense: true,
-                      hintText: "Search...",
+                      hintText: "Cari...",
                       hintStyle: lv05TextStyle,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       contentPadding: const EdgeInsets.symmetric(
@@ -181,7 +181,25 @@ class _UITransactionState extends State<UITransaction> {
                   ),
                 ),
                 const SizedBox(width: 5),
-                SizedBox(width: 140, child: UITransactionDropDownBranch()),
+                SizedBox(
+                  width: 140,
+                  child:
+                      BlocSelector<TransactionBloc, TransactionState, String>(
+                        selector: (state) => state is TransactionLoaded
+                            ? state.idBranch ?? ""
+                            : "",
+                        builder: (context, state) {
+                          return WidgetDropdownBranch(
+                            idBranch: state,
+                            selectedIdBranch: (selectedIdBranch) {
+                              context.read<TransactionBloc>().add(
+                                TransactionGetData(idBranch: selectedIdBranch),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                ),
                 BlocSelector<TransactionBloc, TransactionState, bool>(
                   selector: (state) {
                     if (state is TransactionLoaded) {

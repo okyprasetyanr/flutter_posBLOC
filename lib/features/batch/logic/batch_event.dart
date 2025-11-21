@@ -3,13 +3,19 @@ class BatchEvent {}
 class BatchGetData extends BatchEvent {
   final String? idBranch;
 
-  BatchGetData({required this.idBranch});
+  BatchGetData({this.idBranch});
 }
 
-class BatchSelectedIdItem extends BatchEvent{
+class BatchSelectedIdItem extends BatchEvent {
   final String selectedIdItem;
 
   BatchSelectedIdItem({required this.selectedIdItem});
 }
 
-class BatchReset extends BatchEvent{}
+class BatchReset extends BatchEvent {}
+
+class BatchSearchItem extends BatchEvent {
+  final String search;
+
+  BatchSearchItem({required this.search});
+}

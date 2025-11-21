@@ -13,7 +13,7 @@ Widget customTextField({
   TextInputType? inputType,
   BuildContext? context,
   FormFieldValidator<String>? validator,
-  Function(String search)? onChanged,
+  Function(String value)? onChanged,
 }) {
   return TextFormField(
     focusNode: (nodes != null && index != null) ? nodes[index] : null,

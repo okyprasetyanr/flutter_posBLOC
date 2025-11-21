@@ -101,9 +101,9 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   isDense: true,
-                  hintText: "Search...",
+                  hintText: "Cari...",
                   hintStyle: lv05TextStyle,
-                  labelText: "Search",
+                  labelText: "Cari",
                   labelStyle: lv05TextStyle,
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   border: OutlineInputBorder(
@@ -242,12 +242,12 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                     builder: (context, state) {
                       return WidgetDropdownBranch(
                         idBranch: state,
-                        selectedIdBranch: (selectedIdBranch) =>
-                            context.read<HistoryFinancialBloc>().add(
-                              HistoryFinancialGetData(
-                                idBranch: selectedIdBranch,
-                              ),
-                            ),
+                        selectedIdBranch: (selectedIdBranch) {
+                          searchController.clear();
+                          context.read<HistoryFinancialBloc>().add(
+                            HistoryFinancialGetData(idBranch: selectedIdBranch),
+                          );
+                        },
                       );
                     },
                   ),

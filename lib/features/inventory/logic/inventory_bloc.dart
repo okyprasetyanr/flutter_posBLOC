@@ -39,7 +39,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     on<InventoryDeleteItem>(_onDeleteItem);
 
-    on<InventorySearchitem>(_onSearchItem, transformer: debounceRestartable());
+    on<InventorySearchItem>(_onSearchItem, transformer: debounceRestartable());
+    on<InventorySearchCategory>(
+      _onSearchCategory,
+      transformer: debounceRestartable(),
+    );
   }
 
   List<ModelItem> _filterItem({
@@ -131,6 +135,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
             filterType: filterType,
             filterByCategory: filterByCategory,
           ),
+
           indexStatusItem: status,
           indexFilterItem: filter,
           indexFilterTypeItem: filterType,
@@ -162,14 +167,14 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? event.filterByCategory ?? currentState.indexFilterByCategoryItem
         : 0;
 
-    final items = repoCache.getItem(idBranch);
-    debugPrint("Log InventoryBloc: items: $items");
-    final category = repoCache.getCategory(idBranch);
+    final dataItem = repoCache.getItem(idBranch);
+    debugPrint("Log InventoryBloc: items: $dataItem");
+    final dataCategory = repoCache.getCategory(idBranch);
     filterCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
-      ...category,
+      ...dataCategory,
     ];
-    category.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
+    dataCategory.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
 
     debugPrint(
       "Log InventoryBloc: filter: filter=$filter ,status=$status ,filter=$filterType ,filter=$filterByCategory",
@@ -177,13 +182,14 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     emit(
       InventoryLoaded(
+        filteredDataCategory: dataCategory,
         idBranch: idBranch,
         areaBranch: areaBranch,
         dataBranch: dataBranch,
-        dataItem: items,
-        dataCategory: category,
+        dataItem: dataItem,
+        dataCategory: dataCategory,
         filteredDataItem: _filterItem(
-          items: items,
+          items: dataItem,
           status: status,
           filter: filter,
           filterType: filterType,
@@ -298,16 +304,16 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   FutureOr<void> _onSearchItem(
-    InventorySearchitem event,
+    InventorySearchItem event,
     Emitter<InventoryState> emit,
   ) {
     final currentState = state as InventoryLoaded;
 
-    final filtered = event.text.isNotEmpty
+    final filtered = event.search.isNotEmpty
         ? currentState.dataItem
               .where(
                 (item) => item.getnameItem.toLowerCase().contains(
-                  event.text.toLowerCase(),
+                  event.search.toLowerCase(),
                 ),
               )
               .toList()
@@ -357,5 +363,21 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     await deleteDataitem(event.id);
     repoCache.dataItem.removeWhere((element) => element.getidItem == event.id);
     add(InventoryGetData());
+  }
+
+  FutureOr<void> _onSearchCategory(
+    InventorySearchCategory event,
+    Emitter<InventoryState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is InventoryLoaded) {
+      final filteredData = currentState.dataCategory
+          .where(
+            (element) =>
+                element.getnameCategory.toLowerCase().contains(event.search),
+          )
+          .toList();
+      emit(currentState.copyWith(filteredDataCategory: filteredData));
+    }
   }
 }

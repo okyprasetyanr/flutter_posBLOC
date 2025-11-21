@@ -7,10 +7,10 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/search_and_cabang.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/button_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_category_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/form_field_item.dart';
-import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/dropdown_branch.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/filters_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
@@ -39,11 +39,13 @@ class _UIInventoryState extends State<UIInventory> {
   final selectedIdCategoryItem = ValueNotifier<String?>(null);
 
   final _formKey = GlobalKey<FormState>();
-  TextEditingController nameItemController = TextEditingController();
-  TextEditingController branchItemController = TextEditingController();
-  TextEditingController priceItemController = TextEditingController();
-  TextEditingController codeBarcodeController = TextEditingController();
-  TextEditingController nameCategoryController = TextEditingController();
+  final nameItemController = TextEditingController();
+  final branchItemController = TextEditingController();
+  final priceItemController = TextEditingController();
+  final codeBarcodeController = TextEditingController();
+  final nameCategoryController = TextEditingController();
+  final searchControllerItem = TextEditingController();
+  final searchControllerCategory = TextEditingController();
   final isOpen = ValueNotifier<bool>(false);
   final currentPage = ValueNotifier<bool>(true);
 
@@ -62,6 +64,8 @@ class _UIInventoryState extends State<UIInventory> {
       nameCategoryController.dispose();
       pageControllerTop.dispose();
       pageControllerBottom.dispose();
+      searchControllerItem.dispose();
+      searchControllerCategory.dispose();
     }
     super.dispose();
   }
@@ -194,7 +198,10 @@ class _UIInventoryState extends State<UIInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UIInventorySearchAndBranch(),
+                  UIInventorySearchAndBranchItem(
+                    searchControllerCategory: searchControllerCategory,
+                    searchControllerItem: searchControllerItem,
+                  ),
 
                   const SizedBox(height: 10),
 
@@ -230,13 +237,12 @@ class _UIInventoryState extends State<UIInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    width: 150,
-                    child: UIInventoryDropdownBranch(),
+                  UIInventorySearchAndBranchCategory(
+                    searchControllerItem: searchControllerItem,
+                    searchControllerCategory: searchControllerCategory,
                   ),
-                  Expanded(child: ListViewCategory()),
+                  const SizedBox(height: 10),
+                  Expanded(child: UIInventoryListViewCategory()),
                 ],
               ),
             ],

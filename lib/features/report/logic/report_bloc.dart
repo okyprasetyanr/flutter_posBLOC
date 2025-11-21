@@ -33,13 +33,15 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
             return (element.getdate.isAtSameMomentAs(dateStart) ||
                     element.getdate.isAfter(dateStart)) &&
                 (element.getdate.isAtSameMomentAs(dateEnd) ||
-                    element.getdate.isBefore(dateEnd));
+                    element.getdate.isBefore(dateEnd)) &&
+                element.getstatusTransaction == statusTransaction(index: 0);
           }).toList()
         : repoCache.getTransactionBuy(idBranch).where((element) {
             return (element.getdate.isAtSameMomentAs(dateStart) ||
                     element.getdate.isAfter(dateStart)) &&
                 (element.getdate.isAtSameMomentAs(dateEnd) ||
-                    element.getdate.isBefore(dateEnd));
+                    element.getdate.isBefore(dateEnd)) &&
+                element.getstatusTransaction == statusTransaction(index: 0);
           }).toList();
     ;
 

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/transaction/logic/financial/transaction_financial_event.dart';
 import 'package:flutter_pos/features/transaction/logic/financial/transaction_financial_state.dart';
+import 'package:flutter_pos/function/event_transformer.dart.dart';
 
 class TransFinancialBloc
     extends Bloc<TransFinanctialEvent, TransFinancialState> {
@@ -15,6 +16,7 @@ class TransFinancialBloc
     on<TransFinancialUploadTrans>(_onUploadTrans);
     on<TransFinancialResetSelected>(_onResetSelected);
     on<TransFinancialStatusFinancial>(_onStatusFinancial);
+    on<TransFinancialSearch>(_onSearch, transformer: debounceRestartable());
   }
 
   FutureOr<void> _onGetData(
@@ -85,5 +87,24 @@ class TransFinancialBloc
     final isIncome = !currentState.isIncome;
     emit(currentState.copyWith(isIncome: isIncome));
     add(TransFinancialGetData(isIncome: isIncome));
+  }
+
+  FutureOr<void> _onSearch(
+    TransFinancialSearch event,
+    Emitter<TransFinancialState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is TransFinancialLoaded) {
+      final filteredData = event.search.isNotEmpty
+          ? currentState.dataFinancial
+                .where(
+                  (element) => element.getnameFinancial.toLowerCase().contains(
+                    event.search,
+                  ),
+                )
+                .toList()
+          : currentState.dataFinancial;
+      emit(currentState.copyWith(filteredData: filteredData));
+    }
   }
 }

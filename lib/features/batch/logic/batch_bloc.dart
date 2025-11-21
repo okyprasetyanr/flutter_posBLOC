@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/batch/logic/batch_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class BatchBloc extends Bloc<BatchEvent, BatchState> {
@@ -12,13 +13,16 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
     on<BatchGetData>(_onBatchGetData);
     on<BatchSelectedIdItem>(_onBatchSelectedIdItem);
     on<BatchReset>(_onBatchReset);
+    on<BatchSearchItem>(_onSearch, transformer: debounceRestartable());
   }
 
   FutureOr<void> _onBatchGetData(BatchGetData event, Emitter<BatchState> emit) {
-    emit(BatchLoading());
+    final currentState = state is BatchLoaded
+        ? state as BatchLoaded
+        : BatchLoaded();
     final dataBranch = repoCache.getBranch();
     final dataBatch = repoCache.getBatch(
-      event.idBranch ?? dataBranch.first.getidBranch,
+      event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch,
     );
     final dataItemBatch = dataBatch
         .expand((element) => element.getitems_batch)
@@ -35,6 +39,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
 
     emit(
       BatchLoaded(
+        filteredItem: finaldataItem,
         dataBatch: dataBatch,
         dataItemBatch: dataItemBatch,
         dataItem: finaldataItem,
@@ -91,6 +96,22 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
       emit(
         currentState.copyWith(selectedIdItem: null, detailSelectedItem: null),
       );
+    }
+  }
+
+  FutureOr<void> _onSearch(BatchSearchItem event, Emitter<BatchState> emit) {
+    final currentState = state;
+    if (currentState is BatchLoaded) {
+      final filteredItem = event.search.isNotEmpty
+          ? currentState.dataItem
+                .where(
+                  (element) => element.getnameItem.toLowerCase().contains(
+                    event.search.toLowerCase(),
+                  ),
+                )
+                .toList()
+          : currentState.dataItem;
+      emit(currentState.copyWith(filteredItem: filteredItem));
     }
   }
 }

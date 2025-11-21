@@ -31,9 +31,11 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
   final nodes = List.generate(2, (index) => FocusNode());
   final noteController = TextEditingController();
   final amountController = TextEditingController();
+  final searchController = TextEditingController();
 
   @override
   void dispose() {
+    searchController.dispose();
     noteController.dispose();
     amountController.dispose();
     super.dispose();
@@ -119,27 +121,40 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
             ),
           ],
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: SizedBox(
-            width: 150,
-            child:
-                BlocSelector<TransFinancialBloc, TransFinancialState, String>(
-                  selector: (state) =>
-                      state is TransFinancialLoaded ? state.idBranch ?? "" : "",
-                  builder: (context, state) {
-                    return WidgetDropdownBranch(
-                      idBranch: state,
-                      selectedIdBranch: (selectedIdBranch) {
-                        context.read<TransFinancialBloc>().add(
-                          TransFinancialGetData(idBranch: selectedIdBranch),
-                        );
-                        _resetForm();
-                      },
-                    );
-                  },
+        Row(
+          children: [
+            Expanded(
+              child: customTextField(
+                controller: searchController,
+                inputType: TextInputType.text,
+                text: "Cari",
+                enable: true,
+                onChanged: (value) => context.read<TransFinancialBloc>().add(
+                  TransFinancialSearch(search: value),
                 ),
-          ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child:
+                  BlocSelector<TransFinancialBloc, TransFinancialState, String>(
+                    selector: (state) => state is TransFinancialLoaded
+                        ? state.idBranch ?? ""
+                        : "",
+                    builder: (context, state) {
+                      return WidgetDropdownBranch(
+                        idBranch: state,
+                        selectedIdBranch: (selectedIdBranch) {
+                          context.read<TransFinancialBloc>().add(
+                            TransFinancialGetData(idBranch: selectedIdBranch),
+                          );
+                          _resetForm();
+                        },
+                      );
+                    },
+                  ),
+            ),
+          ],
         ),
         Expanded(
           child:
@@ -150,7 +165,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
               >(
                 selector: (state) {
                   if (state is TransFinancialLoaded) {
-                    return state.dataFinancial;
+                    return state.filteredData;
                   }
                   return null;
                 },

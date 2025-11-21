@@ -24,3 +24,9 @@ class TransFinancialUploadTrans extends TransFinanctialEvent {
 class TransFinancialResetSelected extends TransFinanctialEvent {}
 
 class TransFinancialStatusFinancial extends TransFinanctialEvent {}
+
+class TransFinancialSearch extends TransFinanctialEvent {
+  final String search;
+
+  TransFinancialSearch({required this.search});
+}

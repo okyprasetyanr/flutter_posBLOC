@@ -98,7 +98,10 @@ class _UiFinancialState extends State<UiFinancial> {
                 controller: searchController,
                 enable: true,
                 inputType: TextInputType.text,
-                text: "Search",
+                text: "Cari",
+                onChanged: (value) => context.read<FinancialBloc>().add(
+                  FinancialSearch(search: value),
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -111,6 +114,7 @@ class _UiFinancialState extends State<UiFinancial> {
                   return WidgetDropdownBranch(
                     idBranch: state,
                     selectedIdBranch: (selectedIdBranch) {
+                      searchController.clear();
                       context.read<FinancialBloc>().add(
                         FinancialGetData(idBranch: selectedIdBranch),
                       );

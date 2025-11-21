@@ -27,12 +27,14 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   final List<ModelBranch>? dataBranch;
   final List<ModelItem> dataItem;
   final List<ModelCategory> dataCategory;
+  final List<ModelCategory> filteredDataCategory;
   final List<ModelItem> filteredDataItem;
   final ModelCategory? dataSelectedCategory;
   final ModelItem? dataSelectedItem;
   final ModelCategory? dataSelectedCategoryItem;
 
   InventoryLoaded({
+    this.filteredDataCategory = const [],
     this.dataSelectedCategoryItem,
     this.indexFilterByCategoryItem = 0,
     this.indexFilterTypeItem = 0,
@@ -60,12 +62,14 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     List<ModelBranch>? dataBranch,
     List<ModelItem>? dataItem,
     List<ModelCategory>? dataCategory,
+    List<ModelCategory>? filteredDataCategory,
     List<ModelItem>? filteredDataItem,
     ModelCategory? dataSelectedCategoryItem,
     ModelCategory? dataSelectedCategory,
     ModelItem? dataSelectedItem,
   }) {
     return InventoryLoaded(
+      filteredDataCategory: filteredDataCategory ?? this.filteredDataCategory,
       indexFilterByCategoryItem:
           indexFilterIDCategoryItem ?? this.indexFilterByCategoryItem,
       indexFilterItem: indexFilterItem ?? this.indexFilterItem,

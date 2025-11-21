@@ -9,12 +9,14 @@ class TransFinancialInitial extends TransFinancialState {}
 
 class TransFinancialLoaded extends TransFinancialState with EquatableMixin {
   final List<ModelFinancial> dataFinancial;
+  final List<ModelFinancial> filteredData;
   final List<ModelBranch>? dataBranch;
   final ModelTransactionFinancial? selectedFinancial;
   final bool isIncome;
   final String? idBranch;
 
   TransFinancialLoaded({
+    this.filteredData = const [],
     this.idBranch,
     this.dataBranch,
     this.dataFinancial = const [],
@@ -23,12 +25,14 @@ class TransFinancialLoaded extends TransFinancialState with EquatableMixin {
   });
 
   TransFinancialLoaded copyWith({
+    List<ModelFinancial>? filteredData,
     String? idBranch,
     List<ModelBranch>? dataBranch,
     List<ModelFinancial>? dataFinancial,
     ModelTransactionFinancial? selectedFinancial,
     bool? isIncome,
   }) => TransFinancialLoaded(
+    filteredData: filteredData ?? this.filteredData,
     idBranch: idBranch ?? this.idBranch,
     dataBranch: dataBranch ?? this.dataBranch,
     dataFinancial: dataFinancial ?? this.dataFinancial,
@@ -38,6 +42,7 @@ class TransFinancialLoaded extends TransFinancialState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    filteredData,
     idBranch,
     dataFinancial,
     selectedFinancial,

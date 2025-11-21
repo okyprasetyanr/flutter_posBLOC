@@ -67,10 +67,16 @@ class InventoryUploadCategory extends InventoryEvent {
   InventoryUploadCategory({required this.category});
 }
 
-class InventorySearchitem extends InventoryEvent {
-  final String text;
+class InventorySearchItem extends InventoryEvent {
+  final String search;
 
-  InventorySearchitem({required this.text});
+  InventorySearchItem({required this.search});
+}
+
+class InventorySearchCategory extends InventoryEvent {
+  final String search;
+
+  InventorySearchCategory({required this.search});
 }
 
 class InventoryCondimentForm extends InventoryEvent {

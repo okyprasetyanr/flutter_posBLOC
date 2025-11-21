@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/financial/logic/financial_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
 class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
@@ -16,6 +17,7 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     on<FinancialResetSelectedFinancial>(_onResetSelected);
     on<FinancialDeleteFinancial>(_onDelete);
     on<FinancialIsIncome>(_onIsIncome);
+    on<FinancialSearch>(_onSearch, transformer: debounceRestartable());
   }
 
   void _onGetData(FinancialGetData event, Emitter<FinancialState> emit) {
@@ -108,5 +110,19 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     final isIncome = !currentState.isIncome;
     emit(currentState.copyWith(isIncome: isIncome));
     add(FinancialGetData(isIncome: isIncome));
+  }
+
+  FutureOr<void> _onSearch(
+    FinancialSearch event,
+    Emitter<FinancialState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is FinancialLoaded) {
+      final filteredFinancial = event.search.isNotEmpty
+          ? currentState.dataFinancial
+          : currentState.dataFinancial;
+
+      emit(currentState.copyWith(filteredFinancial: filteredFinancial));
+    }
   }
 }

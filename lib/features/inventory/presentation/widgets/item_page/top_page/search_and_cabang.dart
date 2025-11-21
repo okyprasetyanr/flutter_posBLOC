@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
-class UIInventorySearchAndBranch extends StatelessWidget {
-  const UIInventorySearchAndBranch({super.key});
+class UIInventorySearchAndBranchItem extends StatelessWidget {
+  final TextEditingController searchControllerItem;
+  final TextEditingController searchControllerCategory;
+  const UIInventorySearchAndBranchItem({
+    Key? key,
+    required this.searchControllerItem,
+    required this.searchControllerCategory,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +26,10 @@ class UIInventorySearchAndBranch extends StatelessWidget {
             flex: 3,
             child: TextField(
               style: lv1TextStyle,
+              controller: searchControllerItem,
               decoration: InputDecoration(
                 isDense: true,
-                labelText: "Search...",
+                labelText: "Cari...",
                 hintText: "...",
                 labelStyle: lv1TextStyle,
                 hintStyle: lv1TextStyle,
@@ -36,7 +44,7 @@ class UIInventorySearchAndBranch extends StatelessWidget {
               ),
               onChanged: (value) {
                 context.read<InventoryBloc>().add(
-                  InventorySearchitem(text: value),
+                  InventorySearchItem(search: value),
                 );
               },
             ),
@@ -50,9 +58,13 @@ class UIInventorySearchAndBranch extends StatelessWidget {
               builder: (context, state) {
                 return WidgetDropdownBranch(
                   idBranch: state,
-                  selectedIdBranch: (SelectedIdBranch) => context
-                      .read<InventoryBloc>()
-                      .add(InventoryGetData(idBranch: SelectedIdBranch)),
+                  selectedIdBranch: (SelectedIdBranch) {
+                    searchControllerItem.clear();
+                    searchControllerCategory.clear();
+                    context.read<InventoryBloc>().add(
+                      InventoryGetData(idBranch: SelectedIdBranch),
+                    );
+                  },
                 );
               },
             ),
