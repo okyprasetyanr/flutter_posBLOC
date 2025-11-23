@@ -129,6 +129,13 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
               Icon(Icons.shopping_cart),
               "Data Alur Kas",
             ),
+            gridViewMenu(
+              () {
+                navUpDownTransition(context, '/operator', false);
+              },
+              Icon(Icons.shopping_cart),
+              "Data Operator",
+            ),
           ],
         ),
         GridView.count(

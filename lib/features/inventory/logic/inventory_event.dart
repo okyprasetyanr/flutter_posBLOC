@@ -5,18 +5,8 @@ class InventoryEvent {}
 
 class InventoryGetData extends InventoryEvent {
   final String? idBranch;
-  final int? filter;
-  final int? status;
-  final int? filterType;
-  final int? filterByCategory;
 
-  InventoryGetData({
-    this.filter,
-    this.status,
-    this.idBranch,
-    this.filterType,
-    this.filterByCategory,
-  });
+  InventoryGetData({this.idBranch});
 }
 
 class InventorySelectedCategory extends InventoryEvent {

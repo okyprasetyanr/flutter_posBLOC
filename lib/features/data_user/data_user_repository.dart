@@ -6,6 +6,7 @@ import 'package:flutter_pos/model_data/model_data_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_operator.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -35,6 +36,14 @@ class DataUserRepository {
         .where('uid_user', isEqualTo: UserSession.uidUser)
         .get();
     return ModelTransactionFinancial.getDataListTransFinancial(data);
+  }
+
+  Future<List<ModelOperator>> getOperator() async {
+    final data = await _db
+        .collection('operator')
+        .where('uid_user', isEqualTo: UserSession.uidUser)
+        .get();
+    return ModelOperator.getDataListOperator(data);
   }
 
   Future<List<ModelTransactionFinancial>> getTransExpense() async {

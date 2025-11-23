@@ -207,7 +207,7 @@ class _UIInventoryState extends State<UIInventory> {
 
                   UIFiltersItem(
                     filters: filterItem,
-                    statusItem: statusItem,
+                    statusItem: statusData,
                     filterjenis: filterTypeItem,
                     filterCategory: filterCategory,
                     onFilterChangedCallBack:

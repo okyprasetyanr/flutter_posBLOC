@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_operator.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -8,19 +9,14 @@ import 'package:uuid/uuid.dart';
 
 final listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"];
 final listStatusTransactionFinancial = const ["Sukses", "Batal"];
-final List<String> filterItem = [
-  "A-Z",
-  "Z-A",
-  "Terbaru",
-  "Terlama",
-  "Stock +",
-  "Stock -",
-];
-final List<String> statusItem = const ["Active", "Deactive"];
-final List<String> filterTypeItem = const ["All", "Condiment", "Normal"];
+final filterItem = ["A-Z", "Z-A", "Terbaru", "Terlama", "Stock +", "Stock -"];
+final statusData = const ["Active", "Deactive"];
+final filterTypeItem = const ["All", "Condiment", "Normal"];
+final roleOperator = RoleType.values.map((map) => map.name).toList();
 List<ModelCategory> filterCategory = [
   ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
 ];
+
 String formatPriceRp(double nominal) {
   final nominalfinal = "${formatQtyOrPrice(nominal)}"
       .replaceAll("R", "")

@@ -160,12 +160,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final areaBranch = dataBranch
         .firstWhere((element) => element.getidBranch == idBranch)
         .getareaBranch;
-    final status = event.status ?? currentState.indexStatusItem;
-    final filter = event.filter ?? currentState.indexFilterItem;
-    final filterType = event.filterType ?? currentState.indexFilterTypeItem;
-    final filterByCategory = event.idBranch != null
-        ? event.filterByCategory ?? currentState.indexFilterByCategoryItem
-        : 0;
+    final status = currentState.indexStatusItem;
+    final filter = currentState.indexFilterItem;
+    final filterType = currentState.indexFilterTypeItem;
+    final filterByCategory = currentState.indexFilterByCategoryItem;
 
     final dataItem = repoCache.getItem(idBranch);
     debugPrint("Log InventoryBloc: items: $dataItem");

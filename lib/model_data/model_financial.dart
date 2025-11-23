@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 
-enum FinancialType { income, expense }
+enum FinancialType { Income, Expense }
 
 class ModelFinancial {
   final String _idFinancial, _nameFinancial, _idBranch;
@@ -17,8 +17,8 @@ class ModelFinancial {
        _nameFinancial = nameFinancial,
        _idBranch = idBranch;
 
-  bool get isIncome => _type == FinancialType.income;
-  bool get isExpense => _type == FinancialType.expense;
+  bool get isIncome => _type == FinancialType.Income;
+  bool get isExpense => _type == FinancialType.Expense;
   String get getidFinancial => _idFinancial;
   String get getnameFinancial => _nameFinancial;
   String get getidBranch => _idBranch;

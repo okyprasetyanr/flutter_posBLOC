@@ -15,6 +15,11 @@ Future<void> deleteDataitem(String id) async {
 }
 
 Future<void> deleteDataFinancial(String id) async {
-  debugPrint("Log DeleteData: Item: $id");
+  debugPrint("Log DeleteData: Financial: $id");
   await FirebaseFirestore.instance.collection('financial').doc(id).delete();
+}
+
+Future<void> deleteDataOperator(String id) async {
+  debugPrint("Log DeleteData: Operator: $id");
+  await FirebaseFirestore.instance.collection('operator').doc(id).delete();
 }

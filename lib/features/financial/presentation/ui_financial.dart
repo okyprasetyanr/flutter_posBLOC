@@ -237,8 +237,8 @@ class _UiFinancialState extends State<UiFinancial> {
               final selectedFinancial = bloc.selectedFinancial;
               final dataFinancial = ModelFinancial(
                 type: bloc.isIncome
-                    ? FinancialType.income
-                    : FinancialType.expense,
+                    ? FinancialType.Income
+                    : FinancialType.Expense,
                 idFinancial: selectedFinancial?.getidFinancial ?? Uuid().v4(),
                 nameFinancial: nameController.text,
                 idBranch: bloc.idBranch!,
