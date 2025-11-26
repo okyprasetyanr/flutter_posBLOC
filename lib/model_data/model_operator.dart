@@ -31,6 +31,49 @@ RoleType fromIdRoleType(int id) {
   }
 }
 
+enum Permission {
+  TransactionAll,
+  TransactionSell,
+  TransactionBuy,
+  TransactionIncome,
+  TransactionExpense,
+  DataAll,
+  DataCustomer,
+  DataSupplier,
+  DataIncome,
+  DataExpense,
+  HistoryAll,
+  HistorySell,
+  HistoryBuy,
+  HistoryIncome,
+  HistoryExpense,
+  Report,
+}
+
+class PermissionAccess {
+  final Map<Permission, bool> access;
+
+  PermissionAccess({required this.access});
+
+  bool statusPermission(Permission permission) => access[permission] ?? false;
+
+  factory PermissionAccess.fromJson(Map<String, dynamic> json) {
+    return PermissionAccess(
+      access: {
+        for (var permission in Permission.values)
+          permission: json[permission.name] == true,
+      },
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      for (var permission in Permission.values)
+        permission.name: access[permission] ?? false,
+    };
+  }
+}
+
 class ModelOperator extends Equatable {
   final String idOperator;
   final String nameOperator;
@@ -43,6 +86,8 @@ class ModelOperator extends Equatable {
   final bool statusOperator;
   final DateTime created;
 
+  final PermissionAccess permissionAccess;
+
   ModelOperator({
     required this.idOperator,
     required this.nameOperator,
@@ -54,6 +99,7 @@ class ModelOperator extends Equatable {
     required this.uidOwner,
     required this.created,
     required this.note,
+    required this.permissionAccess,
   });
 
   String get getidOperator => idOperator;
@@ -78,6 +124,7 @@ class ModelOperator extends Equatable {
     String? uidOwner,
     bool? statusOperator,
     DateTime? created,
+    PermissionAccess? permissionAccess,
   }) {
     return ModelOperator(
       idOperator: idOperator ?? this.idOperator,
@@ -90,6 +137,7 @@ class ModelOperator extends Equatable {
       uidOwner: uidOwner ?? this.uidOwner,
       created: created ?? this.created,
       note: note ?? this.note,
+      permissionAccess: permissionAccess ?? this.permissionAccess,
     );
   }
 
@@ -108,6 +156,7 @@ class ModelOperator extends Equatable {
         'uid_owner': uidOwner,
         'created': created,
         'note': note,
+        'permission': permissionAccess.toJson(),
         'uid_user': UserSession.getUidUser(),
       },
     );
@@ -115,16 +164,17 @@ class ModelOperator extends Equatable {
 
   factory ModelOperator.fromMap(Map<String, dynamic> data, id) {
     return ModelOperator(
-      idOperator: data['id_operator'],
-      nameOperator: data['name_operator'],
-      idBranchOperator: data['id_branch'],
-      roleOperator: data['role_operator'],
-      emailOperator: data['email_operator'],
-      phoneOperator: data['phone_operator'],
-      statusOperator: data['status_operator'],
-      uidOwner: data['uid_owner'],
-      created: data['createSd'],
-      note: data['note'],
+      idOperator: data['id_operator'] ?? '',
+      nameOperator: data['name_operator'] ?? '',
+      idBranchOperator: data['id_branch'] ?? '',
+      roleOperator: data['role_operator'] ?? 0,
+      emailOperator: data['email_operator'] ?? '',
+      phoneOperator: data['phone_operator'] ?? '',
+      statusOperator: data['status_operator'] ?? false,
+      uidOwner: data['uid_owner'] ?? '',
+      created: data['created'] ?? DateTime.now(),
+      note: data['note'] ?? '',
+      permissionAccess: PermissionAccess.fromJson(data['permission'] ?? {}),
     );
   }
 
@@ -147,5 +197,6 @@ class ModelOperator extends Equatable {
     uidOwner,
     created,
     note,
+    permissionAccess,
   ];
 }
