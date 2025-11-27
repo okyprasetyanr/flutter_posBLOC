@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/operator/logic/operator_event.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_pos/request/delete_data.dart';
 class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   DataUserRepositoryCache repoCache;
   OperatorBloc(this.repoCache) : super(OperatorInitial()) {
-    on<OperatorgetData>(_onGetData);
+    on<OperatorGetData>(_onGetData);
     on<OperatorFilterOperator>(_onFilterOperator);
     on<OperatorPermission>(_onPermission);
     on<OperatorRemoveData>(_onRemove);
@@ -23,7 +24,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   }
 
   FutureOr<void> _onGetData(
-    OperatorgetData event,
+    OperatorGetData event,
     Emitter<OperatorState> emit,
   ) {
     final currentState = state is OperatorLoaded
@@ -114,7 +115,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Emitter<OperatorState> emit,
   ) {
     final currentState = state as OperatorLoaded;
-    deleteDataOperator(currentState.selectedData!.getidOperator);
+    deleteDataOperator(currentState.selectedData!.getidOperator!);
     final dataOperator = repoCache.dataOperator;
     final indexOperator = dataOperator.indexWhere(
       (element) =>
@@ -124,7 +125,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       dataOperator.removeAt(indexOperator);
     }
 
-    add(OperatorgetData());
+    add(OperatorGetData());
   }
 
   FutureOr<void> _onSelectedData(
@@ -135,24 +136,33 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     emit(currentState.copyWith(selectedData: event.selectedData));
   }
 
-  FutureOr<void> _onUpload(
+  Future<void> _onUpload(
     OperatorUploadData event,
     Emitter<OperatorState> emit,
-  ) {
+  ) async {
     final currentState = state as OperatorLoaded;
-    event.data.pushDataOperator();
     final dataOperator = repoCache.dataOperator;
+    ModelOperator data = event.data;
     final indexOperator = dataOperator.indexWhere(
       (element) =>
-          element.idOperator == currentState.selectedData!.getidOperator,
+          element.idOperator == currentState.selectedData?.getidOperator,
     );
     if (indexOperator != -1) {
       dataOperator[indexOperator] = event.data;
     } else {
-      dataOperator.add(event.data);
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: data.getemailOperator,
+            password: event.password,
+          );
+
+      final uid = credential.user!.uid;
+
+      data = data.copyWith(idOperator: uid, uidOwner: UserSession.getUidUser());
     }
 
-    add(OperatorgetData());
+    data.pushDataOperator();
+    add(OperatorGetData());
   }
 
   FutureOr<void> _onResetPassword(

@@ -28,20 +28,20 @@ class DataUserRepositoryCache {
   DataUserRepositoryCache(this.repo);
 
   Future<bool> initData() async {
-    await Future.wait([
-      initOperator(),
-      initBranch(),
-      initFinancial(),
-      initTransIncome(),
-      initTransExpense(),
-      initItem(),
-      initCategory(),
-      initPartner(),
-      initTransactionSell(),
-      initTransactionBuy(),
-      initBatch(),
-    ]);
+    // await Future.wait([
+    // ]);
 
+    await initBranch();
+    await initFinancial();
+    await initTransIncome();
+    await initTransExpense();
+    await initItem();
+    await initCategory();
+    await initPartner();
+    await initTransactionSell();
+    await initTransactionBuy();
+    await initBatch();
+    await initOperator();
     for (var a in dataBranch) {
       debugPrint("Log DataUserRepositoryCache branch: $a");
     }

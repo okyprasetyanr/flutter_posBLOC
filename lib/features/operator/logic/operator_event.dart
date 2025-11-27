@@ -2,12 +2,12 @@ import 'package:flutter_pos/model_data/model_operator.dart';
 
 class OperatorEvent {}
 
-class OperatorgetData extends OperatorEvent {
+class OperatorGetData extends OperatorEvent {
   final String? idBranch;
   final int? indexRole;
   final int? indexStatus;
 
-  OperatorgetData({this.idBranch, this.indexRole, this.indexStatus});
+  OperatorGetData({this.idBranch, this.indexRole, this.indexStatus});
 }
 
 class OperatorFilterOperator extends OperatorEvent {
@@ -31,8 +31,8 @@ class OperatorSearch extends OperatorEvent {
 
 class OperatorUploadData extends OperatorEvent {
   final ModelOperator data;
-
-  OperatorUploadData({required this.data});
+  final String password;
+  OperatorUploadData({required this.data, required this.password});
 }
 
 class OperatorRemoveData extends OperatorEvent {}

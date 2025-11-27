@@ -75,48 +75,45 @@ class PermissionAccess {
 }
 
 class ModelOperator extends Equatable {
-  final String idOperator;
+  final String? idOperator;
   final String nameOperator;
   final String idBranchOperator;
   final int roleOperator;
   final String emailOperator;
   final String phoneOperator;
-  final String passwordOperator;
   final String note;
-  final String uidOwner;
+  final String? uidOwner;
   final bool statusOperator;
   final DateTime created;
 
-  final PermissionAccess permissionAccess;
+  final PermissionAccess? permissionAccess;
 
   ModelOperator({
-    required this.passwordOperator,
-    required this.idOperator,
+    this.idOperator,
     required this.nameOperator,
     required this.idBranchOperator,
     required this.roleOperator,
     required this.emailOperator,
     required this.phoneOperator,
     required this.statusOperator,
-    required this.uidOwner,
+    this.uidOwner,
     required this.created,
     required this.note,
-    required this.permissionAccess,
+    this.permissionAccess,
   });
 
-  String get getidOperator => idOperator;
+  String? get getidOperator => idOperator;
   String get getnameOperator => nameOperator;
   String get getidBranchOperator => idBranchOperator;
   String get getemailOperator => emailOperator;
   String get getphoneOperator => phoneOperator;
-  String get getuidOwner => uidOwner;
+  String? get getuidOwner => uidOwner;
   String get getnote => note;
   bool get getstatusOperator => statusOperator;
   int get getroleOperator => roleOperator;
   DateTime get getcreated => created;
 
   ModelOperator copyWith({
-    String? passwordOperator,
     String? idOperator,
     String? nameOperator,
     String? idBranchOperator,
@@ -130,7 +127,6 @@ class ModelOperator extends Equatable {
     PermissionAccess? permissionAccess,
   }) {
     return ModelOperator(
-      passwordOperator: passwordOperator ?? this.passwordOperator,
       idOperator: idOperator ?? this.idOperator,
       nameOperator: nameOperator ?? this.nameOperator,
       idBranchOperator: idBranchOperator ?? this.idBranchOperator,
@@ -148,10 +144,8 @@ class ModelOperator extends Equatable {
   Future<void> pushDataOperator() async {
     pushWorkerDataOperator(
       collection: 'operator',
-      id: idOperator,
+      id: idOperator!,
       dataOperator: {
-        'pass_operator': passwordOperator,
-        'id_operator': idOperator,
         'name_operator': nameOperator,
         'id_branch': idBranchOperator,
         'role_operator': roleOperator,
@@ -161,7 +155,7 @@ class ModelOperator extends Equatable {
         'uid_owner': uidOwner,
         'created': created,
         'note': note,
-        'permission': permissionAccess.toJson(),
+        'permission': permissionAccess!.toJson(),
         'uid_user': UserSession.getUidUser(),
       },
     );
@@ -169,8 +163,7 @@ class ModelOperator extends Equatable {
 
   factory ModelOperator.fromMap(Map<String, dynamic> data, id) {
     return ModelOperator(
-      passwordOperator: data['password_operator'],
-      idOperator: data['id_operator'] ?? '',
+      idOperator: id,
       nameOperator: data['name_operator'] ?? '',
       idBranchOperator: data['id_branch'] ?? '',
       roleOperator: data['role_operator'] ?? 0,
@@ -194,7 +187,6 @@ class ModelOperator extends Equatable {
   @override
   List<Object?> get props => [
     idOperator,
-    passwordOperator,
     nameOperator,
     idBranchOperator,
     roleOperator,
