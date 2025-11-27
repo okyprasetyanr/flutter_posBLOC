@@ -57,11 +57,11 @@ class PermissionAccess {
 
   bool statusPermission(Permission permission) => access[permission] ?? false;
 
-  factory PermissionAccess.fromJson(Map<String, dynamic> json) {
+  factory PermissionAccess.fromJson(Map<String, dynamic> data) {
     return PermissionAccess(
       access: {
-        for (var permission in Permission.values)
-          permission: json[permission.name] == true,
+        for (final permission in Permission.values)
+          permission: data[permission.name] ?? false,
       },
     );
   }
@@ -69,7 +69,7 @@ class PermissionAccess {
   Map<String, dynamic> toJson() {
     return {
       for (var permission in Permission.values)
-        permission.name: access[permission] ?? false,
+        permission.name: access[permission],
     };
   }
 }
@@ -81,6 +81,7 @@ class ModelOperator extends Equatable {
   final int roleOperator;
   final String emailOperator;
   final String phoneOperator;
+  final String passwordOperator;
   final String note;
   final String uidOwner;
   final bool statusOperator;
@@ -89,6 +90,7 @@ class ModelOperator extends Equatable {
   final PermissionAccess permissionAccess;
 
   ModelOperator({
+    required this.passwordOperator,
     required this.idOperator,
     required this.nameOperator,
     required this.idBranchOperator,
@@ -114,6 +116,7 @@ class ModelOperator extends Equatable {
   DateTime get getcreated => created;
 
   ModelOperator copyWith({
+    String? passwordOperator,
     String? idOperator,
     String? nameOperator,
     String? idBranchOperator,
@@ -127,6 +130,7 @@ class ModelOperator extends Equatable {
     PermissionAccess? permissionAccess,
   }) {
     return ModelOperator(
+      passwordOperator: passwordOperator ?? this.passwordOperator,
       idOperator: idOperator ?? this.idOperator,
       nameOperator: nameOperator ?? this.nameOperator,
       idBranchOperator: idBranchOperator ?? this.idBranchOperator,
@@ -146,8 +150,9 @@ class ModelOperator extends Equatable {
       collection: 'operator',
       id: idOperator,
       dataOperator: {
-        'id_perator': idOperator,
-        'name_perator': nameOperator,
+        'pass_operator': passwordOperator,
+        'id_operator': idOperator,
+        'name_operator': nameOperator,
         'id_branch': idBranchOperator,
         'role_operator': roleOperator,
         'email_operator': emailOperator,
@@ -164,6 +169,7 @@ class ModelOperator extends Equatable {
 
   factory ModelOperator.fromMap(Map<String, dynamic> data, id) {
     return ModelOperator(
+      passwordOperator: data['password_operator'],
       idOperator: data['id_operator'] ?? '',
       nameOperator: data['name_operator'] ?? '',
       idBranchOperator: data['id_branch'] ?? '',
@@ -188,6 +194,7 @@ class ModelOperator extends Equatable {
   @override
   List<Object?> get props => [
     idOperator,
+    passwordOperator,
     nameOperator,
     idBranchOperator,
     roleOperator,

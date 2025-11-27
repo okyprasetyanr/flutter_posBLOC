@@ -29,6 +29,7 @@ class _UITransactionState extends State<UITransaction> {
   final isOpen = ValueNotifier<bool>(false);
   final sellOrbuy = ValueNotifier<bool>(false);
   double ratioGridView = 0;
+
   @override
   void initState() {
     super.initState();
