@@ -374,75 +374,67 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
         return Column(
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    rowContent("Nomor Faktur", transaction.getinvoice),
-                    rowContent("Tanggal", transaction.getdate.toString()),
-                    rowContent("Status", transaction.getstatusTransaction!),
-                    rowContent("Total", formatPriceRp(transaction.getamount)),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            transaction.getstatusTransaction ==
-                                    statusTransaction(index: 3)
-                                ? customSnackBar(context, "Sudah diBatalkan!")
-                                : context.read<HistoryFinancialBloc>().add(
-                                    HistoryFinancialCancelData(),
-                                  );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.delete_forever_rounded,
-                            color: Colors.red,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.print_rounded,
-                            color: AppColor.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<HistoryFinancialBloc>().add(
-                              HistoryFinancialResetSelectedData(),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: AppColor.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
-                          ),
-                          child: Icon(Icons.close_rounded, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              child: ListView(
+                children: [
+                  rowContent("Nomor Faktur", transaction.getinvoice),
+                  rowContent("Tanggal", transaction.getdate.toString()),
+                  rowContent("Status", transaction.getstatusTransaction!),
+                  rowContent("Total", formatPriceRp(transaction.getamount)),
+                ],
               ),
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    transaction.getstatusTransaction ==
+                            statusTransaction(index: 3)
+                        ? customSnackBar(context, "Sudah diBatalkan!")
+                        : context.read<HistoryFinancialBloc>().add(
+                            HistoryFinancialCancelData(),
+                          );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(8),
+                    elevation: 2,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.delete_forever_rounded, color: Colors.red),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(8),
+                    elevation: 2,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.print_rounded, color: AppColor.primary),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<HistoryFinancialBloc>().add(
+                      HistoryFinancialResetSelectedData(),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(8),
+                    elevation: 2,
+                    backgroundColor: AppColor.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.close_rounded, color: Colors.white),
+                ),
+              ],
             ),
           ],
         );

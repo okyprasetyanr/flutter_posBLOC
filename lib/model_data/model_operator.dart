@@ -50,27 +50,28 @@ enum Permission {
   Report,
 }
 
-class PermissionAccess {
-  final Map<Permission, bool> access;
+extension PermissionValue on Permission {
+  static final Map<Permission, bool> _values = {
+    for (var permission in Permission.values) permission: false,
+  };
 
-  PermissionAccess({required this.access});
+  bool get status => _values[this] ?? false;
 
-  bool statusPermission(Permission permission) => access[permission] ?? false;
-
-  factory PermissionAccess.fromJson(Map<String, dynamic> data) {
-    return PermissionAccess(
-      access: {
-        for (final permission in Permission.values)
-          permission: data[permission.name] ?? false,
-      },
-    );
+  set status(bool val) {
+    _values[this] = val;
   }
 
-  Map<String, dynamic> toJson() {
+  static Map<String, dynamic> toMap() {
     return {
       for (var permission in Permission.values)
-        permission.name: access[permission],
+        permission.name: permission.status,
     };
+  }
+
+  static void getDataListPermission(Map<String, dynamic> data) {
+    for (var permission in Permission.values) {
+      permission.status = data[permission.name] == true;
+    }
   }
 }
 
@@ -86,8 +87,6 @@ class ModelOperator extends Equatable {
   final bool statusOperator;
   final DateTime created;
 
-  final PermissionAccess? permissionAccess;
-
   ModelOperator({
     this.idOperator,
     required this.nameOperator,
@@ -99,7 +98,6 @@ class ModelOperator extends Equatable {
     this.uidOwner,
     required this.created,
     required this.note,
-    this.permissionAccess,
   });
 
   String? get getidOperator => idOperator;
@@ -124,7 +122,6 @@ class ModelOperator extends Equatable {
     String? uidOwner,
     bool? statusOperator,
     DateTime? created,
-    PermissionAccess? permissionAccess,
   }) {
     return ModelOperator(
       idOperator: idOperator ?? this.idOperator,
@@ -137,7 +134,6 @@ class ModelOperator extends Equatable {
       uidOwner: uidOwner ?? this.uidOwner,
       created: created ?? this.created,
       note: note ?? this.note,
-      permissionAccess: permissionAccess ?? this.permissionAccess,
     );
   }
 
@@ -155,7 +151,6 @@ class ModelOperator extends Equatable {
         'uid_owner': uidOwner,
         'created': created,
         'note': note,
-        'permission': permissionAccess!.toJson(),
         'uid_user': UserSession.getUidUser(),
       },
     );
@@ -173,7 +168,6 @@ class ModelOperator extends Equatable {
       uidOwner: data['uid_owner'] ?? '',
       created: data['created'] ?? DateTime.now(),
       note: data['note'] ?? '',
-      permissionAccess: PermissionAccess.fromJson(data['permission'] ?? {}),
     );
   }
 
@@ -196,6 +190,5 @@ class ModelOperator extends Equatable {
     uidOwner,
     created,
     note,
-    permissionAccess,
   ];
 }

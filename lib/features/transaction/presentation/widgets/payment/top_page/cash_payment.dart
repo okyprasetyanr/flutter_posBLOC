@@ -28,31 +28,25 @@ class UIPaymentCashPayment extends StatelessWidget {
 
     List<double> options = [];
 
-    // 1.
     options.add(total);
 
-    // 2.
     if (total < 20000 && !options.contains(20000)) {
       options.add(20000.0);
     }
 
-    // 3.
     if (total < 50000 && !options.contains(50000)) {
       options.add(50000.0);
     } else if (total < 75000 && !options.contains(75000)) {
       options.add(75000.0);
     }
 
-    // 4.
     if (total < 100000 && !options.contains(100000)) {
       options.add(100000.0);
     }
 
-    // Filter duplikat, sort, dan ambil 4 opsi pertama yang lebih besar atau sama
     Set<double> uniqueOptions = options.where((o) => o >= total).toSet();
     List<double> sortedOptions = uniqueOptions.toList()..sort();
 
-    // Pastikan Uang Pas (T) selalu di awal
     if (sortedOptions.isNotEmpty && sortedOptions.first != total) {
       sortedOptions.remove(total);
       sortedOptions.insert(0, total);
@@ -63,8 +57,7 @@ class UIPaymentCashPayment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/financial/logic/financial_state.dart';
@@ -36,9 +37,7 @@ class _UiFinancialState extends State<UiFinancial> {
   }
 
   void _initData() {
-    context.read<FinancialBloc>().add(
-      FinancialGetData(isIncome: null, idBranch: null),
-    );
+    context.read<FinancialBloc>().add(FinancialGetData());
   }
 
   @override
@@ -269,5 +268,8 @@ class _UiFinancialState extends State<UiFinancial> {
     nameController.clear();
   }
 
-  Future<void> refreshIndicator() async {}
+  Future<void> refreshIndicator() async {
+    await context.read<DataUserRepositoryCache>().initFinancial();
+    _initData();
+  }
 }

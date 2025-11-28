@@ -15,65 +15,60 @@ class TransactionPopUpPageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          UITransactionPopUpNameAndQty(),
-          const SizedBox(height: 10),
-          UITransactionPopUpNoteAndSubTotal(),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(flex: 4, child: UITransactionPopUpPriceAndCustom()),
-              const SizedBox(width: 5),
-              Expanded(
-                flex: 6,
-                child: BlocSelector<TransactionBloc, TransactionState, bool>(
-                  selector: (state) {
-                    if (state is TransactionLoaded) {
-                      return state.isSell;
-                    }
-                    return true;
-                  },
-                  builder: (context, state) {
-                    return state
-                        ? const UITransactionPopUpDiscountAndCustom()
-                        : SizedBox(
-                            height: 50,
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Tanggal Kadaluarsa:",
-                                  style: lv05TextStyle,
+    return ListView(
+      children: [
+        UITransactionPopUpNameAndQty(),
+        const SizedBox(height: 10),
+        UITransactionPopUpNoteAndSubTotal(),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 4, child: UITransactionPopUpPriceAndCustom()),
+            const SizedBox(width: 5),
+            Expanded(
+              flex: 6,
+              child: BlocSelector<TransactionBloc, TransactionState, bool>(
+                selector: (state) {
+                  if (state is TransactionLoaded) {
+                    return state.isSell;
+                  }
+                  return true;
+                },
+                builder: (context, state) {
+                  return state
+                      ? const UITransactionPopUpDiscountAndCustom()
+                      : SizedBox(
+                          height: 50,
+                          child: Column(
+                            children: [
+                              Text("Tanggal Kadaluarsa:", style: lv05TextStyle),
+                              SizedBox(height: 10),
+                              Expanded(
+                                child: WidgetCustomDate(
+                                  onSelected: (day, month, year) {
+                                    debugPrint(
+                                      "Log UITransaction: CustomDate: $year-$month-$day",
+                                    );
+                                    context.read<TransactionBloc>().add(
+                                      TransactionAdjustItem(
+                                        expiredDate: "$year-$month-$day",
+                                      ),
+                                    );
+                                  },
                                 ),
-                                SizedBox(height: 10),
-                                Expanded(
-                                  child: WidgetCustomDate(
-                                    onSelected: (day, month, year) {
-                                      debugPrint(
-                                        "Log UITransaction: CustomDate: $year-$month-$day",
-                                      );
-                                      context.read<TransactionBloc>().add(
-                                        TransactionAdjustItem(
-                                          expiredDate: "$year-$month-$day",
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                  },
-                ),
+                              ),
+                            ],
+                          ),
+                        );
+                },
               ),
-            ],
-          ),
-          const SizedBox(height: 60),
-        ],
-      ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 60),
+      ],
     );
   }
 }

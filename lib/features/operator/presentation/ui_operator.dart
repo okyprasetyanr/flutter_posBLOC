@@ -78,6 +78,7 @@ class _UIOperatorState extends State<UIOperator> {
                 },
               ),
             ),
+            const SizedBox(width: 10),
             Expanded(
               flex: 2,
               child: BlocSelector<OperatorBloc, OperatorState, String?>(
@@ -122,118 +123,150 @@ class _UIOperatorState extends State<UIOperator> {
 
   Widget layoutBottom() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: customTextField(
-                index: 0,
-                nodes: nodes,
-                inputType: TextInputType.text,
-                context: context,
-                text: "Nama Operator",
-                controller: nameController,
-                enable: true,
+        Expanded(
+          child: ListView(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: customTextField(
+                      index: 0,
+                      nodes: nodes,
+                      inputType: TextInputType.text,
+                      context: context,
+                      text: "Nama Operator",
+                      controller: nameController,
+                      enable: true,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: BlocSelector<OperatorBloc, OperatorState, String?>(
+                      selector: (state) => state is OperatorLoaded
+                          ? state.dataBranch
+                                ?.firstWhere(
+                                  (element) =>
+                                      element.getidBranch == state.idBranch,
+                                )
+                                .getareaBranch
+                          : null,
+                      builder: (context, state) {
+                        return customTextField(
+                          index: 1,
+                          nodes: nodes,
+                          inputType: TextInputType.text,
+                          context: context,
+                          text: "Cabang",
+                          controller: TextEditingController(text: state ?? ""),
+                          enable: false,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Expanded(
-              flex: 1,
-              child: BlocSelector<OperatorBloc, OperatorState, String?>(
-                selector: (state) => state is OperatorLoaded
-                    ? state.dataBranch
-                          ?.firstWhere(
-                            (element) => element.getidBranch == state.idBranch,
-                          )
-                          .getareaBranch
-                    : null,
-                builder: (context, state) {
-                  return customTextField(
-                    index: 1,
-                    nodes: nodes,
-                    inputType: TextInputType.text,
-                    context: context,
-                    text: "Cabang",
-                    controller: TextEditingController(text: state ?? ""),
-                    enable: false,
+
+              const SizedBox(height: 10),
+              customTextField(
+                context: context,
+                controller: emailController,
+                enable: true,
+                index: 1,
+                inputType: TextInputType.emailAddress,
+                nodes: nodes,
+                text: "E-mail Operator",
+              ),
+              const SizedBox(height: 10),
+              customTextField(
+                context: context,
+                controller: passwordController,
+                enable: true,
+                index: 2,
+                inputType: TextInputType.text,
+                nodes: nodes,
+                text: "Password Operator",
+              ),
+
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: customTextField(
+                      context: context,
+                      controller: phoneController,
+                      enable: true,
+                      index: 3,
+                      inputType: TextInputType.text,
+                      nodes: nodes,
+                      text: "Nomor Operator",
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: customTextField(
+                      context: context,
+                      controller: noteController,
+                      enable: true,
+                      index: 4,
+                      inputType: TextInputType.text,
+                      nodes: nodes,
+                      text: "Catatan",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              ListView.builder(
+                itemCount: Permission.values.length,
+                itemBuilder: (context, i) {
+                  final permission = Permission.values[i];
+                  return CheckboxListTile(
+                    title: Text(permission.name),
+                    value: null,
+                    onChanged: (val) {
+                      setState(() {
+                        permission.status = !permission.status;
+                      });
+                    },
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-
-        customTextField(
-          context: context,
-          controller: emailController,
-          enable: true,
-          index: 1,
-          inputType: TextInputType.emailAddress,
-          nodes: nodes,
-          text: "E-mail Operator",
-        ),
-        customTextField(
-          context: context,
-          controller: passwordController,
-          enable: true,
-          index: 2,
-          inputType: TextInputType.text,
-          nodes: nodes,
-          text: "Password Operator",
-        ),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 3,
-              child: customTextField(
-                context: context,
-                controller: phoneController,
-                enable: true,
-                index: 3,
-                inputType: TextInputType.text,
-                nodes: nodes,
-                text: "Nomor Operator",
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: customTextField(
-                context: context,
-                controller: noteController,
-                enable: true,
-                index: 4,
-                inputType: TextInputType.text,
-                nodes: nodes,
-                text: "Catatan",
-              ),
-            ),
-          ],
-        ),
-        customButtonIcon(
-          icon: Icon(Icons.check_rounded, color: Colors.white),
-          backgroundColor: AppColor.primary,
-          label: Text("Simpan", style: lv05TextStyleWhite),
-          onPressed: () {
-            final data = ModelOperator(
-              nameOperator: nameController.text,
-              idBranchOperator:
-                  (context.read<OperatorBloc>().state as OperatorLoaded)
-                      .idBranch!,
-              roleOperator: 2,
-              emailOperator: emailController.text,
-              phoneOperator: phoneController.text,
-              statusOperator: true,
-              created: DateTime.now(),
-              note: noteController.text,
-              permissionAccess: null,
-            );
-            context.read<OperatorBloc>().add(
-              OperatorUploadData(data: data, password: passwordController.text),
-            );
-          },
+        SizedBox(
+          width: double.infinity,
+          child: customButtonIcon(
+            icon: Icon(Icons.check_rounded, color: Colors.white),
+            backgroundColor: AppColor.primary,
+            label: Text("Simpan", style: lv05TextStyleWhite),
+            onPressed: () {
+              final data = ModelOperator(
+                nameOperator: nameController.text,
+                idBranchOperator:
+                    (context.read<OperatorBloc>().state as OperatorLoaded)
+                        .idBranch!,
+                roleOperator: 2,
+                emailOperator: emailController.text,
+                phoneOperator: phoneController.text,
+                statusOperator: true,
+                created: DateTime.now(),
+                note: noteController.text,
+              );
+              context.read<OperatorBloc>().add(
+                OperatorUploadData(
+                  data: data,
+                  password: passwordController.text,
+                ),
+              );
+            },
+          ),
         ),
       ],
     );

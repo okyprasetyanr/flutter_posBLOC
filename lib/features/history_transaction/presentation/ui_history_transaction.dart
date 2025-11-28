@@ -450,223 +450,197 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
         return Column(
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    rowContent("Nomor Faktur", transaction.getinvoice),
-                    rowContent("Tanggal", transaction.getdate.toString()),
-                    rowContent("Kontak", transaction.getnamePartner),
-                    rowContent("Pembayaran", transaction.getpaymentMethod),
-                    transaction.getbankName != null
-                        ? rowContent(
-                            "Bank Name",
-                            transaction.getdate.toString(),
-                          )
-                        : const SizedBox.shrink(),
+              child: ListView(
+                children: [
+                  rowContent("Nomor Faktur", transaction.getinvoice),
+                  rowContent("Tanggal", transaction.getdate.toString()),
+                  rowContent("Kontak", transaction.getnamePartner),
+                  rowContent("Pembayaran", transaction.getpaymentMethod),
+                  transaction.getbankName != null
+                      ? rowContent("Bank Name", transaction.getdate.toString())
+                      : const SizedBox.shrink(),
 
-                    rowContent("Operator", transaction.getnameOperator),
-                    rowContent("Status", transaction.getstatusTransaction!),
-                    ...transaction.getitemsOrdered.map((item) {
-                      return Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
-                                  style: lv05TextStyle,
-                                ),
-                                Text(
-                                  "${formatPriceRp(item.getsubTotal)}",
-                                  style: lv05TextStyle,
-                                ),
-                              ],
-                            ),
-                            Text("Condiemnt", style: lv05TextStyle),
-                            ...item.getCondiment.map((e) {
-                              return Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                  rowContent("Operator", transaction.getnameOperator),
+                  rowContent("Status", transaction.getstatusTransaction!),
+                  ...transaction.getitemsOrdered.map((item) {
+                    return Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
+                                style: lv05TextStyle,
+                              ),
+                              Text(
+                                "${formatPriceRp(item.getsubTotal)}",
+                                style: lv05TextStyle,
+                              ),
+                            ],
+                          ),
+                          Text("Condiemnt", style: lv05TextStyle),
+                          ...item.getCondiment.map((e) {
+                            return Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
+                                    style: lv05TextStyle,
+                                  ),
+                                  Text(
+                                    "${formatPriceRp(item.getsubTotal)}",
+                                    style: lv05TextStyle,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    );
+                  }),
+                  rowContent(
+                    "Sub Total",
+                    formatPriceRp(transaction.getsubTotal),
+                  ),
+                  rowContent(
+                    "Total Item",
+                    transaction.getitemsOrdered.length.toString(),
+                  ),
+                  rowContent(
+                    "Diskon (${transaction.getdiscount}%)",
+                    formatPriceRp(transaction.gettotalDiscount),
+                  ),
+                  rowContent(
+                    "Diskon (${transaction.getppn}%)",
+                    formatPriceRp(transaction.gettotalPpn),
+                  ),
+                  rowContent(
+                    "Diskon (${transaction.getcharge}%)",
+                    formatPriceRp(transaction.gettotalCharge),
+                  ),
+                  rowContent("Total", formatPriceRp(transaction.gettotal)),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    state.$2
+                        ? transaction.getstatusTransaction ==
+                                  statusTransaction(index: 3)
+                              ? customSnackBar(context, "Sudah diBatalkan!")
+                              : _expiredConfirm(transaction.getitemsOrdered)
+                        : UserSession.fifo
+                        ? customSnackBar(
+                            context,
+                            "FIFO: Aktif, tidak dapat membatalkan Pembelian",
+                          )
+                        : _expiredConfirm(state.$1!.getitemsOrdered);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(8),
+                    elevation: 2,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.delete_forever_rounded, color: Colors.red),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    state.$1!.getstatusTransaction ==
+                            statusTransaction(index: 3)
+                        ? customSnackBar(
+                            context,
+                            "Transaksi sudah dibantalkan!",
+                          )
+                        : showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text("Konfirmasi", style: lv2TextStyle),
+                              content: Text.rich(
+                                TextSpan(
+                                  text: "Revisi ${state.$1!.getinvoice}?",
+                                  style: lv1TextStyle,
                                   children: [
-                                    Text(
-                                      "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
-                                      style: lv05TextStyle,
-                                    ),
-                                    Text(
-                                      "${formatPriceRp(item.getsubTotal)}",
+                                    TextSpan(
+                                      text:
+                                          "\nKonfirmasi Revisi berarti membatalkan Transaksi ini dan memulai Revisi.",
                                       style: lv05TextStyle,
                                     ),
                                   ],
                                 ),
-                              );
-                            }),
-                          ],
-                        ),
-                      );
-                    }),
-                    rowContent(
-                      "Sub Total",
-                      formatPriceRp(transaction.getsubTotal),
-                    ),
-                    rowContent(
-                      "Total Item",
-                      transaction.getitemsOrdered.length.toString(),
-                    ),
-                    rowContent(
-                      "Diskon (${transaction.getdiscount}%)",
-                      formatPriceRp(transaction.gettotalDiscount),
-                    ),
-                    rowContent(
-                      "Diskon (${transaction.getppn}%)",
-                      formatPriceRp(transaction.gettotalPpn),
-                    ),
-                    rowContent(
-                      "Diskon (${transaction.getcharge}%)",
-                      formatPriceRp(transaction.gettotalCharge),
-                    ),
-                    rowContent("Total", formatPriceRp(transaction.gettotal)),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            state.$2
-                                ? transaction.getstatusTransaction ==
-                                          statusTransaction(index: 3)
-                                      ? customSnackBar(
-                                          context,
-                                          "Sudah diBatalkan!",
-                                        )
-                                      : _expiredConfirm(
-                                          transaction.getitemsOrdered,
-                                        )
-                                : UserSession.fifo
-                                ? customSnackBar(
-                                    context,
-                                    "FIFO: Aktif, tidak dapat membatalkan Pembelian",
-                                  )
-                                : _expiredConfirm(state.$1!.getitemsOrdered);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: Text("Batal", style: lv1TextStyle),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.pop(context, true);
+                                    await _expiredConfirm(
+                                      revisi: true,
+                                      state.$1!.getitemsOrdered,
+                                    );
+                                  },
+                                  child: Text("Hapus", style: lv1TextStyle),
+                                ),
+                              ],
                             ),
-                          ),
-                          child: Icon(
-                            Icons.delete_forever_rounded,
-                            color: Colors.red,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            state.$1!.getstatusTransaction ==
-                                    statusTransaction(index: 3)
-                                ? customSnackBar(
-                                    context,
-                                    "Transaksi sudah dibantalkan!",
-                                  )
-                                : showDialog<bool>(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(
-                                        "Konfirmasi",
-                                        style: lv2TextStyle,
-                                      ),
-                                      content: Text.rich(
-                                        TextSpan(
-                                          text:
-                                              "Revisi ${state.$1!.getinvoice}?",
-                                          style: lv1TextStyle,
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "\nKonfirmasi Revisi berarti membatalkan Transaksi ini dan memulai Revisi.",
-                                              style: lv05TextStyle,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, false),
-                                          child: Text(
-                                            "Batal",
-                                            style: lv1TextStyle,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            Navigator.pop(context, true);
-                                            await _expiredConfirm(
-                                              revisi: true,
-                                              state.$1!.getitemsOrdered,
-                                            );
-                                          },
-                                          child: Text(
-                                            "Hapus",
-                                            style: lv1TextStyle,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
-                          ),
-                          child: Icon(Icons.edit_rounded, color: Colors.black),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.print_rounded,
-                            color: AppColor.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<HistoryTransactionBloc>().add(
-                              HistoryTransactionResetSelectedData(),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            backgroundColor: AppColor.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
-                          ),
-                          child: Icon(Icons.close_rounded, color: Colors.white),
-                        ),
-                      ],
+                          );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(8),
+                    elevation: 2,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
                     ),
-                  ],
+                  ),
+                  child: Icon(Icons.edit_rounded, color: Colors.black),
                 ),
-              ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(8),
+                    elevation: 2,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.print_rounded, color: AppColor.primary),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<HistoryTransactionBloc>().add(
+                      HistoryTransactionResetSelectedData(),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(8),
+                    elevation: 2,
+                    backgroundColor: AppColor.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.close_rounded, color: Colors.white),
+                ),
+              ],
             ),
           ],
         );
