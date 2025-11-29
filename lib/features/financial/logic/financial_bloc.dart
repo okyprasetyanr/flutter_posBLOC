@@ -90,8 +90,7 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     FinancialDeleteFinancial event,
     Emitter<FinancialState> emit,
   ) {
-    final currentState = state as FinancialLoaded;
-    final selectedFinancial = currentState.selectedFinancial!;
+    final selectedFinancial = event.data;
     deleteDataFinancial(selectedFinancial.getidFinancial);
     final dataFinancial = repoCache.dataFinancial;
     final indexData = dataFinancial.indexWhere(

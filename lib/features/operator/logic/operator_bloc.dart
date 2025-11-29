@@ -114,12 +114,11 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     OperatorRemoveData event,
     Emitter<OperatorState> emit,
   ) {
-    final currentState = state as OperatorLoaded;
-    deleteDataOperator(currentState.selectedData!.getidOperator!);
+    final selectedData = event.data.getidOperator!;
+    deleteDataOperator(selectedData);
     final dataOperator = repoCache.dataOperator;
     final indexOperator = dataOperator.indexWhere(
-      (element) =>
-          element.idOperator == currentState.selectedData!.getidOperator,
+      (element) => element.idOperator == selectedData,
     );
     if (indexOperator != -1) {
       dataOperator.removeAt(indexOperator);

@@ -151,6 +151,9 @@ class _UiFinancialState extends State<UiFinancial> {
                     data: state,
                     getId: (data) => data.getidFinancial,
                     getName: (data) => data.getnameFinancial,
+                    deleteData: (deleteData) => context
+                        .read<FinancialBloc>()
+                        .add(FinancialDeleteFinancial(data: deleteData)),
                   );
                 },
               ),

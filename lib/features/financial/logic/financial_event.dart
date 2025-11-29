@@ -25,7 +25,11 @@ class FinancialStatusFinancial extends FinancialEvent {}
 
 class FinancialResetSelectedFinancial extends FinancialEvent {}
 
-class FinancialDeleteFinancial extends FinancialEvent {}
+class FinancialDeleteFinancial extends FinancialEvent {
+  final ModelFinancial data;
+
+  FinancialDeleteFinancial({required this.data});
+}
 
 class FinancialIsIncome extends FinancialEvent {}
 

@@ -4,6 +4,7 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/operator/logic/operator_state.dart';
+import 'package:flutter_pos/function/permission_provider.dart';
 import 'package:flutter_pos/model_data/model_operator.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_list_gradient.dar
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UIOperator extends StatefulWidget {
   const UIOperator({super.key});
@@ -113,6 +115,9 @@ class _UIOperatorState extends State<UIOperator> {
                 selectedData: (selectedData) => context
                     .read<OperatorBloc>()
                     .add(OperatorSelectedData(selectedData: selectedData)),
+                deleteData: (deleteData) => context.read<OperatorBloc>().add(
+                  OperatorRemoveData(data: deleteData),
+                ),
               );
             },
           ),
@@ -223,16 +228,25 @@ class _UIOperatorState extends State<UIOperator> {
               ),
               const SizedBox(height: 10),
               ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: Permission.values.length,
-                itemBuilder: (context, i) {
-                  final permission = Permission.values[i];
-                  return CheckboxListTile(
-                    title: Text(permission.name),
-                    value: null,
-                    onChanged: (val) {
-                      setState(() {
-                        permission.status = !permission.status;
-                      });
+                itemBuilder: (context, index) {
+                  final permission = Permission.values[index];
+
+                  return Consumer(
+                    builder: (context, ref, _) {
+                      final permissions = ref.watch(permissionProvider);
+
+                      return CheckboxListTile(
+                        title: Text(permission.name),
+                        value: permissions[permission] ?? false,
+                        onChanged: (_) {
+                          ref
+                              .read(permissionProvider.notifier)
+                              .toggle(permission);
+                        },
+                      );
                     },
                   );
                 },

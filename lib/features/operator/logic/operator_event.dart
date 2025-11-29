@@ -35,7 +35,11 @@ class OperatorUploadData extends OperatorEvent {
   OperatorUploadData({required this.data, required this.password});
 }
 
-class OperatorRemoveData extends OperatorEvent {}
+class OperatorRemoveData extends OperatorEvent {
+  final ModelOperator data;
+
+  OperatorRemoveData({required this.data});
+}
 
 class OperatorPermission extends OperatorEvent {}
 

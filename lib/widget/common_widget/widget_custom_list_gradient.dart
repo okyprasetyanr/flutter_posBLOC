@@ -6,6 +6,7 @@ Widget customListGradient<T>({
   Function(T data)? getId,
   Function(T data)? getName,
   Function(T selectedData)? selectedData,
+  Function(T deleteData)? deleteData,
 }) {
   return Padding(
     padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -36,58 +37,70 @@ Widget customListGradient<T>({
               onTap: () {
                 selectedData!(dataIndex);
               },
-              child: Dismissible(
-                key: Key(getId!(dataIndex)),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  padding: EdgeInsets.only(right: 10),
-                  color: Colors.redAccent,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Icon(Icons.delete, color: Colors.white),
-                  ),
-                ),
-                confirmDismiss: (direction) async {
-                  final result = await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("Konfirmasi", style: lv2TextStyle),
-                      content: Text(
-                        "Hapus Kategori ${getName(dataIndex)}?",
-                        style: lv1TextStyle,
+              child: deleteData != null
+                  ? Dismissible(
+                      key: Key(getId!(dataIndex)),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        padding: EdgeInsets.only(right: 10),
+                        color: Colors.redAccent,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(Icons.delete, color: Colors.white),
+                        ),
                       ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: Text("Batal", style: lv1TextStyle),
+                      confirmDismiss: (direction) async {
+                        final result = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Konfirmasi", style: lv2TextStyle),
+                            content: Text(
+                              "Hapus Kategori ${getName(dataIndex)}?",
+                              style: lv1TextStyle,
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text("Batal", style: lv1TextStyle),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  deleteData!(dataIndex);
+                                  Navigator.pop(context, true);
+                                },
+                                child: Text("Hapus", style: lv1TextStyle),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (result == true) {
+                          return true;
+                        }
+
+                        return false;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 5,
+                          right: 5,
+                          top: 10,
+                          bottom: 10,
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                          },
-                          child: Text("Hapus", style: lv1TextStyle),
-                        ),
-                      ],
+
+                        child: Text(getName!(dataIndex), style: lv1TextStyle),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                        left: 5,
+                        right: 5,
+                        top: 10,
+                        bottom: 10,
+                      ),
+
+                      child: Text(getName!(dataIndex), style: lv1TextStyle),
                     ),
-                  );
-
-                  if (result == true) {
-                    return true;
-                  }
-
-                  return false;
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 5,
-                    right: 5,
-                    top: 10,
-                    bottom: 10,
-                  ),
-
-                  child: Text(getName!(dataIndex), style: lv1TextStyle),
-                ),
-              ),
             ),
           ),
         );
