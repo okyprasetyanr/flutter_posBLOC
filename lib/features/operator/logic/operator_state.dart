@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
-import 'package:flutter_pos/model_data/model_operator.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 
 class OperatorState {}
 
@@ -8,38 +8,38 @@ class OperatorInitial extends OperatorState {}
 
 class OperatorLoaded extends OperatorState with EquatableMixin {
   final List<ModelBranch>? dataBranch;
-  final List<ModelOperator> dataOperator;
-  final List<ModelOperator> filteredData;
+  final List<ModelUser> dataOperator;
+  final List<ModelUser> filteredData;
   final String? idBranch;
-  final int indexRole;
+  final RoleType? roleUser;
   final int indexStatus;
-  final ModelOperator? selectedData;
+  final ModelUser? selectedData;
 
   OperatorLoaded({
     this.dataBranch,
     this.dataOperator = const [],
     this.filteredData = const [],
     this.idBranch,
-    this.indexRole = 0,
+    this.roleUser,
     this.indexStatus = 0,
     this.selectedData,
   });
 
   OperatorLoaded copyWith({
     List<ModelBranch>? dataBranch,
-    List<ModelOperator>? dataOperator,
-    List<ModelOperator>? filteredData,
+    List<ModelUser>? dataOperator,
+    List<ModelUser>? filteredData,
     String? idBranch,
-    int? indexRole,
+    RoleType? roleUser,
     int? indexStatus,
-    ModelOperator? selectedData,
+    ModelUser? selectedData,
   }) {
     return OperatorLoaded(
       dataBranch: dataBranch ?? this.dataBranch,
       dataOperator: dataOperator ?? this.dataOperator,
       filteredData: filteredData ?? this.filteredData,
       idBranch: idBranch ?? this.idBranch,
-      indexRole: indexRole ?? this.indexRole,
+      roleUser: roleUser ?? this.roleUser,
       indexStatus: indexStatus ?? this.indexStatus,
       selectedData: selectedData ?? this.selectedData,
     );
@@ -52,7 +52,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
     dataOperator,
     filteredData,
     idBranch,
-    indexRole,
+    roleUser,
     selectedData,
   ];
 }

@@ -65,7 +65,7 @@ Widget customListGradient<T>({
                               ),
                               TextButton(
                                 onPressed: () {
-                                  deleteData!(dataIndex);
+                                  deleteData(dataIndex);
                                   Navigator.pop(context, true);
                                 },
                                 child: Text("Hapus", style: lv1TextStyle),

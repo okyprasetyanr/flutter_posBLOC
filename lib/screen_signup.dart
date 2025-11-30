@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/widget/widget_sign_up.dart';
@@ -18,10 +20,10 @@ class ScreenSignup extends StatefulWidget {
 
 class _ScreenSignupState extends State<ScreenSignup> {
   final DatabaseReference databaseref = FirebaseDatabase.instance.ref();
-  TextEditingController password = TextEditingController();
-  TextEditingController nameCompany = TextEditingController();
-  TextEditingController emailCompany = TextEditingController();
-  TextEditingController phoneCompany = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   List<TextEditingController> areaBranch = [];
   List<TextEditingController> adressBranch = [];
   List<TextEditingController> phoneBranch = [];
@@ -31,10 +33,10 @@ class _ScreenSignupState extends State<ScreenSignup> {
   String? selectedBranch = "1";
   @override
   void dispose() {
-    password.dispose();
-    nameCompany.dispose();
-    emailCompany.dispose();
-    phoneCompany.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
     for (var c in areaBranch) {
       c.dispose();
     }
@@ -110,7 +112,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                       child: customTextFieldSignUp(
                         "E-mail",
                         "email@...",
-                        emailCompany,
+                        emailController,
                         validator: (value) => null,
                         keyboardType: TextInputType.emailAddress,
                       ),
@@ -121,7 +123,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                       child: customTextFieldSignUp(
                         "Password",
                         "Password...",
-                        password,
+                        passwordController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value.isNotEmpty && value.length < 8) {
@@ -266,7 +268,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                 customTextFieldSignUp(
                                   "Nama Perusahaan",
                                   "Perusahaan...",
-                                  nameCompany,
+                                  nameController,
                                   validator: (value) => null,
                                   keyboardType: TextInputType.none,
                                 ),
@@ -333,7 +335,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                       child: customTextFieldSignUp(
                                         "No. Telephone",
                                         "08...",
-                                        phoneCompany,
+                                        phoneController,
                                         validator: (value) => null,
                                         keyboardType: TextInputType.number,
                                       ),
@@ -382,47 +384,61 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 child: FloatingActionButton(
                   backgroundColor: AppColor.primary,
                   onPressed: () async {
-                    if (formKey.currentState!.validate()) {
-                      try {
-                        UserCredential userCredential = await FirebaseAuth
-                            .instance
-                            .createUserWithEmailAndPassword(
-                              email: emailCompany.text,
-                              password: password.text,
-                            );
+                    if (!formKey.currentState!.validate()) return;
 
-                        if (!mounted) return;
+                    try {
+                      final auth = FirebaseAuth.instance;
 
-                        String iduser = userCredential.user!.uid;
+                      final UserCredential userCredential = await auth
+                          .createUserWithEmailAndPassword(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
 
-                        final ref = FirebaseFirestore.instance.collection(
-                          "users",
-                        );
-                        int totalBranch = int.tryParse(selectedBranch!) ?? 1;
-                        List<Map<String, dynamic>> mapBranch = [];
+                      if (!mounted) return;
 
-                        for (int i = 0; i < totalBranch; i++) {
-                          mapBranch.add({
-                            "id_branch": Uuid().v4(),
-                            "area_branch": areaBranch[i].text,
-                            "address_branch": adressBranch[i].text,
-                            "phone_branch": phoneBranch[i].text,
-                          });
-                        }
+                      final uid = userCredential.user!.uid;
+                      final ref = FirebaseFirestore.instance;
 
-                        await ref.doc(iduser).set({
-                          "name_company": nameCompany.text,
-                          "phone_company": phoneCompany.text,
-                          "join": "$selectedYear-$selectedMonth-$selectedDay",
-                          "branch": mapBranch,
+                      int totalBranch =
+                          int.tryParse(selectedBranch ?? "1") ?? 1;
+
+                      final List<Map<String, dynamic>> listBranch = [];
+
+                      for (int i = 0; i < totalBranch; i++) {
+                        listBranch.add({
+                          "id_branch": Uuid().v4(),
+                          "area_branch": areaBranch[i].text.trim(),
+                          "address_branch": adressBranch[i].text.trim(),
+                          "phone_branch": phoneBranch[i].text.trim(),
                         });
-
-                        if (!mounted) return;
-                        Navigator.pop(context);
-                      } catch (error) {
-                        if (!mounted) return;
-                        customSnackBar(context, "Gagal Daftar: $error");
                       }
+
+                      await ref.collection("companies").doc(uid).set({
+                        "name_company": nameController.text,
+                        "phone_company": phoneController.text,
+                        "join_date": dateNowYMDBLOC(),
+                        "branches": listBranch,
+                      });
+
+                      await ref.collection("users").doc(uid).set({
+                        "name": nameController.text.trim(),
+                        "email": emailController.text.trim(),
+                        "phone": phoneController.text.trim(),
+                        "role": RoleType.Pemilik.name,
+                        "uid_owner": uid,
+                        "permissions": {
+                          for (final permission in Permission.values)
+                            permission.name: true,
+                        },
+                        "created": dateNowYMDBLOC(),
+                      });
+
+                      if (!mounted) return;
+                      Navigator.pop(context);
+                    } catch (error) {
+                      if (!mounted) return;
+                      customSnackBar(context, "Gagal Daftar: $error");
                     }
                   },
                 ),

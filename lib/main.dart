@@ -21,7 +21,6 @@ import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
@@ -48,28 +47,26 @@ void main() async {
   final repo = DataUserRepositoryCache(dataUserRepo);
 
   runApp(
-    ProviderScope(
-      child: RepositoryProvider.value(
-        value: repo,
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (context) => InventoryBloc(repo)),
-            BlocProvider(create: (context) => TransactionBloc(repo)),
-            BlocProvider(create: (context) => PaymentBloc()),
-            BlocProvider(create: (context) => PartnerBloc(repo)),
-            BlocProvider(create: (context) => BatchBloc(repo)),
-            BlocProvider(create: (context) => HistoryTransactionBloc(repo)),
-            BlocProvider(create: (context) => ReportBloc(repo)),
-            BlocProvider(create: (context) => FinancialBloc(repo)),
-            BlocProvider(create: (context) => TransFinancialBloc(repo)),
-            BlocProvider(create: (context) => HistoryFinancialBloc(repo)),
-            BlocProvider(create: (context) => OperatorBloc(repo)),
-          ],
-          child: MaterialApp(
-            initialRoute: '/login',
-            routes: routesPage,
-            debugShowCheckedModeBanner: false,
-          ),
+    RepositoryProvider.value(
+      value: repo,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => InventoryBloc(repo)),
+          BlocProvider(create: (context) => TransactionBloc(repo)),
+          BlocProvider(create: (context) => PaymentBloc()),
+          BlocProvider(create: (context) => PartnerBloc(repo)),
+          BlocProvider(create: (context) => BatchBloc(repo)),
+          BlocProvider(create: (context) => HistoryTransactionBloc(repo)),
+          BlocProvider(create: (context) => ReportBloc(repo)),
+          BlocProvider(create: (context) => FinancialBloc(repo)),
+          BlocProvider(create: (context) => TransFinancialBloc(repo)),
+          BlocProvider(create: (context) => HistoryFinancialBloc(repo)),
+          BlocProvider(create: (context) => OperatorBloc(repo)),
+        ],
+        child: MaterialApp(
+          initialRoute: '/login',
+          routes: routesPage,
+          debugShowCheckedModeBanner: false,
         ),
       ),
     ),

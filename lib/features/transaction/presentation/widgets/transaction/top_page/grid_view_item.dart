@@ -85,13 +85,13 @@ class UITransactionGridViewItem extends StatelessWidget {
                       );
 
                       customBottomSheet(
-                        context,
-                        () {
+                        context: context,
+                        resetItemForm: () {
                           context.read<TransactionBloc>().add(
                             TransactionResetSelectedItem(),
                           );
                         },
-                        (scrollController) {
+                        content: (scrollController) {
                           return UITransactionPopUpItem();
                         },
                       );

@@ -4,8 +4,8 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/operator/logic/operator_state.dart';
-import 'package:flutter_pos/function/permission_provider.dart';
-import 'package:flutter_pos/model_data/model_operator.dart';
+import 'package:flutter_pos/function/bottom_sheet.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
@@ -13,7 +13,6 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_list_gradient.dar
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UIOperator extends StatefulWidget {
   const UIOperator({super.key});
@@ -30,6 +29,9 @@ class _UIOperatorState extends State<UIOperator> {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final noteController = TextEditingController();
+  final permissionNotifier = ValueNotifier<Map<Permission, bool>>({
+    for (final permission in Permission.values) permission: false,
+  });
 
   @override
   void dispose() {
@@ -101,7 +103,7 @@ class _UIOperatorState extends State<UIOperator> {
           ],
         ),
         Expanded(
-          child: BlocSelector<OperatorBloc, OperatorState, List<ModelOperator>>(
+          child: BlocSelector<OperatorBloc, OperatorState, List<ModelUser>>(
             selector: (state) =>
                 state is OperatorLoaded ? state.filteredData : [],
             builder: (context, state) {
@@ -110,8 +112,8 @@ class _UIOperatorState extends State<UIOperator> {
               }
               return customListGradient(
                 data: state,
-                getId: (data) => data.getidOperator,
-                getName: (data) => data.getnameOperator,
+                getId: (data) => data.getIdUser,
+                getName: (data) => data.getNameUser,
                 selectedData: (selectedData) => context
                     .read<OperatorBloc>()
                     .add(OperatorSelectedData(selectedData: selectedData)),
@@ -132,6 +134,7 @@ class _UIOperatorState extends State<UIOperator> {
         Expanded(
           child: ListView(
             children: [
+              const SizedBox(height: 5),
               Row(
                 children: [
                   Expanded(
@@ -149,26 +152,14 @@ class _UIOperatorState extends State<UIOperator> {
                   const SizedBox(width: 10),
                   Expanded(
                     flex: 1,
-                    child: BlocSelector<OperatorBloc, OperatorState, String?>(
-                      selector: (state) => state is OperatorLoaded
-                          ? state.dataBranch
-                                ?.firstWhere(
-                                  (element) =>
-                                      element.getidBranch == state.idBranch,
-                                )
-                                .getareaBranch
-                          : null,
-                      builder: (context, state) {
-                        return customTextField(
-                          index: 1,
-                          nodes: nodes,
-                          inputType: TextInputType.text,
-                          context: context,
-                          text: "Cabang",
-                          controller: TextEditingController(text: state ?? ""),
-                          enable: false,
-                        );
-                      },
+                    child: customTextField(
+                      context: context,
+                      controller: phoneController,
+                      enable: true,
+                      index: 1,
+                      inputType: TextInputType.text,
+                      nodes: nodes,
+                      text: "Nomor Operator",
                     ),
                   ),
                 ],
@@ -176,20 +167,21 @@ class _UIOperatorState extends State<UIOperator> {
 
               const SizedBox(height: 10),
               customTextField(
+                index: 2,
+                nodes: nodes,
+                inputType: TextInputType.emailAddress,
                 context: context,
+                text: "Email Operator",
                 controller: emailController,
                 enable: true,
-                index: 1,
-                inputType: TextInputType.emailAddress,
-                nodes: nodes,
-                text: "E-mail Operator",
               ),
+
               const SizedBox(height: 10),
               customTextField(
                 context: context,
                 controller: passwordController,
                 enable: true,
-                index: 2,
+                index: 3,
                 inputType: TextInputType.text,
                 nodes: nodes,
                 text: "Password Operator",
@@ -199,19 +191,6 @@ class _UIOperatorState extends State<UIOperator> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: customTextField(
-                      context: context,
-                      controller: phoneController,
-                      enable: true,
-                      index: 3,
-                      inputType: TextInputType.text,
-                      nodes: nodes,
-                      text: "Nomor Operator",
-                    ),
-                  ),
-                  const SizedBox(width: 10),
                   Expanded(
                     flex: 2,
                     child: customTextField(
@@ -224,32 +203,102 @@ class _UIOperatorState extends State<UIOperator> {
                       text: "Catatan",
                     ),
                   ),
+
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: BlocSelector<OperatorBloc, OperatorState, String?>(
+                      selector: (state) => state is OperatorLoaded
+                          ? state.dataBranch
+                                ?.firstWhere(
+                                  (element) =>
+                                      element.getidBranch == state.idBranch,
+                                )
+                                .getareaBranch
+                          : null,
+                      builder: (context, state) {
+                        return customTextField(
+                          inputType: TextInputType.text,
+                          context: context,
+                          text: "Cabang",
+                          controller: TextEditingController(text: state ?? ""),
+                          enable: false,
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: Permission.values.length,
-                itemBuilder: (context, index) {
-                  final permission = Permission.values[index];
 
-                  return Consumer(
-                    builder: (context, ref, _) {
-                      final permissions = ref.watch(permissionProvider);
-
-                      return CheckboxListTile(
-                        title: Text(permission.name),
-                        value: permissions[permission] ?? false,
-                        onChanged: (_) {
-                          ref
-                              .read(permissionProvider.notifier)
-                              .toggle(permission);
-                        },
-                      );
-                    },
-                  );
+              BlocListener<OperatorBloc, OperatorState>(
+                listenWhen: (previous, current) =>
+                    previous is OperatorLoaded &&
+                    current is OperatorLoaded &&
+                    previous.selectedData != current.selectedData,
+                listener: (context, state) {
+                  final currentState = state;
+                  if (currentState is OperatorLoaded) {
+                    if (currentState.selectedData == null) {
+                      permissionNotifier.value = {
+                        for (final permission in Permission.values)
+                          permission: false,
+                      };
+                    } else {
+                      permissionNotifier.value =
+                          currentState.selectedData!.getPermissionsUser;
+                    }
+                  }
                 },
+                child: customButtonIcon(
+                  backgroundColor: AppColor.primary,
+                  icon: Icon(Icons.check_box_outlined, color: Colors.white),
+                  label: Text("Ijin Akses", style: lv05TextStyleWhite),
+                  onPressed: () {
+                    customBottomSheet(
+                      context: context,
+                      resetItemForm: () {},
+                      content: (scrollController) {
+                        return ValueListenableBuilder<Map<Permission, bool>>(
+                          valueListenable: permissionNotifier,
+                          builder: (context, permissions, _) {
+                            return Column(
+                              children: [
+                                Text("Ijin Akses", style: lv1TextStyle),
+                                Expanded(
+                                  child: ListView(
+                                    controller: scrollController,
+                                    shrinkWrap: true,
+                                    children: Permission.values.map((
+                                      permission,
+                                    ) {
+                                      return CheckboxListTile(
+                                        dense: true,
+                                        activeColor: AppColor.primary,
+                                        checkboxScaleFactor: 0.8,
+                                        title: Text(
+                                          permission.name.replaceAll("_", " "),
+                                          style: lv05TextStyle,
+                                        ),
+                                        value: permissions[permission] ?? false,
+                                        onChanged: (val) {
+                                          permissionNotifier.value = {
+                                            ...permissions,
+                                            permission: val!,
+                                          };
+                                        },
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -261,17 +310,17 @@ class _UIOperatorState extends State<UIOperator> {
             backgroundColor: AppColor.primary,
             label: Text("Simpan", style: lv05TextStyleWhite),
             onPressed: () {
-              final data = ModelOperator(
-                nameOperator: nameController.text,
-                idBranchOperator:
+              final data = ModelUser(
+                permissionsUser: permissionNotifier.value,
+                nameUser: nameController.text,
+                idBranchUser:
                     (context.read<OperatorBloc>().state as OperatorLoaded)
                         .idBranch!,
-                roleOperator: 2,
-                emailOperator: emailController.text,
-                phoneOperator: phoneController.text,
-                statusOperator: true,
-                created: DateTime.now(),
-                note: noteController.text,
+                roleUser: RoleType.Kasir,
+                emailUser: emailController.text,
+                phoneUser: phoneController.text,
+                statusUser: true,
+                noteUser: noteController.text,
               );
               context.read<OperatorBloc>().add(
                 OperatorUploadData(

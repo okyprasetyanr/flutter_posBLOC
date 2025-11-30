@@ -6,8 +6,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/operator/logic/operator_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
-import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_operator.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
 class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
@@ -34,16 +33,15 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     final dataBranch = currentState.dataBranch ?? repoCache.dataBranch;
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
-    final indexRole = event.indexRole ?? currentState.indexRole;
-    final indexStatus = event.indexStatus ?? currentState.indexStatus;
+    final indexRole = event.roleUser ?? currentState.roleUser;
+    final statusUser = event.statusUser ?? currentState.statusUser;
     final dataOperator = repoCache.dataOperator;
     final filteredData = dataOperator
         .where(
           (element) =>
-              element.getroleOperator == fromIdRoleType(indexRole) &&
-                  indexStatus == 0
-              ? element.getstatusOperator
-              : !element.getstatusOperator,
+              RoleType.values.contains(element.getRoleUser) && statusUser == 0
+              ? element.getstatusUser
+              : !element.getstatusUser,
         )
         .toList();
     emit(
@@ -52,8 +50,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         idBranch: idBranch,
         dataOperator: dataOperator,
         filteredData: filteredData,
-        indexRole: indexRole,
-        indexStatus: indexStatus,
+        roleUser: indexRole,
+        statusUser: statusUser,
       ),
     );
   }
@@ -63,15 +61,15 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Emitter<OperatorState> emit,
   ) {
     final currentState = state as OperatorLoaded;
-    final indexRole = event.indexRole ?? currentState.indexRole;
-    final indexStatus = event.indexStatus ?? currentState.indexStatus;
+    final roleUser = event.roleUser ?? currentState.roleUser;
+    final statusUser = event.statusUser ?? currentState.statusUser;
     final filteredData = currentState.dataOperator.where((element) {
-      if (event.indexStatus != null) {
-        final byStatus = element.getstatusOperator == statusData[indexStatus];
+      if (event.statusUser != null) {
+        final byStatus = element.getstatusUser == statusUser;
         if (!byStatus) return false;
       }
-      if (event.indexRole != null) {
-        final byRole = element.getroleOperator == fromIdRoleType(indexRole);
+      if (event.roleUser != null) {
+        final byRole = RoleType.values.contains(element.getRoleUser);
         if (!byRole) return false;
       }
 
@@ -81,24 +79,24 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     emit(
       currentState.copyWith(
         filteredData: filteredData,
-        indexRole: indexRole,
-        indexStatus: indexStatus,
+        roleUser: roleUser,
+        statusUser: statusUser,
       ),
     );
   }
 
   FutureOr<void> _onSearch(OperatorSearch event, Emitter<OperatorState> emit) {
     final currentState = state as OperatorLoaded;
-    final indexRole = currentState.indexRole;
-    final indexStatus = currentState.indexStatus;
+    final roleUser = currentState.roleUser;
+    final statusUser = currentState.statusUser;
     final dataFiltered = currentState.dataOperator.where(
-      (element) => element.getnameOperator.toLowerCase().contains(event.search),
+      (element) => element.getNameUser.toLowerCase().contains(event.search),
     );
     final filteredData = dataFiltered
         .where(
           (element) =>
-              element.getstatusOperator == statusData[indexStatus] &&
-              element.getroleOperator == fromIdRoleType(indexRole),
+              element.getstatusUser == statusUser &&
+              RoleType.values.contains(roleUser),
         )
         .toList();
 
@@ -114,11 +112,11 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     OperatorRemoveData event,
     Emitter<OperatorState> emit,
   ) {
-    final selectedData = event.data.getidOperator!;
-    deleteDataOperator(selectedData);
+    final selectedData = event.data.getIdUser;
+    deleteDataOperator(selectedData!);
     final dataOperator = repoCache.dataOperator;
     final indexOperator = dataOperator.indexWhere(
-      (element) => element.idOperator == selectedData,
+      (element) => element.getIdUser == selectedData,
     );
     if (indexOperator != -1) {
       dataOperator.removeAt(indexOperator);
@@ -141,26 +139,25 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   ) async {
     final currentState = state as OperatorLoaded;
     final dataOperator = repoCache.dataOperator;
-    ModelOperator data = event.data;
+    ModelUser data = event.data;
     final indexOperator = dataOperator.indexWhere(
-      (element) =>
-          element.idOperator == currentState.selectedData?.getidOperator,
+      (element) => element.getIdUser == currentState.selectedData?.getIdUser,
     );
     if (indexOperator != -1) {
       dataOperator[indexOperator] = event.data;
     } else {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-            email: data.getemailOperator,
+            email: data.getEmailUser,
             password: event.password,
           );
 
       final uid = credential.user!.uid;
 
-      data = data.copyWith(idOperator: uid, uidOwner: UserSession.getUidUser());
+      data = data.copyWith(idBranchUser: uid);
     }
 
-    data.pushDataOperator();
+    data.pushDataUser();
     add(OperatorGetData());
   }
 

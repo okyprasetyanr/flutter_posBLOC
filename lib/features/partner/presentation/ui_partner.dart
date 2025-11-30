@@ -30,7 +30,7 @@ class _UIPartnerState extends State<UIPartner> {
   final emailPartnerController = TextEditingController();
   final searchController = TextEditingController();
 
-  List<FocusNode> nodes = List.generate(3, (_) => FocusNode());
+  List<FocusNode> nodes = List.generate(4, (_) => FocusNode());
 
   @override
   void initState() {
@@ -382,6 +382,35 @@ class _UIPartnerState extends State<UIPartner> {
                         ),
                       ),
                       const SizedBox(width: 10),
+
+                      Expanded(
+                        child: customTextField(
+                          index: 1,
+                          nodes: nodes,
+                          context: context,
+                          text: "Nomor Kontak",
+                          controller: phonePartnerController,
+                          enable: true,
+                          inputType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: customTextField(
+                          index: 2,
+                          nodes: nodes,
+                          context: context,
+                          text: "E-mail",
+                          controller: emailPartnerController,
+                          enable: true,
+                          inputType: TextInputType.emailAddress,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Expanded(
                         flex: 1,
                         child: BlocSelector<PartnerBloc, PartnerState, String?>(
@@ -395,8 +424,6 @@ class _UIPartnerState extends State<UIPartner> {
                               : null,
                           builder: (context, state) {
                             return customTextField(
-                              index: 1,
-                              nodes: nodes,
                               inputType: TextInputType.text,
                               context: context,
                               text: "Cabang",
@@ -406,34 +433,6 @@ class _UIPartnerState extends State<UIPartner> {
                               enable: false,
                             );
                           },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: customTextField(
-                          index: 0,
-                          nodes: nodes,
-                          context: context,
-                          text: "Nomor Kontak",
-                          controller: phonePartnerController,
-                          enable: true,
-                          inputType: TextInputType.number,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: customTextField(
-                          index: 0,
-                          nodes: nodes,
-                          context: context,
-                          text: "E-mail",
-                          controller: emailPartnerController,
-                          enable: true,
-                          inputType: TextInputType.emailAddress,
                         ),
                       ),
                     ],

@@ -108,6 +108,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
           children: [
             Expanded(
               child: customTextField(
+                context: context,
                 controller: searchController,
                 enable: true,
                 inputType: TextInputType.text,

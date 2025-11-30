@@ -11,7 +11,6 @@ Future<String?> authenticatorAcoount({
   required String email,
   required String password,
 }) async {
-  // 1) cek koneksi dulu
   final conn = await Connectivity().checkConnectivity();
   if (conn == ConnectivityResult.none) {
     return 'no-connection';
@@ -23,7 +22,7 @@ Future<String?> authenticatorAcoount({
         .then((userCredential) async {
           String uid = userCredential.user!.uid;
           SharedPreferences pref = await SharedPreferences.getInstance();
-          await pref.setString('uid_user', uid);
+          await pref.setString('uid_owner', uid);
           await pref.setBool('fifo', true);
           navUpDownTransition(context, '/mainmenu', true);
         });

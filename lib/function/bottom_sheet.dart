@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-void customBottomSheet(
-  BuildContext context,
-  VoidCallback resetItemForm,
-  Widget Function(ScrollController scrollController) content,
-) {
+void customBottomSheet({
+  required BuildContext context,
+  required VoidCallback resetItemForm,
+  required Widget Function(ScrollController scrollController) content,
+}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,

@@ -42,7 +42,7 @@ class ModelTransactionFinancial extends Equatable {
         'note': note,
         'date': formatDate(date: date, minute: true),
         'amount': amount,
-        'uid_user': UserSession.getUidUser(),
+        'uid_owner': UserSession.getUidUser(),
       },
     );
   }

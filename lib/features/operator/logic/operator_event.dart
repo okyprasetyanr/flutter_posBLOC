@@ -1,24 +1,24 @@
-import 'package:flutter_pos/model_data/model_operator.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 
 class OperatorEvent {}
 
 class OperatorGetData extends OperatorEvent {
   final String? idBranch;
-  final int? indexRole;
-  final int? indexStatus;
+  final RoleType? roleUser;
+  final bool? statusUser;
 
-  OperatorGetData({this.idBranch, this.indexRole, this.indexStatus});
+  OperatorGetData({this.idBranch, this.roleUser, this.statusUser});
 }
 
 class OperatorFilterOperator extends OperatorEvent {
-  final int? indexRole;
-  final int? indexStatus;
+  final RoleType? roleUser;
+  final bool? statusUser;
 
-  OperatorFilterOperator(this.indexRole, this.indexStatus);
+  OperatorFilterOperator(this.roleUser, this.statusUser);
 }
 
 class OperatorSelectedData extends OperatorEvent {
-  final ModelOperator selectedData;
+  final ModelUser selectedData;
 
   OperatorSelectedData({required this.selectedData});
 }
@@ -30,13 +30,13 @@ class OperatorSearch extends OperatorEvent {
 }
 
 class OperatorUploadData extends OperatorEvent {
-  final ModelOperator data;
+  final ModelUser data;
   final String password;
   OperatorUploadData({required this.data, required this.password});
 }
 
 class OperatorRemoveData extends OperatorEvent {
-  final ModelOperator data;
+  final ModelUser data;
 
   OperatorRemoveData({required this.data});
 }

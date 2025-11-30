@@ -70,13 +70,13 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                     ),
                                   );
                                   customBottomSheet(
-                                    context,
-                                    () {
+                                    context: context,
+                                    resetItemForm: () {
                                       context.read<TransactionBloc>().add(
                                         TransactionResetSelectedItem(),
                                       );
                                     },
-                                    (scrollController) {
+                                    content: (scrollController) {
                                       return UITransactionPopUpItem();
                                     },
                                   );
@@ -212,76 +212,83 @@ class TransactionListViewOrderedItem extends StatelessWidget {
               flex: 3,
               child: customButtonIcon(
                 onPressed: () {
-                  customBottomSheet(context, () {}, (scrollController) {
-                    return Column(
-                      children: [
-                        Text("Pilih Kontak", style: lv1TextStyleBold),
+                  customBottomSheet(
+                    context: context,
+                    resetItemForm: () {},
+                    content: (scrollController) {
+                      return Column(
+                        children: [
+                          Text("Pilih Kontak", style: lv1TextStyleBold),
 
-                        Expanded(
-                          child:
-                              BlocSelector<
-                                TransactionBloc,
-                                TransactionState,
-                                List<ModelPartner>?
-                              >(
-                                selector: (state) {
-                                  if (state is TransactionLoaded) {
-                                    return state.dataPartner ?? [];
-                                  }
-                                  return [];
-                                },
-                                builder: (context, state) {
-                                  return ListView.builder(
-                                    controller: scrollController,
-                                    itemCount: state!.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        leading: const CircleAvatar(
-                                          child: Icon(Icons.person, size: 20),
-                                        ),
-                                        title: Text(
-                                          state[index].getname,
-                                          style: lv05TextStyle,
-                                        ),
-                                        subtitle: Text(
-                                          "${state[index].getphone}",
-                                          style: lv05TextStyle,
-                                        ),
-                                        onTap: () {
-                                          context.read<TransactionBloc>().add(
-                                            TransactionSelectedPartner(
-                                              selectedPartner: state[index],
-                                            ),
-                                          );
-                                          Navigator.pop(context);
-                                        },
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                        ),
+                          Expanded(
+                            child:
+                                BlocSelector<
+                                  TransactionBloc,
+                                  TransactionState,
+                                  List<ModelPartner>?
+                                >(
+                                  selector: (state) {
+                                    if (state is TransactionLoaded) {
+                                      return state.dataPartner ?? [];
+                                    }
+                                    return [];
+                                  },
+                                  builder: (context, state) {
+                                    return ListView.builder(
+                                      controller: scrollController,
+                                      itemCount: state!.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          leading: const CircleAvatar(
+                                            child: Icon(Icons.person, size: 20),
+                                          ),
+                                          title: Text(
+                                            state[index].getname,
+                                            style: lv05TextStyle,
+                                          ),
+                                          subtitle: Text(
+                                            "${state[index].getphone}",
+                                            style: lv05TextStyle,
+                                          ),
+                                          onTap: () {
+                                            context.read<TransactionBloc>().add(
+                                              TransactionSelectedPartner(
+                                                selectedPartner: state[index],
+                                              ),
+                                            );
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                          ),
 
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              customSnackBar(context, "Tambah Customer Baru!!");
-                            },
-                            icon: const Icon(Icons.add),
-                            label: const Text("Tambah Customer Baru"),
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(48),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                customSnackBar(
+                                  context,
+                                  "Tambah Customer Baru!!",
+                                );
+                              },
+                              icon: const Icon(Icons.add),
+                              label: const Text("Tambah Customer Baru"),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  });
+                        ],
+                      );
+                    },
+                  );
                 },
                 label: Text(
                   context.select<TransactionBloc, String>(

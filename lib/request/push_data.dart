@@ -18,11 +18,11 @@ Future<void> pushWorkerDataFinancial({
   await FirestoreWorker.processQueueHive();
 }
 
-Future<void> pushWorkerDataOperator({
+Future<void> pushWorkerDataUser({
   required String collection,
   required String id,
-  required Map<String, dynamic> dataOperator,
+  required Map<String, dynamic> dataUser,
 }) async {
-  await FirestoreWorker.enqueue(collection, id, dataOperator);
+  await FirestoreWorker.enqueue(collection, id, dataUser);
   await FirestoreWorker.processQueueHive();
 }

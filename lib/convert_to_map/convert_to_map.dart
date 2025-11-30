@@ -21,7 +21,7 @@ Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
 Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   return {
     'id_branch': transaction.getidBranch,
-    'uid_user': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidUser(),
     'bank_name': transaction.getbankName ?? "",
     'bill_paid': transaction.getbillPaid,
     'note': transaction.getnote,
@@ -83,7 +83,7 @@ List<Map<String, dynamic>> convertToMapCondimentOrdered(
 
 Map<String, dynamic> convertToMapItem(ModelItem item) {
   return {
-    'uid_user': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidUser(),
     'name_item': item.getnameItem,
     'price_item': item.getpriceItem,
     'id_category': item.getidCategoryiItem,
@@ -99,7 +99,7 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
 
 Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
   return {
-    'uid_user': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidUser(),
     'id_branch': batch.getidBranch,
     'date_buy': formatDate(date: batch.getdate_buy),
   };
@@ -132,7 +132,7 @@ Map<String, dynamic> convertToMapItemBatch(
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
     'id_branch': partner.getidBranch,
-    'uid_user': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidUser(),
     'name_partner': partner.getname,
     'phone_partner': partner.getphone,
     'email_partner': partner.getemail,
@@ -146,7 +146,7 @@ Map<String, dynamic> convertToMapCategory(ModelCategory category) {
   return {
     'name_category': category.getnameCategory,
     'id_branch': category.getidBranch,
-    'uid_user': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidUser(),
   };
 }
 
@@ -156,7 +156,7 @@ Map<String, dynamic> convertToMapFinancial(ModelFinancial financial) {
     'id_branch': financial.getidBranch,
     'id_financial': financial.getidFinancial,
     'type': financial.getfinancialType.name,
-    'uid_user': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidUser(),
   };
 }
 

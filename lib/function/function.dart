@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/model_data/model_operator.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -39,18 +39,18 @@ String formatQtyOrPrice(double qty) {
 
 class UserSession {
   static DataUserRepositoryCache? repo;
-  static String uidUser = "";
+  static String uid_owner = "";
   static bool fifo = false;
 
   static Future<void> init(DataUserRepositoryCache repo) async {
     final pref = await SharedPreferences.getInstance();
-    uidUser = pref.getString("uid_user")!;
+    uid_owner = pref.getString("uid_owner")!;
     fifo = pref.getBool("fifo")!;
     await repo.initData();
   }
 
   static String getUidUser() {
-    return uidUser;
+    return uid_owner;
   }
 
   static bool getStatusFifo() {
@@ -94,7 +94,7 @@ DateTime parseDate({required String date, bool? minute}) {
 DateTime dateYMDEndBLOC(DateTime? dateTime) {
   return dateTime != null
       ? DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59, 999)
-      : dateNowYMDBLOC(status: true);
+      : dateNowYMDBLOC(statusEnd: true);
 }
 
 DateTime dateYMDStartBLOC(DateTime? dateTime) {
@@ -103,8 +103,8 @@ DateTime dateYMDStartBLOC(DateTime? dateTime) {
       : dateNowYMDBLOC();
 }
 
-DateTime dateNowYMDBLOC({bool? status}) {
-  final end = status ?? false;
+DateTime dateNowYMDBLOC({bool? statusEnd}) {
+  final end = statusEnd ?? false;
   final now = DateTime.now();
   return end
       ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
