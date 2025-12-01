@@ -114,7 +114,7 @@ class DataUserRepositoryCache {
   }
 
   Future<void> initOperator() async {
-    dataOperator = await repo.getOperator();
+    dataOperator = await repo.getUser();
   }
 
   List<ModelBranch> getBranch() {

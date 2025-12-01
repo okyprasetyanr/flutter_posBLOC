@@ -16,7 +16,7 @@ class DataUserRepository {
 
   Future<List<ModelBranch>> getBranch() async {
     final data = await _db
-        .collection('users')
+        .collection('companies')
         .doc(UserSession.getUidUser())
         .get();
     return ModelBranch.getDataListBranch(data);
@@ -38,9 +38,9 @@ class DataUserRepository {
     return ModelTransactionFinancial.getDataListTransFinancial(data);
   }
 
-  Future<List<ModelUser>> getOperator() async {
+  Future<List<ModelUser>> getUser() async {
     final data = await _db
-        .collection('operator')
+        .collection('users')
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
     return ModelUser.getDataListUser(data);
