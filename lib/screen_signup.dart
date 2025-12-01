@@ -1,15 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
-import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:flutter_pos/widget/widget_sign_up.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:uuid/uuid.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 
 class ScreenSignup extends StatefulWidget {
   const ScreenSignup({super.key});
@@ -19,432 +12,134 @@ class ScreenSignup extends StatefulWidget {
 }
 
 class _ScreenSignupState extends State<ScreenSignup> {
-  final DatabaseReference databaseref = FirebaseDatabase.instance.ref();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  List<TextEditingController> areaBranch = [];
-  List<TextEditingController> adressBranch = [];
-  List<TextEditingController> phoneBranch = [];
-  String? selectedDay;
-  String? selectedMonth;
-  String? selectedYear;
-  String? selectedBranch = "1";
+  final nodes = List.generate(10, (index) => FocusNode());
+  final emailCompanyController = TextEditingController();
+  final passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final phoneCompanyController = TextEditingController();
+  final totalBranch = ["1", "2", "3"];
+
+  int selectedBranch = 0;
+  final List<TextEditingController> branchControllers = [];
+
   @override
   void dispose() {
+    emailCompanyController.dispose();
     passwordController.dispose();
     nameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    for (var c in areaBranch) {
-      c.dispose();
-    }
-    for (var c in adressBranch) {
-      c.dispose();
-    }
-    for (var c in phoneBranch) {
+    phoneCompanyController.dispose();
+    for (var c in branchControllers) {
       c.dispose();
     }
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    if (selectedBranch != null) {
-      int totalBranch = int.tryParse(selectedBranch!) ?? 1;
-      for (int i = 0; i < totalBranch; i++) {
-        areaBranch.add(TextEditingController());
-        adressBranch.add(TextEditingController());
-        phoneBranch.add(TextEditingController());
+  void updateBranchFields(int count) {
+    if (count > branchControllers.length) {
+      for (int i = branchControllers.length; i < count; i++) {
+        branchControllers.add(TextEditingController());
       }
+    } else {
+      branchControllers.removeRange(count, branchControllers.length);
     }
+
+    setState(() => selectedBranch = count);
   }
 
   @override
   Widget build(BuildContext context) {
-    double widthscreen = MediaQuery.of(context).size.width;
-    List<String> days = List.generate(31, (index) => '${index + 1}');
-    List<String> months = [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-    ];
-    List<String> years = List.generate(100, (index) => '${2025 - index}');
-    final formKey = GlobalKey<FormState>();
-    List<String> branch = ["1", "2", "3"];
-    selectedBranch ??= "1";
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          "Sign-Up",
-          style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600),
-        ),
-      ),
-      body: Form(
-        key: formKey,
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Text("Form Pendaftaran", style: titleTextStyle),
-                    ),
-                    const SizedBox(height: 30),
-                    // Username
-                    SizedBox(
-                      width: widthscreen * 0.7,
-                      child: customTextFieldSignUp(
-                        "E-mail",
-                        "email@...",
-                        emailController,
-                        validator: (value) => null,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: widthscreen * 0.7,
-                      child: customTextFieldSignUp(
-                        "Password",
-                        "Password...",
-                        passwordController,
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value.isNotEmpty && value.length < 8) {
-                            return "Minimal 8 karakter!";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          customTextField(
+            context: context,
+            controller: emailCompanyController,
+            enable: true,
+            index: 0,
+            nodes: nodes,
+            inputType: TextInputType.emailAddress,
+            text: "E-mail",
+          ),
+          const SizedBox(height: 10),
+          customTextField(
+            context: context,
+            controller: passwordController,
+            enable: true,
+            index: 1,
+            nodes: nodes,
+            inputType: TextInputType.text,
+            text: "Password",
+          ),
+          const SizedBox(height: 10),
+          customTextField(
+            context: context,
+            controller: nameController,
+            enable: true,
+            index: 2,
+            nodes: nodes,
+            inputType: TextInputType.text,
+            text: "Name",
+          ),
 
-                    Text(
-                      "Tanggal bergabung",
-                      style: GoogleFonts.poppins(fontSize: 20),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        // Tanggal
-                        Expanded(
-                          child: Material(
-                            shadowColor: Colors.black,
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(15),
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              initialValue: selectedDay,
-                              hint: Text("Tanggal", style: hintTextStyle),
-                              items: days
-                                  .map(
-                                    (d) => DropdownMenuItem(
-                                      value: d,
-                                      child: Text(d),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) =>
-                                  setState(() => selectedDay = value),
-                              decoration: InputDecoration(
-                                labelText: "Tanggal",
-                                labelStyle: labelTextStyle,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-
-                        // Bulan
-                        Expanded(
-                          child: Material(
-                            shadowColor: Colors.black,
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(15),
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              initialValue: selectedMonth,
-                              hint: Text("Bulan", style: hintTextStyle),
-                              items: months
-                                  .map(
-                                    (m) => DropdownMenuItem(
-                                      value: m,
-                                      child: Text(m),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) =>
-                                  setState(() => selectedMonth = value),
-                              decoration: InputDecoration(
-                                labelText: "Bulan",
-                                labelStyle: labelTextStyle,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-
-                        // Tahun
-                        Expanded(
-                          child: Material(
-                            shadowColor: Colors.black,
-                            elevation: 4,
-                            borderRadius: BorderRadius.circular(15),
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              initialValue: selectedYear,
-                              hint: Text("Tahun", style: hintTextStyle),
-                              items: years
-                                  .map(
-                                    (y) => DropdownMenuItem(
-                                      value: y,
-                                      child: Text(y),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) =>
-                                  setState(() => selectedYear = value),
-                              decoration: InputDecoration(
-                                labelText: "Tahun",
-                                labelStyle: labelTextStyle,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Stack(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2, color: Colors.black),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                customTextFieldSignUp(
-                                  "Nama Perusahaan",
-                                  "Perusahaan...",
-                                  nameController,
-                                  validator: (value) => null,
-                                  keyboardType: TextInputType.none,
-                                ),
-                                const SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    IntrinsicWidth(
-                                      stepWidth: 40,
-                                      child: Material(
-                                        shadowColor: Colors.black,
-                                        elevation: 4,
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: DropdownButtonFormField<String>(
-                                          isExpanded: false,
-                                          initialValue: selectedBranch,
-                                          hint: Center(
-                                            child: Text(
-                                              "$selectedBranch",
-                                              style: hintTextStyle,
-                                            ),
-                                          ),
-                                          items: branch
-                                              .map(
-                                                (m) => DropdownMenuItem(
-                                                  value: m,
-                                                  child: Center(child: Text(m)),
-                                                ),
-                                              )
-                                              .toList(),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedBranch = value;
-                                              int total =
-                                                  int.tryParse(value ?? "0") ??
-                                                  0;
-                                              areaBranch = List.generate(
-                                                total,
-                                                (_) => TextEditingController(),
-                                              );
-                                              adressBranch = List.generate(
-                                                total,
-                                                (_) => TextEditingController(),
-                                              );
-                                              phoneBranch = List.generate(
-                                                total,
-                                                (_) => TextEditingController(),
-                                              );
-                                            });
-                                          },
-
-                                          decoration: InputDecoration(
-                                            labelText: "Cabang",
-                                            labelStyle: labelTextStyle,
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: customTextFieldSignUp(
-                                        "No. Telephone",
-                                        "08...",
-                                        phoneController,
-                                        validator: (value) => null,
-                                        keyboardType: TextInputType.number,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-
-                                Column(
-                                  children: List.generate(
-                                    int.tryParse(selectedBranch ?? "1") ?? 1,
-                                    (index) => CustomDropDownBranch(
-                                      i: index + 1,
-                                      areaBranch: areaBranch[index],
-                                      addressBranch: adressBranch[index],
-                                      phoneBranch: phoneBranch[index],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            color: Colors.white,
-                            child: Text(
-                              "Informasi Merchant",
-                              style: GoogleFonts.poppins(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: customTextField(
+                  context: context,
+                  controller: phoneCompanyController,
+                  enable: true,
+                  index: 3,
+                  nodes: nodes,
+                  inputType: TextInputType.phone,
+                  text: "Phone",
                 ),
               ),
-            ),
-            Positioned(
-              right: 16,
-              bottom: 30,
-              child: SizedBox(
-                width: 70,
-                height: 70,
-                child: FloatingActionButton(
-                  backgroundColor: AppColor.primary,
-                  onPressed: () async {
-                    if (!formKey.currentState!.validate()) return;
-
-                    try {
-                      final auth = FirebaseAuth.instance;
-
-                      final UserCredential userCredential = await auth
-                          .createUserWithEmailAndPassword(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
-
-                      if (!mounted) return;
-
-                      final uid = userCredential.user!.uid;
-                      final ref = FirebaseFirestore.instance;
-
-                      int totalBranch =
-                          int.tryParse(selectedBranch ?? "1") ?? 1;
-
-                      final List<Map<String, dynamic>> listBranch = [];
-
-                      for (int i = 0; i < totalBranch; i++) {
-                        listBranch.add({
-                          "id_branch": Uuid().v4(),
-                          "area_branch": areaBranch[i].text.trim(),
-                          "address_branch": adressBranch[i].text.trim(),
-                          "phone_branch": phoneBranch[i].text.trim(),
-                        });
-                      }
-
-                      await ref.collection("companies").doc(uid).set({
-                        "name_company": nameController.text,
-                        "phone_company": phoneController.text,
-                        "join_date": dateNowYMDBLOC(),
-                        "branches": listBranch,
-                      });
-
-                      await ref.collection("users").doc(uid).set({
-                        "name": nameController.text.trim(),
-                        "email": emailController.text.trim(),
-                        "phone": phoneController.text.trim(),
-                        "role": RoleType.Pemilik.name,
-                        "uid_owner": uid,
-                        "permissions": {
-                          for (final permission in Permission.values)
-                            permission.name: true,
-                        },
-                        "created": dateNowYMDBLOC(),
-                      });
-
-                      if (!mounted) return;
-                      Navigator.pop(context);
-                    } catch (error) {
-                      if (!mounted) return;
-                      customSnackBar(context, "Gagal Daftar: $error");
-                    }
+              const SizedBox(width: 10),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: "Total Cabang"),
+                  items: totalBranch
+                      .map(
+                        (map) => DropdownMenuItem(
+                          value: map,
+                          child: Text(map, style: lv05TextStyle),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) updateBranchFields(int.parse(value));
                   },
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
+
+          const SizedBox(height: 20),
+          ...List.generate(selectedBranch, (i) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: customTextField(
+                context: context,
+                controller: branchControllers[i],
+                enable: true,
+                index: 4 + i,
+                nodes: nodes,
+                inputType: TextInputType.text,
+                text: "Nama Cabang ${i + 1}",
+              ),
+            );
+          }),
+        ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(10),
+        child: customButtonIcon(
+          backgroundColor: AppColor.primary,
+          icon: Icon(Icons.check_rounded),
+          label: Text("Daftar", style: lv05TextStyle),
+          onPressed: () {},
         ),
       ),
     );
