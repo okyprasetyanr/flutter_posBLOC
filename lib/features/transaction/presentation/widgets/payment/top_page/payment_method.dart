@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/transaction/logic/payment/payment_bloc.dart
 import 'package:flutter_pos/features/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UIPaymentPaymentMethod extends StatelessWidget {
@@ -40,7 +41,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                   PaymentAdjust(paymentMethod: paymentMethod),
                 );
               },
-              icon: const Icon(Icons.payment_outlined, size: 15),
+              icon: Icon(Icons.payment_outlined, size: lv1IconSize),
               label: Text(
                 "$paymentMethod",
                 style: isSelected ? lv05TextStyleWhite : lv05TextStyle,

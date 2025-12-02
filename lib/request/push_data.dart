@@ -26,3 +26,12 @@ Future<void> pushWorkerDataUser({
   await FirestoreWorker.enqueue(collection, id, dataUser);
   await FirestoreWorker.processQueueHive();
 }
+
+Future<void> pushWorkerDataBranch({
+  required String collection,
+  required String id,
+  required Map<String, dynamic> dataBranch,
+}) async {
+  await FirestoreWorker.enqueue(collection, id, dataBranch);
+  await FirestoreWorker.processQueueHive();
+}

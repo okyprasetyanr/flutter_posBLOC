@@ -6,7 +6,7 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 class LayoutTopBottomMainMenu extends StatelessWidget {
   final Widget widgetTop;
   final Widget widgetBottom;
-  final String nameCompany;
+  final ValueNotifier<String?>? nameCompany;
   final Function(int) pageview;
   const LayoutTopBottomMainMenu({
     Key? key,
@@ -134,9 +134,12 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Pesan Kenyang!", style: labelTextStyle),
-              Text(
-                "Welcome $nameCompany, jualan lagi kita!",
-                style: lv1TextStyle,
+              ValueListenableBuilder<String?>(
+                valueListenable: nameCompany!,
+                builder: (context, value, child) => Text(
+                  "Welcome ${value ?? "Mohon Tunggu"}, jualan lagi kita!",
+                  style: lv1TextStyle,
+                ),
               ),
             ],
           ),

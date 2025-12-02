@@ -7,6 +7,7 @@ import 'package:flutter_pos/features/transaction/logic/transaction/transaction_s
 import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 
 class UITransactionSavedCart extends StatelessWidget {
   const UITransactionSavedCart({super.key});
@@ -78,7 +79,7 @@ class UITransactionSavedCart extends StatelessWidget {
           },
           child: Icon(
             Icons.shopping_bag_rounded,
-            size: 20,
+            size: lv2IconSize,
             color: Colors.white,
           ),
         ),

@@ -8,6 +8,7 @@ import 'package:flutter_pos/features/transaction/logic/financial/transaction_fin
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
@@ -76,7 +77,11 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                     isOpen.value = !isOpen.value;
                   },
                   label: Text("Menu", style: lv05TextStyleWhite),
-                  icon: Icon(Icons.menu_rounded, color: Colors.white, size: 20),
+                  icon: Icon(
+                    Icons.menu_rounded,
+                    color: Colors.white,
+                    size: lv2IconSize,
+                  ),
                   style: ButtonStyle(
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(

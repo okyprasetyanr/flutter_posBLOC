@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 
 class OperatorEvent {}
@@ -14,7 +15,7 @@ class OperatorFilterOperator extends OperatorEvent {
   final RoleType? roleUser;
   final bool? statusUser;
 
-  OperatorFilterOperator(this.roleUser, this.statusUser);
+  OperatorFilterOperator({this.roleUser, this.statusUser});
 }
 
 class OperatorSelectedData extends OperatorEvent {
@@ -30,9 +31,14 @@ class OperatorSearch extends OperatorEvent {
 }
 
 class OperatorUploadData extends OperatorEvent {
+  final BuildContext context;
   final ModelUser data;
   final String password;
-  OperatorUploadData({required this.data, required this.password});
+  OperatorUploadData({
+    required this.data,
+    required this.password,
+    required this.context,
+  });
 }
 
 class OperatorRemoveData extends OperatorEvent {

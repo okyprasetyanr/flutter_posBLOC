@@ -4,6 +4,7 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 Widget customTextField({
+  Widget? prefix,
   List<FocusNode>? nodes,
   String? suffixText,
   int? index,
@@ -45,6 +46,7 @@ Widget customTextField({
       contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
       errorStyle: lv05TextStyleRed,
+      prefixIcon: prefix,
     ),
     inputFormatters: suffixText != null
         ? [

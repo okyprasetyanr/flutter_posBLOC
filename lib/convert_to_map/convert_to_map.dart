@@ -21,7 +21,7 @@ Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
 Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   return {
     'id_branch': transaction.getidBranch,
-    'uid_owner': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidOwner(),
     'bank_name': transaction.getbankName ?? "",
     'bill_paid': transaction.getbillPaid,
     'note': transaction.getnote,
@@ -83,7 +83,7 @@ List<Map<String, dynamic>> convertToMapCondimentOrdered(
 
 Map<String, dynamic> convertToMapItem(ModelItem item) {
   return {
-    'uid_owner': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidOwner(),
     'name_item': item.getnameItem,
     'price_item': item.getpriceItem,
     'id_category': item.getidCategoryiItem,
@@ -99,7 +99,7 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
 
 Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
   return {
-    'uid_owner': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidOwner(),
     'id_branch': batch.getidBranch,
     'date_buy': formatDate(date: batch.getdate_buy),
   };
@@ -132,7 +132,7 @@ Map<String, dynamic> convertToMapItemBatch(
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
     'id_branch': partner.getidBranch,
-    'uid_owner': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidOwner(),
     'name_partner': partner.getname,
     'phone_partner': partner.getphone,
     'email_partner': partner.getemail,
@@ -146,7 +146,7 @@ Map<String, dynamic> convertToMapCategory(ModelCategory category) {
   return {
     'name_category': category.getnameCategory,
     'id_branch': category.getidBranch,
-    'uid_owner': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidOwner(),
   };
 }
 
@@ -156,7 +156,7 @@ Map<String, dynamic> convertToMapFinancial(ModelFinancial financial) {
     'id_branch': financial.getidBranch,
     'id_financial': financial.getidFinancial,
     'type': financial.getfinancialType.name,
-    'uid_owner': UserSession.getUidUser(),
+    'uid_owner': UserSession.getUidOwner(),
   };
 }
 
@@ -166,5 +166,17 @@ Map<String, dynamic> convertToMapCounter(ModelCounter dataCounter) {
     'counter_buy': dataCounter.getcounterBuy,
     'counter_income': dataCounter.getcounterIncome,
     'counter_expense': dataCounter.getcounterExpense,
+  };
+}
+
+Map<String, dynamic> convertToMapBranch({
+  required String nameCompany,
+  required String phoneCompany,
+  required List<Map<String, dynamic>> listBranch,
+}) {
+  return {
+    'name_company': nameCompany,
+    'phone_company': phoneCompany,
+    'list_branch': listBranch,
   };
 }

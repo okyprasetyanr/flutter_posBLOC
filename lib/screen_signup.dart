@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/connection/authentication_account.dart';
+import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
+import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
+import 'package:flutter_pos/request/push_data.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/custom_dropdown_filter.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
+import 'package:uuid/uuid.dart';
 
 class ScreenSignup extends StatefulWidget {
   const ScreenSignup({super.key});
@@ -16,25 +24,27 @@ class _ScreenSignupState extends State<ScreenSignup> {
   final nodes = List.generate(10, (index) => FocusNode());
   final emailCompanyController = TextEditingController();
   final passwordController = TextEditingController();
-  final nameController = TextEditingController();
+  final nameCompanyController = TextEditingController();
   final phoneCompanyController = TextEditingController();
   final totalBranch = ["1", "2", "3"];
 
+  final _formKey = GlobalKey<FormState>();
+
   final selectedBranch = ValueNotifier<int>(0);
   final List<TextEditingController> namaBranchControllers = [];
-  final List<TextEditingController> areaBranchControllers = [];
+  final List<TextEditingController> addressBranchControllers = [];
   final List<TextEditingController> phoneBranchControllers = [];
 
   @override
   void dispose() {
     emailCompanyController.dispose();
     passwordController.dispose();
-    nameController.dispose();
+    nameCompanyController.dispose();
     phoneCompanyController.dispose();
     for (var c in namaBranchControllers) {
       c.dispose();
     }
-    for (var c in areaBranchControllers) {
+    for (var c in addressBranchControllers) {
       c.dispose();
     }
     for (var c in phoneBranchControllers) {
@@ -53,12 +63,15 @@ class _ScreenSignupState extends State<ScreenSignup> {
     if (count > namaBranchControllers.length) {
       for (int i = namaBranchControllers.length; i < count; i++) {
         namaBranchControllers.add(TextEditingController());
-        areaBranchControllers.add(TextEditingController());
+        addressBranchControllers.add(TextEditingController());
         phoneBranchControllers.add(TextEditingController());
       }
     } else {
       namaBranchControllers.removeRange(count, namaBranchControllers.length);
-      areaBranchControllers.removeRange(count, areaBranchControllers.length);
+      addressBranchControllers.removeRange(
+        count,
+        addressBranchControllers.length,
+      );
       phoneBranchControllers.removeRange(count, phoneBranchControllers.length);
     }
 
@@ -74,153 +87,212 @@ class _ScreenSignupState extends State<ScreenSignup> {
         bottom: true,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Text("Pendaftaran", style: titleTextStyle),
-              ),
-              customTextField(
-                context: context,
-                controller: emailCompanyController,
-                enable: true,
-                index: 0,
-                nodes: nodes,
-                inputType: TextInputType.emailAddress,
-                text: "E-mail",
-              ),
-              const SizedBox(height: 10),
-              customTextField(
-                context: context,
-                controller: passwordController,
-                enable: true,
-                index: 1,
-                nodes: nodes,
-                inputType: TextInputType.text,
-                text: "Password",
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Text("Informasi Perusahaan", style: titleTextStyle),
-
-                    const SizedBox(height: 10),
-                    customTextField(
-                      context: context,
-                      controller: nameController,
-                      enable: true,
-                      index: 2,
-                      nodes: nodes,
-                      inputType: TextInputType.text,
-                      text: "Nama Perusahaan",
-                    ),
-
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: customTextField(
-                            context: context,
-                            controller: phoneCompanyController,
-                            enable: true,
-                            index: 3,
-                            nodes: nodes,
-                            inputType: TextInputType.phone,
-                            text: "Nomor Perusahaan",
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: WidgetDropDownFilter(
-                            filters: totalBranch,
-                            text: "Total Cabang",
-                            selectedValue: (indexFilter) => updateBranchFields(
-                              int.parse(totalBranch[indexFilter]),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text("Pendaftaran", style: titleTextStyle),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.center,
-                child: Text("Cabang Perusahaan", style: titleTextStyle),
-              ),
-              const SizedBox(height: 5),
-              ValueListenableBuilder(
-                valueListenable: selectedBranch,
-                builder: (context, value, child) {
-                  return Column(
+                customTextField(
+                  prefix: Icon(Icons.email_rounded, size: lv05IconSize),
+                  context: context,
+                  controller: emailCompanyController,
+                  enable: true,
+                  index: 0,
+                  nodes: nodes,
+                  inputType: TextInputType.emailAddress,
+                  text: "E-mail",
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Tidak boleh kosong!";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                customTextField(
+                  prefix: Icon(Icons.password_rounded, size: lv05IconSize),
+                  context: context,
+                  controller: passwordController,
+                  enable: true,
+                  index: 1,
+                  nodes: nodes,
+                  inputType: TextInputType.text,
+                  text: "Password",
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Tidak boleh kosong!";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
                     children: [
-                      ...List.generate(selectedBranch.value, (i) {
-                        return Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                border: BoxBorder.all(
-                                  width: 1,
-                                  color: Colors.black,
-                                  style: BorderStyle.solid,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                      customTextField(
+                        prefix: Icon(
+                          Icons.add_business_rounded,
+                          size: lv05IconSize,
+                        ),
+                        context: context,
+                        controller: nameCompanyController,
+                        enable: true,
+                        index: 2,
+                        nodes: nodes,
+                        inputType: TextInputType.text,
+                        text: "Nama Usaha",
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Tidak boleh kosong!";
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: customTextField(
+                              prefix: Icon(
+                                Icons.phone_iphone_rounded,
+                                size: lv05IconSize,
                               ),
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Cabang ${i + 1}",
-                                    style: lv1TextStyleBold,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  customTextField(
-                                    context: context,
-                                    controller: namaBranchControllers[i],
-                                    enable: true,
-                                    index: 4 + i,
-                                    nodes: nodes,
-                                    inputType: TextInputType.text,
-                                    text: "Nama ${i + 1}",
-                                  ),
-                                  const SizedBox(height: 10),
-                                  customTextField(
-                                    context: context,
-                                    controller: areaBranchControllers[i],
-                                    enable: true,
-                                    index: 5 + i,
-                                    nodes: nodes,
-                                    inputType: TextInputType.text,
-                                    text: "Daerah ${i + 1}",
-                                  ),
-                                  const SizedBox(height: 10),
-                                  customTextField(
-                                    context: context,
-                                    controller: phoneBranchControllers[i],
-                                    enable: true,
-                                    index: 6 + i,
-                                    nodes: nodes,
-                                    inputType: TextInputType.number,
-                                    text: "Nomor ${i + 1}",
-                                  ),
-                                ],
-                              ),
+                              context: context,
+                              controller: phoneCompanyController,
+                              enable: true,
+                              index: 3,
+                              nodes: nodes,
+                              inputType: TextInputType.phone,
+                              text: "Nomor Usaha",
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Tidak boleh kosong!";
+                                }
+                                return null;
+                              },
                             ),
-                            const SizedBox(height: 10),
-                          ],
-                        );
-                      }),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: WidgetDropDownFilter(
+                              filters: totalBranch,
+                              text: "Total Cabang",
+                              selectedValue: (indexFilter) =>
+                                  updateBranchFields(
+                                    int.parse(totalBranch[indexFilter]),
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
-                  );
-                },
-              ),
-            ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text("Cabang Usaha", style: titleTextStyle),
+                ),
+                const SizedBox(height: 5),
+                ValueListenableBuilder(
+                  valueListenable: selectedBranch,
+                  builder: (context, value, child) {
+                    return Column(
+                      children: [
+                        ...List.generate(selectedBranch.value, (i) {
+                          return Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  border: BoxBorder.all(
+                                    width: 1,
+                                    color: Colors.black,
+                                    style: BorderStyle.solid,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Cabang ${i + 1}",
+                                      style: lv1TextStyleBold,
+                                    ),
+                                    const SizedBox(height: 5),
+                                    customTextField(
+                                      prefix: Icon(
+                                        Icons.add_business_rounded,
+                                        size: lv05IconSize,
+                                      ),
+                                      context: context,
+                                      controller: namaBranchControllers[i],
+                                      enable: true,
+                                      inputType: TextInputType.text,
+                                      text: "Nama Cabang ${i + 1}",
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "Tidak boleh kosong!";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(height: 10),
+                                    customTextField(
+                                      prefix: Icon(
+                                        Icons.location_on_rounded,
+                                        size: lv05IconSize,
+                                      ),
+                                      context: context,
+                                      controller: addressBranchControllers[i],
+                                      enable: true,
+                                      inputType: TextInputType.text,
+                                      text: "Daerah Cabang ${i + 1}",
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "Tidak boleh kosong!";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(height: 10),
+                                    customTextField(
+                                      prefix: Icon(
+                                        Icons.phone_android_rounded,
+                                        size: lv05IconSize,
+                                      ),
+                                      context: context,
+                                      controller: phoneBranchControllers[i],
+                                      enable: true,
+                                      inputType: TextInputType.number,
+                                      text: "Nomor Cabang ${i + 1}",
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "Tidak boleh kosong!";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                            ],
+                          );
+                        }),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -228,9 +300,76 @@ class _ScreenSignupState extends State<ScreenSignup> {
         padding: EdgeInsets.all(10),
         child: customButtonIcon(
           backgroundColor: AppColor.primary,
-          icon: Icon(Icons.check_rounded, color: Colors.white),
+          icon: Icon(
+            Icons.check_rounded,
+            color: Colors.white,
+            size: lv05IconSize,
+          ),
           label: Text("Daftar", style: lv05TextStyleWhite),
-          onPressed: () {},
+          onPressed: () async {
+            if (!_formKey.currentState!.validate()) {
+              return;
+            } else {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) {
+                  return Center(
+                    child: customSpinKit(color: Colors.white, size: 30),
+                  );
+                },
+              );
+
+              final userCredential = await authenticatorAccount(
+                context: context,
+                email: emailCompanyController.text,
+                password: passwordController.text,
+                signup: true,
+              );
+
+              if (userCredential == null) return Navigator.of(context).pop();
+
+              final uidUser = userCredential.user!.uid;
+
+              final data = ModelUser(
+                idBranchUser: null,
+                statusUser: true,
+                createdUser: dateNowYMDBLOC(),
+                idUser: uidUser,
+                nameUser: nameCompanyController.text,
+                emailUser: emailCompanyController.text,
+                phoneUser: phoneCompanyController.text,
+                roleUser: RoleType.Pemilik,
+                permissionsUser: {
+                  for (final permission in Permission.values) permission: true,
+                },
+              );
+
+              await data.pushDataUser();
+
+              final listBranch = [
+                for (int i = 0; i < selectedBranch.value; i++)
+                  {
+                    'id_branch': Uuid().v4().substring(0, 8),
+                    'name_branch': namaBranchControllers[i].text,
+                    'address_branch': addressBranchControllers[i].text,
+                    'phone_branch': phoneBranchControllers[i].text,
+                  },
+              ];
+
+              await pushWorkerDataBranch(
+                collection: 'companies',
+                id: uidUser,
+                dataBranch: convertToMapBranch(
+                  nameCompany: nameCompanyController.text,
+                  phoneCompany: phoneCompanyController.text,
+                  listBranch: listBranch,
+                ),
+              );
+
+              Navigator.of(context).pop();
+            }
+          },
         ),
       ),
     );

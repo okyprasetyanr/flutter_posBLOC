@@ -112,31 +112,40 @@ class ModelUser extends Equatable {
       idBranchUser: data['id_branch'],
       permissionsUser: {
         for (final permission in Permission.values)
-          permission: data['permission_user'][permission.name],
+          permission: data['permissions_user'][permission.name] ?? false,
       },
-      createdUser:
-          (data['created_user'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdUser: parseDate(date: data['created_user']),
       noteUser: data['note_user'],
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap(String? uidOwner) {
     return {
       'status_user': statusUser,
       'name_user': nameUser,
       'email_user': emailUser,
       'phone_user': phoneUser,
       'role_user': roleUser.name,
-      'uid_owner': UserSession.uid_owner,
+      'uid_owner': uidOwner ?? UserSession.uid_owner,
       'id_branch': idBranchUser,
-      'permissions': permissionsUser,
-      'created_user': createdUser,
+      'permissions_user': {
+        for (final permission in Permission.values)
+          permission.name: permissionsUser[permission],
+      },
+      'created_user': formatDate(
+        date: createdUser ?? DateTime.now(),
+        minute: false,
+      ),
       'note_user': noteUser,
     };
   }
 
-  Future<void> pushDataUser() async {
-    pushWorkerDataUser(collection: 'users', id: idUser!, dataUser: toMap());
+  Future<void> pushDataUser({String? uidOwner}) async {
+    pushWorkerDataUser(
+      collection: 'users',
+      id: idUser!,
+      dataUser: toMap(uidOwner),
+    );
   }
 
   @override

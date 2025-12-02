@@ -5,9 +5,11 @@ import 'package:flutter_pos/features/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/operator/logic/operator_state.dart';
 import 'package:flutter_pos/function/bottom_sheet.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/widget/common_widget/custom_dropdown_filter.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
@@ -97,6 +99,35 @@ class _UIOperatorState extends State<UIOperator> {
                               .read<OperatorBloc>()
                               .add(OperatorGetData()),
                         );
+                },
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: WidgetDropDownFilter(
+                filters: ["All", for (final role in RoleType.values) role.name],
+                text: "Pilih Operator",
+                selectedValue: (indexFilter) {
+                  context.read<OperatorBloc>().add(
+                    OperatorFilterOperator(
+                      roleUser: RoleType.values[indexFilter],
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: WidgetDropDownFilter(
+                filters: statusData,
+                text: "Pilih Operator",
+                selectedValue: (indexFilter) {
+                  context.read<OperatorBloc>().add(
+                    OperatorFilterOperator(statusUser: indexFilter == 1),
+                  );
                 },
               ),
             ),
@@ -324,6 +355,7 @@ class _UIOperatorState extends State<UIOperator> {
               );
               context.read<OperatorBloc>().add(
                 OperatorUploadData(
+                  context: context,
                   data: data,
                   password: passwordController.text,
                 ),

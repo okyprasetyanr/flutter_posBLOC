@@ -17,7 +17,7 @@ class ScreenMainMenu extends StatefulWidget {
 class _ScreenMainMenuState extends State<ScreenMainMenu> {
   final currentPage = PageController();
   bool loading = true;
-  String? nameCompany;
+  final nameCompany = ValueNotifier<String?>(null);
   @override
   void initState() {
     super.initState();
@@ -34,15 +34,12 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   }
 
   Future<void> getNameCompany() async {
-    UserSession.getUidUser();
     DocumentSnapshot data = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(UserSession.getUidUser())
+        .collection("companies")
+        .doc(UserSession.getUidOwner())
         .get();
     if (data.exists) {
-      setState(() {
-        nameCompany = data['name_company'];
-      });
+      nameCompany.value = data['name_company'];
     }
   }
 
@@ -65,7 +62,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
         pageview: (page) => _pageView(page),
         widgetTop: layoutTop(context),
         widgetBottom: layoutBottom(),
-        nameCompany: nameCompany ?? "Mohon Tunggu",
+        nameCompany: nameCompany,
       ),
     );
   }

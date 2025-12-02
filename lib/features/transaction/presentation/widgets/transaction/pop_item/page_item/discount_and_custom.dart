@@ -5,6 +5,7 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
@@ -65,7 +66,7 @@ class _UITransactionPopUpDiscountAndCustomState
                         TransactionAdjustItem(discount: diskon),
                       );
                     },
-                    icon: const Icon(Icons.check_rounded, size: 15),
+                    icon: Icon(Icons.check_rounded, size: lv1IconSize),
                     label: Text(
                       "$diskon%",
                       style: isSelected ? lv05TextStyleWhite : lv05TextStyle,

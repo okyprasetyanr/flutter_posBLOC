@@ -9,6 +9,7 @@ import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/date_picker.dart';
 import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -49,7 +50,7 @@ class _UIReportState extends State<UIReport> {
               if (report == null) {
                 return Column(
                   children: [
-                    const SpinKitThreeBounce(color: Colors.blue, size: 15.0),
+                    customSpinKit(),
                     Text("Menunggu Data...", style: lv05TextStyle),
                   ],
                 );

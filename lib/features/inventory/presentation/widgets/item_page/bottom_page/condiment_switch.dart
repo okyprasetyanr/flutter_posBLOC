@@ -4,6 +4,7 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class CondimentSwitch extends StatelessWidget {
@@ -48,7 +49,10 @@ class CondimentSwitch extends StatelessWidget {
                   left: state ? -50 : 5,
                   top: -1,
                   duration: Duration(milliseconds: 500),
-                  child: Icon(Icons.check_circle_outline_rounded, size: 20),
+                  child: Icon(
+                    Icons.check_circle_outline_rounded,
+                    size: lv3IconSize,
+                  ),
                 ),
                 AnimatedPositioned(
                   curve: Curves.easeInOut,
@@ -57,7 +61,7 @@ class CondimentSwitch extends StatelessWidget {
                   duration: Duration(milliseconds: 500),
                   child: Icon(
                     Icons.check_circle_outline_rounded,
-                    size: 20,
+                    size: lv2IconSize,
                     color: Colors.white,
                   ),
                 ),

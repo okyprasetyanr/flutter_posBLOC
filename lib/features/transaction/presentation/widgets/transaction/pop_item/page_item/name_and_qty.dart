@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/transaction/logic/transaction/transaction_e
 import 'package:flutter_pos/features/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UITransactionPopUpNameAndQty extends StatelessWidget {
@@ -74,7 +75,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                               TransactionAdjustItem(mode: false),
                             );
                           },
-                          icon: Icon(Icons.remove, size: 20),
+                          icon: Icon(Icons.remove, size: lv2IconSize),
                         ),
                         SizedBox(
                           width: 18,
@@ -101,7 +102,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                               TransactionAdjustItem(mode: true),
                             );
                           },
-                          icon: Icon(Icons.add, size: 20),
+                          icon: Icon(Icons.add, size: lv2IconSize),
                         ),
                       ],
                     );

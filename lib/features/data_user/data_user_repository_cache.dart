@@ -21,7 +21,7 @@ class DataUserRepositoryCache {
   List<ModelFinancial> dataFinancial = [];
   List<ModelTransactionFinancial> dataTransIncome = [];
   List<ModelTransactionFinancial> dataTransExpense = [];
-  List<ModelUser> dataOperator = [];
+  List<ModelUser> dataUser = [];
 
   final DataUserRepository repo;
 
@@ -41,7 +41,8 @@ class DataUserRepositoryCache {
     await initTransactionSell();
     await initTransactionBuy();
     await initBatch();
-    await initOperator();
+    await initUser();
+
     for (var a in dataBranch) {
       debugPrint("Log DataUserRepositoryCache branch: $a");
     }
@@ -113,8 +114,8 @@ class DataUserRepositoryCache {
     dataBatch = await repo.getBatch();
   }
 
-  Future<void> initOperator() async {
-    dataOperator = await repo.getUser();
+  Future<void> initUser() async {
+    dataUser = await repo.getUser();
   }
 
   List<ModelBranch> getBranch() {

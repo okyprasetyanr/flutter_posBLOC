@@ -49,7 +49,7 @@ class UserSession {
     await repo.initData();
   }
 
-  static String getUidUser() {
+  static String getUidOwner() {
     return uid_owner;
   }
 

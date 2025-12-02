@@ -4,11 +4,11 @@ import 'package:equatable/equatable.dart';
 class ModelBranch extends Equatable {
   final String _areaBranch, _numTelpBranch, _addressBranch, _idBranch;
   ModelBranch({
-    required String areaBranch,
+    required String nameBranch,
     required String numTelpBranch,
     required String addressBranch,
     required String idBranch,
-  }) : _areaBranch = areaBranch,
+  }) : _areaBranch = nameBranch,
        _numTelpBranch = numTelpBranch,
        _addressBranch = addressBranch,
        _idBranch = idBranch;
@@ -25,11 +25,11 @@ class ModelBranch extends Equatable {
 
   static List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
     Map dataUser = data.data() as Map<String, dynamic>;
-    List listbranch = dataUser['branch'] ?? [];
+    List listbranch = dataUser['list_branch'] ?? [];
     return listbranch
         .map(
           (map) => ModelBranch(
-            areaBranch: map['area_branch'],
+            nameBranch: map['name_branch'],
             numTelpBranch: map['phone_branch'],
             addressBranch: map['address_branch'],
             idBranch: map['id_branch'],

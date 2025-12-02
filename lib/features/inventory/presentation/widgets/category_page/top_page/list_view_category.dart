@@ -4,6 +4,7 @@ import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -24,7 +25,7 @@ class UIInventoryListViewCategory extends StatelessWidget {
         if (state.$1 == null) {
           return Padding(
             padding: const EdgeInsets.all(10),
-            child: const SpinKitThreeBounce(color: Colors.blue, size: 15.0),
+            child: SpinKitThreeBounce(color: Colors.blue, size: lv1IconSize),
           );
         }
         final dataCategory = state.$1!

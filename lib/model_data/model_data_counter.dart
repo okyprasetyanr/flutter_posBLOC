@@ -43,7 +43,7 @@ class ModelCounter {
 
     final datacounterRef = FirebaseFirestore.instance
         .collection('counter')
-        .doc(UserSession.getUidUser())
+        .doc(UserSession.getUidOwner())
         .collection('branch')
         .doc(dataCounter.getidBranch);
 

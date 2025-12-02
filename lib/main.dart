@@ -21,6 +21,7 @@ import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
@@ -291,10 +292,23 @@ class _MainAppState extends State<ScreenLogin> {
                                     elevation: 10,
                                   ),
                                   onPressed: () {
-                                    authenticatorAcoount(
-                                      email: "demo@gmail.com",
-                                      password: "12345678",
+                                    showDialog(
                                       context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) {
+                                        return Center(
+                                          child: customSpinKit(
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                    authenticatorAccount(
+                                      email: "demo@gmail.com",
+                                      password: "123456",
+                                      context: context,
+                                      signup: false,
                                     );
                                   },
                                   child: Text('Login', style: buttonTextStyle),

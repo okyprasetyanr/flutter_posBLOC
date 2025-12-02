@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class WidgetAnimatePage extends StatelessWidget {
@@ -22,7 +23,7 @@ class WidgetAnimatePage extends StatelessWidget {
           duration: const Duration(milliseconds: 500),
           child: Row(
             children: [
-              const Icon(Icons.swap_horiz_rounded, size: 25),
+              Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
               Text(text1, style: titleTextStyle),
             ],
           ),
@@ -35,7 +36,7 @@ class WidgetAnimatePage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Row(
               children: [
-                const Icon(Icons.swap_horiz_rounded, size: 25),
+                Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
                 Text(text2, style: titleTextStyle),
               ],
             ),

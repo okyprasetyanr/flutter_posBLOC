@@ -8,13 +8,14 @@ import 'package:flutter_pos/features/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/partner/logic/partner_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_reset.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:uuid/uuid.dart';
 
 class UIPartner extends StatefulWidget {
@@ -96,7 +97,7 @@ class _UIPartnerState extends State<UIPartner> {
                           duration: const Duration(milliseconds: 500),
                           child: Row(
                             children: [
-                              const Icon(Icons.swap_horiz_rounded, size: 25),
+                              Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
                               Text("Pelanggan", style: titleTextStyle),
                             ],
                           ),
@@ -109,7 +110,10 @@ class _UIPartnerState extends State<UIPartner> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: [
-                                const Icon(Icons.swap_horiz_rounded, size: 25),
+                                Icon(
+                                  Icons.swap_horiz_rounded,
+                                  size: lv3IconSize,
+                                ),
                                 Text("Pemasok", style: titleTextStyle),
                               ],
                             ),
@@ -144,7 +148,7 @@ class _UIPartnerState extends State<UIPartner> {
                 selector: (state) => state is PartnerLoading,
                 builder: (context, state) {
                   return state
-                      ? const SpinKitThreeBounce(color: Colors.blue, size: 15.0)
+                      ? customSpinKit()
                       : BlocSelector<PartnerBloc, PartnerState, String>(
                           selector: (state) => state is PartnerLoaded
                               ? state.idBranch ?? ""
@@ -173,7 +177,7 @@ class _UIPartnerState extends State<UIPartner> {
             selector: (state) => state is PartnerLoading,
             builder: (context, state) {
               return state
-                  ? SpinKitThreeBounce(color: Colors.blue, size: 15.0)
+                  ? customSpinKit()
                   : BlocSelector<
                       PartnerBloc,
                       PartnerState,

@@ -17,7 +17,7 @@ class DataUserRepository {
   Future<List<ModelBranch>> getBranch() async {
     final data = await _db
         .collection('companies')
-        .doc(UserSession.getUidUser())
+        .doc(UserSession.getUidOwner())
         .get();
     return ModelBranch.getDataListBranch(data);
   }

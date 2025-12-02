@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 Widget customButtonIconReset({VoidCallback? onPressed}) {
@@ -15,7 +16,7 @@ Widget customButtonIconReset({VoidCallback? onPressed}) {
       minimumSize: const Size(0, 30),
       backgroundColor: AppColor.primary,
     ),
-    icon: const Icon(Icons.restart_alt_rounded, size: 20),
+    icon: Icon(Icons.restart_alt_rounded, size: lv2IconSize),
     label: Text("Bersihkan", style: lv1TextStyleWhite),
   );
 }

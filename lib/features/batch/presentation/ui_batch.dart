@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/batch/logic/batch_state.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
@@ -56,7 +58,18 @@ class _UiBatchState extends State<UiBatch> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Stok", style: titleTextStyle),
+        Row(
+          children: [
+            customButtonIcon(
+              backgroundColor: AppColor.primary,
+              icon: Icon(Icons.menu_rounded, color: Colors.white),
+              label: Text("Menu", style: lv05TextStyleWhite),
+              onPressed: () => isOpen.value = !isOpen.value,
+            ),
+            const SizedBox(width: 10),
+            Text("Stok", style: titleTextStyle),
+          ],
+        ),
         Row(
           children: [
             Expanded(
@@ -289,7 +302,7 @@ class _UiBatchState extends State<UiBatch> {
     ];
 
     return NavigationGesture(
-      currentPage: "inventory",
+      currentPage: "batch",
       attContent: contentNavGesture,
       isOpen: isOpen,
       close: () {

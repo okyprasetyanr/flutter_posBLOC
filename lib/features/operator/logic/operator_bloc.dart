@@ -1,13 +1,14 @@
 import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/operator/logic/operator_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/delete_data.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 
 class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   DataUserRepositoryCache repoCache;
@@ -35,7 +36,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final indexRole = event.roleUser ?? currentState.roleUser;
     final statusUser = event.statusUser ?? currentState.statusUser;
-    final dataOperator = repoCache.dataOperator;
+    final dataOperator = repoCache.dataUser;
     final filteredData = dataOperator
         .where(
           (element) =>
@@ -113,8 +114,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Emitter<OperatorState> emit,
   ) {
     final selectedData = event.data.getIdUser;
-    deleteDataOperator(selectedData!);
-    final dataOperator = repoCache.dataOperator;
+    deleteDataUser(selectedData!);
+    final dataOperator = repoCache.dataUser;
     final indexOperator = dataOperator.indexWhere(
       (element) => element.getIdUser == selectedData,
     );
@@ -138,27 +139,39 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Emitter<OperatorState> emit,
   ) async {
     final currentState = state as OperatorLoaded;
-    final dataOperator = repoCache.dataOperator;
+    final dataOperator = repoCache.dataUser;
     ModelUser data = event.data;
     final indexOperator = dataOperator.indexWhere(
       (element) => element.getIdUser == currentState.selectedData?.getIdUser,
     );
+    final context = event.context;
     if (indexOperator != -1) {
       dataOperator[indexOperator] = event.data;
     } else {
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: data.getEmailUser,
-            password: event.password,
-          );
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) {
+          return Center(child: customSpinKit(color: Colors.white, size: 30));
+        },
+      );
 
+      final credential = await authenticatorAccount(
+        context: context,
+        email: data.getEmailUser,
+        password: event.password,
+        signup: true,
+      );
+
+      if (credential == null) return Navigator.of(context).pop();
       final uid = credential.user!.uid;
 
-      data = data.copyWith(idBranchUser: uid);
+      data = data.copyWith(idBranchUser: currentState.idBranch, idUser: uid);
     }
 
-    data.pushDataUser();
+    await data.pushDataUser();
     add(OperatorGetData());
+    Navigator.of(context).pop();
   }
 
   FutureOr<void> _onResetPassword(

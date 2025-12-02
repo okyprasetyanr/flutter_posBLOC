@@ -6,6 +6,7 @@ import 'package:flutter_pos/features/transaction/logic/transaction/transaction_e
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_condiment/page_condiment.dart';
 import 'package:flutter_pos/features/transaction/presentation/widgets/transaction/pop_item/page_item/page/page_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 
 class UITransactionPopUpItem extends StatefulWidget {
   const UITransactionPopUpItem({super.key});
@@ -94,7 +95,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                               child: Icon(
                                 Icons.fastfood_rounded,
                                 color: Colors.white,
-                                size: 20,
+                                size: lv2IconSize,
                               ),
                               onPressed: () {
                                 _gotoPage(!currentPage.value);
@@ -127,7 +128,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                               child: Icon(
                                 Icons.delete_forever_rounded,
                                 color: Colors.white,
-                                size: 20,
+                                size: lv2IconSize,
                               ),
                               onPressed: () {
                                 context.read<TransactionBloc>().add(
@@ -162,7 +163,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                               child: Icon(
                                 Icons.close_rounded,
                                 color: Colors.white,
-                                size: 20,
+                                size: lv2IconSize,
                               ),
                               onPressed: () {
                                 Navigator.pop(context);
@@ -197,7 +198,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                               child: Icon(
                                 Icons.shopping_cart_outlined,
                                 color: Colors.white,
-                                size: 20,
+                                size: lv2IconSize,
                               ),
                               onPressed: () {
                                 Navigator.pop(context);
