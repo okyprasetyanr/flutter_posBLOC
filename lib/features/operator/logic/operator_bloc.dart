@@ -23,10 +23,31 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     on<OperatorSearch>(_onSearch, transformer: debounceRestartable());
   }
 
-  FutureOr<void> _onGetData(
+  List<ModelUser> filterData({
+    required List<ModelUser> dataUser,
+    RoleType? roleUser,
+    bool? statusUser,
+  }) {
+    debugPrint("Log OperatorBloc: $dataUser");
+    return dataUser.where((element) {
+      if (statusUser != null) {
+        final byStatus = element.getstatusUser == statusUser;
+        if (!byStatus) return false;
+      }
+      if (roleUser != null) {
+        final byRole =
+            element.getRoleUser == RoleTypeX.fromString(roleUser.name);
+        if (!byRole) return false;
+      }
+
+      return true;
+    }).toList();
+  }
+
+  Future<void> _onGetData(
     OperatorGetData event,
     Emitter<OperatorState> emit,
-  ) {
+  ) async {
     final currentState = state is OperatorLoaded
         ? state as OperatorLoaded
         : OperatorLoaded();
@@ -34,24 +55,21 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     final dataBranch = currentState.dataBranch ?? repoCache.dataBranch;
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
-    final indexRole = event.roleUser ?? currentState.roleUser;
+    final roleUser = event.roleUser ?? currentState.roleUser;
     final statusUser = event.statusUser ?? currentState.statusUser;
-    final dataOperator = repoCache.dataUser;
-    final filteredData = dataOperator
-        .where(
-          (element) =>
-              RoleType.values.contains(element.getRoleUser) && statusUser == 0
-              ? element.getstatusUser
-              : !element.getstatusUser,
-        )
-        .toList();
+    final dataUser = await repoCache.dataUser;
+    final filteredData = filterData(
+      dataUser: dataUser,
+      roleUser: roleUser,
+      statusUser: statusUser,
+    );
     emit(
       OperatorLoaded(
         dataBranch: dataBranch,
         idBranch: idBranch,
-        dataOperator: dataOperator,
+        dataUser: dataUser,
         filteredData: filteredData,
-        roleUser: indexRole,
+        roleUser: roleUser,
         statusUser: statusUser,
       ),
     );
@@ -64,18 +82,11 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     final currentState = state as OperatorLoaded;
     final roleUser = event.roleUser ?? currentState.roleUser;
     final statusUser = event.statusUser ?? currentState.statusUser;
-    final filteredData = currentState.dataOperator.where((element) {
-      if (event.statusUser != null) {
-        final byStatus = element.getstatusUser == statusUser;
-        if (!byStatus) return false;
-      }
-      if (event.roleUser != null) {
-        final byRole = RoleType.values.contains(element.getRoleUser);
-        if (!byRole) return false;
-      }
-
-      return true;
-    }).toList();
+    final filteredData = filterData(
+      dataUser: currentState.dataUser,
+      roleUser: roleUser,
+      statusUser: statusUser,
+    );
 
     emit(
       currentState.copyWith(
@@ -90,7 +101,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     final currentState = state as OperatorLoaded;
     final roleUser = currentState.roleUser;
     final statusUser = currentState.statusUser;
-    final dataFiltered = currentState.dataOperator.where(
+    final dataFiltered = currentState.dataUser.where(
       (element) => element.getNameUser.toLowerCase().contains(event.search),
     );
     final filteredData = dataFiltered

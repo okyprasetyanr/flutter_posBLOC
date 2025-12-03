@@ -8,7 +8,7 @@ class OperatorInitial extends OperatorState {}
 
 class OperatorLoaded extends OperatorState with EquatableMixin {
   final List<ModelBranch>? dataBranch;
-  final List<ModelUser> dataOperator;
+  final List<ModelUser> dataUser;
   final List<ModelUser> filteredData;
   final String? idBranch;
   final RoleType? roleUser;
@@ -17,11 +17,11 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
 
   OperatorLoaded({
     this.dataBranch,
-    this.dataOperator = const [],
+    this.dataUser = const [],
     this.filteredData = const [],
     this.idBranch,
     this.roleUser,
-    this.statusUser = false,
+    this.statusUser = true,
     this.selectedData,
   });
 
@@ -36,7 +36,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   }) {
     return OperatorLoaded(
       dataBranch: dataBranch ?? this.dataBranch,
-      dataOperator: dataOperator ?? this.dataOperator,
+      dataUser: dataOperator ?? this.dataUser,
       filteredData: filteredData ?? this.filteredData,
       idBranch: idBranch ?? this.idBranch,
       roleUser: roleUser ?? this.roleUser,
@@ -49,7 +49,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   List<Object?> get props => [
     dataBranch,
     statusUser,
-    dataOperator,
+    dataUser,
     filteredData,
     idBranch,
     roleUser,

@@ -109,9 +109,9 @@ class ScreenLogin extends StatefulWidget {
 }
 
 class _MainAppState extends State<ScreenLogin> {
-  bool _obscurePassword = false;
-  double? _logoTopPosition;
-  bool showForm = false;
+  final _obscurePassword = ValueNotifier<bool>(false);
+  final _logoTopPosition = ValueNotifier<double>(0);
+  final showForm = ValueNotifier<bool>(false);
   final TextEditingController emailcontroller = TextEditingController();
   final TextEditingController passcontroller = TextEditingController();
 
@@ -125,14 +125,13 @@ class _MainAppState extends State<ScreenLogin> {
   @override
   void initState() {
     super.initState();
-    _logoTopPosition = 0;
 
     Future.delayed(const Duration(milliseconds: 2000), () {
-      setState(() => _logoTopPosition = -150);
+      _logoTopPosition.value = -150;
     });
 
     Future.delayed(const Duration(milliseconds: 2800), () {
-      setState(() => showForm = true);
+      showForm.value = true;
     });
   }
 
@@ -160,11 +159,12 @@ class _MainAppState extends State<ScreenLogin> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          if (_logoTopPosition != null)
-            Center(
+          ValueListenableBuilder(
+            valueListenable: _logoTopPosition,
+            builder: (context, value, child) => Center(
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 800),
-                transform: Matrix4.translationValues(0, _logoTopPosition!, 0),
+                transform: Matrix4.translationValues(0, value, 0),
                 curve: Curves.easeOut,
                 child: Image.asset(
                   'assets/logo.png',
@@ -174,177 +174,191 @@ class _MainAppState extends State<ScreenLogin> {
                 ),
               ),
             ),
-
-          AnimatedOpacity(
-            duration: const Duration(milliseconds: 800),
-            opacity: showForm ? 1.0 : 0.0,
-            child: Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/bg.png"),
-                      fit: BoxFit.cover,
+          ),
+          ValueListenableBuilder(
+            valueListenable: showForm,
+            builder: (context, value, child) => AnimatedOpacity(
+              duration: const Duration(milliseconds: 800),
+              opacity: value ? 1.0 : 0.0,
+              child: Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/bg.png"),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 40,
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Login",
-                          style: GoogleFonts.poppins(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 35,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 40,
+                    ),
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Login",
+                            style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 35,
+                            ),
                           ),
                         ),
-                      ),
-                      Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Column(
-                              children: [
-                                const SizedBox(height: 220),
-                                Text("Aplikasi POS", style: titleTextStyle),
-                                const SizedBox(height: 10),
-                                Material(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(100),
+                        Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Column(
+                                children: [
+                                  const SizedBox(height: 220),
+                                  Text("Aplikasi POS", style: titleTextStyle),
+                                  const SizedBox(height: 10),
+                                  Material(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(100),
+                                    ),
+                                    elevation: 2,
+                                    shadowColor: Colors.black,
+                                    child: TextField(
+                                      controller: emailcontroller,
+                                      decoration: InputDecoration(
+                                        labelText: 'Username:',
+                                        labelStyle: labelTextStyle,
+                                        hintText: 'Username...',
+                                        hintStyle: hintTextStyle,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(100),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  elevation: 2,
-                                  shadowColor: Colors.black,
-                                  child: TextField(
-                                    controller: emailcontroller,
-                                    decoration: InputDecoration(
-                                      labelText: 'Username:',
-                                      labelStyle: labelTextStyle,
-                                      hintText: 'Username...',
-                                      hintStyle: hintTextStyle,
-                                      border: OutlineInputBorder(
+                                  const SizedBox(height: 20),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Material(
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(100),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Material(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(100),
-                                      ),
-                                      elevation: 2,
-                                      shadowColor: Colors.black,
-                                      child: TextField(
-                                        controller: passcontroller,
-                                        obscureText: _obscurePassword,
-                                        decoration: InputDecoration(
-                                          labelText: 'Password:',
-                                          labelStyle: labelTextStyle,
-                                          hintText: 'Password...',
-                                          hintStyle: hintTextStyle,
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(100),
-                                            ),
-                                          ),
-                                          suffixIcon: IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _obscurePassword =
-                                                    !_obscurePassword;
-                                              });
-                                            },
-                                            icon: Icon(
-                                              _obscurePassword
-                                                  ? Icons.visibility
-                                                  : Icons.visibility_off,
-                                            ),
-                                          ),
+                                        elevation: 2,
+                                        shadowColor: Colors.black,
+                                        child: ValueListenableBuilder(
+                                          valueListenable: _obscurePassword,
+                                          builder: (context, value, child) =>
+                                              TextField(
+                                                controller: passcontroller,
+                                                obscureText:
+                                                    _obscurePassword.value,
+                                                decoration: InputDecoration(
+                                                  labelText: 'Password:',
+                                                  labelStyle: labelTextStyle,
+                                                  hintText: 'Password...',
+                                                  hintStyle: hintTextStyle,
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                          Radius.circular(100),
+                                                        ),
+                                                  ),
+                                                  suffixIcon: IconButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        _obscurePassword.value =
+                                                            !value;
+                                                      });
+                                                    },
+                                                    icon: Icon(
+                                                      value
+                                                          ? Icons.visibility
+                                                          : Icons
+                                                                .visibility_off,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColor.primary,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 30,
-                                      vertical: 10,
-                                    ),
-                                    shadowColor: Colors.black,
-                                    elevation: 10,
+                                    ],
                                   ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) {
-                                        return Center(
-                                          child: customSpinKit(
-                                            color: Colors.white,
-                                            size: 30,
-                                          ),
-                                        );
-                                      },
-                                    );
-                                    authenticatorAccount(
-                                      email: "demo@gmail.com",
-                                      password: "123456",
-                                      context: context,
-                                      signup: false,
-                                    );
-                                  },
-                                  child: Text('Login', style: buttonTextStyle),
-                                ),
-                                const SizedBox(height: 20),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColor.primary,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 30,
-                                      vertical: 10,
+                                  const SizedBox(height: 20),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.primary,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 30,
+                                        vertical: 10,
+                                      ),
+                                      shadowColor: Colors.black,
+                                      elevation: 10,
                                     ),
-                                    shadowColor: Colors.black,
-                                    elevation: 10,
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (_) {
+                                          return Center(
+                                            child: customSpinKit(
+                                              color: Colors.white,
+                                              size: 30,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                      authenticatorAccount(
+                                        email: "demo@gmail.com",
+                                        password: "123456",
+                                        context: context,
+                                        signup: false,
+                                      );
+                                    },
+                                    child: Text(
+                                      'Login',
+                                      style: buttonTextStyle,
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    navUpDownTransition(
-                                      context,
-                                      '/sign-up',
-                                      false,
-                                    );
-                                  },
-                                  child: Text(
-                                    'Sign-Up',
-                                    style: buttonTextStyle,
+                                  const SizedBox(height: 20),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.primary,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 30,
+                                        vertical: 10,
+                                      ),
+                                      shadowColor: Colors.black,
+                                      elevation: 10,
+                                    ),
+                                    onPressed: () {
+                                      navUpDownTransition(
+                                        context,
+                                        '/sign-up',
+                                        false,
+                                      );
+                                    },
+                                    child: Text(
+                                      'Sign-Up',
+                                      style: buttonTextStyle,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

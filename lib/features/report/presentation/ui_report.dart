@@ -11,7 +11,6 @@ import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIReport extends StatefulWidget {
   const UIReport({super.key});

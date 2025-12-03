@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/operator/logic/operator_state.dart';
@@ -48,8 +49,12 @@ class _UIOperatorState extends State<UIOperator> {
 
   @override
   void initState() {
-    context.read<OperatorBloc>().add(OperatorGetData());
     super.initState();
+    _initData();
+  }
+
+  void _initData() {
+    context.read<OperatorBloc>().add(OperatorGetData());
   }
 
   @override
@@ -111,9 +116,12 @@ class _UIOperatorState extends State<UIOperator> {
                 filters: ["All", for (final role in RoleType.values) role.name],
                 text: "Pilih Operator",
                 selectedValue: (indexFilter) {
+                  final index = indexFilter - 1;
                   context.read<OperatorBloc>().add(
                     OperatorFilterOperator(
-                      roleUser: RoleType.values[indexFilter],
+                      roleUser: index != -1
+                          ? RoleType.values[indexFilter - 1]
+                          : null,
                     ),
                   );
                 },
@@ -126,7 +134,7 @@ class _UIOperatorState extends State<UIOperator> {
                 text: "Pilih Operator",
                 selectedValue: (indexFilter) {
                   context.read<OperatorBloc>().add(
-                    OperatorFilterOperator(statusUser: indexFilter == 1),
+                    OperatorFilterOperator(statusUser: indexFilter == 0),
                   );
                 },
               ),
@@ -276,59 +284,94 @@ class _UIOperatorState extends State<UIOperator> {
                           permission: false,
                       };
                     } else {
+                      final selectedData = currentState.selectedData!;
                       permissionNotifier.value =
                           currentState.selectedData!.getPermissionsUser;
+                      nameController.text = selectedData.getNameUser;
+                      phoneController.text = selectedData.getPhoneUser;
+                      emailController.text = selectedData.getEmailUser;
+                      noteController.text = selectedData.getNoteUser ?? "";
                     }
                   }
                 },
-                child: customButtonIcon(
-                  backgroundColor: AppColor.primary,
-                  icon: Icon(Icons.check_box_outlined, color: Colors.white),
-                  label: Text("Ijin Akses", style: lv05TextStyleWhite),
-                  onPressed: () {
-                    customBottomSheet(
-                      context: context,
-                      resetItemForm: () {},
-                      content: (scrollController) {
-                        return ValueListenableBuilder<Map<Permission, bool>>(
-                          valueListenable: permissionNotifier,
-                          builder: (context, permissions, _) {
-                            return Column(
-                              children: [
-                                Text("Ijin Akses", style: lv1TextStyle),
-                                Expanded(
-                                  child: ListView(
-                                    controller: scrollController,
-                                    shrinkWrap: true,
-                                    children: Permission.values.map((
-                                      permission,
-                                    ) {
-                                      return CheckboxListTile(
-                                        dense: true,
-                                        activeColor: AppColor.primary,
-                                        checkboxScaleFactor: 0.8,
-                                        title: Text(
-                                          permission.name.replaceAll("_", " "),
-                                          style: lv05TextStyle,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: WidgetDropDownFilter(
+                        filters: [
+                          for (final role in RoleType.values.where(
+                            (element) => element.name != "Pemilik",
+                          ))
+                            role.name,
+                        ],
+                        text: "Pilih Jenis Operator",
+                        selectedValue: (indexFilter) {},
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 2,
+                      child: customButtonIcon(
+                        backgroundColor: AppColor.primary,
+                        icon: Icon(
+                          Icons.check_box_outlined,
+                          color: Colors.white,
+                        ),
+                        label: Text("Ijin Akses", style: lv05TextStyleWhite),
+                        onPressed: () {
+                          customBottomSheet(
+                            context: context,
+                            resetItemForm: () {},
+                            content: (scrollController) {
+                              return ValueListenableBuilder<
+                                Map<Permission, bool>
+                              >(
+                                valueListenable: permissionNotifier,
+                                builder: (context, permissions, _) {
+                                  return Column(
+                                    children: [
+                                      Text("Ijin Akses", style: lv1TextStyle),
+                                      Expanded(
+                                        child: ListView(
+                                          controller: scrollController,
+                                          shrinkWrap: true,
+                                          children: Permission.values.map((
+                                            permission,
+                                          ) {
+                                            return CheckboxListTile(
+                                              dense: true,
+                                              activeColor: AppColor.primary,
+                                              checkboxScaleFactor: 0.8,
+                                              title: Text(
+                                                permission.name.replaceAll(
+                                                  "_",
+                                                  " ",
+                                                ),
+                                                style: lv05TextStyle,
+                                              ),
+                                              value:
+                                                  permissions[permission] ??
+                                                  false,
+                                              onChanged: (val) {
+                                                permissionNotifier.value = {
+                                                  ...permissions,
+                                                  permission: val!,
+                                                };
+                                              },
+                                            );
+                                          }).toList(),
                                         ),
-                                        value: permissions[permission] ?? false,
-                                        onChanged: (val) {
-                                          permissionNotifier.value = {
-                                            ...permissions,
-                                            permission: val!,
-                                          };
-                                        },
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -367,5 +410,8 @@ class _UIOperatorState extends State<UIOperator> {
     );
   }
 
-  Future<void> refreshIndicator() async {}
+  Future<void> refreshIndicator() async {
+    await context.read<DataUserRepositoryCache>().initUser();
+    _initData();
+  }
 }
