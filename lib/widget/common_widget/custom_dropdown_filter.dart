@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 Widget WidgetDropDownFilter<T>({
+  String? initialValue,
   required List<String> filters,
   required String text,
   required Function(int indexFilter) selectedValue,
@@ -15,7 +16,7 @@ Widget WidgetDropDownFilter<T>({
       contentPadding: const EdgeInsets.symmetric(vertical: 4),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
     ),
-    initialValue: filters.first,
+    initialValue: initialValue ?? filters.first,
     items: filters
         .map(
           (map) => DropdownMenuItem(

@@ -36,6 +36,15 @@ class _UIOperatorState extends State<UIOperator> {
     for (final permission in Permission.values) permission: false,
   });
 
+  int? roleTypeSelected = null;
+  final roleTypeList = [
+    for (final role in RoleType.values.where((element) => element.id != 1))
+      role.name,
+  ];
+
+  bool? statusSelected;
+  bool isEdit = false;
+
   @override
   void dispose() {
     searchController.dispose();
@@ -113,14 +122,19 @@ class _UIOperatorState extends State<UIOperator> {
           children: [
             Expanded(
               child: WidgetDropDownFilter(
-                filters: ["All", for (final role in RoleType.values) role.name],
+                filters: [
+                  "All",
+                  for (final role in RoleType.values.where(
+                    (element) => element.name != "Pemilik",
+                  ))
+                    role.name,
+                ],
                 text: "Pilih Operator",
                 selectedValue: (indexFilter) {
-                  final index = indexFilter - 1;
                   context.read<OperatorBloc>().add(
                     OperatorFilterOperator(
-                      roleUser: index != -1
-                          ? RoleType.values[indexFilter - 1]
+                      roleUser: indexFilter - 1 != -1
+                          ? RoleTypeX.fromString(roleTypeList[indexFilter - 1])
                           : null,
                     ),
                   );
@@ -131,7 +145,7 @@ class _UIOperatorState extends State<UIOperator> {
             Expanded(
               child: WidgetDropDownFilter(
                 filters: statusData,
-                text: "Pilih Operator",
+                text: "Pilih Status",
                 selectedValue: (indexFilter) {
                   context.read<OperatorBloc>().add(
                     OperatorFilterOperator(statusUser: indexFilter == 0),
@@ -283,6 +297,9 @@ class _UIOperatorState extends State<UIOperator> {
                         for (final permission in Permission.values)
                           permission: false,
                       };
+                      roleTypeSelected = null;
+                      statusSelected = null;
+                      isEdit = false;
                     } else {
                       final selectedData = currentState.selectedData!;
                       permissionNotifier.value =
@@ -291,6 +308,9 @@ class _UIOperatorState extends State<UIOperator> {
                       phoneController.text = selectedData.getPhoneUser;
                       emailController.text = selectedData.getEmailUser;
                       noteController.text = selectedData.getNoteUser ?? "";
+                      roleTypeSelected = selectedData.getRoleUser;
+                      statusSelected = selectedData.getstatusUser;
+                      isEdit = true;
                     }
                   }
                 },
@@ -298,14 +318,58 @@ class _UIOperatorState extends State<UIOperator> {
                   children: [
                     Expanded(
                       child: WidgetDropDownFilter(
-                        filters: [
-                          for (final role in RoleType.values.where(
-                            (element) => element.name != "Pemilik",
-                          ))
-                            role.name,
-                        ],
-                        text: "Pilih Jenis Operator",
-                        selectedValue: (indexFilter) {},
+                        initialValue: isEdit
+                            ? roleTypeList.firstWhere(
+                                (element) => element == roleTypeSelected,
+                              )
+                            : null,
+                        filters: roleTypeList,
+                        text: "Jenis Operator",
+                        selectedValue: (index) {
+                          isEdit
+                              ? context.read<OperatorBloc>().add(
+                                  OperatorSelectedData(
+                                    selectedData:
+                                        (context.read<OperatorBloc>().state
+                                                as OperatorLoaded)
+                                            .selectedData!
+                                            .copyWith(
+                                              roleUser: RoleTypeX.fromString(
+                                                roleTypeList[index],
+                                              )!.id,
+                                            ),
+                                  ),
+                                )
+                              : roleTypeSelected = RoleTypeX.fromString(
+                                  roleTypeList[index],
+                                )!.id;
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: WidgetDropDownFilter(
+                        initialValue: isEdit
+                            ? statusData.firstWhere(
+                                (element) => element == statusSelected,
+                              )
+                            : null,
+                        filters: statusData,
+                        text: "Status",
+                        selectedValue: (indexFilter) {
+                          isEdit
+                              ? context.read<OperatorBloc>().add(
+                                  OperatorSelectedData(
+                                    selectedData:
+                                        (context.read<OperatorBloc>().state
+                                                as OperatorLoaded)
+                                            .selectedData!
+                                            .copyWith(
+                                              statusUser: indexFilter == 0,
+                                            ),
+                                  ),
+                                )
+                              : statusSelected = indexFilter == 0;
+                        },
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -385,15 +449,18 @@ class _UIOperatorState extends State<UIOperator> {
             label: Text("Simpan", style: lv05TextStyleWhite),
             onPressed: () {
               final data = ModelUser(
+                idUser: (context.read<OperatorBloc>().state as OperatorLoaded)
+                    .selectedData
+                    ?.idUser,
                 permissionsUser: permissionNotifier.value,
                 nameUser: nameController.text,
                 idBranchUser:
                     (context.read<OperatorBloc>().state as OperatorLoaded)
                         .idBranch!,
-                roleUser: RoleType.Kasir,
+                roleUser: roleTypeSelected ?? 2,
                 emailUser: emailController.text,
                 phoneUser: phoneController.text,
-                statusUser: true,
+                statusUser: statusSelected ?? true,
                 noteUser: noteController.text,
               );
               context.read<OperatorBloc>().add(

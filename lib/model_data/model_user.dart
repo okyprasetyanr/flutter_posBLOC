@@ -15,6 +15,19 @@ extension RoleTypeX on RoleType {
   }
 }
 
+extension RoleTypeExt on RoleType {
+  int get id {
+    switch (this) {
+      case RoleType.Pemilik:
+        return 1;
+      case RoleType.Kasir:
+        return 2;
+      case RoleType.Admin:
+        return 3;
+    }
+  }
+}
+
 enum Permission {
   Penjualan,
   Pembelian,
@@ -36,7 +49,7 @@ class ModelUser extends Equatable {
   final String nameUser;
   final String emailUser;
   final String phoneUser;
-  final RoleType roleUser;
+  final int roleUser;
   final String? idBranchUser;
   final Map<Permission, bool> permissionsUser;
   final DateTime? createdUser;
@@ -61,7 +74,7 @@ class ModelUser extends Equatable {
   String get getNameUser => nameUser;
   String get getEmailUser => emailUser;
   String get getPhoneUser => phoneUser;
-  RoleType get getRoleUser => roleUser;
+  int get getRoleUser => roleUser;
   String? get getIdBranchUser => idBranchUser;
   Map<Permission, bool> get getPermissionsUser => permissionsUser;
   DateTime? get getCreatedUser => createdUser;
@@ -73,7 +86,7 @@ class ModelUser extends Equatable {
     String? nameUser,
     String? emailUser,
     String? phoneUser,
-    RoleType? roleUser,
+    int? roleUser,
     String? idBranchUser,
     Map<Permission, bool>? permissionsUser,
     DateTime? createdUser,
@@ -108,7 +121,7 @@ class ModelUser extends Equatable {
       nameUser: data['name_user'],
       emailUser: data['email_user'],
       phoneUser: data['phone_user'],
-      roleUser: RoleTypeX.fromString(data['role_user'])!,
+      roleUser: int.tryParse(data['role_user'].toString())!,
       idBranchUser: data['id_branch'],
       permissionsUser: {
         for (final permission in Permission.values)
@@ -125,7 +138,7 @@ class ModelUser extends Equatable {
       'name_user': nameUser,
       'email_user': emailUser,
       'phone_user': phoneUser,
-      'role_user': roleUser.name,
+      'role_user': roleUser,
       'uid_owner': uidOwner ?? UserSession.uid_owner,
       'id_branch': idBranchUser,
       'permissions_user': {

@@ -28,15 +28,14 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     RoleType? roleUser,
     bool? statusUser,
   }) {
-    debugPrint("Log OperatorBloc: $dataUser");
+    debugPrint("Log OperatorBloc: $roleUser , $statusUser");
     return dataUser.where((element) {
       if (statusUser != null) {
         final byStatus = element.getstatusUser == statusUser;
         if (!byStatus) return false;
       }
       if (roleUser != null) {
-        final byRole =
-            element.getRoleUser == RoleTypeX.fromString(roleUser.name);
+        final byRole = element.getRoleUser == roleUser.id;
         if (!byRole) return false;
       }
 
@@ -149,24 +148,23 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     OperatorUploadData event,
     Emitter<OperatorState> emit,
   ) async {
+    final context = event.context;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return Center(child: customSpinKit(color: Colors.white, size: 30));
+      },
+    );
     final currentState = state as OperatorLoaded;
     final dataOperator = repoCache.dataUser;
     ModelUser data = event.data;
     final indexOperator = dataOperator.indexWhere(
       (element) => element.getIdUser == currentState.selectedData?.getIdUser,
     );
-    final context = event.context;
     if (indexOperator != -1) {
-      dataOperator[indexOperator] = event.data;
+      dataOperator[indexOperator] = data;
     } else {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) {
-          return Center(child: customSpinKit(color: Colors.white, size: 30));
-        },
-      );
-
       final credential = await authenticatorAccount(
         context: context,
         email: data.getEmailUser,
@@ -179,7 +177,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
 
       data = data.copyWith(idBranchUser: currentState.idBranch, idUser: uid);
     }
-
+    debugPrint("Log OperatorBloc: upload: ${data}");
     await data.pushDataUser();
     add(OperatorGetData());
     Navigator.of(context).pop();

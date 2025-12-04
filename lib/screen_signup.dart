@@ -339,7 +339,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 nameUser: nameCompanyController.text,
                 emailUser: emailCompanyController.text,
                 phoneUser: phoneCompanyController.text,
-                roleUser: RoleType.Pemilik,
+                roleUser: 0,
                 permissionsUser: {
                   for (final permission in Permission.values) permission: true,
                 },
