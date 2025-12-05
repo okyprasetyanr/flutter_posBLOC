@@ -17,7 +17,7 @@ class CondimentSwitch extends StatelessWidget {
         if (state is InventoryLoaded) {
           return state.condimentForm;
         }
-        return false;
+        return true;
       },
       builder: (contextBloc, state) {
         return GestureDetector(

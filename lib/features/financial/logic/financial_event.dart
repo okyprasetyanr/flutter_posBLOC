@@ -16,9 +16,9 @@ class FinancialSelectedFinancial extends FinancialEvent {
 }
 
 class FinancialUploadDataFinancial extends FinancialEvent {
-  final ModelFinancial financial;
+  final String name;
 
-  FinancialUploadDataFinancial({required this.financial});
+  FinancialUploadDataFinancial({required this.name});
 }
 
 class FinancialStatusFinancial extends FinancialEvent {}

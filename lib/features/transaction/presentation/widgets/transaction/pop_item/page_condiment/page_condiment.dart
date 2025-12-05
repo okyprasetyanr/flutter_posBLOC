@@ -37,7 +37,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                     .toList() ??
                 [];
           }
-          return [];
+          return const [];
         },
         builder: (context, state) {
           return Column(
@@ -119,9 +119,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                           shape: WidgetStatePropertyAll(
                                             RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadiusGeometry.circular(
-                                                    10,
-                                                  ),
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                         ),
@@ -192,9 +190,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                           shape: WidgetStatePropertyAll(
                                             RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadiusGeometry.circular(
-                                                    10,
-                                                  ),
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                         ),

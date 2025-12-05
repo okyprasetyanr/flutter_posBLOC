@@ -11,17 +11,25 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   final List<ModelUser> dataUser;
   final List<ModelUser> filteredData;
   final String? idBranch;
-  final RoleType? roleUser;
-  final bool statusUser;
+  final RoleType? filterRoleUser;
+  final bool filterStatusUser;
   final ModelUser? selectedData;
+  final bool isEdit;
+  final bool selectedStatus;
+  final int selectedRole;
+  final Map<Permission, bool> selectedPermission;
 
   OperatorLoaded({
+    this.selectedPermission = const {},
+    this.selectedStatus = true,
+    this.selectedRole = 2,
     this.dataBranch,
     this.dataUser = const [],
     this.filteredData = const [],
     this.idBranch,
-    this.roleUser,
-    this.statusUser = true,
+    this.filterRoleUser,
+    this.filterStatusUser = true,
+    this.isEdit = false,
     this.selectedData,
   });
 
@@ -30,29 +38,41 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
     List<ModelUser>? dataOperator,
     List<ModelUser>? filteredData,
     String? idBranch,
-    RoleType? roleUser,
-    bool? statusUser,
+    RoleType? filterRoleUser,
+    bool? filterStatusUser,
     ModelUser? selectedData,
+    bool? isEdit,
+    bool? selectedStatus,
+    int? selectedRole,
+    Map<Permission, bool>? selectedPermission,
   }) {
     return OperatorLoaded(
+      selectedPermission: selectedPermission ?? this.selectedPermission,
+      isEdit: isEdit ?? this.isEdit,
       dataBranch: dataBranch ?? this.dataBranch,
       dataUser: dataOperator ?? this.dataUser,
       filteredData: filteredData ?? this.filteredData,
       idBranch: idBranch ?? this.idBranch,
-      roleUser: roleUser ?? this.roleUser,
-      statusUser: statusUser ?? this.statusUser,
+      filterRoleUser: filterRoleUser ?? this.filterRoleUser,
+      filterStatusUser: filterStatusUser ?? this.filterStatusUser,
       selectedData: selectedData ?? this.selectedData,
+      selectedRole: selectedRole ?? this.selectedRole,
+      selectedStatus: selectedStatus ?? this.selectedStatus,
     );
   }
 
   @override
   List<Object?> get props => [
+    selectedPermission,
+    isEdit,
     dataBranch,
-    statusUser,
+    filterStatusUser,
     dataUser,
     filteredData,
     idBranch,
-    roleUser,
+    filterRoleUser,
     selectedData,
+    selectedRole,
+    selectedStatus,
   ];
 }

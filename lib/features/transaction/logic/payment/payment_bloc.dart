@@ -163,7 +163,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final formattedDate = parseDate(date: formatDate(date: DateTime.now()));
 
       List<ModelItemOrdered> itemOrdered = await List.from(
-        sellState.itemOrdered ?? [],
+        sellState.itemOrdered ?? const [],
       );
 
       if (!sellState.isSell) {

@@ -17,6 +17,7 @@ class UITransactionPopUpNoteAndSubTotal extends StatefulWidget {
 class _UITransactionPopUpNoteAndSubTotalState
     extends State<UITransactionPopUpNoteAndSubTotal> {
   TextEditingController noteController = TextEditingController();
+  TextEditingController subTotalController = TextEditingController();
 
   @override
   void dispose() {
@@ -26,71 +27,73 @@ class _UITransactionPopUpNoteAndSubTotalState
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<TransactionBloc>().state;
-    noteController.text = bloc is TransactionLoaded
-        ? bloc.selectedItem?.getNote ?? ""
-        : "";
-    return Row(
-      children: [
-        Flexible(
-          child: TextField(
-            style: lv05TextStyle,
-            decoration: InputDecoration(
-              labelText: "Catatan",
-              labelStyle: lv05TextStyle,
-              hintText: "Catatan...",
-              hintStyle: lv05TextStyle,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 5,
+    return BlocListener<TransactionBloc, TransactionState>(
+      listenWhen: (previous, current) =>
+          previous is TransactionLoaded &&
+          current is TransactionLoaded &&
+          previous.selectedItem != current.selectedItem,
+      listener: (context, state) {
+        if (state is TransactionLoaded) {
+          noteController.text = state.selectedItem?.getNote ?? "";
+          subTotalController.text = formatPriceRp(
+            state.selectedItem?.getsubTotal ?? 0,
+          );
+        }
+      },
+      child: Row(
+        children: [
+          Flexible(
+            child: TextField(
+              style: lv05TextStyle,
+              decoration: InputDecoration(
+                labelText: "Catatan",
+                labelStyle: lv05TextStyle,
+                hintText: "Catatan...",
+                hintStyle: lv05TextStyle,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 5,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6),
+              controller: noteController,
+              onChanged: (value) => context.read<TransactionBloc>().add(
+                TransactionAdjustItem(note: value),
               ),
-            ),
-            controller: noteController,
-            onChanged: (value) => context.read<TransactionBloc>().add(
-              TransactionAdjustItem(note: value),
-            ),
-          ),
-        ),
-        const SizedBox(width: 20),
-        Flexible(
-          child: TextField(
-            style: lv05TextStyleDisable,
-            enabled: false,
-            controller: TextEditingController(
-              text:
-                  "${formatPriceRp(context.select<TransactionBloc, double?>((value) {
-                    final state = value.state;
-                    if (state is TransactionLoaded && state.selectedItem != null) {
-                      return state.selectedItem!.getsubTotal;
-                    }
-                    return 0;
-                  })!)}",
-            ),
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 5,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-              label: Text(
-                "Sub Total:",
-                style: lv05TextStyle,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
           ),
-        ),
-      ],
+
+          const SizedBox(width: 20),
+          Flexible(
+            child: TextField(
+              style: lv05TextStyleDisable,
+              enabled: false,
+              controller: subTotalController,
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 5,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                label: Text(
+                  "Sub Total:",
+                  style: lv05TextStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
-enum RoleType { Pemilik, Kasir, Admin }
+enum RoleType { All, Pemilik, Kasir, Admin }
 
 extension RoleTypeX on RoleType {
   static RoleType? fromString(String value) {
@@ -13,11 +13,21 @@ extension RoleTypeX on RoleType {
       return null;
     }
   }
+
+  static RoleType? fromId(int value) {
+    try {
+      return RoleType.values.firstWhere((element) => element.id == value);
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 extension RoleTypeExt on RoleType {
   int get id {
     switch (this) {
+      case RoleType.All:
+        return 0;
       case RoleType.Pemilik:
         return 1;
       case RoleType.Kasir:

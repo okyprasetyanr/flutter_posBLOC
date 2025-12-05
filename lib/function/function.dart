@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 final listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"];
 final listStatusTransactionFinancial = const ["Sukses", "Batal"];
 final filterItem = ["A-Z", "Z-A", "Terbaru", "Terlama", "Stock +", "Stock -"];
-final statusData = const ["Active", "Deactive"];
+final statusData = const ["Aktif", "Nonaktif"];
 final filterTypeItem = const ["All", "Condiment", "Normal"];
 final roleOperator = RoleType.values.map((map) => map.name).toList();
 List<ModelCategory> filterCategory = [

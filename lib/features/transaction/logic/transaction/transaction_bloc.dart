@@ -229,7 +229,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       List<ModelItemOrdered> itemPesanan = List<ModelItemOrdered>.from(
-        currentState.itemOrdered ?? [],
+        currentState.itemOrdered ?? const [],
       );
       final selected = currentState.selectedItem;
 

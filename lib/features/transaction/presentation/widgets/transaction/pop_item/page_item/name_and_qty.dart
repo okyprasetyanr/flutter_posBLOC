@@ -66,7 +66,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                             shape: WidgetStatePropertyAll(
                               RoundedRectangleBorder(
                                 side: BorderSide(width: 1, color: Colors.grey),
-                                borderRadius: BorderRadiusGeometry.circular(10),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                           ),
@@ -92,7 +92,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                             shape: WidgetStatePropertyAll(
                               RoundedRectangleBorder(
                                 side: BorderSide(width: 1, color: Colors.grey),
-                                borderRadius: BorderRadiusGeometry.circular(10),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                           ),

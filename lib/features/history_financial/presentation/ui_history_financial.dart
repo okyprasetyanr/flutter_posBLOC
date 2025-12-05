@@ -14,7 +14,6 @@ import 'package:flutter_pos/widget/common_widget/date_picker.dart';
 import 'package:flutter_pos/widget/common_widget/row_content.dart';
 import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
 
@@ -113,13 +112,13 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
             BlocSelector<
               HistoryFinancialBloc,
               HistoryFinancialState,
-              (DateTime?, DateTime?)
+              (DateTime?, DateTime?, String)
             >(
               selector: (state) {
                 if (state is HistoryFinancialLoaded) {
-                  return (state.dateStart, state.dateEnd);
+                  return (state.dateStart, state.dateEnd, state.displayDate);
                 }
-                return (dateNowYMDBLOC(), dateNowYMDBLOC());
+                return (dateNowYMDBLOC(), dateNowYMDBLOC(), "Hari ini");
               },
               builder: (context, state) {
                 return ElevatedButton.icon(
@@ -128,7 +127,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                     minimumSize: Size(0, 0),
                     padding: EdgeInsets.all(8),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   onPressed: () async {
@@ -163,22 +162,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                       ),
                     );
                   },
-                  label: Text(
-                    state.$1 == null ||
-                            formatDate(date: state.$1!, minute: false) ==
-                                    formatDate(
-                                      date: DateTime.now(),
-                                      minute: false,
-                                    ) &&
-                                formatDate(date: state.$2!, minute: false) ==
-                                    formatDate(
-                                      date: DateTime.now(),
-                                      minute: false,
-                                    )
-                        ? "Hari ini"
-                        : "${formatDate(date: state.$1!, minute: false)} - ${formatDate(date: state.$2!, minute: false)}",
-                    style: lv05TextStyle,
-                  ),
+                  label: Text(state.$3, style: lv05TextStyle),
                 );
               },
             ),
@@ -196,7 +180,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 searchController.clear();
                 final bloc = context.read<HistoryFinancialBloc>();
                 bloc.add(HistoryFinancialResetSelectedData());
-                bloc.add(HistoryFinancialGetData());
+                _initData();
               },
               child: Icon(Icons.refresh_rounded),
             ),
@@ -250,98 +234,100 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
               BlocSelector<
                 HistoryFinancialBloc,
                 HistoryFinancialState,
-                List<ModelTransactionFinancial>?
+                List<ModelTransactionFinancial>
               >(
                 selector: (state) {
                   if (state is HistoryFinancialLoaded) {
                     return state.filteredData;
                   }
-                  return [];
+                  return const [];
                 },
                 builder: (context, state) {
-                  if (state == null) {
-                    return customSpinKit();
-                  }
                   return ListView.builder(
                     itemCount: state.length,
                     itemBuilder: (context, index) {
                       final dataTransaction = state[index];
                       return Padding(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 3,
                           vertical: 6,
                         ),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            minimumSize: Size(0, 0),
-                            padding: EdgeInsets.all(8),
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                            ),
+                        child: Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          onPressed: () {
-                            context.read<HistoryFinancialBloc>().add(
-                              HistoryFinancialSelectedData(
-                                selectedData: dataTransaction,
-                              ),
-                            );
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () {
+                              context.read<HistoryFinancialBloc>().add(
+                                HistoryFinancialSelectedData(
+                                  selectedData: dataTransaction,
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    dataTransaction.getinvoice,
-                                    style: lv05TextStyle,
-                                  ),
-                                  Text(
-                                    formatDate(date: dataTransaction.getdate),
-                                    style: lv05TextStyle,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text.rich(
-                                      TextSpan(
-                                        text: "Status: ",
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        dataTransaction.getinvoice,
                                         style: lv05TextStyle,
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                "${dataTransaction.getstatusTransaction}",
-                                            style:
-                                                dataTransaction
-                                                        .getstatusTransaction ==
-                                                    statusTransaction(index: 0)
-                                                ? lv05textStylePrice
-                                                : lv05TextStyleRedPrice,
-                                          ),
-                                        ],
                                       ),
-                                    ),
+                                      Text(
+                                        formatDate(
+                                          date: dataTransaction.getdate,
+                                        ),
+                                        style: lv05TextStyle,
+                                      ),
+                                    ],
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      "${formatPriceRp(dataTransaction.getamount)}",
-                                      style: lv1TextStylePrimaryPrice,
-                                      textAlign: TextAlign.end,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text.rich(
+                                          TextSpan(
+                                            text: "Status: ",
+                                            style: lv05TextStyle,
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "${dataTransaction.getstatusTransaction}",
+                                                style:
+                                                    dataTransaction
+                                                            .getstatusTransaction ==
+                                                        statusTransaction(
+                                                          index: 0,
+                                                        )
+                                                    ? lv05textStylePrice
+                                                    : lv05TextStyleRedPrice,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          "${formatPriceRp(dataTransaction.getamount)}",
+                                          style: lv1TextStylePrimaryPrice,
+                                          textAlign: TextAlign.end,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "Catatan: ${dataTransaction.getnote}",
+                                    style: lv05TextStyle,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
-                              Text(
-                                "Catatan: ${dataTransaction.getnote}",
-                                style: lv05TextStyle,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       );
@@ -399,7 +385,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                     elevation: 2,
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: Icon(Icons.delete_forever_rounded, color: Colors.red),
@@ -412,7 +398,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                     elevation: 2,
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: Icon(Icons.print_rounded, color: AppColor.primary),
@@ -429,7 +415,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                     elevation: 2,
                     backgroundColor: AppColor.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: Icon(Icons.close_rounded, color: Colors.white),

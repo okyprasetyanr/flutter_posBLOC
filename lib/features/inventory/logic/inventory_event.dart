@@ -46,15 +46,23 @@ class InventoryFilterItem extends InventoryEvent {
 }
 
 class InventoryUploadItem extends InventoryEvent {
-  final ModelItem item;
+  final String price;
+  final String codeBarcode;
+  final String name;
+  final String selectedIdCategory;
 
-  InventoryUploadItem({required this.item});
+  InventoryUploadItem({
+    required this.price,
+    required this.codeBarcode,
+    required this.name,
+    required this.selectedIdCategory,
+  });
 }
 
 class InventoryUploadCategory extends InventoryEvent {
-  final ModelCategory category;
+  final String name;
 
-  InventoryUploadCategory({required this.category});
+  InventoryUploadCategory({required this.name});
 }
 
 class InventorySearchItem extends InventoryEvent {

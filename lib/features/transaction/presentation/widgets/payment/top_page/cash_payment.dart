@@ -24,7 +24,7 @@ class UIPaymentCashPayment extends StatelessWidget {
   });
 
   List<double> _generateQuickPayOptions(double total) {
-    if (total <= 0) return [];
+    if (total <= 0) return const [];
 
     List<double> options = [];
 

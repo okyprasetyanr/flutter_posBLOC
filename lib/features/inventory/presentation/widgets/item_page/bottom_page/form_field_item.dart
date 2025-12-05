@@ -25,6 +25,10 @@ class UIInventoryFormFieldItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<InventoryBloc, InventoryState>(
+      listenWhen: (previous, current) =>
+          previous is InventoryLoaded &&
+          current is InventoryLoaded &&
+          previous.dataSelectedItem != current.dataSelectedItem,
       listener: (context, state) {
         if (state is InventoryLoaded) {
           final dataSelectedItem = state.dataSelectedItem;

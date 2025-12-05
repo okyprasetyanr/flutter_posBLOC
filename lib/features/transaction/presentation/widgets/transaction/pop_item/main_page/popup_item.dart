@@ -86,9 +86,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 ),
                                 shape: WidgetStatePropertyAll(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      15,
-                                    ),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
                               ),
@@ -119,9 +117,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 ),
                                 shape: WidgetStatePropertyAll(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      15,
-                                    ),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
                               ),
@@ -154,9 +150,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 ),
                                 shape: WidgetStatePropertyAll(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      15,
-                                    ),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
                               ),
@@ -189,9 +183,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 ),
                                 shape: WidgetStatePropertyAll(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      15,
-                                    ),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
                               ),

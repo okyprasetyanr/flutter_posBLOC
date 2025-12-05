@@ -5,7 +5,9 @@ import 'package:flutter_pos/features/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/financial/logic/financial_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/request/delete_data.dart';
+import 'package:uuid/uuid.dart';
 
 class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
   DataUserRepositoryCache repoCache;
@@ -55,16 +57,29 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     FinancialUploadDataFinancial event,
     Emitter<FinancialState> emit,
   ) {
-    event.financial.pushDataFinancial();
+    final currentState = state as FinancialLoaded;
+    final idFinancial =
+        currentState.selectedFinancial?.getidFinancial ?? Uuid().v4();
+    final data = ModelFinancial(
+      type: currentState.isIncome
+          ? FinancialType.Income
+          : FinancialType.Expense,
+      idFinancial: idFinancial,
+      nameFinancial: event.name,
+      idBranch: currentState.idBranch!,
+    );
+
+    data.pushDataFinancial();
+
     final dataFinancial = repoCache.dataFinancial;
     final indexData = dataFinancial.indexWhere(
-      (element) => element.getidFinancial == event.financial.getidFinancial,
+      (element) => element.getidFinancial == idFinancial,
     );
 
     if (indexData != -1) {
-      dataFinancial[indexData] = event.financial;
+      dataFinancial[indexData] = data;
     } else {
-      dataFinancial.add(event.financial);
+      dataFinancial.add(data);
     }
 
     add(FinancialGetData());

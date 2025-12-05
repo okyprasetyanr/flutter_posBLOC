@@ -63,7 +63,7 @@ class _UITransactionPopUpPriceAndCustomState
                     backgroundColor: WidgetStatePropertyAll(Colors.white),
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(10),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                   ),

@@ -18,7 +18,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
         if (state is InventoryLoaded) {
           return state.filteredDataItem;
         }
-        return [];
+        return const [];
       },
       builder: (contextBloc, state) {
         final items = state;

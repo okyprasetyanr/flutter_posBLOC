@@ -388,9 +388,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
             EdgeInsets.symmetric(vertical: 15, horizontal: 8),
           ),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadiusGeometry.circular(10),
-            ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
         ),
         onPressed: function,

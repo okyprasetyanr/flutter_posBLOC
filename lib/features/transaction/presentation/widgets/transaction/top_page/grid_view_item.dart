@@ -18,7 +18,7 @@ class UITransactionGridViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String idPesananNota = Uuid().v1();
+    String idOrdered = Uuid().v1();
     return BlocSelector<
       TransactionBloc,
       TransactionState,
@@ -59,7 +59,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                         idBranch: item.getidBranch,
                         nameItem: item.getnameItem,
                         idItem: item.getidItem,
-                        idOrdered: idPesananNota,
+                        idOrdered: idOrdered,
                         qtyItem: 1,
                         priceItem: item.getpriceItem,
                         discountItem: 0,

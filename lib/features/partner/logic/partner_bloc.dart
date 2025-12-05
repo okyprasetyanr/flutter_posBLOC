@@ -6,8 +6,10 @@ import 'package:flutter_pos/features/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/partner/logic/partner_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/request/delete_data.dart';
+import 'package:uuid/uuid.dart';
 
 class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   DataUserRepositoryCache repoCache;
@@ -61,22 +63,37 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     PartnerUploadDataPartner event,
     Emitter<PartnerState> emit,
   ) async {
-    await event.partner.pushDataPartner();
     final currentState = state;
     if (currentState is PartnerLoaded) {
+      final idPartner =
+          currentState.selectedPartner?.getid ?? Uuid().v4().substring(0, 8);
+      final partner = ModelPartner(
+        idBranch: currentState.idBranch!,
+        id: idPartner,
+        name: event.name,
+        phone: event.phone,
+        email: event.email,
+        balance: 0,
+        type: currentState.isCustomer
+            ? PartnerType.customer
+            : PartnerType.supplier,
+        date: parseDate(date: formatDate(date: DateTime.now())),
+      );
+
+      await partner.pushDataPartner();
       final indexCategory = repoCache.dataPartner.indexWhere(
-        (element) => element.getid == event.partner.getid,
+        (element) => element.getid == partner.getid,
       );
 
       if (indexCategory != -1) {
-        repoCache.dataPartner[indexCategory] = event.partner;
+        repoCache.dataPartner[indexCategory] = partner;
       } else {
-        repoCache.dataPartner.add(event.partner);
+        repoCache.dataPartner.add(partner);
       }
 
-      final dataPartner = event.partner.gettype.name == "customer"
-          ? repoCache.getCustomer(event.partner.getidBranch)
-          : repoCache.getSupplier(event.partner.getidBranch);
+      final dataPartner = partner.gettype.name == "customer"
+          ? repoCache.getCustomer(partner.getidBranch)
+          : repoCache.getSupplier(partner.getidBranch);
       dataPartner.sort((a, b) => a.getname.compareTo(b.getname));
       add(PartnerResetSelectedPartner());
       emit(currentState.copyWith(dataPartner: dataPartner));

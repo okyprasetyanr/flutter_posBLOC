@@ -39,7 +39,7 @@ class _UiBatchState extends State<UiBatch> {
   }
 
   Future<void> _initData() async {
-    context.read<BatchBloc>().add(BatchGetData(idBranch: null));
+    context.read<BatchBloc>().add(BatchGetData());
   }
 
   @override
@@ -106,139 +106,122 @@ class _UiBatchState extends State<UiBatch> {
           ],
         ),
         Expanded(
-          child: BlocSelector<BatchBloc, BatchState, List<ModelItem>?>(
-            selector: (state) {
-              if (state is BatchLoaded) {
-                return state.filteredItem;
-              }
-              return null;
-            },
-            builder: (context, state) {
-              debugPrint("Log UIBatch: itemBatch: $state");
-              return state == null || state.isEmpty
-                  ? Center(
-                      child: Text(
-                        "Belum ada item yang diRe-Stock",
-                        style: lv05TextStyle,
-                      ),
-                    )
-                  : BlocSelector<BatchBloc, BatchState, List<ModelItemBatch>?>(
-                      selector: (state) {
-                        if (state is BatchLoaded) {
-                          return state.dataItemByIdItem;
-                        }
-                        return null;
-                      },
-                      builder: (context, itemById) {
-                        return itemById == null || itemById.isEmpty
-                            ? GridView.builder(
-                                padding: const EdgeInsets.only(
-                                  left: 10,
-                                  right: 10,
-                                  bottom: 10,
+          child:
+              BlocSelector<
+                BatchBloc,
+                BatchState,
+                (List<ModelItem>, List<ModelItemBatch>)
+              >(
+                selector: (state) {
+                  if (state is BatchLoaded) {
+                    return (state.filteredItem, state.dataItemByIdItem);
+                  }
+                  return ([], []);
+                },
+                builder: (context, state) {
+                  debugPrint("Log UIBatch: itemBatch: $state");
+                  final itemById = state.$2;
+                  return state.$1.isEmpty
+                      ? Center(
+                          child: Text(
+                            "Belum ada item yang diRe-Stock",
+                            style: lv05TextStyle,
+                          ),
+                        )
+                      : itemById.isEmpty
+                      ? GridView.builder(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                            bottom: 10,
+                          ),
+                          itemCount: state.$1.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                mainAxisExtent: 110,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                childAspectRatio: 1,
+                              ),
+                          itemBuilder: (context, index) {
+                            final data = state.$1[index];
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              onTap: () {
+                                context.read<BatchBloc>().add(
+                                  BatchSelectedIdItem(
+                                    selectedIdItem: state.$1[index].getidItem,
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Column(
+                                  children: [
+                                    Image.asset("assets/logo.png", height: 50),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      data.getnameItem,
+                                      style: lv05TextStyle,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 5,
+                                        ),
+                                        child: Text(
+                                          formatQtyOrPrice(data.getqtyItem),
+                                          style: lv0TextStyleRED,
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                itemCount: state.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 4,
-                                      mainAxisExtent: 110,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
-                                      childAspectRatio: 1,
-                                    ),
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    borderRadius: BorderRadius.circular(8),
-                                    onTap: () {
-                                      context.read<BatchBloc>().add(
-                                        BatchSelectedIdItem(
-                                          selectedIdItem:
-                                              state[index].getidItem,
-                                        ),
-                                      );
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3),
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            "assets/logo.png",
-                                            height: 50,
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            state[index].getnameItem,
-                                            style: lv05TextStyle,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                right: 5,
-                                              ),
-                                              child: Text(
-                                                formatQtyOrPrice(
-                                                  state[index].getqtyItem,
-                                                ),
-                                                style: lv0TextStyleRED,
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
-                            : ListView.builder(
-                                itemCount: itemById.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      Text(
-                                        "Nota: ${itemById[index].getinvoice}",
-                                      ),
-                                      rowContent(
-                                        "Stock Masuk",
-                                        formatQtyOrPrice(
-                                          itemById[index].getqtyItem_in,
-                                        ),
-                                      ),
-                                      rowContent(
-                                        "Stock Keluar",
-                                        formatQtyOrPrice(
-                                          itemById[index].getqtyItem_out,
-                                        ),
-                                      ),
-                                      rowContent(
-                                        "Stock Sisa",
-                                        formatQtyOrPrice(
-                                          itemById[index].getqtyItem_in -
-                                              itemById[index].getqtyItem_out,
-                                        ),
-                                      ),
-                                      rowContent(
-                                        "Tanggal",
-                                        itemById[index].getdateBuy.toString(),
-                                      ),
-                                      rowContent(
-                                        "Kadaluarsa",
-                                        itemById[index].getexpiredDate
-                                                ?.toString() ??
-                                            "-",
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                      },
-                    );
-            },
-          ),
+                              ),
+                            );
+                          },
+                        )
+                      : ListView.builder(
+                          itemCount: itemById.length,
+                          itemBuilder: (context, index) {
+                            final item = itemById[index];
+                            return Column(
+                              children: [
+                                Text("Nota: ${item.getinvoice}"),
+                                rowContent(
+                                  "Stock Masuk",
+                                  formatQtyOrPrice(item.getqtyItem_in),
+                                ),
+                                rowContent(
+                                  "Stock Keluar",
+                                  formatQtyOrPrice(item.getqtyItem_out),
+                                ),
+                                rowContent(
+                                  "Stock Sisa",
+                                  formatQtyOrPrice(
+                                    item.getqtyItem_in - item.getqtyItem_out,
+                                  ),
+                                ),
+                                rowContent(
+                                  "Tanggal",
+                                  item.getdateBuy.toString(),
+                                ),
+                                rowContent(
+                                  "Kadaluarsa",
+                                  item.getexpiredDate?.toString() ?? "-",
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                },
+              ),
         ),
       ],
     );

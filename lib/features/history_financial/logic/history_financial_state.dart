@@ -15,8 +15,10 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
   final DateTime? dateEnd;
   final String search;
   final int indexFilter;
+  final String displayDate;
 
   HistoryFinancialLoaded({
+    this.displayDate = "Hari ini",
     this.indexFilter = 0,
     this.search = "",
     this.dataTransaction = const [],
@@ -29,6 +31,7 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
   });
 
   HistoryFinancialLoaded copyWith({
+    String? displayDate,
     List<ModelTransactionFinancial>? dataTransaction,
     List<ModelTransactionFinancial>? filteredData,
     String? idBranch,
@@ -40,6 +43,7 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
     int? indexFilter,
   }) {
     return HistoryFinancialLoaded(
+      displayDate: displayDate ?? this.displayDate,
       indexFilter: indexFilter ?? this.indexFilter,
       search: search ?? this.search,
       dataTransaction: dataTransaction ?? this.dataTransaction,
@@ -54,6 +58,7 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    displayDate,
     search,
     indexFilter,
     dataTransaction,

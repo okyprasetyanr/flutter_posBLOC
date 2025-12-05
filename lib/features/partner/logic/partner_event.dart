@@ -16,9 +16,15 @@ class PartnerSelectedPartner extends PartnerEvent {
 }
 
 class PartnerUploadDataPartner extends PartnerEvent {
-  final ModelPartner partner;
+  final String name;
+  final String phone;
+  final String email;
 
-  PartnerUploadDataPartner({required this.partner});
+  PartnerUploadDataPartner({
+    required this.name,
+    required this.phone,
+    required this.email,
+  });
 }
 
 class PartnerStatusPartner extends PartnerEvent {}

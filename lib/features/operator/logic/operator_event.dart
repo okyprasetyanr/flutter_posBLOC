@@ -19,9 +19,16 @@ class OperatorFilterOperator extends OperatorEvent {
 }
 
 class OperatorSelectedData extends OperatorEvent {
-  final ModelUser selectedData;
-
-  OperatorSelectedData({required this.selectedData});
+  final ModelUser? selectedData;
+  final int? selectedRole;
+  final bool? selectedStatus;
+  final Map<Permission, bool>? selectedPermission;
+  OperatorSelectedData({
+    this.selectedData,
+    this.selectedRole,
+    this.selectedStatus,
+    this.selectedPermission,
+  });
 }
 
 class OperatorSearch extends OperatorEvent {
@@ -32,12 +39,19 @@ class OperatorSearch extends OperatorEvent {
 
 class OperatorUploadData extends OperatorEvent {
   final BuildContext context;
-  final ModelUser data;
   final String password;
+  final String name;
+  final String email;
+  final String phone;
+  final String note;
+
   OperatorUploadData({
-    required this.data,
-    required this.password,
     required this.context,
+    required this.password,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.note,
   });
 }
 

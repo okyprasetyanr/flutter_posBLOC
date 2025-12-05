@@ -47,6 +47,7 @@ class _UIInventoryState extends State<UIInventory> {
   final nameCategoryController = TextEditingController();
   final searchControllerItem = TextEditingController();
   final searchControllerCategory = TextEditingController();
+  final branchController = TextEditingController();
   final isOpen = ValueNotifier<bool>(false);
   final currentPage = ValueNotifier<bool>(true);
 
@@ -67,6 +68,7 @@ class _UIInventoryState extends State<UIInventory> {
       pageControllerBottom.dispose();
       searchControllerItem.dispose();
       searchControllerCategory.dispose();
+      branchController.dispose();
     }
     super.dispose();
   }
@@ -160,7 +162,7 @@ class _UIInventoryState extends State<UIInventory> {
               style: ButtonStyle(
                 shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(10),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
@@ -404,23 +406,38 @@ class _UIInventoryState extends State<UIInventory> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: customTextField(
-                                index: 0,
-                                nodes: nodes,
-                                inputType: TextInputType.text,
-                                context: context,
-                                text: "Cabang",
-                                controller: TextEditingController(
-                                  text: context.select<InventoryBloc, String>(
-                                    (value) => value.state is InventoryLoaded
-                                        ? (value.state as InventoryLoaded)
-                                                  .areaBranch ??
-                                              ""
-                                        : "",
+                              flex: 1,
+                              child:
+                                  BlocListener<InventoryBloc, InventoryState>(
+                                    listenWhen: (previous, current) =>
+                                        previous is InventoryLoaded &&
+                                        current is InventoryLoaded &&
+                                        previous.idBranch != current.idBranch,
+                                    listener: (context, state) {
+                                      if (state is InventoryLoaded &&
+                                          state.idBranch != null) {
+                                        branchController.text = state
+                                            .dataBranch!
+                                            .firstWhere(
+                                              (e) =>
+                                                  e.getidBranch ==
+                                                  state.idBranch,
+                                            )
+                                            .getareaBranch;
+                                      } else {
+                                        branchController.text = "Mohon Tunggu";
+                                      }
+                                    },
+                                    child: customTextField(
+                                      index: 0,
+                                      nodes: nodes,
+                                      controller: branchController,
+                                      enable: false,
+                                      inputType: TextInputType.text,
+                                      context: context,
+                                      text: "Cabang",
+                                    ),
                                   ),
-                                ),
-                                enable: false,
-                              ),
                             ),
                           ],
                         ),
@@ -449,6 +466,7 @@ class _UIInventoryState extends State<UIInventory> {
                 children: [
                   const SizedBox(height: 10),
                   UICategoryTextFieldAndBranch(
+                    branchController: branchController,
                     nameCategoryController: nameCategoryController,
                     resetCategoryForm: _resetCategoryForm,
                   ),

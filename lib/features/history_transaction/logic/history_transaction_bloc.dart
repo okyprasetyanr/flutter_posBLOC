@@ -64,6 +64,14 @@ class HistoryTransactionBloc
       "Log HistoryTransactionBloc: getData: $dateStart $dateEnd $filteredData",
     );
 
+    final displayDate =
+        formatDate(date: dateStart, minute: false) ==
+                formatDate(date: DateTime.now(), minute: false) &&
+            formatDate(date: dateEnd, minute: false) ==
+                formatDate(date: DateTime.now(), minute: false)
+        ? "Hari ini"
+        : "${formatDate(date: dateStart, minute: false)} - ${formatDate(date: dateEnd, minute: false)}";
+
     emit(
       HistoryTransactionLoaded(
         isSell: isIncome,
@@ -72,6 +80,7 @@ class HistoryTransactionBloc
         idBranch: idBranch,
         filteredData: filteredData,
         dataTransaction: dataTransaction,
+        displayDate: displayDate,
       ),
     );
   }

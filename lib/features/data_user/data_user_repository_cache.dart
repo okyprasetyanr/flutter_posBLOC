@@ -22,6 +22,7 @@ class DataUserRepositoryCache {
   List<ModelTransactionFinancial> dataTransIncome = [];
   List<ModelTransactionFinancial> dataTransExpense = [];
   List<ModelUser> dataUser = [];
+  ModelUser? dataAccount;
 
   final DataUserRepository repo;
 

@@ -34,7 +34,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         final byStatus = element.getstatusUser == statusUser;
         if (!byStatus) return false;
       }
-      if (roleUser != null) {
+      if (roleUser != null && roleUser.id != 0) {
         final byRole = element.getRoleUser == roleUser.id;
         if (!byRole) return false;
       }
@@ -54,8 +54,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     final dataBranch = currentState.dataBranch ?? repoCache.dataBranch;
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
-    final roleUser = event.roleUser ?? currentState.roleUser;
-    final statusUser = event.statusUser ?? currentState.statusUser;
+    final roleUser = event.roleUser ?? currentState.filterRoleUser;
+    final statusUser = event.statusUser ?? currentState.filterStatusUser;
     final dataUser = await repoCache.dataUser;
     final filteredData = filterData(
       dataUser: dataUser,
@@ -68,8 +68,11 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         idBranch: idBranch,
         dataUser: dataUser,
         filteredData: filteredData,
-        roleUser: roleUser,
-        statusUser: statusUser,
+        filterRoleUser: roleUser,
+        filterStatusUser: statusUser,
+        selectedPermission: {
+          for (final permission in Permission.values) permission: false,
+        },
       ),
     );
   }
@@ -79,8 +82,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Emitter<OperatorState> emit,
   ) {
     final currentState = state as OperatorLoaded;
-    final roleUser = event.roleUser ?? currentState.roleUser;
-    final statusUser = event.statusUser ?? currentState.statusUser;
+    final roleUser = event.roleUser ?? currentState.filterRoleUser;
+    final statusUser = event.statusUser ?? currentState.filterStatusUser;
     final filteredData = filterData(
       dataUser: currentState.dataUser,
       roleUser: roleUser,
@@ -90,16 +93,16 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     emit(
       currentState.copyWith(
         filteredData: filteredData,
-        roleUser: roleUser,
-        statusUser: statusUser,
+        filterRoleUser: roleUser,
+        filterStatusUser: statusUser,
       ),
     );
   }
 
   FutureOr<void> _onSearch(OperatorSearch event, Emitter<OperatorState> emit) {
     final currentState = state as OperatorLoaded;
-    final roleUser = currentState.roleUser;
-    final statusUser = currentState.statusUser;
+    final roleUser = currentState.filterRoleUser;
+    final statusUser = currentState.filterStatusUser;
     final dataFiltered = currentState.dataUser.where(
       (element) => element.getNameUser.toLowerCase().contains(event.search),
     );
@@ -141,7 +144,17 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Emitter<OperatorState> emit,
   ) {
     final currentState = state as OperatorLoaded;
-    emit(currentState.copyWith(selectedData: event.selectedData));
+    final selectedData = event.selectedData;
+    emit(
+      currentState.copyWith(
+        selectedData: event.selectedData,
+        isEdit: event.selectedData != null ? true : false,
+        selectedRole: event.selectedRole ?? selectedData!.getRoleUser,
+        selectedStatus: event.selectedStatus ?? selectedData!.getstatusUser,
+        selectedPermission:
+            event.selectedPermission ?? selectedData!.getPermissionsUser,
+      ),
+    );
   }
 
   Future<void> _onUpload(
@@ -158,7 +171,17 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     );
     final currentState = state as OperatorLoaded;
     final dataOperator = repoCache.dataUser;
-    ModelUser data = event.data;
+    ModelUser data = ModelUser(
+      idUser: currentState.selectedData?.idUser,
+      permissionsUser: currentState.selectedPermission,
+      nameUser: event.name,
+      idBranchUser: currentState.idBranch!,
+      roleUser: currentState.selectedRole,
+      emailUser: event.email,
+      phoneUser: event.phone,
+      statusUser: currentState.selectedStatus,
+      noteUser: event.note,
+    );
     final indexOperator = dataOperator.indexWhere(
       (element) => element.getIdUser == currentState.selectedData?.getIdUser,
     );

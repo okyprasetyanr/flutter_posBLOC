@@ -25,7 +25,7 @@ class ModelBranch extends Equatable {
 
   static List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
     Map dataUser = data.data() as Map<String, dynamic>;
-    List listbranch = dataUser['list_branch'] ?? [];
+    List listbranch = dataUser['list_branch'] ?? const [];
     return listbranch
         .map(
           (map) => ModelBranch(

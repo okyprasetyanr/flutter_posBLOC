@@ -4,12 +4,9 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:uuid/uuid.dart';
 
 class UIInventoryButtonItem extends StatelessWidget {
   final TextEditingController nameItemController;
@@ -68,30 +65,15 @@ class UIInventoryButtonItem extends StatelessWidget {
                   "Data belum lengkap atau tidak sesuai!",
                 );
               } else {
-                final bloc = context.read<InventoryBloc>().state;
-                if (bloc is InventoryLoaded) {
-                  String idUser = bloc.dataSelectedItem == null
-                      ? Uuid().v4()
-                      : bloc.dataSelectedItem!.getidItem;
-                  final data = ModelItem(
-                    qtyItem: 0,
-                    nameItem: nameItemController.text,
-                    idItem: idUser,
-                    priceItem: double.tryParse(priceItemController.text)!,
-                    idCategoryItem: selectedIdCategoryItem.value!,
-                    statusCondiment: bloc.condimentForm,
-                    urlImage: "",
-                    idBranch: bloc.idBranch!,
-                    barcode: codeBarcodeController.text,
-                    statusItem: true,
-                    date: parseDate(date: formatDate(date: DateTime.now())),
-                  );
-                  context.read<InventoryBloc>().add(
-                    InventoryUploadItem(item: data),
-                  );
-                  debugPrint("Log UIInventory: Simpan: $data");
-                  resetItemForm();
-                }
+                context.read<InventoryBloc>().add(
+                  InventoryUploadItem(
+                    price: priceItemController.text,
+                    codeBarcode: codeBarcodeController.text,
+                    name: nameItemController.text,
+                    selectedIdCategory: selectedIdCategoryItem.value!,
+                  ),
+                );
+                resetItemForm();
               }
             },
             label: BlocSelector<InventoryBloc, InventoryState, String?>(

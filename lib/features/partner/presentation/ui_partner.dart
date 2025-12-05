@@ -16,7 +16,6 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_button_reset.dart
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:uuid/uuid.dart';
 
 class UIPartner extends StatefulWidget {
   const UIPartner({super.key});
@@ -30,6 +29,7 @@ class _UIPartnerState extends State<UIPartner> {
   final phonePartnerController = TextEditingController();
   final emailPartnerController = TextEditingController();
   final searchController = TextEditingController();
+  final branchController = TextEditingController();
 
   List<FocusNode> nodes = List.generate(4, (_) => FocusNode());
 
@@ -45,6 +45,7 @@ class _UIPartnerState extends State<UIPartner> {
     namePartnerController.dispose();
     emailPartnerController.dispose();
     phonePartnerController.dispose();
+    branchController.dispose();
     super.dispose();
   }
 
@@ -178,19 +179,15 @@ class _UIPartnerState extends State<UIPartner> {
             builder: (context, state) {
               return state
                   ? customSpinKit()
-                  : BlocSelector<
-                      PartnerBloc,
-                      PartnerState,
-                      (List<ModelPartner>?, String?)
-                    >(
+                  : BlocSelector<PartnerBloc, PartnerState, List<ModelPartner>>(
                       selector: (state) {
                         if (state is PartnerLoaded) {
-                          return (state.dataPartner, state.idBranch);
+                          return state.filteredPartner!;
                         }
-                        return ([], null);
+                        return [];
                       },
                       builder: (context, state) {
-                        if (state.$1!.isEmpty) {
+                        if (state.isEmpty) {
                           return Padding(
                             padding: const EdgeInsets.all(10),
                             child: Text(
@@ -199,15 +196,12 @@ class _UIPartnerState extends State<UIPartner> {
                             ),
                           );
                         }
-                        final dataPartner = state.$1!
-                            .where((data) => data.getidBranch == state.$2)
-                            .toList();
                         return Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
                           child: ListView.builder(
-                            itemCount: dataPartner.length,
+                            itemCount: state.length,
                             itemBuilder: (context, index) {
-                              final partner = dataPartner[index];
+                              final partner = state[index];
                               return ShaderMask(
                                 shaderCallback: (bounds) {
                                   return LinearGradient(
@@ -358,7 +352,7 @@ class _UIPartnerState extends State<UIPartner> {
               namePartnerController.text = state.selectedPartner!.getname;
               phonePartnerController.text = state.selectedPartner!.getphone;
               emailPartnerController.text =
-                  state.selectedPartner?.getphone ?? "";
+                  state.selectedPartner?.getemail ?? "";
             }
           },
           child: BlocSelector<PartnerBloc, PartnerState, bool>(
@@ -417,26 +411,29 @@ class _UIPartnerState extends State<UIPartner> {
                       const SizedBox(width: 10),
                       Expanded(
                         flex: 1,
-                        child: BlocSelector<PartnerBloc, PartnerState, String?>(
-                          selector: (state) => state is PartnerLoaded
-                              ? state.dataBranch
-                                    ?.firstWhere(
-                                      (element) =>
-                                          element.getidBranch == state.idBranch,
-                                    )
-                                    .getareaBranch
-                              : null,
-                          builder: (context, state) {
-                            return customTextField(
-                              inputType: TextInputType.text,
-                              context: context,
-                              text: "Cabang",
-                              controller: TextEditingController(
-                                text: state ?? "",
-                              ),
-                              enable: false,
-                            );
+                        child: BlocListener<PartnerBloc, PartnerState>(
+                          listenWhen: (previous, current) =>
+                              previous is PartnerLoaded &&
+                              current is PartnerLoaded &&
+                              previous.idBranch != current.idBranch,
+                          listener: (context, state) {
+                            if (state is PartnerLoaded &&
+                                state.idBranch != null) {
+                              branchController.text = state.dataBranch!
+                                  .firstWhere(
+                                    (e) => e.getidBranch == state.idBranch,
+                                  )
+                                  .getareaBranch;
+                            } else {
+                              branchController.text = "Mohon Tunggu";
+                            }
                           },
+                          child: customTextField(
+                            controller: branchController,
+                            enable: false,
+                            inputType: TextInputType.text,
+                            text: "Cabang",
+                          ),
                         ),
                       ),
                     ],
@@ -450,29 +447,15 @@ class _UIPartnerState extends State<UIPartner> {
           alignment: AlignmentGeometry.centerRight,
           child: customButtonIcon(
             onPressed: () {
-              final bloc = context.read<PartnerBloc>().state;
-              final idPartner = bloc is PartnerLoaded
-                  ? bloc.selectedPartner?.getid ?? Uuid().v4().substring(0, 8)
-                  : Uuid().v4().substring(0, 8);
-              final partner = ModelPartner(
-                idBranch: bloc is PartnerLoaded ? bloc.idBranch! : "",
-                id: idPartner,
-                name: namePartnerController.text,
-                phone: "",
-                email: "",
-                balance: 0,
-                type: bloc is PartnerLoaded
-                    ? bloc.isCustomer
-                          ? PartnerType.customer
-                          : PartnerType.supplier
-                    : PartnerType.customer,
-                date: parseDate(date: formatDate(date: DateTime.now())),
-              );
               debugPrint(
                 "UIPartner: date: ${parseDate(date: formatDate(date: DateTime.now()))},",
               );
               context.read<PartnerBloc>().add(
-                PartnerUploadDataPartner(partner: partner),
+                PartnerUploadDataPartner(
+                  email: emailPartnerController.text,
+                  name: namePartnerController.text,
+                  phone: phonePartnerController.text,
+                ),
               );
               _resetForm();
             },
@@ -513,5 +496,7 @@ class _UIPartnerState extends State<UIPartner> {
 
   void _resetForm() {
     namePartnerController.clear();
+    phonePartnerController.clear();
+    emailPartnerController.clear();
   }
 }

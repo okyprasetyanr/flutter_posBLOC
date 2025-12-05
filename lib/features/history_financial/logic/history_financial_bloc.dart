@@ -54,10 +54,19 @@ class HistoryFinancialBloc
               element.getdate.isBefore(dateEnd));
     }).toList();
 
+    final displayDate =
+        formatDate(date: dateStart, minute: false) ==
+                formatDate(date: DateTime.now(), minute: false) &&
+            formatDate(date: dateEnd, minute: false) ==
+                formatDate(date: DateTime.now(), minute: false)
+        ? "Hari ini"
+        : "${formatDate(date: dateStart, minute: false)} - ${formatDate(date: dateEnd, minute: false)}";
+
     debugPrint("Log HistoryFinancial: dataTransaction: $dataTransaction");
 
     emit(
       HistoryFinancialLoaded(
+        displayDate: displayDate,
         filteredData: filteredData,
         isIncome: isIncome,
         dataTransaction: dataTransaction,

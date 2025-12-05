@@ -27,9 +27,9 @@ class TransactionListViewOrderedItem extends StatelessWidget {
           child: BlocSelector<TransactionBloc, TransactionState, List<ModelItemOrdered>>(
             selector: (state) {
               if (state is TransactionLoaded) {
-                return state.itemOrdered ?? [];
+                return state.itemOrdered ?? const [];
               }
-              return [];
+              return const [];
             },
             builder: (context, state) {
               if (state.isEmpty) {
@@ -230,9 +230,9 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                 >(
                                   selector: (state) {
                                     if (state is TransactionLoaded) {
-                                      return state.dataPartner ?? [];
+                                      return state.dataPartner ?? const [];
                                     }
-                                    return [];
+                                    return const [];
                                   },
                                   builder: (context, state) {
                                     return ListView.builder(

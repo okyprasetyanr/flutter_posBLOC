@@ -48,7 +48,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
         if (state is PaymentLoaded) {
           return (
             state.transaction_sell,
-            state.transaction_sell?.getdataSplit ?? [],
+            state.transaction_sell?.getdataSplit ?? const [],
           );
         }
         return (null, []);

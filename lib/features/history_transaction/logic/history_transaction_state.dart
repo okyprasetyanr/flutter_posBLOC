@@ -18,8 +18,10 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   final DateTime? dateEnd;
   final String search;
   final int indexFilter;
+  final String displayDate;
 
   HistoryTransactionLoaded({
+    this.displayDate = "Hari ini",
     this.indexFilter = 0,
     this.search = "",
     this.dateEnd,
@@ -32,6 +34,7 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   });
 
   HistoryTransactionLoaded copyWith({
+    String? displayDate,
     DateTime? dateStart,
     DateTime? dateEnd,
     String? idBranch,
@@ -42,6 +45,7 @@ class HistoryTransactionLoaded extends HistoryTransactionState
     String? search,
     int? indexFilter,
   }) => HistoryTransactionLoaded(
+    displayDate: displayDate ?? this.displayDate,
     indexFilter: indexFilter ?? this.indexFilter,
     search: search ?? this.search,
     dateEnd: dateEnd,
@@ -55,6 +59,7 @@ class HistoryTransactionLoaded extends HistoryTransactionState
 
   @override
   List<Object?> get props => [
+    displayDate,
     search,
     indexFilter,
     dateStart,

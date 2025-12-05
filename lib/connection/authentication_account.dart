@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,10 +40,15 @@ Future<UserCredential?> authenticatorAccount({
           .collection("users")
           .doc(uidUser)
           .get();
-      final uidOwner = data['uid_owner'];
+      final uidOwner = data['uid_owner'] ?? uidUser;
+
+      context.read<DataUserRepositoryCache>().dataAccount = ModelUser.fromMap(
+        data.data()!,
+        uidOwner,
+      );
 
       final pref = await SharedPreferences.getInstance();
-      await pref.setString('uid_owner', uidOwner ?? uidUser);
+      await pref.setString('uid_owner', uidOwner);
       await pref.setBool('fifo', true);
 
       Navigator.pop(context);
@@ -49,9 +57,12 @@ Future<UserCredential?> authenticatorAccount({
     }
   } on FirebaseAuthException catch (e) {
     customSnackBar(context, _mapFirebaseAuthCodeToKey(e));
+    Navigator.pop(context);
     return null;
   } catch (e) {
     customSnackBar(context, "Terjadi kesalahan");
+    debugPrint("Log AuthAccont : $e");
+    Navigator.pop(context);
     return null;
   }
 }

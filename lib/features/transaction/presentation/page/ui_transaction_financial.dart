@@ -85,7 +85,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                   style: ButtonStyle(
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(10),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                     minimumSize: const WidgetStatePropertyAll(Size(0, 0)),

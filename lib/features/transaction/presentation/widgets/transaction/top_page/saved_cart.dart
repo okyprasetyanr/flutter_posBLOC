@@ -20,9 +20,7 @@ class UITransactionSavedCart extends StatelessWidget {
         ElevatedButton(
           style: ButtonStyle(
             shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(10),
-              ),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             minimumSize: WidgetStatePropertyAll(Size(0, 0)),
             padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
@@ -42,7 +40,7 @@ class UITransactionSavedCart extends StatelessWidget {
                     if (state is TransactionLoaded) {
                       return state.dataTransactionSaved;
                     }
-                    return [];
+                    return const [];
                   },
                   builder: (context, state) {
                     return ListView.builder(

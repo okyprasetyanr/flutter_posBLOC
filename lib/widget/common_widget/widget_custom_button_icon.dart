@@ -19,9 +19,7 @@ Widget customButtonIcon({
           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         ),
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(10),
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     ),

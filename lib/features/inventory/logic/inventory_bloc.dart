@@ -9,6 +9,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/request/delete_data.dart';
+import 'package:uuid/uuid.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final DataUserRepositoryCache repoCache;
@@ -58,7 +59,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         : InventoryLoaded();
     List<ModelItem> item = items ?? List.from(currentState.dataItem);
 
-    // ["Active", "Deactive"]
     List<ModelItem> list = item.where((element) {
       final byStatusItem = status == 0
           ? element.getStatusItem
@@ -206,17 +206,35 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     Emitter<InventoryState> emit,
   ) async {
     add(InventoryResetItemForm());
-    await event.item.pushDataItem();
+    final currentState = state as InventoryLoaded;
 
-    debugPrint("Log InventoryBloc: PushData: ${event.item}");
+    String idUser = currentState.dataSelectedItem == null
+        ? Uuid().v4()
+        : currentState.dataSelectedItem!.getidItem;
+    final item = ModelItem(
+      qtyItem: 0,
+      nameItem: event.name,
+      idItem: idUser,
+      priceItem: double.tryParse(event.price)!,
+      idCategoryItem: event.selectedIdCategory,
+      statusCondiment: currentState.condimentForm,
+      urlImage: "",
+      idBranch: currentState.idBranch!,
+      barcode: event.codeBarcode,
+      statusItem: true,
+      date: parseDate(date: formatDate(date: DateTime.now())),
+    );
+
+    await item.pushDataItem();
+    debugPrint("Log InventoryBloc: PushData: ${item}");
     final indexCategory = repoCache.dataItem.indexWhere(
-      (element) => element.getidItem == event.item.getidItem,
+      (element) => element.getidItem == item.getidItem,
     );
 
     if (indexCategory != -1) {
-      repoCache.dataItem[indexCategory] = event.item;
+      repoCache.dataItem[indexCategory] = item;
     } else {
-      repoCache.dataItem.add(event.item);
+      repoCache.dataItem.add(item);
     }
 
     add(InventoryGetData());
@@ -226,18 +244,26 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     InventoryUploadCategory event,
     Emitter<InventoryState> emit,
   ) async {
-    await event.category.pushDataCategory();
     add(InventoryResetCategoryForm());
     final currentState = state;
     if (currentState is InventoryLoaded) {
+      String idCategory =
+          currentState.dataSelectedCategory?.getidCategory ?? const Uuid().v4();
+      final category = ModelCategory(
+        nameCategory: event.name,
+        idCategory: idCategory,
+        idBranch: currentState.idBranch!,
+      );
+
+      await category.pushDataCategory();
       final indexCategory = repoCache.dataCategory.indexWhere(
-        (element) => element.getidCategory == event.category.getidCategory,
+        (element) => element.getidCategory == category.getidCategory,
       );
 
       if (indexCategory != -1) {
-        repoCache.dataCategory[indexCategory] = event.category;
+        repoCache.dataCategory[indexCategory] = category;
       } else {
-        repoCache.dataCategory.add(event.category);
+        repoCache.dataCategory.add(category);
       }
 
       add(InventoryGetData());

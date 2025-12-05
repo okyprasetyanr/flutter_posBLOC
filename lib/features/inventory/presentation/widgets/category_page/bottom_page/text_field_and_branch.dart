@@ -6,11 +6,13 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 
 class UICategoryTextFieldAndBranch extends StatelessWidget {
   final TextEditingController nameCategoryController;
+  final TextEditingController branchController;
   final VoidCallback resetCategoryForm;
   const UICategoryTextFieldAndBranch({
     super.key,
     required this.nameCategoryController,
     required this.resetCategoryForm,
+    required this.branchController,
   });
 
   @override
@@ -46,20 +48,29 @@ class UICategoryTextFieldAndBranch extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           flex: 1,
-          child: customTextField(
-            context: context,
-            index: 1,
-            nodes: nodes,
-            inputType: TextInputType.text,
-            text: "Cabang",
-            controller: TextEditingController(
-              text: context.select<InventoryBloc, String?>(
-                (data) => data.state is InventoryLoaded
-                    ? (data.state as InventoryLoaded).areaBranch
-                    : "",
-              ),
+          child: BlocListener<InventoryBloc, InventoryState>(
+            listenWhen: (previous, current) =>
+                previous is InventoryLoaded &&
+                current is InventoryLoaded &&
+                previous.idBranch != current.idBranch,
+            listener: (context, state) {
+              if (state is InventoryLoaded && state.idBranch != null) {
+                branchController.text = state.dataBranch!
+                    .firstWhere((e) => e.getidBranch == state.idBranch)
+                    .getareaBranch;
+              } else {
+                branchController.text = "Mohon Tunggu";
+              }
+            },
+            child: customTextField(
+              index: 1,
+              nodes: nodes,
+              controller: branchController,
+              enable: false,
+              inputType: TextInputType.text,
+              context: context,
+              text: "Cabang",
             ),
-            enable: false,
           ),
         ),
       ],

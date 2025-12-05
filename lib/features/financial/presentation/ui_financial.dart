@@ -15,7 +15,6 @@ import 'package:flutter_pos/widget/common_widget/widget_custom_list_gradient.dar
 import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:uuid/uuid.dart';
 
 class UiFinancial extends StatefulWidget {
   const UiFinancial({super.key});
@@ -27,8 +26,13 @@ class UiFinancial extends StatefulWidget {
 class _UiFinancialState extends State<UiFinancial> {
   final nameController = TextEditingController();
   final searchController = TextEditingController();
+  final branchController = TextEditingController();
 
-  final List<FocusNode> nodes = List.generate(3, (_) => FocusNode());
+  void resetForm() {
+    nameController.clear();
+    branchController.clear();
+    searchController.clear();
+  }
 
   @override
   void initState() {
@@ -43,6 +47,8 @@ class _UiFinancialState extends State<UiFinancial> {
   @override
   void dispose() {
     nameController.dispose();
+    branchController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -113,7 +119,7 @@ class _UiFinancialState extends State<UiFinancial> {
                   return WidgetDropdownBranch(
                     idBranch: state,
                     selectedIdBranch: (selectedIdBranch) {
-                      searchController.clear();
+                      resetForm();
                       context.read<FinancialBloc>().add(
                         FinancialGetData(idBranch: selectedIdBranch),
                       );
@@ -182,6 +188,10 @@ class _UiFinancialState extends State<UiFinancial> {
             Expanded(
               flex: 3,
               child: BlocListener<FinancialBloc, FinancialState>(
+                listenWhen: (previous, current) =>
+                    previous is FinancialLoaded &&
+                    current is FinancialLoaded &&
+                    previous.selectedFinancial != current.selectedFinancial,
                 listener: (context, state) {
                   if (state is FinancialLoaded) {
                     nameController.text =
@@ -199,20 +209,26 @@ class _UiFinancialState extends State<UiFinancial> {
             const SizedBox(width: 10),
             Expanded(
               flex: 2,
-              child: customTextField(
-                controller: TextEditingController(
-                  text:
-                      "${context.select<FinancialBloc, String?>((value) {
-                        final state = value.state;
-                        if (state is FinancialLoaded && state.idBranch != null) {
-                          return state.dataBranch!.firstWhere((element) => element.getidBranch == state.idBranch).getareaBranch;
-                        }
-                        return "Mohon Tunggu...";
-                      })!}",
+              child: BlocListener<FinancialBloc, FinancialState>(
+                listenWhen: (previous, current) =>
+                    previous is FinancialLoaded &&
+                    current is FinancialLoaded &&
+                    previous.idBranch != current.idBranch,
+                listener: (context, state) {
+                  if (state is FinancialLoaded && state.idBranch != null) {
+                    branchController.text = state.dataBranch!
+                        .firstWhere((e) => e.getidBranch == state.idBranch)
+                        .getareaBranch;
+                  } else {
+                    branchController.text = "Mohon Tunggu";
+                  }
+                },
+                child: customTextField(
+                  controller: branchController,
+                  enable: false,
+                  inputType: TextInputType.text,
+                  text: "Cabang",
                 ),
-                enable: false,
-                inputType: TextInputType.text,
-                text: "Cabang",
               ),
             ),
           ],
@@ -234,19 +250,8 @@ class _UiFinancialState extends State<UiFinancial> {
               style: lv05TextStyleWhite,
             ),
             onPressed: () {
-              final bloc =
-                  context.read<FinancialBloc>().state as FinancialLoaded;
-              final selectedFinancial = bloc.selectedFinancial;
-              final dataFinancial = ModelFinancial(
-                type: bloc.isIncome
-                    ? FinancialType.Income
-                    : FinancialType.Expense,
-                idFinancial: selectedFinancial?.getidFinancial ?? Uuid().v4(),
-                nameFinancial: nameController.text,
-                idBranch: bloc.idBranch!,
-              );
               context.read<FinancialBloc>().add(
-                FinancialUploadDataFinancial(financial: dataFinancial),
+                FinancialUploadDataFinancial(name: nameController.text),
               );
             },
           ),
