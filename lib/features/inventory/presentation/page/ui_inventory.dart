@@ -18,6 +18,7 @@ import 'package:flutter_pos/features/inventory/presentation/widgets/category_pag
 import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/bottom_page/text_field_and_branch.dart';
 import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/list_view_category.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
@@ -85,7 +86,6 @@ class _UIInventoryState extends State<UIInventory> {
         );
         pageControllerBottom.animateToPage(
           goto,
-
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
@@ -93,10 +93,16 @@ class _UIInventoryState extends State<UIInventory> {
     });
   }
 
+  Map<Permission, bool> getPermission = {};
+
   @override
   void initState() {
     super.initState();
     _initData();
+    getPermission = context
+        .read<DataUserRepositoryCache>()
+        .dataAccount!
+        .getPermissionsUser;
   }
 
   Future<void> _initData() async {

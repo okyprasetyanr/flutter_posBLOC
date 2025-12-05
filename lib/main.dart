@@ -94,7 +94,6 @@ void callbackDispatcher() {
     );
     await Hive.initFlutter();
     await Hive.openBox('firestoreQueue');
-
     await FirestoreWorker.processQueueHive();
     debugPrint('Log Main: FirestoreWorker masuk');
     return Future.value(true);

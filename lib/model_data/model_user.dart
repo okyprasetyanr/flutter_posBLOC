@@ -39,6 +39,8 @@ extension RoleTypeExt on RoleType {
 }
 
 enum Permission {
+  Stok,
+  Inventory,
   Penjualan,
   Pembelian,
   Pendapatan,
@@ -47,6 +49,7 @@ enum Permission {
   Data_Pemasok,
   Data_Pemasukan,
   Data_Pengeluaran,
+  Data_Operator,
   Riwayat_Penjualan,
   Riwayat_Pembelian,
   Riwayat_Pendapatan,

@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_main_menu.dart';
+import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
 
 class ScreenMainMenu extends StatefulWidget {
   const ScreenMainMenu({super.key});
-
   @override
   State<ScreenMainMenu> createState() => _ScreenMainMenuState();
 }
@@ -18,12 +19,19 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   final currentPage = PageController();
   bool loading = true;
   final nameCompany = ValueNotifier<String?>(null);
+
+  Map<Permission, bool> getPermission = {};
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initUserSession();
     });
+
+    getPermission = context
+        .read<DataUserRepositoryCache>()
+        .dataAccount!
+        .getPermissionsUser;
   }
 
   Future<void> initUserSession() async {
@@ -78,18 +86,27 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
           childAspectRatio: 1,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-
           children: [
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/inventory', false);
+                getPermission[Permission.Inventory]!
+                    ? navUpDownTransition(context, '/inventory', false)
+                    : getPermission[Permission.Stok]!
+                    ? navUpDownTransition(context, '/batch', false)
+                    : customSnackBar(context, "Akses tidak diijinkan!");
               },
               Icon(Icons.inventory),
               "Inventori",
             ),
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/sell', false);
+                getPermission[Permission.Penjualan]! ||
+                        getPermission[Permission.Pembelian]!
+                    ? navUpDownTransition(context, '/sell', false)
+                    : getPermission[Permission.Pendapatan]! ||
+                          getPermission[Permission.Pengeluaran]!
+                    ? navUpDownTransition(context, '/transfinancial', false)
+                    : customSnackBar(context, "Akses tidak diijinkan!");
               },
               Icon(Icons.shopping_cart),
               "Transaksi",
@@ -114,21 +131,29 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
           children: [
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/partner', false);
+                getPermission[Permission.Data_Pelanggan]! ||
+                        getPermission[Permission.Data_Pemasok]!
+                    ? navUpDownTransition(context, '/partner', false)
+                    : customSnackBar(context, "Akses tidak diijinkan!");
               },
               Icon(Icons.inventory),
               "Data Kontak",
             ),
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/financial', false);
+                getPermission[Permission.Data_Pemasukan]! ||
+                        getPermission[Permission.Data_Pengeluaran]!
+                    ? navUpDownTransition(context, '/financial', false)
+                    : customSnackBar(context, "Akses tidak diijinkan!");
               },
               Icon(Icons.shopping_cart),
               "Data Alur Kas",
             ),
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/operator', false);
+                getPermission[Permission.Data_Operator]!
+                    ? navUpDownTransition(context, '/operator', false)
+                    : customSnackBar(context, "Akses tidak diijinkan!");
               },
               Icon(Icons.shopping_cart),
               "Data Operator",
@@ -146,14 +171,20 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
           children: [
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/historytransaction', false);
+                getPermission[Permission.Riwayat_Penjualan]! ||
+                        getPermission[Permission.Riwayat_Pembelian]!
+                    ? navUpDownTransition(context, '/historytransaction', false)
+                    : customSnackBar(context, "Akses tidak diijinkan!");
               },
               Icon(Icons.inventory),
               "Riwayat Treansaksi",
             ),
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/historyfinancial', false);
+                getPermission[Permission.Riwayat_Pendapatan]! ||
+                        getPermission[Permission.Riwayat_Pengeluaran]!
+                    ? navUpDownTransition(context, '/historyfinancial', false)
+                    : customSnackBar(context, "Akses tidak diijinkan!");
               },
               Icon(Icons.assignment_outlined),
               "Riwayat Kas",
