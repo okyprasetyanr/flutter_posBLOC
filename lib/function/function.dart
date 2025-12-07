@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -68,10 +69,16 @@ Future<void> checkAndroidVersion() async {
   debugPrint('Brand: ${androidInfo.brand}');
 }
 
-String generateInvoice({String? branchId, String? operatorId, int? queue}) {
+String generateInvoice({
+  required String idOP,
+  String? branchId,
+  String? operatorId,
+  int? queue,
+}) {
+  ;
   final branch = branchId!.substring(0, 4);
   final uuid = Uuid().v4().substring(0, 4);
-  final operator = "idOP";
+  final operator = idOP.substring(0, 4);
   return "$operator-$branch-$queue-$uuid";
 }
 

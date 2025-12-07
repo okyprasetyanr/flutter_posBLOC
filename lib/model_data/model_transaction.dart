@@ -10,6 +10,8 @@ import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 
+enum PaymentMethod { Cash, Debit, QRIS, Split }
+
 class ModelTransaction extends Equatable {
   final DateTime _date;
   final String _invoice,

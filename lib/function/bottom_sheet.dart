@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void customBottomSheet({
   required BuildContext context,
-  required VoidCallback resetItemForm,
+  required VoidCallback? resetItemForm,
   required Widget Function(ScrollController scrollController) content,
 }) {
   showModalBottomSheet(
@@ -47,6 +47,6 @@ void customBottomSheet({
       );
     },
   ).whenComplete(() {
-    resetItemForm();
+    resetItemForm?.call();
   });
 }
