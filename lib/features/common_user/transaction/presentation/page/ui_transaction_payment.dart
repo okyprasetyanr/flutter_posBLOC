@@ -12,6 +12,7 @@ import 'package:flutter_pos/features/common_user/transaction/presentation/widget
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/cash_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/debit_payment.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
@@ -162,37 +163,26 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                           BlocSelector<
                             PaymentBloc,
                             PaymentState,
-                            ModelTransaction?
+                            List<ModelSplit>
                           >(
                             selector: (state) {
                               if (state is PaymentLoaded) {
-                                return state.transaction_sell!;
+                                return state.transaction_sell?.getdataSplit ??
+                                    [];
                               }
-                              return null;
+                              return [];
                             },
                             builder: (context, state) {
-                              return state != null
-                                  ? Column(
-                                      children: [
-                                        rowContent(
-                                          "Tunai",
-                                          formatPriceRp(
-                                            state.getdataSplit.where(),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        rowContent(
-                                          "Debit",
-                                          formatPriceRp(state.get),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        rowContent(
-                                          "QRIS",
-                                          formatPriceRp(state.getbillPaid),
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink();
+                              return Column(
+                                children: [
+                                  ...state.map((element) {
+                                    return rowContent(
+                                      "${element.getpaymentName}",
+                                      formatPriceRp(element.getpaymentTotal),
+                                    );
+                                  }),
+                                ],
+                              );
                             },
                           ),
                     ),

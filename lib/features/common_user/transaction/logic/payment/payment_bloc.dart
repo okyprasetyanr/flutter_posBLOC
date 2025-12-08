@@ -163,7 +163,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             totalCharge: totalCharge,
             totalDiscount: totalDiscount,
             totalPpn: totalPpn,
-            dataSplit: dataSplit,
+            dataSplit: [...dataSplit],
           ),
         ),
       );

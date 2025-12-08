@@ -36,5 +36,10 @@ class PaymentLoaded extends PaymentState with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [transaction_sell, itemOrdered, isSell];
+  List<Object?> get props => [
+    transaction_sell,
+    itemOrdered,
+    isSell,
+    revisionInvoice,
+  ];
 }

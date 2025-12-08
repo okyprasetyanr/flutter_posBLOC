@@ -70,18 +70,32 @@ class UITransactionSuccess extends StatelessWidget {
           ),
         ),
         Text("Transaksi Sukses!", style: transactionSuccessTextStyle),
-        BlocSelector<PaymentBloc, PaymentState, double?>(
+        BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
           selector: (state) {
             if (state is PaymentLoaded) {
-              return state.transaction_sell?.gettotal ?? 0;
+              return state.transaction_sell;
             }
-            return 0;
+            return null;
           },
           builder: (context, state) {
-            return Text(
-              "Nominal ${formatPriceRp(state!)}",
-              style: transactionSuccessPaidTextStyle,
-            );
+            return state != null
+                ? Column(
+                    children: [
+                      Text(
+                        "Nominal ${formatPriceRp(state.gettotal)}",
+                        style: transactionSuccessPaidTextStyle,
+                      ),
+                      Text(
+                        "Dibayar ${formatPriceRp(state.getbillPaid)}",
+                        style: transactionSuccessPaidTextStyle,
+                      ),
+                      Text(
+                        "Kembali ${formatPriceRp(state.getbillPaid - state.gettotal)}",
+                        style: transactionSuccessPaidTextStyle,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink();
           },
         ),
       ],
