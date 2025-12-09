@@ -1,97 +1,75 @@
-import 'dart:typed_data';
-import 'package:flutter/services.dart';
-import 'package:esc_pos_bluetooth/esc_pos_bluetooth.dart';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
-import 'package:image/image.dart' as img;
+import 'package:flutter/material.dart';
+import 'package:bluetooth_print_plus/bluetooth_print.dart';
+import 'package:bluetooth_print_plus/bluetooth_print_model.dart';
 
-class SimplePrinter {
-  final printerManager = PrinterBluetoothManager();
+void main() => runApp(const MyApp());
 
-  Future<void> printBasic({required PrinterBluetooth device}) async {
-    // pilih printer
-    printerManager.selectPrinter(device);
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(home: HomePage());
+  }
+}
 
-    // capability
-    final profile = await CapabilityProfile.load();
-    final generator = Generator(PaperSize.mm58, profile);
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
-    List<int> bytes = [];
+class _HomePageState extends State<HomePage> {
+  BluetoothPrint bluetooth = BluetoothPrint.instance;
+  List<BluetoothDevice> devices = [];
 
-    // -------- LOGO (opsional) ----------
-    try {
-      final ByteData data = await rootBundle.load("assets/logo_gray.png");
-      final Uint8List imgBytes = data.buffer.asUint8List();
+  @override
+  void initState() {
+    super.initState();
+    bluetooth.scanResults.listen((scanList) {
+      setState(() => devices = scanList);
+    });
+  }
 
-      final img.Image? logo = img.decodeImage(imgBytes);
-      if (logo != null) {
-        bytes += generator.imageRaster(
-          logo,
-          align: PosAlign.center,
-          imageFn: PosImageFn.dithering,
-        );
-      }
+  void startScan() {
+    bluetooth.startScan(timeout: const Duration(seconds: 4));
+  }
 
-      bytes += generator.feed(1);
-    } catch (_) {
-      // kalau tidak ada logo, aman lanjut
-    }
-
-    // -------- TEKS SEDERHANA ----------
-    bytes += generator.text(
-      "TOKO MANDIRI",
-      styles: PosStyles(bold: true, align: PosAlign.center),
-    );
-
-    bytes += generator.text(
-      "Jl. Kemerdekaan No.123",
-      styles: PosStyles(align: PosAlign.center),
-    );
-
-    bytes += generator.hr();
-
-    // -------- ITEM SEDERHANA ----------
-    bytes += generator.row([
-      PosColumn(text: "Nasi Goreng", width: 8),
-      PosColumn(
-        text: "15000",
-        width: 4,
-        styles: PosStyles(align: PosAlign.right),
+  Future<void> connectAndPrint(BluetoothDevice d) async {
+    await bluetooth.connect(d);
+    List<LineText> items = [
+      LineText(
+        type: LineText.TYPE_TEXT,
+        content: 'Hello from Flutter!',
+        linefeed: 1,
       ),
-    ]);
-
-    bytes += generator.row([
-      PosColumn(text: "Teh Manis x2", width: 8),
-      PosColumn(
-        text: "10000",
-        width: 4,
-        styles: PosStyles(align: PosAlign.right),
+      LineText(
+        type: LineText.TYPE_TEXT,
+        content: 'Thank you 😊',
+        align: LineText.ALIGN_CENTER,
       ),
-    ]);
+      // more lines...
+    ];
+    await bluetooth.printReceipt({}, items);
+    await bluetooth.disconnect();
+  }
 
-    bytes += generator.hr();
-
-    // -------- TOTAL ----------
-    bytes += generator.row([
-      PosColumn(text: "TOTAL", width: 6, styles: PosStyles(bold: true)),
-      PosColumn(
-        text: "25000",
-        width: 6,
-        styles: PosStyles(align: PosAlign.right, bold: true),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Bluetooth Thermal Print')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: startScan,
+        child: const Icon(Icons.search),
       ),
-    ]);
-
-    bytes += generator.hr();
-
-    // -------- FOOTER ----------
-    bytes += generator.text(
-      "Terima kasih!",
-      styles: PosStyles(align: PosAlign.center),
+      body: ListView(
+        children: devices.map((d) {
+          return ListTile(
+            title: Text(d.name ?? ''),
+            subtitle: Text(d.address),
+            onTap: () => connectAndPrint(d),
+          );
+        }).toList(),
+      ),
     );
-
-    bytes += generator.feed(2);
-    bytes += generator.cut();
-
-    // -------- KIRIM KE PRINTER ----------
-    await printerManager.printTicket(bytes);
   }
 }
