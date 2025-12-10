@@ -12,9 +12,9 @@ import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_button.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class TransactionListViewOrderedItem extends StatelessWidget {
   const TransactionListViewOrderedItem({super.key});

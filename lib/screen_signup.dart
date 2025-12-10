@@ -7,10 +7,10 @@ import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/push_data.dart';
 import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/custom_dropdown_filter.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:uuid/uuid.dart';
 
 class ScreenSignup extends StatefulWidget {

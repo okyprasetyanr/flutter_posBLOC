@@ -5,8 +5,8 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class UIInventoryButtonItem extends StatelessWidget {
   final TextEditingController nameItemController;

@@ -4,7 +4,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/payment/payme
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:flutter_pos/widget/common_widget/row_content.dart';
+import 'package:flutter_pos/common_widget/row_content.dart';
 
 class UIPaymentDateInvoiceCustomerOperator extends StatelessWidget {
   const UIPaymentDateInvoiceCustomerOperator({super.key});

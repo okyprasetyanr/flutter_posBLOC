@@ -18,10 +18,12 @@ import 'package:flutter_pos/features/common_user/transaction/logic/financial/tra
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/firebase_options.dart';
+import 'package:flutter_pos/print/logic/print_bloc.dart';
+import 'package:flutter_pos/print/print_service.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
@@ -46,6 +48,7 @@ void main() async {
 
   final dataUserRepo = DataUserRepository();
   final repo = DataUserRepositoryCache(dataUserRepo);
+  final printService = PrinterService();
 
   runApp(
     RepositoryProvider.value(
@@ -63,6 +66,7 @@ void main() async {
           BlocProvider(create: (context) => TransFinancialBloc(repo)),
           BlocProvider(create: (context) => HistoryFinancialBloc(repo)),
           BlocProvider(create: (context) => OperatorBloc(repo)),
+          BlocProvider(create: (context) => PrinterBloc(printService)),
         ],
         child: MaterialApp(
           initialRoute: '/login',
@@ -314,8 +318,12 @@ class _MainAppState extends State<ScreenLogin> {
                                         },
                                       );
                                       authenticatorAccount(
-                                        email: "demo@gmail.com",
-                                        password: "123456",
+                                        email:
+                                            // "demo@gmail.com"
+                                            emailcontroller.text,
+                                        password:
+                                            // "123456"
+                                            passcontroller.text,
                                         context: context,
                                         signup: false,
                                       );

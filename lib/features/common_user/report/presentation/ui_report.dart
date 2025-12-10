@@ -6,11 +6,11 @@ import 'package:flutter_pos/features/common_user/report/logic/report_state.dart'
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_report.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/date_picker.dart';
-import 'package:flutter_pos/widget/common_widget/row_content.dart';
-import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
-import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
+import 'package:flutter_pos/common_widget/date_picker.dart';
+import 'package:flutter_pos/common_widget/row_content.dart';
+import 'package:flutter_pos/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 
 class UIReport extends StatefulWidget {
   const UIReport({super.key});

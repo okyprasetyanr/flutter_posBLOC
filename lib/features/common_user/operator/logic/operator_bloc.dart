@@ -8,7 +8,7 @@ import 'package:flutter_pos/features/common_user/operator/logic/operator_state.d
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/delete_data.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 
 class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   DataUserRepositoryCache repoCache;

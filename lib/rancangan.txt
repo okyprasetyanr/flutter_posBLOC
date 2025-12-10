@@ -1,0 +1,10 @@
+Setting:
+Switch FIFO
+Logout
+Backup/Restore
+About App
+Printer
+Header/Footer
+SyncData
+Profile
+Force Push(List data not pushed)

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 
 class UIInventorySearchAndBranchCategory extends StatelessWidget {
   final TextEditingController searchControllerItem;
