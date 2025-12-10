@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 
 class UITransactionListViewCategory extends StatelessWidget {
   const UITransactionListViewCategory({super.key});

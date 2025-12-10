@@ -8,7 +8,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class UITransactionPopUpPageCondiment extends StatelessWidget {
   const UITransactionPopUpPageCondiment({super.key});

@@ -9,7 +9,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class UIPaymentDebitPayment extends StatelessWidget {
   final bool split;

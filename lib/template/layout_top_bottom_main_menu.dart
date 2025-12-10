@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 
 class LayoutTopBottomMainMenu extends StatelessWidget {
   final Widget widgetTop;
@@ -51,13 +53,13 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: content(),
+                      children: content(context),
                     ),
                   if (rotation == Orientation.landscape)
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: content(),
+                      children: content(context),
                     ),
                 ],
               ),
@@ -123,7 +125,7 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
     );
   }
 
-  List<Widget> content() {
+  List<Widget> content(BuildContext context) {
     return [
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -142,6 +144,13 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          customButtonIcon(
+            backgroundColor: Colors.transparent,
+            icon: Icon(Icons.settings_rounded, color: Colors.white),
+            onPressed: () {
+              navUpDownTransition(context, '/settings', false);
+            },
           ),
         ],
       ),

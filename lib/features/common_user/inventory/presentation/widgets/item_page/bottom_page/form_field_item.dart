@@ -5,7 +5,7 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/item_page/bottom_page/condiment_switch.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 
 class UIInventoryFormFieldItem extends StatelessWidget {
   final TextEditingController nameItemController;

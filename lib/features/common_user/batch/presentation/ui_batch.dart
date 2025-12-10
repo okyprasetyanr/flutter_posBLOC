@@ -9,11 +9,11 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_button_icon.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
-import 'package:flutter_pos/widget/common_widget/row_content.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
+import 'package:flutter_pos/common_widget/widget_navigation_gesture.dart';
+import 'package:flutter_pos/common_widget/row_content.dart';
 
 class UiBatch extends StatefulWidget {
   const UiBatch({super.key});
@@ -284,13 +284,13 @@ class _UiBatchState extends State<UiBatch> {
     final contentNavGesture = [
       {
         "id": "inventory",
-        "toContext": "/inventory",
+        "toContext": '/inventory',
         "text_menu": "Inventori",
         "onTap": () {},
       },
       {
         "id": "batch",
-        "toContext": "/batch",
+        "toContext": '/batch',
         "text_menu": "Batch",
         "onTap": () {},
       },

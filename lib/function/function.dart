@@ -43,11 +43,13 @@ class UserSession {
   static String uid_owner = "";
   static bool fifo = false;
 
-  static Future<void> init(DataUserRepositoryCache repo) async {
+  static Future<void> init(DataUserRepositoryCache? repo) async {
     final pref = await SharedPreferences.getInstance();
     uid_owner = pref.getString("uid_owner")!;
     fifo = pref.getBool("fifo")!;
-    await repo.initData();
+    if (repo != null) {
+      await repo.initData();
+    }
   }
 
   static String getUidOwner() {
@@ -79,6 +81,7 @@ String generateInvoice({
   final branch = branchId!.substring(0, 4);
   final uuid = Uuid().v4().substring(0, 4);
   final operator = idOP.substring(0, 4);
+  debugPrint("Log Function: GenerateInvoice: $operator");
   return "$operator-$branch-$queue-$uuid";
 }
 

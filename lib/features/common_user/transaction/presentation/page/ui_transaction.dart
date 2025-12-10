@@ -13,10 +13,10 @@ import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/bottom_page/list_view_ordered_item.dart';
-import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
-import 'package:flutter_pos/widget/common_widget/widget_navigation_gesture.dart';
+import 'package:flutter_pos/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
+import 'package:flutter_pos/common_widget/widget_navigation_gesture.dart';
 
 class UITransaction extends StatefulWidget {
   const UITransaction({super.key});

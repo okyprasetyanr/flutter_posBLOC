@@ -8,7 +8,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
-import 'package:flutter_pos/widget/common_widget/row_content.dart';
+import 'package:flutter_pos/common_widget/row_content.dart';
 
 class UITransactionSuccess extends StatelessWidget {
   const UITransactionSuccess({super.key});

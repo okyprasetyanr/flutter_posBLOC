@@ -9,13 +9,13 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
-import 'package:flutter_pos/widget/common_widget/custom_dropdown_filter.dart';
-import 'package:flutter_pos/widget/common_widget/date_picker.dart';
-import 'package:flutter_pos/widget/common_widget/row_content.dart';
-import 'package:flutter_pos/widget/common_widget/widget_animatePage.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/widget/common_widget/widget_dropdown_branch.dart';
+import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/common_widget/date_picker.dart';
+import 'package:flutter_pos/common_widget/row_content.dart';
+import 'package:flutter_pos/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 
 class UiHistoryFinancial extends StatefulWidget {
   const UiHistoryFinancial({super.key});

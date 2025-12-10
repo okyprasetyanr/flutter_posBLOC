@@ -213,6 +213,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final note = isNewTransaction ? "" : dataRevisiOrSaved.getnote;
       final discount = isNewTransaction ? 0 : dataRevisiOrSaved.getdiscount;
       final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
+
+      debugPrint("Log PaymentBloc: isSell: ${repoCache.dataAccount!}");
       final invoice = isNewTransaction || sellState.revision
           ? generateInvoice(
               idOP: repoCache.dataAccount!.getIdUser!,

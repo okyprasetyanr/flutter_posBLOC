@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
-import 'package:flutter_pos/widget/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -44,7 +44,7 @@ Future<UserCredential?> authenticatorAccount({
 
       context.read<DataUserRepositoryCache>().dataAccount = ModelUser.fromMap(
         data.data()!,
-        uidOwner,
+        uidUser,
       );
 
       final pref = await SharedPreferences.getInstance();
