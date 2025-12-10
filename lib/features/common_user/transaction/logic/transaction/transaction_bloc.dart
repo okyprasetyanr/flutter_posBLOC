@@ -13,6 +13,7 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/request/delete_data.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
@@ -34,6 +35,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<TransactionDeleteItemOrdered>(_onDeleteItemOrdered);
     on<TransactionStatusTransaction>(_onStatusTransaction);
     on<TransactionLoadTransaction>(_onTransactionLoadTransaction);
+    on<TransactionDeleteItemSaved>(_onDeleteItemSaved);
   }
 
   Future<void> _onGetData(
@@ -46,7 +48,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     final listBranch = repo.getBranch();
 
-    String idBranch = event.idBranch ?? listBranch.first.getidBranch;
+    String idBranch =
+        event.idBranch ?? currentState.idBranch ?? listBranch.first.getidBranch;
     final listItem = repo
         .getItem(idBranch)
         .where((element) => element.getStatusItem)
@@ -387,6 +390,20 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           revision: event.revision ?? false,
         ),
       );
+    }
+  }
+
+  Future<void> _onDeleteItemSaved(
+    TransactionDeleteItemSaved event,
+    Emitter<TransactionState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is TransactionLoaded) {
+      repo.dataTransSell.removeWhere(
+        (element) => element.getinvoice == event.invoice,
+      );
+      await deleteDataTransaction(event.invoice);
+      add(TransactionGetData());
     }
   }
 }

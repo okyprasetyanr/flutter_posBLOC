@@ -8,6 +8,7 @@ import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UITransactionSavedCart extends StatelessWidget {
   const UITransactionSavedCart({super.key});
@@ -59,12 +60,70 @@ class UITransactionSavedCart extends StatelessWidget {
                             );
                             Navigator.pop(context);
                           },
-                          child: ListTile(
-                            title: Text(
-                              "${transaction.getinvoice}, ${formatPriceRp(transaction.gettotal)}",
+                          child: Dismissible(
+                            key: Key(state[index].getinvoice),
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              padding: EdgeInsets.only(right: 10),
+                              color: Colors.redAccent,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Icon(Icons.delete, color: Colors.white),
+                              ),
                             ),
-                            subtitle: Text(
-                              "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
+                            confirmDismiss: (direction) async {
+                              final result = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(
+                                    "Konfirmasi",
+                                    style: lv2TextStyle,
+                                  ),
+                                  content: Text(
+                                    "Hapus Transaksi ${state[index].getinvoice}?",
+                                    style: lv1TextStyle,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text("Batal", style: lv1TextStyle),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        context.read<TransactionBloc>().add(
+                                          TransactionDeleteItemSaved(
+                                            invoice: state[index].getinvoice,
+                                          ),
+                                        );
+                                        Navigator.pop(context, true);
+                                      },
+                                      child: Text("Hapus", style: lv1TextStyle),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (result == true) {
+                                return true;
+                              }
+                              return false;
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 5,
+                                right: 5,
+                                top: 10,
+                                bottom: 10,
+                              ),
+
+                              child: ListTile(
+                                title: Text(
+                                  "${transaction.getinvoice}, ${formatPriceRp(transaction.gettotal)}",
+                                ),
+                                subtitle: Text(
+                                  "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
+                                ),
+                              ),
                             ),
                           ),
                         );

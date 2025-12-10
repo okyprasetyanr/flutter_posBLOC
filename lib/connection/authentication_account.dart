@@ -41,11 +41,8 @@ Future<UserCredential?> authenticatorAccount({
           .doc(uidUser)
           .get();
       final uidOwner = data['uid_owner'] ?? uidUser;
-
-      context.read<DataUserRepositoryCache>().dataAccount = ModelUser.fromMap(
-        data.data()!,
-        uidUser,
-      );
+      context.read<DataUserRepositoryCache>().dataAccount =
+          await ModelUser.fromMap(data.data()!, uidUser);
 
       final pref = await SharedPreferences.getInstance();
       await pref.setString('uid_owner', uidOwner);

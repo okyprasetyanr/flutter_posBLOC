@@ -241,28 +241,29 @@ class _UIOperatorState extends State<UIOperator> {
                 ),
 
                 const SizedBox(height: 10),
-                BlocSelector<OperatorBloc, OperatorState, bool>(
-                  selector: (state) =>
-                      state is OperatorLoaded ? state.isEdit : false,
-                  builder: (context, state) => state
-                      ? SizedBox.shrink()
-                      : customTextField(
-                          context: context,
-                          controller: passwordController,
-                          enable: true,
-                          index: 3,
-                          inputType: TextInputType.text,
-                          nodes: nodes,
-                          text: "Password Operator",
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Password tidak boleh kosong";
-                            }
-                            return null;
-                          },
-                        ),
+                // BlocSelector<OperatorBloc, OperatorState, bool>(
+                //   selector: (state) =>
+                //       state is OperatorLoaded ? state.isEdit : false,
+                //   builder: (context, state) => state
+                //       ? SizedBox.shrink()
+                //       :
+                customTextField(
+                  context: context,
+                  controller: passwordController,
+                  enable: true,
+                  index: 3,
+                  inputType: TextInputType.text,
+                  nodes: nodes,
+                  text: "Password Operator",
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Password tidak boleh kosong";
+                    }
+                    return null;
+                  },
                 ),
 
+                // ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -324,6 +325,7 @@ class _UIOperatorState extends State<UIOperator> {
                         phoneController.clear();
                         emailController.clear();
                         noteController.clear();
+                        passwordController.clear();
                       } else {
                         final selectedData = currentState.selectedData!;
                         nameController.text = selectedData.getNameUser;

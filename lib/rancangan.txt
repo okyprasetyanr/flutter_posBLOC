@@ -8,3 +8,7 @@ Header/Footer
 SyncData
 Profile
 Force Push(List data not pushed)
+
+terakhir Garap:
+    besok garap data Operator, klo edit emailnya diDisable, Caband display Cabanfnya
+    next bikin counter

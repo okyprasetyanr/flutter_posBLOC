@@ -368,10 +368,10 @@ class _UIPartnerState extends State<UIPartner> {
                 children: [
                   Row(
                     children: [
-                      Form(
-                        key: _formKey,
-                        child: Expanded(
-                          flex: 2,
+                      Expanded(
+                        flex: 2,
+                        child: Form(
+                          key: _formKey,
                           child: customTextField(
                             index: 0,
                             nodes: nodes,

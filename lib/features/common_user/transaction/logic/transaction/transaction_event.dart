@@ -8,7 +8,7 @@ class TransactionEvent {}
 class TransactionGetData extends TransactionEvent {
   final String? idBranch;
 
-  TransactionGetData({required this.idBranch});
+  TransactionGetData({this.idBranch});
 }
 
 class TransactionResetSelectedItem extends TransactionEvent {}
@@ -88,5 +88,11 @@ class TransactionSelectedPartner extends TransactionEvent {
 }
 
 class TransactionDeleteItemOrdered extends TransactionEvent {}
+
+class TransactionDeleteItemSaved extends TransactionEvent {
+  final String invoice;
+
+  TransactionDeleteItemSaved({required this.invoice});
+}
 
 class TransactionStatusTransaction extends TransactionEvent {}

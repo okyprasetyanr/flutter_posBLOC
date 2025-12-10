@@ -23,3 +23,11 @@ Future<void> deleteDataUser(String id) async {
   debugPrint("Log DeleteData: Operator: $id");
   await FirebaseFirestore.instance.collection('operator').doc(id).delete();
 }
+
+Future<void> deleteDataTransaction(String id) async {
+  debugPrint("Log DeleteData: Operator: $id");
+  await FirebaseFirestore.instance
+      .collection('transaction_sell')
+      .doc(id)
+      .delete();
+}

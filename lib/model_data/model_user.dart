@@ -138,7 +138,9 @@ class ModelUser extends Equatable {
       idBranchUser: data['id_branch'],
       permissionsUser: {
         for (final permission in Permission.values)
-          permission: data['permissions_user'][permission.name] ?? false,
+          permission: data['status_user'] ?? false
+              ? data['permissions_user'][permission.name] ?? false
+              : false,
       },
       createdUser: parseDate(date: data['created_user'], minute: false),
       noteUser: data['note_user'],

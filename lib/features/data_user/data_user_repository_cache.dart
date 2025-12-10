@@ -70,7 +70,15 @@ class DataUserRepositoryCache {
   }
 
   Future<void> initBranch() async {
-    dataBranch = await repo.getBranch();
+    final listBranch = await repo.getBranch();
+    dataBranch = dataAccount?.getIdBranchUser != null
+        ? listBranch
+              .where(
+                (element) =>
+                    element.getidBranch == dataAccount!.getIdBranchUser,
+              )
+              .toList()
+        : listBranch;
   }
 
   Future<void> initFinancial() async {

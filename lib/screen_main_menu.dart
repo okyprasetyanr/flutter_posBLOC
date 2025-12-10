@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar_access.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_main_menu.dart';
-import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class ScreenMainMenu extends StatefulWidget {
   const ScreenMainMenu({super.key});
@@ -93,7 +93,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
                     ? navUpDownTransition(context, '/inventory', false)
                     : getPermission[Permission.Stok]!
                     ? navUpDownTransition(context, '/batch', false)
-                    : customSnackBar(context, "Akses tidak diijinkan!");
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.inventory),
               "Inventori",
@@ -106,14 +106,16 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
                     : getPermission[Permission.Pendapatan]! ||
                           getPermission[Permission.Pengeluaran]!
                     ? navUpDownTransition(context, '/transfinancial', false)
-                    : customSnackBar(context, "Akses tidak diijinkan!");
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.shopping_cart),
               "Transaksi",
             ),
             gridViewMenu(
               () {
-                navUpDownTransition(context, '/report', false);
+                getPermission[Permission.Laporan]!
+                    ? navUpDownTransition(context, '/report', false)
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.assignment_outlined),
               "Laporan",
@@ -134,7 +136,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
                 getPermission[Permission.Data_Pelanggan]! ||
                         getPermission[Permission.Data_Pemasok]!
                     ? navUpDownTransition(context, '/partner', false)
-                    : customSnackBar(context, "Akses tidak diijinkan!");
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.inventory),
               "Data Kontak",
@@ -144,7 +146,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
                 getPermission[Permission.Data_Pemasukan]! ||
                         getPermission[Permission.Data_Pengeluaran]!
                     ? navUpDownTransition(context, '/financial', false)
-                    : customSnackBar(context, "Akses tidak diijinkan!");
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.shopping_cart),
               "Data Alur Kas",
@@ -153,7 +155,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
               () {
                 getPermission[Permission.Data_Operator]!
                     ? navUpDownTransition(context, '/operator', false)
-                    : customSnackBar(context, "Akses tidak diijinkan!");
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.shopping_cart),
               "Data Operator",
@@ -174,7 +176,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
                 getPermission[Permission.Riwayat_Penjualan]! ||
                         getPermission[Permission.Riwayat_Pembelian]!
                     ? navUpDownTransition(context, '/historytransaction', false)
-                    : customSnackBar(context, "Akses tidak diijinkan!");
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.inventory),
               "Riwayat Treansaksi",
@@ -184,7 +186,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
                 getPermission[Permission.Riwayat_Pendapatan]! ||
                         getPermission[Permission.Riwayat_Pengeluaran]!
                     ? navUpDownTransition(context, '/historyfinancial', false)
-                    : customSnackBar(context, "Akses tidak diijinkan!");
+                    : customSnackBarAccess(context: context);
               },
               Icon(Icons.assignment_outlined),
               "Riwayat Kas",
