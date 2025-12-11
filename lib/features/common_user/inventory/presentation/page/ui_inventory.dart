@@ -250,11 +250,11 @@ class _UIInventoryState extends State<UIInventory> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 5),
                   UIInventorySearchAndBranchCategory(
                     searchControllerItem: searchControllerItem,
                     searchControllerCategory: searchControllerCategory,
                   ),
-                  const SizedBox(height: 10),
                   Expanded(child: UIInventoryListViewCategory()),
                 ],
               ),
@@ -312,62 +312,45 @@ class _UIInventoryState extends State<UIInventory> {
                         left: value ? 0 : 450,
                         duration: const Duration(milliseconds: 500),
                         child: SizedBox(
-                          width: 250,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 100,
-                                child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                    label: Text(
-                                      "Jenis Item",
-                                      style: lv1TextStyle,
-                                    ),
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
-                                    isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                  ),
-                                  style: lv05TextStyle,
-                                  initialValue:
-                                      filterTypeItem[context
-                                          .select<InventoryBloc, int>((value) {
-                                            final blocurrentState = value.state;
-                                            if (blocurrentState
-                                                is InventoryLoaded) {
-                                              return blocurrentState
-                                                  .indexStatusItem;
-                                            }
-                                            return 0;
-                                          })],
-                                  items: filterTypeItem
-                                      .map(
-                                        (map) => DropdownMenuItem(
-                                          value: map,
-                                          child: Text(
-                                            map,
-                                            style: lv05TextStyle,
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: (value) {
-                                    context.read<InventoryBloc>().add(
-                                      InventoryFilterItem(
-                                        filterType: filterTypeItem.indexOf(
-                                          value!,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                          width: 100,
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              label: Text("Jenis Item", style: lv1TextStyle),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 4,
                               ),
-                            ],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                            ),
+                            style: lv05TextStyle,
+                            initialValue:
+                                filterTypeItem[context
+                                    .select<InventoryBloc, int>((value) {
+                                      final blocurrentState = value.state;
+                                      if (blocurrentState is InventoryLoaded) {
+                                        return blocurrentState.indexStatusItem;
+                                      }
+                                      return 0;
+                                    })],
+                            items: filterTypeItem
+                                .map(
+                                  (map) => DropdownMenuItem(
+                                    value: map,
+                                    child: Text(map, style: lv05TextStyle),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              context.read<InventoryBloc>().add(
+                                InventoryFilterItem(
+                                  filterType: filterTypeItem.indexOf(value!),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -379,6 +362,7 @@ class _UIInventoryState extends State<UIInventory> {
           ),
         ),
         const SizedBox(height: 5),
+        // ElevatedButton(onPressed: (){}, child: child)
         Expanded(
           child: PageView(
             physics: NeverScrollableScrollPhysics(),

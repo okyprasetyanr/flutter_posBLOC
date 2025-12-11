@@ -4,7 +4,7 @@ import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_menu.dart';
 import 'package:flutter_pos/function/bottom_sheet.dart';
-import 'package:flutter_pos/print/presentation/ui_print.dart';
+import 'package:flutter_pos/function/print/presentation/ui_print.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 

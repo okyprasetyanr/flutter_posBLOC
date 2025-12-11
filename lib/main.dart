@@ -18,8 +18,8 @@ import 'package:flutter_pos/features/common_user/transaction/logic/financial/tra
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/firebase_options.dart';
-import 'package:flutter_pos/print/logic/print_bloc.dart';
-import 'package:flutter_pos/print/print_service.dart';
+import 'package:flutter_pos/function/print/logic/print_bloc.dart';
+import 'package:flutter_pos/function/print/print_service.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';

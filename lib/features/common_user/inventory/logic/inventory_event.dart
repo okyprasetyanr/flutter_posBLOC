@@ -94,3 +94,5 @@ class InventoryDeleteItem extends InventoryEvent {
 
   InventoryDeleteItem({required this.id});
 }
+
+class InventoryPickImage extends InventoryEvent {}

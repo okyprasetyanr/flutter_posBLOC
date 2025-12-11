@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/item_page/bottom_page/condiment_switch.dart';
+import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UIInventoryFormFieldItem extends StatelessWidget {
   final TextEditingController nameItemController;
@@ -48,16 +54,59 @@ class UIInventoryFormFieldItem extends StatelessWidget {
         key: formKey,
         child: Column(
           children: [
-            customTextField(
-              context: context,
-              index: 0,
-              nodes: nodes,
-              inputType: TextInputType.text,
-              text: "Nama Item",
-              controller: nameItemController,
-              enable: true,
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: customTextField(
+                    context: context,
+                    index: 0,
+                    nodes: nodes,
+                    inputType: TextInputType.text,
+                    text: "Nama Item",
+                    controller: nameItemController,
+                    enable: true,
+                  ),
+                ),
+                SizedBox(
+                  width: 100,
+                  child: customButton(
+                    backgroundColor: AppColor.primary,
+                    child: Icon(
+                      Icons.image_search_rounded,
+                      color: Colors.white,
+                    ),
+                    onPressed: () => customBottomSheet(
+                      context: context,
+                      resetItemForm: null,
+                      content: (scrollController) =>
+                          BlocSelector<InventoryBloc, InventoryState, File?>(
+                            selector: (state) {
+                              if (state is InventoryLoaded) {
+                                return state.image;
+                              }
+                              return null;
+                            },
+                            builder: (context, state) {
+                              return GestureDetector(
+                                onTap: () => context.read<InventoryBloc>().add(
+                                  InventoryPickImage(),
+                                ),
+                                child: state == null
+                                    ? Text(
+                                        "Belum ada gambar!",
+                                        style: lv05TextStyle,
+                                      )
+                                    : Image.file(state),
+                              );
+                            },
+                          ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 2),
             customTextField(
               context: context,
               index: 1,
@@ -95,7 +144,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Flexible(flex: 2, fit: FlexFit.loose, child: CondimentSwitch()),
+                SizedBox(width: 100, child: CondimentSwitch()),
               ],
             ),
           ],

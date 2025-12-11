@@ -43,7 +43,7 @@ Widget customTextField({
       label: Text(text!, style: lv1TextStyle),
       hint: Text("$text...", style: lv05TextStyle),
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+      contentPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 5),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
       errorStyle: lv05TextStyleRed,
       prefixIcon: prefix,

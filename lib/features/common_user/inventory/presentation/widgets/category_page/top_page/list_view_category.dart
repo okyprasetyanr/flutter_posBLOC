@@ -22,6 +22,7 @@ class UIInventoryListViewCategory extends StatelessWidget {
           ? (state.filteredDataCategory, state.idBranch)
           : (null, null),
       builder: (context, state) {
+        debugPrint("Log UIInventory category: search: ${state.$1}");
         if (state.$1 == null) {
           return Padding(
             padding: const EdgeInsets.all(10),

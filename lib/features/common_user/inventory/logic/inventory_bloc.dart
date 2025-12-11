@@ -6,6 +6,7 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/function/image_service.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/request/delete_data.dart';
@@ -41,6 +42,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     on<InventoryDeleteItem>(_onDeleteItem);
 
     on<InventorySearchItem>(_onSearchItem, transformer: debounceRestartable());
+
+    on<InventoryPickImage>(_onPickImage);
+
     on<InventorySearchCategory>(
       _onSearchCategory,
       transformer: debounceRestartable(),
@@ -395,13 +399,29 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   ) {
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      final filteredData = currentState.dataCategory
-          .where(
-            (element) =>
-                element.getnameCategory.toLowerCase().contains(event.search),
-          )
-          .toList();
+      final filteredData = event.search.isNotEmpty
+          ? currentState.dataCategory
+                .where(
+                  (element) => element.getnameCategory.toLowerCase().contains(
+                    event.search.toLowerCase(),
+                  ),
+                )
+                .toList()
+          : currentState.dataCategory.toList();
+
+      debugPrint("Log InventoryBloc Category: search: ${filteredData}");
       emit(currentState.copyWith(filteredDataCategory: filteredData));
     }
+  }
+
+  Future<void> _onPickImage(
+    InventoryPickImage event,
+    Emitter<InventoryState> emit,
+  ) async {
+    final currentState = state as InventoryLoaded;
+    final imageService = ImageService();
+
+    final img = await imageService.pickImage();
+    emit(currentState.copyWith(image: img));
   }
 }

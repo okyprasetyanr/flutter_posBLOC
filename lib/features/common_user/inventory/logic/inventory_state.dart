@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -17,6 +19,7 @@ class InventoryError extends InventoryState {
 }
 
 class InventoryLoaded extends InventoryState with EquatableMixin {
+  final File? image;
   final String? idBranch;
   final String? areaBranch;
   final int indexFilterItem;
@@ -34,6 +37,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   final ModelCategory? dataSelectedCategoryItem;
 
   InventoryLoaded({
+    this.image,
     this.filteredDataCategory = const [],
     this.dataSelectedCategoryItem,
     this.indexFilterByCategoryItem = 0,
@@ -52,6 +56,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   });
 
   InventoryLoaded copyWith({
+    File? image,
     String? idBranch,
     String? areaBranch,
     int? indexFilterItem,
@@ -69,6 +74,7 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     ModelItem? dataSelectedItem,
   }) {
     return InventoryLoaded(
+      image: image ?? this.image,
       filteredDataCategory: filteredDataCategory ?? this.filteredDataCategory,
       indexFilterByCategoryItem:
           indexFilterIDCategoryItem ?? this.indexFilterByCategoryItem,
@@ -90,6 +96,8 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    filteredDataCategory,
+    image,
     idBranch,
     areaBranch,
     indexFilterItem,

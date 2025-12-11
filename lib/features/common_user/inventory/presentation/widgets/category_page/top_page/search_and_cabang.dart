@@ -31,6 +31,7 @@ class UIInventorySearchAndBranchCategory extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(width: 10),
         Expanded(
           flex: 2,
           child: BlocSelector<InventoryBloc, InventoryState, String>(

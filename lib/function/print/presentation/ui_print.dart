@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/print/logic/print_event.dart';
-import 'package:flutter_pos/print/logic/print_state.dart';
-import 'package:flutter_pos/print/print_service.dart';
-import 'package:flutter_pos/print/logic/print_bloc.dart';
+import 'package:flutter_pos/function/print/logic/print_event.dart';
+import 'package:flutter_pos/function/print/logic/print_state.dart';
+import 'package:flutter_pos/function/print/print_service.dart';
+import 'package:flutter_pos/function/print/logic/print_bloc.dart';
 
 class UIPrint extends StatelessWidget {
   const UIPrint({super.key});

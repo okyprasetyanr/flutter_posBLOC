@@ -28,9 +28,9 @@ class CondimentSwitch extends StatelessWidget {
             duration: Duration(milliseconds: 500),
             width: 135,
             padding: const EdgeInsets.only(top: 5, bottom: 5),
-            height: 28,
+            height: 33,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(8),
               color: state ? AppColor.primary : Colors.white,
               boxShadow: [
                 BoxShadow(
@@ -47,17 +47,17 @@ class CondimentSwitch extends StatelessWidget {
                 AnimatedPositioned(
                   curve: Curves.easeInOut,
                   left: state ? -50 : 5,
-                  top: -1,
+                  top: 1,
                   duration: Duration(milliseconds: 500),
                   child: Icon(
                     Icons.check_circle_outline_rounded,
-                    size: lv3IconSize,
+                    size: lv2IconSize,
                   ),
                 ),
                 AnimatedPositioned(
                   curve: Curves.easeInOut,
                   left: state ? 75 : 150,
-                  top: -1,
+                  top: 1,
                   duration: Duration(milliseconds: 500),
                   child: Icon(
                     Icons.check_circle_outline_rounded,
@@ -67,15 +67,15 @@ class CondimentSwitch extends StatelessWidget {
                 ),
                 AnimatedPositioned(
                   curve: Curves.easeInOut,
-                  top: 1,
-                  left: state ? -100 : 28,
+                  top: 4,
+                  left: state ? -100 : 33,
                   duration: Duration(milliseconds: 500),
                   child: Text("Normal", style: lv05TextStyle),
                 ),
                 AnimatedPositioned(
                   curve: Curves.easeInOut,
                   left: state ? 10 : 150,
-                  top: 1,
+                  top: 4,
                   duration: Duration(milliseconds: 500),
                   child: Align(
                     alignment: Alignment.center,

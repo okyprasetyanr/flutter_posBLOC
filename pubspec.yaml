@@ -32,11 +32,12 @@ dependencies:
   connectivity_plus: ^4.0.0
   hive: any
   hive_flutter: any
-  path_provider: ^2.0.15
   workmanager: ^0.9.0+3
   bluetooth_print_plus: any
   esc_pos_utils_plus: any
   image: any
+  image_picker: ^1.1.0
+  path_provider: ^2.1.3
 
 dev_dependencies:
   flutter_test:

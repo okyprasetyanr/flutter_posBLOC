@@ -1,8 +1,8 @@
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/print/logic/print_event.dart';
-import 'package:flutter_pos/print/logic/print_state.dart';
-import 'package:flutter_pos/print/print_service.dart';
+import 'package:flutter_pos/function/print/logic/print_event.dart';
+import 'package:flutter_pos/function/print/logic/print_state.dart';
+import 'package:flutter_pos/function/print/print_service.dart';
 
 class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
   final PrinterService service;
