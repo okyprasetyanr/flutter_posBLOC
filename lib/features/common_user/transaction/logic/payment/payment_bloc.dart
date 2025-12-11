@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -215,11 +216,16 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
 
       debugPrint("Log PaymentBloc: isSell: ${repoCache.dataAccount!}");
+      final counter = repoCache.dataCounter.firstWhere(
+        (element) => element.getidBranch == sellState.idBranch,
+      );
       final invoice = isNewTransaction || sellState.revision
           ? generateInvoice(
-              idOP: repoCache.dataAccount!.getIdUser!,
+              idOP: repoCache.dataAccount!.getNameUser,
               branchId: sellState.idBranch!,
-              queue: 1,
+              queue: sellState.isSell
+                  ? counter.getcounterSell + 1
+                  : counter.getcounterBuy + 1,
               operatorId: null,
             )
           : dataRevisiOrSaved.getinvoice;
@@ -297,6 +303,31 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         isSell: currentState.isSell,
         dataRepo: bloc,
       );
+
+      final dataCounter = repoCache.dataCounter;
+
+      final counterIndex = dataCounter.indexWhere(
+        (element) => element.getidBranch == transaction.getidBranch,
+      );
+
+      dataCounter[counterIndex] = dataCounter[counterIndex].copyWith(
+        counterSell: currentState.isSell
+            ? dataCounter[counterIndex].getcounterSell + 1
+            : null,
+        counterBuy: currentState.isSell
+            ? null
+            : dataCounter[counterIndex].getcounterBuy + 1,
+      );
+
+      await FirebaseFirestore.instance
+          .collection('counter')
+          .doc(UserSession.uid_owner)
+          .collection('branch')
+          .doc(transaction.getidBranch)
+          .update({
+            currentState.isSell ? 'counter_sell' : 'counter_buy':
+                FieldValue.increment(1),
+          });
     }
 
     final sellState = event.context.read<TransactionBloc>();

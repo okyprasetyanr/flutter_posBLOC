@@ -31,17 +31,6 @@ class ModelCategory extends Equatable {
         );
   }
 
-  static List<ModelCategory> getDataListCategory(QuerySnapshot data) {
-    return data.docs.map((map) {
-      final dataKetegori = map.data() as Map<String, dynamic>;
-      return ModelCategory(
-        nameCategory: dataKetegori['name_category'],
-        idCategory: map.id,
-        idBranch: dataKetegori['id_branch'],
-      );
-    }).toList();
-  }
-
   @override
   List<Object?> get props => [_nameCategory, _idCategory, _idBranch];
 }

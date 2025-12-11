@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
 
 class ModelItemBatch extends Equatable {
   final String _nameItem,
@@ -99,31 +98,6 @@ class ModelItemBatch extends Equatable {
       priceItem: priceItem ?? this._priceItem,
       subTotal: subTotal ?? this._subTotal,
       priceItemFinal: priceItemFinal ?? this._priceItemFinal,
-    );
-  }
-
-  static ModelItemBatch fromMapItemsBatch(
-    Map<String, dynamic> data,
-    String id_ordered,
-  ) {
-    return ModelItemBatch(
-      invoice: data['invoice'],
-      nameItem: data['name_item'],
-      idBranch: data['id_branch'],
-      idItem: data['id_item'],
-      idOrdered: id_ordered,
-      idCategoryItem: data['id_category_item'],
-      note: data['note'],
-      date_buy: parseDate(date: data['date_buy']),
-      expiredDate: data['expired_date'] != null
-          ? parseDate(date: data['expired_date'])
-          : null,
-      discountItem: data['discount_item'],
-      qtyItem_in: data['qty_item_in'],
-      qtyItem_out: data['qty_item_out'],
-      priceItem: data['price_item'],
-      subTotal: data['sub_total'],
-      priceItemFinal: data['price_item_final'],
     );
   }
 

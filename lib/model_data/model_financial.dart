@@ -39,22 +39,4 @@ class ModelFinancial {
           ),
         );
   }
-
-  factory ModelFinancial.fromMap(Map<String, dynamic> map, String id) {
-    return ModelFinancial(
-      idFinancial: id,
-      nameFinancial: map['name_financial'],
-      idBranch: map['id_branch'],
-      type: FinancialType.values.firstWhere(
-        (element) => element.name == map['type'],
-      ),
-    );
-  }
-
-  static List<ModelFinancial> getDataListFinancial(QuerySnapshot data) {
-    return data.docs.map((map) {
-      final dataFinancial = map.data() as Map<String, dynamic>;
-      return ModelFinancial.fromMap(dataFinancial, map.id);
-    }).toList();
-  }
 }

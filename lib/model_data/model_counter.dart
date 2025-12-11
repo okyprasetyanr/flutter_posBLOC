@@ -50,20 +50,4 @@ class ModelCounter {
     writeBatch.set(datacounterRef, convertToMapCounter(dataCounter));
     await writeBatch.commit();
   }
-
-  static List<ModelCounter> getDataCounter(
-    QuerySnapshot<Map<String, dynamic>> dataCounter,
-  ) {
-    return dataCounter.docs
-        .map(
-          (counter) => ModelCounter(
-            idBranch: counter.id,
-            counterSell: counter['counter_sell'],
-            counterBuy: counter['counter_buy'],
-            counterIncome: counter['counter_income'],
-            counterExpense: counter['counter_expense'],
-          ),
-        )
-        .toList();
-  }
 }

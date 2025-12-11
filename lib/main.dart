@@ -318,12 +318,10 @@ class _MainAppState extends State<ScreenLogin> {
                                         },
                                       );
                                       authenticatorAccount(
-                                        email:
-                                            // "demo@gmail.com"
-                                            emailcontroller.text,
-                                        password:
-                                            // "123456"
-                                            passcontroller.text,
+                                        email: "demo@gmail.com",
+                                        // emailcontroller.text,
+                                        password: "123456",
+                                        // passcontroller.text,
                                         context: context,
                                         signup: false,
                                       );

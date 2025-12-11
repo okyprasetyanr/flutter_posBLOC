@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
-import 'package:flutter_pos/function/function.dart';
 
 class ModelItem extends Equatable {
   final String _nameItem,
@@ -99,25 +98,6 @@ class ModelItem extends Equatable {
             ),
           ),
         );
-  }
-
-  static List<ModelItem> getDataListItem(QuerySnapshot data) {
-    return data.docs.map((map) {
-      final dataItem = map.data() as Map<String, dynamic>;
-      return ModelItem(
-        nameItem: dataItem['name_item'],
-        idItem: map.id,
-        priceItem: dataItem['price_item'].toDouble(),
-        idCategoryItem: dataItem['id_category'],
-        statusCondiment: dataItem['status_condiment'],
-        urlImage: dataItem['url_image'],
-        qtyItem: dataItem['qty_item'].toDouble(),
-        idBranch: dataItem['id_branch'],
-        barcode: dataItem['barcode'],
-        statusItem: dataItem['status_item'],
-        date: parseDate(date: dataItem['date']),
-      );
-    }).toList();
   }
 
   @override

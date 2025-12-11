@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/request/push_data.dart';
@@ -116,34 +115,6 @@ class ModelUser extends Equatable {
       permissionsUser: permissionsUser ?? this.permissionsUser,
       createdUser: createdUser ?? this.createdUser,
       noteUser: noteUser ?? this.noteUser,
-    );
-  }
-
-  static List<ModelUser> getDataListUser(
-    QuerySnapshot<Map<String, dynamic>> data,
-  ) {
-    return data.docs
-        .map((map) => ModelUser.fromMap(map.data(), map.id))
-        .toList();
-  }
-
-  factory ModelUser.fromMap(Map<String, dynamic> data, String uid) {
-    return ModelUser(
-      idUser: uid,
-      statusUser: data['status_user'],
-      nameUser: data['name_user'],
-      emailUser: data['email_user'],
-      phoneUser: data['phone_user'],
-      roleUser: int.tryParse(data['role_user'].toString())!,
-      idBranchUser: data['id_branch'],
-      permissionsUser: {
-        for (final permission in Permission.values)
-          permission: data['status_user'] ?? false
-              ? data['permissions_user'][permission.name] ?? false
-              : false,
-      },
-      createdUser: parseDate(date: data['created_user'], minute: false),
-      noteUser: data['note_user'],
     );
   }
 

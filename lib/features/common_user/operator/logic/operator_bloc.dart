@@ -27,8 +27,14 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     required List<ModelUser> dataUser,
     RoleType? roleUser,
     bool? statusUser,
+    String? idBranch,
   }) {
-    debugPrint("Log OperatorBloc: $roleUser , $statusUser");
+    if (idBranch == null) {
+      final currentState = state as OperatorLoaded;
+      idBranch == currentState.idBranch;
+    }
+
+    debugPrint("Log OperatorBloc: $roleUser , $statusUser, $idBranch");
     return dataUser.where((element) {
       if (statusUser != null) {
         final byStatus = element.getstatusUser == statusUser;
@@ -38,6 +44,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         final byRole = element.getRoleUser == roleUser.id;
         if (!byRole) return false;
       }
+      final byIdBranch = element.getIdBranchUser == idBranch;
+      if (!byIdBranch) return false;
 
       return true;
     }).toList();
@@ -58,6 +66,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     final statusUser = event.statusUser ?? currentState.filterStatusUser;
     final dataUser = await repoCache.dataUser;
     final filteredData = filterData(
+      idBranch: idBranch,
       dataUser: dataUser,
       roleUser: roleUser,
       statusUser: statusUser,

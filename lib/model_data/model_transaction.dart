@@ -5,7 +5,7 @@ import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
-import 'package:flutter_pos/model_data/model_data_counter.dart';
+import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
@@ -376,99 +376,6 @@ class ModelTransaction extends Equatable {
     }
 
     await batchWrite.commit();
-  }
-
-  static Future<List<ModelTransaction>> getDataListTransaction(
-    QuerySnapshot data, {
-    required bool isSell,
-  }) async {
-    final firestore = FirebaseFirestore.instance;
-    final String collection = isSell ? 'transaction_sell' : 'transaction_buy';
-
-    return await Future.wait(
-      data.docs.map((map) async {
-        final dataTransaction = map.data() as Map<String, dynamic>;
-
-        final itemsSnapshot = await firestore
-            .collection(collection)
-            .doc(map.id)
-            .collection('items_ordered')
-            .get();
-
-        final itemsOrdered = await Future.wait(
-          itemsSnapshot.docs.map((itemDoc) async {
-            final condimentSnapshot = await firestore
-                .collection(collection)
-                .doc(map.id)
-                .collection('items_ordered')
-                .doc(itemDoc.id)
-                .collection('condiment')
-                .get();
-
-            final condiments = condimentSnapshot.docs
-                .map(
-                  (condimentDoc) => ModelItemOrdered.fromMap(
-                    condimentDoc.data(),
-                    [],
-                    true,
-                    condimentDoc.id,
-                  ),
-                )
-                .toList();
-
-            return ModelItemOrdered.fromMap(
-              itemDoc.data(),
-              condiments,
-              false,
-              itemDoc.id,
-            );
-          }),
-        );
-        final splitSnapshot = await firestore
-            .collection(collection)
-            .doc(map.id)
-            .collection('data_split')
-            .get();
-
-        final splitData = splitSnapshot.docs
-            .map((splitDoc) => ModelSplit.fromMap(splitDoc.data()))
-            .toList();
-
-        return ModelTransaction(
-          idBranch: dataTransaction['id_branch'],
-          bankName: dataTransaction['bank_name'],
-          itemsOrdered: itemsOrdered,
-          dataSplit: splitData,
-          date: parseDate(date: dataTransaction['date']),
-          note: dataTransaction['note'],
-          invoice: map.id,
-          namePartner: dataTransaction['name_partner'],
-          idPartner: dataTransaction['id_partner'],
-          nameOperator: dataTransaction['name_operator'],
-          idOperator: dataTransaction['id_operator'],
-          paymentMethod: dataTransaction['payment_method'],
-          discount: int.tryParse(dataTransaction['discount'].toString()) ?? 0,
-          ppn: int.tryParse(dataTransaction['ppn'].toString()) ?? 0,
-          totalItem:
-              int.tryParse(dataTransaction['total_item'].toString()) ?? 0,
-          charge: int.tryParse(dataTransaction['charge'].toString()) ?? 0,
-          subTotal:
-              double.tryParse(dataTransaction['sub_total'].toString()) ?? 0.0,
-          billPaid:
-              double.tryParse(dataTransaction['bill_paid'].toString()) ?? 0.0,
-          totalCharge:
-              double.tryParse(dataTransaction['total_charge'].toString()) ??
-              0.0,
-          totalPpn:
-              double.tryParse(dataTransaction['total_ppn'].toString()) ?? 0.0,
-          totalDiscount:
-              double.tryParse(dataTransaction['total_discount'].toString()) ??
-              0.0,
-          total: double.tryParse(dataTransaction['total'].toString()) ?? 0.0,
-          statusTransaction: dataTransaction['status_transaction'],
-        );
-      }),
-    );
   }
 
   @override

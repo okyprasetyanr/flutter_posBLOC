@@ -113,20 +113,26 @@ class _UIOperatorState extends State<UIOperator> {
                       ? customSpinKit()
                       : WidgetDropdownBranch(
                           idBranch: state,
-                          selectedIdBranch: (selectedIdBranch) => context
-                              .read<OperatorBloc>()
-                              .add(OperatorGetData()),
+                          selectedIdBranch: (selectedIdBranch) {
+                            context.read<OperatorBloc>().add(
+                              OperatorGetData(idBranch: selectedIdBranch),
+                            );
+                            searchController.clear();
+                          },
                         );
                 },
               ),
             ),
           ],
         ),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
               child: WidgetDropDownFilter(
-                filters: roleTypeList,
+                filters: roleTypeList
+                    .where((element) => element != RoleType.Pemilik.name)
+                    .toList(),
                 text: "Pilih Operator",
                 selectedValue: (indexFilter) {
                   context.read<OperatorBloc>().add(
@@ -223,20 +229,29 @@ class _UIOperatorState extends State<UIOperator> {
                 ),
 
                 const SizedBox(height: 10),
-                customTextField(
-                  index: 2,
-                  nodes: nodes,
-                  inputType: TextInputType.emailAddress,
-                  context: context,
-                  text: "Email Operator",
-                  controller: emailController,
-                  enable: true,
-
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Email tidak boleh kosong";
+                BlocSelector<OperatorBloc, OperatorState, bool>(
+                  selector: (state) {
+                    if (state is OperatorLoaded) {
+                      return state.isEdit;
                     }
-                    return null;
+                    return false;
+                  },
+                  builder: (context, state) {
+                    return customTextField(
+                      index: 2,
+                      nodes: nodes,
+                      inputType: TextInputType.emailAddress,
+                      context: context,
+                      text: "E-mail Operator",
+                      controller: emailController,
+                      enable: !state,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "E-mail tidak boleh kosong";
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
 
@@ -285,10 +300,6 @@ class _UIOperatorState extends State<UIOperator> {
                     Expanded(
                       flex: 1,
                       child: BlocListener<OperatorBloc, OperatorState>(
-                        listenWhen: (previous, current) =>
-                            previous is OperatorLoaded &&
-                            current is OperatorLoaded &&
-                            previous.idBranch != current.idBranch,
                         listener: (context, state) {
                           if (state is OperatorLoaded) {
                             branchController.text = state.dataBranch!
@@ -354,7 +365,9 @@ class _UIOperatorState extends State<UIOperator> {
                                 : null,
                             filters: roleTypeList
                                 .where(
-                                  (element) => element != RoleType.All.name,
+                                  (element) =>
+                                      element != RoleType.All.name &&
+                                      element != RoleType.Pemilik.name,
                                 )
                                 .toList(),
                             text: "Jenis Operator",
@@ -369,6 +382,7 @@ class _UIOperatorState extends State<UIOperator> {
                             },
                           ),
                         ),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: WidgetDropDownFilter(
                             initialValue: state.$1

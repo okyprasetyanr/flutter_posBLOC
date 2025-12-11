@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class ModelBranch extends Equatable {
@@ -22,21 +21,6 @@ class ModelBranch extends Equatable {
   set setnumTelpBranch(String value) => _numTelpBranch;
   set setaddressBranch(String value) => _addressBranch;
   set setidBranch(String value) => _idBranch;
-
-  static List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
-    Map dataUser = data.data() as Map<String, dynamic>;
-    List listbranch = dataUser['list_branch'] ?? const [];
-    return listbranch
-        .map(
-          (map) => ModelBranch(
-            nameBranch: map['name_branch'],
-            numTelpBranch: map['phone_branch'],
-            addressBranch: map['address_branch'],
-            idBranch: map['id_branch'],
-          ),
-        )
-        .toList();
-  }
 
   @override
   List<Object?> get props => [

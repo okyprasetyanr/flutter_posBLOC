@@ -312,6 +312,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
 
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initFinancial();
+    await context.read<DataUserRepositoryCache>().initCounter();
     _initData();
   }
 

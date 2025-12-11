@@ -54,31 +54,6 @@ class ModelTransactionFinancial extends Equatable {
         .update({"status_transaction": statusTransaction});
   }
 
-  factory ModelTransactionFinancial.fromMap(
-    Map<String, dynamic> data,
-    String id,
-  ) {
-    return ModelTransactionFinancial(
-      statusTransaction: data['status_transaction'],
-      idFinancial: data['id_financial'],
-      nameFinancial: data['name_financial'],
-      idBranch: data['id_branch'],
-      invoice: id,
-      date: parseDate(date: data['date']),
-      note: data['date'],
-      amount: data['amount'].toDouble(),
-    );
-  }
-
-  static List<ModelTransactionFinancial> getDataListTransFinancial(
-    QuerySnapshot data,
-  ) {
-    return data.docs.map((map) {
-      final dataFinancial = map.data() as Map<String, dynamic>;
-      return ModelTransactionFinancial.fromMap(dataFinancial, map.id);
-    }).toList();
-  }
-
   ModelTransactionFinancial copyWith({
     String? invoice,
     String? idBranch,

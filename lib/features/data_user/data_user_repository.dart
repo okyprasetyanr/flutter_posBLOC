@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
-import 'package:flutter_pos/model_data/model_data_counter.dart';
+import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -10,6 +10,7 @@ import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
+import 'package:flutter_pos/request/get_data.dart';
 
 class DataUserRepository {
   final _db = FirebaseFirestore.instance;
@@ -19,7 +20,7 @@ class DataUserRepository {
         .collection('companies')
         .doc(UserSession.getUidOwner())
         .get();
-    return ModelBranch.getDataListBranch(data);
+    return getDataListBranch(data);
   }
 
   Future<List<ModelFinancial>> getFinancial() async {
@@ -27,7 +28,7 @@ class DataUserRepository {
         .collection('financial')
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
-    return ModelFinancial.getDataListFinancial(data);
+    return getDataListFinancial(data);
   }
 
   Future<List<ModelTransactionFinancial>> getTransIncome() async {
@@ -35,7 +36,7 @@ class DataUserRepository {
         .collection('transaction_income')
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
-    return ModelTransactionFinancial.getDataListTransFinancial(data);
+    return getDataListTransFinancial(data);
   }
 
   Future<List<ModelUser>> getUser() async {
@@ -43,7 +44,7 @@ class DataUserRepository {
         .collection('users')
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
-    return ModelUser.getDataListUser(data);
+    return getDataListUser(data);
   }
 
   Future<List<ModelTransactionFinancial>> getTransExpense() async {
@@ -51,7 +52,7 @@ class DataUserRepository {
         .collection('transaction_expense')
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
-    return ModelTransactionFinancial.getDataListTransFinancial(data);
+    return getDataListTransFinancial(data);
   }
 
   Future<List<ModelItem>> getItem() async {
@@ -59,7 +60,7 @@ class DataUserRepository {
         .collection('items')
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
-    return ModelItem.getDataListItem(data);
+    return getDataListItem(data);
   }
 
   Future<List<ModelCategory>> getCategory() async {
@@ -68,7 +69,7 @@ class DataUserRepository {
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
 
-    return ModelCategory.getDataListCategory(data);
+    return getDataListCategory(data);
   }
 
   Future<List<ModelPartner>> getPartner() async {
@@ -77,7 +78,7 @@ class DataUserRepository {
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
 
-    return ModelPartner.getDataListPartner(data);
+    return getDataListPartner(data);
   }
 
   Future<List<ModelTransaction>> getTransactionSell() async {
@@ -86,7 +87,7 @@ class DataUserRepository {
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
 
-    return await ModelTransaction.getDataListTransaction(data, isSell: true);
+    return await getDataListTransaction(data, isSell: true);
   }
 
   Future<List<ModelTransaction>> getTransactionBuy() async {
@@ -95,7 +96,7 @@ class DataUserRepository {
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
 
-    return await ModelTransaction.getDataListTransaction(data, isSell: false);
+    return await getDataListTransaction(data, isSell: false);
   }
 
   Future<List<ModelBatch>> getBatch() async {
@@ -104,7 +105,7 @@ class DataUserRepository {
         .where('uid_owner', isEqualTo: UserSession.uid_owner)
         .get();
 
-    return ModelBatch.getDataListBatch(data);
+    return getDataListBatch(data);
   }
 
   Future<List<ModelCounter>> getCounter() async {
@@ -114,6 +115,6 @@ class DataUserRepository {
         .collection('branch')
         .get();
 
-    return ModelCounter.getDataCounter(data);
+    return getDataCounter(data);
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -60,23 +61,29 @@ class TransFinancialBloc
     );
   }
 
-  FutureOr<void> _onUploadTrans(
+  Future<void> _onUploadTrans(
     TransFinancialUploadTrans event,
     Emitter<TransFinancialState> emit,
-  ) {
+  ) async {
     final currentState = state as TransFinancialLoaded;
     final isIncome = currentState.isIncome;
 
     final selectedData = currentState.selectedFinancial!;
+    final counter = repoCache.dataCounter.firstWhere(
+      (element) => element.getidBranch == selectedData.idBranch,
+    );
+
     final data = ModelTransactionFinancial(
       statusTransaction: statusTransaction(index: 0),
       idFinancial: selectedData.getidFinancial,
       nameFinancial: selectedData.getnameFinancial,
       idBranch: selectedData.getidBranch,
       invoice: generateInvoice(
-        idOP: repoCache.dataAccount!.getIdUser!,
+        idOP: repoCache.dataAccount!.getNameUser,
         branchId: selectedData.getidBranch,
-        queue: 1,
+        queue: isIncome
+            ? counter.getcounterIncome + 1
+            : counter.getcounterExpense + 1,
         operatorId: null,
       ),
       date: selectedData.getdate,
@@ -85,10 +92,37 @@ class TransFinancialBloc
     );
 
     data.pushDataFinancial(isIncome);
+
+    final dataCounter = repoCache.dataCounter;
+
+    final counterIndex = dataCounter.indexWhere(
+      (element) => element.getidBranch == data.getidBranch,
+    );
+
+    dataCounter[counterIndex] = dataCounter[counterIndex].copyWith(
+      counterIncome: currentState.isIncome
+          ? dataCounter[counterIndex].getcounterIncome + 1
+          : null,
+      counterExpense: currentState.isIncome
+          ? null
+          : dataCounter[counterIndex].getcounterExpense + 1,
+    );
+
+    await FirebaseFirestore.instance
+        .collection('counter')
+        .doc(UserSession.uid_owner)
+        .collection('branch')
+        .doc(data.getidBranch)
+        .update({
+          currentState.isIncome ? 'counter_income' : 'counter_expense':
+              FieldValue.increment(1),
+        });
+
     final updateLocal = isIncome
         ? repoCache.dataTransIncome
         : repoCache.dataTransExpense;
     updateLocal.add(data);
+
     add(TransFinancialResetSelected());
   }
 

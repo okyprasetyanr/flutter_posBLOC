@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
-import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
 enum PartnerType { customer, supplier }
@@ -71,22 +69,6 @@ class ModelPartner extends Equatable {
     );
   }
 
-  factory ModelPartner.fromMap(Map<String, dynamic> map, String id) {
-    return ModelPartner(
-      idBranch: map['id_branch'],
-      id: id,
-      name: map['name_partner'],
-      phone: map['phone_partner'],
-      email: map['email_partner'],
-      balance: map['balance_partner'],
-      type: PartnerType.values.firstWhere(
-        (element) => element.name == map['type'],
-        orElse: () => PartnerType.customer,
-      ),
-      date: parseDate(date: map['date']),
-    );
-  }
-
   Future<void> pushDataPartner() async {
     debugPrint("Log ModelPartner: _date: $_date");
     pushWorkerDataPartner(
@@ -105,13 +87,6 @@ class ModelPartner extends Equatable {
         ),
       ),
     );
-  }
-
-  static List<ModelPartner> getDataListPartner(QuerySnapshot data) {
-    return data.docs.map((map) {
-      final dataPartner = map.data() as Map<String, dynamic>;
-      return ModelPartner.fromMap(dataPartner, map.id);
-    }).toList();
   }
 
   @override

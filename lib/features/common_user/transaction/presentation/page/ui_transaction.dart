@@ -57,6 +57,7 @@ class _UITransactionState extends State<UITransaction> {
 
   Future<void> _onRefresh() async {
     await context.read<DataUserRepositoryCache>().initData();
+    await context.read<DataUserRepositoryCache>().initCounter();
     initData();
   }
 

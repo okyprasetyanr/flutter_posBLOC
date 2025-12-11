@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class ModelBatch extends Equatable {
@@ -35,34 +33,6 @@ class ModelBatch extends Equatable {
       idBranch: idBranch ?? _idBranch,
       date_buy: date_buy ?? _dateBuy,
       items_batch: items_batch ?? _itemsBatch,
-    );
-  }
-
-  static Future<List<ModelBatch>> getDataListBatch(QuerySnapshot data) async {
-    final firestore = FirebaseFirestore.instance;
-    return await Future.wait(
-      data.docs.map((map) async {
-        final dataBatch = map.data() as Map<String, dynamic>;
-
-        final itemsSnapshot = await firestore
-            .collection('batch')
-            .doc(map.id)
-            .collection('items_batch')
-            .get();
-
-        final itemsBatch = itemsSnapshot.docs.map((itemDoc) {
-          final itemData = itemDoc.data();
-
-          return ModelItemBatch.fromMapItemsBatch(itemData, itemDoc.id);
-        }).toList();
-
-        return ModelBatch(
-          invoice: map.id,
-          idBranch: dataBatch['id_branch'],
-          date_buy: parseDate(date: dataBatch['date_buy']),
-          items_batch: itemsBatch,
-        );
-      }).toList(),
     );
   }
 

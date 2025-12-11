@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
@@ -41,8 +42,24 @@ Future<UserCredential?> authenticatorAccount({
           .doc(uidUser)
           .get();
       final uidOwner = data['uid_owner'] ?? uidUser;
-      context.read<DataUserRepositoryCache>().dataAccount =
-          await ModelUser.fromMap(data.data()!, uidUser);
+      final map = data.data()!;
+      context.read<DataUserRepositoryCache>().dataAccount = await ModelUser(
+        idUser: uidUser,
+        statusUser: map['status_user'],
+        nameUser: map['name_user'],
+        emailUser: map['email_user'],
+        phoneUser: map['phone_user'],
+        roleUser: int.tryParse(map['role_user'].toString())!,
+        idBranchUser: map['id_branch'],
+        permissionsUser: {
+          for (final permission in Permission.values)
+            permission: map['status_user'] ?? false
+                ? map['permissions_user'][permission.name] ?? false
+                : false,
+        },
+        createdUser: parseDate(date: map['created_user'], minute: false),
+        noteUser: map['note_user'],
+      );
 
       final pref = await SharedPreferences.getInstance();
       await pref.setString('uid_owner', uidOwner);
@@ -53,6 +70,7 @@ Future<UserCredential?> authenticatorAccount({
       return userCredential;
     }
   } on FirebaseAuthException catch (e) {
+    customSnackBar(context, "Terjadi kesalahan! Silahkan coba kembali.");
     customSnackBar(context, _mapFirebaseAuthCodeToKey(e));
     Navigator.pop(context);
     return null;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -22,6 +23,7 @@ class DataUserRepositoryCache {
   List<ModelTransactionFinancial> dataTransIncome = [];
   List<ModelTransactionFinancial> dataTransExpense = [];
   List<ModelUser> dataUser = [];
+  List<ModelCounter> dataCounter = [];
   ModelUser? dataAccount;
 
   final DataUserRepository repo;
@@ -43,6 +45,7 @@ class DataUserRepositoryCache {
     await initTransactionBuy();
     await initBatch();
     await initUser();
+    await initCounter();
 
     for (var a in dataBranch) {
       debugPrint("Log DataUserRepositoryCache branch: $a");
@@ -83,6 +86,10 @@ class DataUserRepositoryCache {
 
   Future<void> initFinancial() async {
     dataFinancial = await repo.getFinancial();
+  }
+
+  Future<void> initCounter() async {
+    dataCounter = await repo.getCounter();
   }
 
   Future<void> initTransIncome() async {
