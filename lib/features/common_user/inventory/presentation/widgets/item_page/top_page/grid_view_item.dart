@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
@@ -33,6 +35,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
+            final item = items[index];
             return Material(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
@@ -46,17 +49,17 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       context.read<InventoryBloc>().add(
                         InventorySelectedItem(
                           selectedItem: ModelItem(
-                            qtyItem: items[index].getqtyItem,
-                            nameItem: items[index].getnameItem,
-                            idItem: items[index].getidItem,
-                            priceItem: items[index].getpriceItem,
-                            idCategoryItem: items[index].getidCategoryiItem,
-                            statusCondiment: items[index].getstatusCondiment,
-                            urlImage: "",
-                            idBranch: items[index].getidBranch,
-                            barcode: items[index].getBarcode,
+                            qtyItem: item.getqtyItem,
+                            nameItem: item.getnameItem,
+                            idItem: item.getidItem,
+                            priceItem: item.getpriceItem,
+                            idCategoryItem: item.getidCategoryiItem,
+                            statusCondiment: item.getstatusCondiment,
+                            urlImage: item.geturlImage,
+                            idBranch: item.getidBranch,
+                            barcode: item.getBarcode,
                             statusItem: true,
-                            date: items[index].getDateItem,
+                            date: item.getDateItem,
                           ),
                         ),
                       );
@@ -65,10 +68,36 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       padding: const EdgeInsets.all(3),
                       child: Column(
                         children: [
-                          Image.asset("assets/logo.png", height: 50),
+                          FutureBuilder(
+                            future: FirebaseFirestore.instance
+                                .collection('items')
+                                .doc(item.getidItem)
+                                .get(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(child: customSpinKit());
+                              }
+
+                              final data = snapshot.data!.data();
+
+                              return data!['imageUrl'] != null
+                                  ? Image.network(
+                                      data['imageUrl'],
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      "assets/logo.png",
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    );
+                            },
+                          ),
                           const SizedBox(height: 5),
                           Text(
-                            items[index].getnameItem,
+                            item.getnameItem,
                             style: lv05TextStyle,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
@@ -77,7 +106,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              formatPriceRp(items[index].getpriceItem),
+                              formatPriceRp(item.getpriceItem),
                               style: lv05textStylePrice,
                               textAlign: TextAlign.left,
                             ),
@@ -88,7 +117,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 5),
                               child: Text(
-                                formatQtyOrPrice(items[index].getqtyItem),
+                                formatQtyOrPrice(item.getqtyItem),
                                 style: lv0TextStyleRED,
                                 textAlign: TextAlign.left,
                               ),
@@ -99,7 +128,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                     ),
                   ),
 
-                  if (items[index].getstatusCondiment)
+                  if (item.getstatusCondiment)
                     Positioned(
                       top: -5,
                       right: -15,

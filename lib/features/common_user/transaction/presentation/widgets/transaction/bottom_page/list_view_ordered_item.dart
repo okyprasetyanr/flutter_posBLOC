@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
+import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -273,14 +275,21 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                             padding: const EdgeInsets.all(16.0),
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                Navigator.pop(context);
-                                customSnackBar(
-                                  context,
-                                  "Tambah Customer Baru!!",
+                                context.read<PartnerBloc>().add(
+                                  PartnerStatusPartner(
+                                    isCustomer:
+                                        (context.read<TransactionBloc>().state
+                                                as TransactionLoaded)
+                                            .isSell,
+                                  ),
                                 );
+                                navUpDownTransition(context, '/partner', false);
                               },
                               icon: const Icon(Icons.add),
-                              label: const Text("Tambah Customer Baru"),
+                              label: Text(
+                                "Tambah Kontak Baru",
+                                style: lv05TextStyle,
+                              ),
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size.fromHeight(48),
                                 shape: RoundedRectangleBorder(

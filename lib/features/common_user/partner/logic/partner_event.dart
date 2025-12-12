@@ -4,9 +4,9 @@ class PartnerEvent {}
 
 class PartnerGetData extends PartnerEvent {
   final String? idBranch;
-  final bool isCustomer;
+  final bool? isCustomer;
 
-  PartnerGetData({this.idBranch, this.isCustomer = true});
+  PartnerGetData({this.idBranch, this.isCustomer});
 }
 
 class PartnerSelectedPartner extends PartnerEvent {
@@ -27,7 +27,11 @@ class PartnerUploadDataPartner extends PartnerEvent {
   });
 }
 
-class PartnerStatusPartner extends PartnerEvent {}
+class PartnerStatusPartner extends PartnerEvent {
+  final bool? isCustomer;
+
+  PartnerStatusPartner({this.isCustomer});
+}
 
 class PartnerResetSelectedPartner extends PartnerEvent {}
 

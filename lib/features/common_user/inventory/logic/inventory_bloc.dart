@@ -215,6 +215,16 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     String idUser = currentState.dataSelectedItem == null
         ? Uuid().v4()
         : currentState.dataSelectedItem!.getidItem;
+
+    // final storageService = StorageService();
+    // String? imageUrl = null;
+    // if (currentState.image != null) {
+    //   imageUrl = await storageService.uploadItemImage(
+    //     currentState.image!,
+    //     idUser,
+    //   );
+    // }
+
     final item = ModelItem(
       qtyItem: 0,
       nameItem: event.name,
@@ -222,7 +232,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       priceItem: double.tryParse(event.price)!,
       idCategoryItem: event.selectedIdCategory,
       statusCondiment: currentState.condimentForm,
-      urlImage: "",
+      urlImage:
+          //  imageUrl ??
+          "",
       idBranch: currentState.idBranch!,
       barcode: event.codeBarcode,
       statusItem: true,
@@ -230,6 +242,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     );
 
     await item.pushDataItem();
+
     debugPrint("Log InventoryBloc: PushData: ${item}");
     final indexCategory = repoCache.dataItem.indexWhere(
       (element) => element.getidItem == item.getidItem,
@@ -240,7 +253,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     } else {
       repoCache.dataItem.add(item);
     }
-
     add(InventoryGetData());
   }
 

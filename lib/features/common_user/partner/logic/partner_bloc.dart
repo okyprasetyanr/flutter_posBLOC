@@ -13,7 +13,7 @@ import 'package:uuid/uuid.dart';
 
 class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
   DataUserRepositoryCache repoCache;
-  PartnerBloc(this.repoCache) : super(PartnerInitial()) {
+  PartnerBloc(this.repoCache) : super(PartnerLoaded()) {
     on<PartnerGetData>(_onGetData);
     on<PartnerSelectedPartner>(_onSelectedPartner);
     on<PartnerUploadDataPartner>(_onUploadataPartner);
@@ -32,8 +32,8 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     final branch = currentState.dataBranch ?? repoCache.getBranch();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? branch.first.getidBranch;
-
-    List<ModelPartner> partner = event.isCustomer
+    final isCustomer = event.isCustomer ?? currentState.isCustomer;
+    List<ModelPartner> partner = isCustomer
         ? repoCache.getCustomer(idBranch)
         : repoCache.getSupplier(idBranch);
 
@@ -44,7 +44,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         dataPartner: partner,
         idBranch: idBranch,
         dataBranch: branch,
-        isCustomer: event.isCustomer,
+        isCustomer: isCustomer,
       ),
     );
   }
@@ -100,10 +100,13 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     }
   }
 
-  FutureOr<void> _onStatusPartner(event, Emitter<PartnerState> emit) async {
+  FutureOr<void> _onStatusPartner(
+    PartnerStatusPartner event,
+    Emitter<PartnerState> emit,
+  ) async {
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      final isCustomer = !currentState.isCustomer;
+      final isCustomer = event.isCustomer ?? !currentState.isCustomer;
       emit(currentState.copyWith(isCustomer: isCustomer));
 
       debugPrint("Log PartnerBloc: isCustomer: $isCustomer");

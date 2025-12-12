@@ -18,7 +18,7 @@ import 'package:flutter_pos/request/delete_data.dart';
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repo;
 
-  TransactionBloc(this.repo) : super(TransactionInitial()) {
+  TransactionBloc(this.repo) : super(TransactionLoaded()) {
     on<TransactionGetData>(_onGetData);
     on<TransactionSearchItem>(
       _onSellSearchItem,
