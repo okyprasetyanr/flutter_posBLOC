@@ -14,7 +14,7 @@ void customBottomSheet({
         initialChildSize: 0.5,
         minChildSize: 0.3,
         maxChildSize: 0.65,
-        expand: false,
+        expand: true,
         builder: (context, scrollController) {
           return Container(
             decoration: BoxDecoration(

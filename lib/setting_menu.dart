@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_menu.dart';
+import 'package:flutter_pos/features/common_user/profil/ui_profil.dart';
 import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/print/presentation/ui_print.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -28,7 +29,16 @@ class _UISettingsState extends State<UISettings> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              WidgetCustomTextMenu(text: "Profil", onTap: () async {}),
+              WidgetCustomTextMenu(
+                text: "Profil",
+                onTap: () async {
+                  customBottomSheet(
+                    context: context,
+                    resetItemForm: null,
+                    content: (scrollController) => UIProfile(),
+                  );
+                },
+              ),
               const SizedBox(height: 10),
               WidgetCustomTextMenu(text: "Fitur", onTap: () async {}),
               const SizedBox(height: 10),

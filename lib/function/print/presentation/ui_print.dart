@@ -51,7 +51,7 @@ class UIPrint extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Connected to: ${state.device.name}'),
+                  Text('Terhubung ke: ${state.device.name}'),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () => bloc.add(PrintTestEvent()),
@@ -69,7 +69,7 @@ class UIPrint extends StatelessWidget {
               return const Center(child: Text('Printing...'));
             }
 
-            return const Center(child: Text('Unknown state'));
+            return const Center(child: Text('State tidak dikenali'));
           },
         ),
       ),
