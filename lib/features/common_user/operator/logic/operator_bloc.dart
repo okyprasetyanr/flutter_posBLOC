@@ -59,7 +59,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         ? state as OperatorLoaded
         : OperatorLoaded();
 
-    final dataBranch = currentState.dataBranch ?? repoCache.dataBranch;
+    final dataBranch = currentState.dataBranch ?? repoCache.getBranch();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final roleUser = event.roleUser ?? currentState.filterRoleUser;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -12,7 +13,6 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 
 class DataUserRepositoryCache {
-  List<ModelBranch> dataBranch = [];
   List<ModelItem> dataItem = [];
   List<ModelCategory> dataCategory = [];
   List<ModelPartner> dataPartner = [];
@@ -25,6 +25,7 @@ class DataUserRepositoryCache {
   List<ModelUser> dataUser = [];
   List<ModelCounter> dataCounter = [];
   ModelUser? dataAccount;
+  ModelCompany? dataCompany;
 
   final DataUserRepository repo;
 
@@ -34,7 +35,7 @@ class DataUserRepositoryCache {
     // await Future.wait([
     // ]);
 
-    await initBranch();
+    await initCompany();
     await initFinancial();
     await initTransIncome();
     await initTransExpense();
@@ -47,9 +48,6 @@ class DataUserRepositoryCache {
     await initUser();
     await initCounter();
 
-    for (var a in dataBranch) {
-      debugPrint("Log DataUserRepositoryCache branch: $a");
-    }
     for (var a in dataItem) {
       debugPrint("Log DataUserRepositoryCache item: $a");
     }
@@ -72,16 +70,16 @@ class DataUserRepositoryCache {
     return true;
   }
 
-  Future<void> initBranch() async {
-    final listBranch = await repo.getBranch();
-    dataBranch = dataAccount?.getIdBranchUser != null
-        ? listBranch
-              .where(
-                (element) =>
-                    element.getidBranch == dataAccount!.getIdBranchUser,
-              )
-              .toList()
-        : listBranch;
+  Future<void> initCompany() async {
+    dataCompany = await repo.getCompany();
+    // dataAccount?.getIdBranchUser != null
+    //     ? listBranch
+    //           .where(
+    //             (element) =>
+    //                 element.getidBranch == dataAccount!.getIdBranchUser,
+    //           )
+    //           .toList()
+    //     : listBranch;
   }
 
   Future<void> initFinancial() async {
@@ -135,7 +133,7 @@ class DataUserRepositoryCache {
   }
 
   List<ModelBranch> getBranch() {
-    return dataBranch.toList();
+    return dataCompany!.getListBranch.toList();
   }
 
   List<ModelItem> getItem(String idBranch) {

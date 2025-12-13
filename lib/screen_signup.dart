@@ -361,6 +361,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 collection: 'companies',
                 id: uidUser,
                 dataBranch: convertToMapBranch(
+                  created: formatDate(date: DateTime.now(), minute: false),
                   nameCompany: nameCompanyController.text,
                   phoneCompany: phoneCompanyController.text,
                   listBranch: listBranch,

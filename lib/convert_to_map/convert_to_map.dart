@@ -172,9 +172,11 @@ Map<String, dynamic> convertToMapCounter(ModelCounter dataCounter) {
 Map<String, dynamic> convertToMapBranch({
   required String nameCompany,
   required String phoneCompany,
+  required String created,
   required List<Map<String, dynamic>> listBranch,
 }) {
   return {
+    'created_company': created,
     'name_company': nameCompany,
     'phone_company': phoneCompany,
     'list_branch': listBranch,

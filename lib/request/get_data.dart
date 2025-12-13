@@ -3,6 +3,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -45,8 +46,7 @@ List<ModelFinancial> getDataListFinancial(QuerySnapshot data) {
 }
 
 List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
-  Map dataUser = data.data() as Map<String, dynamic>;
-  List listbranch = dataUser['list_branch'] ?? const [];
+  List listbranch = data['list_branch'] ?? const [];
   return listbranch
       .map(
         (map) => ModelBranch(
@@ -57,6 +57,16 @@ List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
         ),
       )
       .toList();
+}
+
+ModelCompany getDataCompany(DocumentSnapshot data) {
+  Map dataUser = data.data() as Map<String, dynamic>;
+  return ModelCompany(
+    listBranch: getDataListBranch(data),
+    nameCompany: dataUser['name_company'],
+    phoneCompany: dataUser['phone_company'],
+    created: parseDate(date: dataUser['created_company'], minute: false),
+  );
 }
 
 List<ModelCounter> getDataCounter(

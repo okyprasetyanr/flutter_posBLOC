@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
@@ -13,109 +15,63 @@ class UIProfile extends StatelessWidget {
     ModelUser dataAccount = context
         .read<DataUserRepositoryCache>()
         .dataAccount!;
-
+    ModelCompany dataCompany = context
+        .read<DataUserRepositoryCache>()
+        .dataCompany!;
     return Padding(
-      padding: EdgeInsets.all(10),
-      child: Scaffold(
-        body: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/logo.png",
-                      height: 100,
-                      width: 100,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text("Nama", style: lv05TextStyleBold),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: BoxBorder.all(
-                        width: 1,
-                        color: Colors.grey,
-                        style: BorderStyle.solid,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: ListView(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Image.asset(
+                        "assets/logo.png",
+                        height: 100,
+                        width: 100,
                       ),
                     ),
-                    child: Text(dataAccount.getNameUser, style: lv05TextStyle),
-                  ),
-                  const SizedBox(height: 10),
-                  Text("E-mail", style: lv05TextStyleBold),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: BoxBorder.all(
-                        width: 1,
-                        color: Colors.grey,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                    child: Text(dataAccount.getEmailUser, style: lv05TextStyle),
-                  ),
-                  const SizedBox(height: 10),
-                  Text("Nomor Telefon", style: lv05TextStyleBold),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: BoxBorder.all(
-                        width: 1,
-                        color: Colors.grey,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                    child: Text(dataAccount.getPhoneUser, style: lv05TextStyle),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    Text("Nama", style: lv05TextStyleBold),
+                    CustomText(text: dataAccount.getNameUser),
+                    const SizedBox(height: 10),
+                    Text("E-mail", style: lv05TextStyleBold),
+                    CustomText(text: dataAccount.getEmailUser),
+                    const SizedBox(height: 10),
+                    Text("Nomor Telefon", style: lv05TextStyleBold),
+                    CustomText(text: dataAccount.getPhoneUser),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Jenis Operator"),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: BoxBorder.all(
-                        width: 1,
-                        color: Colors.grey,
-                        style: BorderStyle.solid,
-                      ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Jenis Operator"),
+                    CustomText(
+                      text: RoleTypeX.fromId(dataAccount.getRoleUser)!.name,
                     ),
-                    child: Text(
-                      RoleTypeX.fromId(dataAccount.getRoleUser)!.name,
-                      style: lv05TextStyle,
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-                  Text("Perijinan:"),
-                  ...Permission.values.map((element) {
-                    return rowContent(
-                      "${element.name.replaceAll("_", " ")}",
-                      dataAccount.getPermissionsUser['${element.name}']
-                              ?.toString() ??
-                          "Terbuka",
-                    );
-                  }),
-                ],
+                    const SizedBox(height: 10),
+                    Text("Perijinan:"),
+                    ...Permission.values.map((element) {
+                      return rowContent(
+                        "${element.name.replaceAll("_", " ")}",
+                        dataAccount.getPermissionsUser['${element.name}']
+                                ?.toString() ??
+                            "Terbuka",
+                      );
+                    }),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }

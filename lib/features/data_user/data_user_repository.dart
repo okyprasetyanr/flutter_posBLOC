@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
-import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -15,12 +15,12 @@ import 'package:flutter_pos/request/get_data.dart';
 class DataUserRepository {
   final _db = FirebaseFirestore.instance;
 
-  Future<List<ModelBranch>> getBranch() async {
+  Future<ModelCompany> getCompany() async {
     final data = await _db
         .collection('companies')
         .doc(UserSession.getUidOwner())
         .get();
-    return getDataListBranch(data);
+    return getDataCompany(data);
   }
 
   Future<List<ModelFinancial>> getFinancial() async {
