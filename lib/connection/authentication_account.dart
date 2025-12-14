@@ -63,7 +63,6 @@ Future<UserCredential?> authenticatorAccount({
 
       final pref = await SharedPreferences.getInstance();
       await pref.setString('uid_owner', uidOwner);
-      await pref.setBool('fifo', true);
 
       Navigator.pop(context);
       navUpDownTransition(context, '/mainmenu', true);

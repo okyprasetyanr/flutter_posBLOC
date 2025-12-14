@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
+enum SyncData { Item, Transaksi, Kontak, Kas, Operator }
+
 final listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"];
 final listStatusTransactionFinancial = const ["Sukses", "Batal"];
 final filterItem = ["A-Z", "Z-A", "Terbaru", "Terlama", "Stock +", "Stock -"];
@@ -46,7 +48,7 @@ class UserSession {
   static Future<void> init(DataUserRepositoryCache? repo) async {
     final pref = await SharedPreferences.getInstance();
     uid_owner = pref.getString("uid_owner")!;
-    fifo = pref.getBool("fifo")!;
+    fifo = pref.getBool("fifo") ?? false;
     if (repo != null) {
       await repo.initData();
     }
@@ -91,13 +93,13 @@ String statusTransaction({int? index}) {
 
 String formatDate({required DateTime date, bool? minute}) {
   final useMinute = minute ?? true;
-  final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
+  final pattern = useMinute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyy';
   return DateFormat(pattern).format(date);
 }
 
 DateTime parseDate({required String date, bool? minute}) {
   final useMinute = minute ?? true;
-  final pattern = useMinute ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd';
+  final pattern = useMinute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyy';
   return DateFormat(pattern).parse(date);
 }
 

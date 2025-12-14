@@ -183,7 +183,7 @@ class _UIPartnerState extends State<UIPartner> {
                   : BlocSelector<PartnerBloc, PartnerState, List<ModelPartner>>(
                       selector: (state) {
                         if (state is PartnerLoaded) {
-                          return state.filteredPartner!;
+                          return state.filteredPartner ?? [];
                         }
                         return [];
                       },

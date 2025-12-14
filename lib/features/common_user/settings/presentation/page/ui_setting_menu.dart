@@ -1,11 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_menu.dart';
-import 'package:flutter_pos/features/common_user/profil/ui_profil.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
+import 'package:flutter_pos/features/common_user/settings/presentation/ui_profil.dart';
+import 'package:flutter_pos/features/common_user/settings/presentation/ui_feature.dart';
+import 'package:flutter_pos/features/common_user/settings/presentation/ui_sync_data.dart';
 import 'package:flutter_pos/function/bottom_sheet.dart';
-import 'package:flutter_pos/function/print/presentation/ui_print.dart';
+import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 
@@ -35,14 +40,41 @@ class _UISettingsState extends State<UISettings> {
                   customBottomSheet(
                     context: context,
                     resetItemForm: null,
-                    content: (scrollController) => UIProfile(),
+                    content: (scrollController) {
+                      context.read<SettingsBloc>().add(SettingsProfile());
+                      return UIProfile(controller: scrollController);
+                    },
                   );
                 },
               ),
               const SizedBox(height: 10),
-              WidgetCustomTextMenu(text: "Fitur", onTap: () async {}),
+              WidgetCustomTextMenu(
+                text: "Fitur",
+                onTap: () async {
+                  customBottomSheet(
+                    context: context,
+                    resetItemForm: null,
+                    content: (scrollController) {
+                      context.read<SettingsBloc>().add(SettingsFeature());
+                      return UiFeature(controller: scrollController);
+                    },
+                  );
+                },
+              ),
               const SizedBox(height: 10),
-              WidgetCustomTextMenu(text: "Sinkron Data", onTap: () async {}),
+              WidgetCustomTextMenu(
+                text: "Sinkron Data",
+                onTap: () async {
+                  customBottomSheet(
+                    context: context,
+                    resetItemForm: null,
+                    content: (scrollController) {
+                      context.read<SettingsBloc>().add(SettingsSyncData());
+                      return UiSyncData(controller: scrollController);
+                    },
+                  );
+                },
+              ),
               const SizedBox(height: 10),
               WidgetCustomTextMenu(
                 text: "Printer",
@@ -50,7 +82,10 @@ class _UISettingsState extends State<UISettings> {
                   customBottomSheet(
                     context: context,
                     resetItemForm: null,
-                    content: (scrollController) => UIPrint(),
+                    content: (scrollController) {
+                      context.read<SettingsBloc>().add(SettingsPrinterInit());
+                      return UIPrint();
+                    },
                   );
                 },
               ),

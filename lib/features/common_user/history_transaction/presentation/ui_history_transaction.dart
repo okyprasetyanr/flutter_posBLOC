@@ -6,6 +6,7 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/function/print_service.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
@@ -28,7 +29,7 @@ class UIHistoryTransaction extends StatefulWidget {
 
 class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   final searchController = TextEditingController();
-
+  final printerService = PrinterService();
   @override
   void dispose() {
     searchController.dispose();
@@ -600,7 +601,15 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final printer = context.read<PrinterService>();
+                    final isAvailable = await printer.getSavedMac() != null;
+                    if (isAvailable) {
+                      await printer.printTest();
+                    } else {
+                      customSnackBar(context, "Printer tidak tersambung");
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.all(8),
                     elevation: 2,

@@ -4,92 +4,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
-import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
-import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
-import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
-import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/firebase_options.dart';
-import 'package:flutter_pos/function/print/logic/print_bloc.dart';
-import 'package:flutter_pos/function/print/print_service.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
-
+final DataUserRepository dataUserRepo = DataUserRepository();
+final DataUserRepositoryCache repo = DataUserRepositoryCache(dataUserRepo);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox('firestoreQueue');
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  _listenConnection();
-
-  Workmanager().initialize(callbackDispatcher);
-  Workmanager().registerPeriodicTask(
-    "1",
-    "firestoreWorker",
-    frequency: Duration(minutes: 15),
-  );
-
-  final dataUserRepo = DataUserRepository();
-  final repo = DataUserRepositoryCache(dataUserRepo);
-  final printService = PrinterService();
-
+  await Hive.initFlutter();
+  await Hive.openBox('firestoreQueue');
+  if (!kIsWeb) {
+    Workmanager().initialize(callbackDispatcher);
+    Workmanager().registerPeriodicTask(
+      "1",
+      "firestoreWorker",
+      frequency: Duration(minutes: 15),
+    );
+  }
   runApp(
     RepositoryProvider.value(
       value: repo,
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => InventoryBloc(repo)),
-          BlocProvider(create: (context) => TransactionBloc(repo)),
-          BlocProvider(create: (context) => PaymentBloc(repo)),
-          BlocProvider(create: (context) => PartnerBloc(repo)),
-          BlocProvider(create: (context) => BatchBloc(repo)),
-          BlocProvider(create: (context) => HistoryTransactionBloc(repo)),
-          BlocProvider(create: (context) => ReportBloc(repo)),
-          BlocProvider(create: (context) => FinancialBloc(repo)),
-          BlocProvider(create: (context) => TransFinancialBloc(repo)),
-          BlocProvider(create: (context) => HistoryFinancialBloc(repo)),
-          BlocProvider(create: (context) => OperatorBloc(repo)),
-          BlocProvider(create: (context) => PrinterBloc(printService)),
-        ],
-        child: MaterialApp(
-          initialRoute: '/login',
-          routes: routesPage,
-          debugShowCheckedModeBanner: false,
-        ),
+      child: MaterialApp(
+        initialRoute: '/login',
+        routes: routesPage,
+        debugShowCheckedModeBanner: false,
       ),
     ),
   );
 }
 
-void _listenConnection() {
-  Connectivity().onConnectivityChanged.listen((
-    ConnectivityResult result,
-  ) async {
-    if (result == ConnectivityResult.mobile ||
-        result == ConnectivityResult.wifi) {
-      debugPrint("Log Main: Internet hidup");
-      await FirestoreWorker.processQueueHive();
-    }
-  });
-}
-
+@pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -158,7 +115,6 @@ class _MainAppState extends State<ScreenLogin> {
   }
 
   Widget _login() {
-    // return
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
@@ -20,6 +23,8 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<SettingsBloc>().add(SettingsPrinterAutoConnect());
+
     final selectedMenu = ValueNotifier<String>("Main");
     double height = MediaQuery.of(context).size.height;
     double paddingtStatusBar, paddingBottomMain;

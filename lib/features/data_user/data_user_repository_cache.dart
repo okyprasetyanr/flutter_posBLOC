@@ -132,6 +132,14 @@ class DataUserRepositoryCache {
     dataUser = await repo.getUser();
   }
 
+  ModelUser getAccount() {
+    return dataAccount!;
+  }
+
+  ModelCompany getCompany() {
+    return dataCompany!;
+  }
+
   List<ModelBranch> getBranch() {
     return dataCompany!.getListBranch.toList();
   }

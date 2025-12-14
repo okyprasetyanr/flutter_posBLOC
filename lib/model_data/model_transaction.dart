@@ -5,7 +5,6 @@ import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
-import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
@@ -206,16 +205,6 @@ class ModelTransaction extends Equatable {
     await writeBatch.commit();
 
     dataRepo.dataBatch.add(newBatch);
-
-    ModelCounter.pushDataCounter(
-      ModelCounter(
-        counterSell: 0,
-        counterBuy: 1,
-        counterIncome: 0,
-        counterExpense: 0,
-        idBranch: _idBranch,
-      ),
-    );
   }
 
   Future<void> pushDataTransaction({

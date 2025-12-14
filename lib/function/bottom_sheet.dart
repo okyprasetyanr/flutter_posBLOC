@@ -11,9 +11,9 @@ void customBottomSheet({
     backgroundColor: Colors.transparent,
     builder: (context) {
       return DraggableScrollableSheet(
-        initialChildSize: 0.5,
+        initialChildSize: 0.6,
         minChildSize: 0.3,
-        maxChildSize: 0.65,
+        maxChildSize: 0.8,
         expand: true,
         builder: (context, scrollController) {
           return Container(
