@@ -65,6 +65,8 @@ ModelCompany getDataCompany(DocumentSnapshot data) {
     listBranch: getDataListBranch(data),
     nameCompany: dataUser['name_company'],
     phoneCompany: dataUser['phone_company'],
+    footer: dataUser['footer'] ?? "",
+    header: dataUser['header'] ?? "",
     created: parseDate(date: dataUser['created_company'], minute: false),
   );
 }

@@ -6,6 +6,7 @@ import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_menu.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
+import 'package:flutter_pos/features/common_user/settings/presentation/ui_logo_header_footer.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_profil.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_feature.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_sync_data.dart';
@@ -22,6 +23,9 @@ class UISettings extends StatefulWidget {
 }
 
 class _UISettingsState extends State<UISettings> {
+  final headerController = TextEditingController();
+  final footerController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +96,22 @@ class _UISettingsState extends State<UISettings> {
               const SizedBox(height: 10),
               WidgetCustomTextMenu(
                 text: "Logo/Header/Footer",
-                onTap: () async {},
+                onTap: () async {
+                  customBottomSheet(
+                    context: context,
+                    resetItemForm: null,
+                    content: (scrollController) {
+                      context.read<SettingsBloc>().add(
+                        SettingsLogoHeaderFooterInit(),
+                      );
+                      return UiLogoHeaderFooter(
+                        headerController: headerController,
+                        footerController: footerController,
+                        controller: scrollController,
+                      );
+                    },
+                  );
+                },
               ),
               const SizedBox(height: 10),
               WidgetCustomTextMenu(
