@@ -244,7 +244,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsLogoHeaderFooterUpdate event,
     Emitter<SettingsState> emit,
   ) {
-    repoCache.dataCompany!.copyWith(footer: event.footer, header: event.header);
+    repoCache.dataCompany = repoCache.dataCompany!.copyWith(
+      footer: event.footer,
+      header: event.header,
+    );
     updateLogoHeaderFoter(header: event.header, footer: event.footer);
     add(SettingsLogoHeaderFooterInit());
   }
