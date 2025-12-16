@@ -5,21 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar_access.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
-import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
-import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
-import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
-import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
-import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
-import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/print_service.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
@@ -36,13 +23,10 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   bool loading = true;
   final nameCompany = ValueNotifier<String?>(null);
 
-  late final PrinterService? printService;
-
   Map<Permission, bool> getPermission = {};
   @override
   void initState() {
     super.initState();
-    printService = kIsWeb ? null : PrinterService();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initUserSession();
@@ -97,31 +81,12 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    final repo = context.read<DataUserRepositoryCache>();
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => InventoryBloc(repo)),
-        BlocProvider(create: (_) => TransactionBloc(repo)),
-        BlocProvider(create: (_) => PaymentBloc(repo)),
-        BlocProvider(create: (_) => PartnerBloc(repo)),
-        BlocProvider(create: (_) => BatchBloc(repo)),
-        BlocProvider(create: (_) => HistoryTransactionBloc(repo)),
-        BlocProvider(create: (_) => ReportBloc(repo)),
-        BlocProvider(create: (_) => FinancialBloc(repo)),
-        BlocProvider(create: (_) => TransFinancialBloc(repo)),
-        BlocProvider(create: (_) => HistoryFinancialBloc(repo)),
-        BlocProvider(create: (_) => OperatorBloc(repo)),
-
-        if (!kIsWeb)
-          BlocProvider(create: (_) => SettingsBloc(printService!, repo)),
-      ],
-      child: Scaffold(
-        body: LayoutTopBottomMainMenu(
-          pageview: (page) => _pageView(page),
-          widgetTop: layoutTop(context),
-          widgetBottom: layoutBottom(),
-          nameCompany: nameCompany,
-        ),
+    return Scaffold(
+      body: LayoutTopBottomMainMenu(
+        pageview: (page) => _pageView(page),
+        widgetTop: layoutTop(context),
+        widgetBottom: layoutBottom(),
+        nameCompany: nameCompany,
       ),
     );
   }
