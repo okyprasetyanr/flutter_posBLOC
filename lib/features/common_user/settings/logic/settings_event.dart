@@ -37,3 +37,12 @@ class SettingsPrintTestEvent extends SettingsEvent {}
 class SettingsDisconnectPrinterEvent extends SettingsEvent {}
 
 class SettingsPrinterAutoConnect extends SettingsEvent {}
+
+class SettingsLogoHeaderFooterInit extends SettingsEvent {}
+
+class SettingsLogoHeaderFooterUpdate extends SettingsEvent {
+  final String header;
+  final String footer;
+
+  SettingsLogoHeaderFooterUpdate({required this.header, required this.footer});
+}

@@ -9,6 +9,7 @@ import 'package:flutter_pos/features/common_user/settings/logic/settings_state.d
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/print_service.dart';
+import 'package:flutter_pos/request/update_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
@@ -31,6 +32,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsDisconnectPrinterEvent>(_onDisconnect);
     on<SettingsPrinterInit>(_onPrinterInit);
     on<SettingsPrinterAutoConnect>(_onPrinterAutoConnect);
+    on<SettingsLogoHeaderFooterInit>(_onLogoHeaderFooterInit);
+    on<SettingsLogoHeaderFooterUpdate>(_onLogoHeaderFooterUpdate);
   }
 
   FutureOr<void> _onProfile(
@@ -206,7 +209,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     Emitter emit,
   ) async {
     await service.disconnect();
-    emit(PrinterDisconnected());
+    emit(SettingsPrinterDisconnected());
   }
 
   FutureOr<void> _onPrinterInit(
@@ -223,5 +226,29 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     try {
       await service.autoConnectSavedPrinter();
     } catch (_) {}
+  }
+
+  FutureOr<void> _onLogoHeaderFooterInit(
+    SettingsLogoHeaderFooterInit event,
+    Emitter<SettingsState> emit,
+  ) {
+    emit(
+      SettingsLogoHeaderFooterLoaded(
+        footer: repoCache.dataCompany!.getFooter,
+        header: repoCache.dataCompany!.getHeader,
+      ),
+    );
+  }
+
+  FutureOr<void> _onLogoHeaderFooterUpdate(
+    SettingsLogoHeaderFooterUpdate event,
+    Emitter<SettingsState> emit,
+  ) {
+    repoCache.dataCompany = repoCache.dataCompany!.copyWith(
+      footer: event.footer,
+      header: event.header,
+    );
+    updateLogoHeaderFoter(header: event.header, footer: event.footer);
+    add(SettingsLogoHeaderFooterInit());
   }
 }

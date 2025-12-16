@@ -17,6 +17,18 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
+import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
+import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
+import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';

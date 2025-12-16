@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:equatable/equatable.dart';
+
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -95,6 +97,15 @@ class SettingsPrinterConnected extends SettingsState {
   SettingsPrinterConnected(this.device);
 }
 
-class PrinterDisconnected extends SettingsState {}
+class SettingsPrinterDisconnected extends SettingsState {}
 
 class SettingsPrinterPrinting extends SettingsState {}
+
+class SettingsLogoHeaderFooterLoaded extends SettingsState with EquatableMixin {
+  final String header;
+  final String footer;
+  SettingsLogoHeaderFooterLoaded({required this.header, required this.footer});
+
+  @override
+  List<Object?> get props => [header, footer];
+}
