@@ -55,7 +55,7 @@ Widget customListGradient<T>({
                           builder: (context) => AlertDialog(
                             title: Text("Konfirmasi", style: lv2TextStyle),
                             content: Text(
-                              "Hapus Kategori ${getName(dataIndex)}?",
+                              "Hapus ${getName(dataIndex)}?",
                               style: lv1TextStyle,
                             ),
                             actions: [

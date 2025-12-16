@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
 enum RoleType { All, Pemilik, Kasir, Admin }
@@ -118,32 +118,20 @@ class ModelUser extends Equatable {
     );
   }
 
-  Map<String, dynamic> toMap(String? uidOwner) {
-    return {
-      'status_user': statusUser,
-      'name_user': nameUser,
-      'email_user': emailUser,
-      'phone_user': phoneUser,
-      'role_user': roleUser,
-      'uid_owner': uidOwner ?? UserSession.uid_owner,
-      'id_branch': idBranchUser,
-      'permissions_user': {
-        for (final permission in Permission.values)
-          permission.name: permissionsUser[permission],
-      },
-      'created_user': formatDate(
-        date: createdUser ?? DateTime.now(),
-        minute: false,
-      ),
-      'note_user': noteUser,
-    };
-  }
-
   Future<void> pushDataUser({String? uidOwner}) async {
     pushWorkerDataUser(
       collection: 'users',
       id: idUser!,
-      dataUser: toMap(uidOwner),
+      dataUser: convertToMapUser(
+        ModelUser(
+          nameUser: nameUser,
+          emailUser: emailUser,
+          phoneUser: phoneUser,
+          roleUser: roleUser,
+          permissionsUser: permissionsUser,
+        ),
+        uidOwner,
+      ),
     );
   }
 

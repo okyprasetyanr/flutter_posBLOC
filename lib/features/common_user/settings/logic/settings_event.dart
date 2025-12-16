@@ -1,5 +1,5 @@
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/enum/enum.dart';
 
 class SettingsEvent {}
 
@@ -12,7 +12,7 @@ class SettingsFeatureFIFO extends SettingsEvent {}
 class SettingsSyncData extends SettingsEvent {}
 
 class SettingsSelectedSyncData extends SettingsEvent {
-  final Map<SyncData, bool> selectedData;
+  final Map<ListForDatabase, bool> selectedData;
 
   SettingsSelectedSyncData({required this.selectedData});
 }
@@ -46,3 +46,9 @@ class SettingsLogoHeaderFooterUpdate extends SettingsEvent {
 
   SettingsLogoHeaderFooterUpdate({required this.header, required this.footer});
 }
+
+class SettingsBackupRestoreinit extends SettingsEvent {}
+
+class SettingsBackup extends SettingsEvent {}
+
+class SettingRestore extends SettingsEvent {}

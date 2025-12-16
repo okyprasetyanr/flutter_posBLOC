@@ -7,7 +7,7 @@ import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/firebase_options.dart';
-import 'package:flutter_pos/function/print_service.dart';
+import 'package:flutter_pos/function/service_dart.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
@@ -30,22 +30,9 @@ import 'package:flutter_pos/features/common_user/transaction/logic/financial/tra
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 
-import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
-import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
-import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
-import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
-import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
-import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-
 final DataUserRepository dataUserRepo = DataUserRepository();
 final DataUserRepositoryCache repo = DataUserRepositoryCache(dataUserRepo);
-final PrinterService? printService = kIsWeb ? null : PrinterService();
+final ServicePrinter? printService = kIsWeb ? null : ServicePrinter();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

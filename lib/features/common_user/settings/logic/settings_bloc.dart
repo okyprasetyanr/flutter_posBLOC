@@ -1,20 +1,22 @@
 import 'dart:async';
-
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/excel_backup.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/print_service.dart';
+import 'package:flutter_pos/function/service_dart.dart';
 import 'package:flutter_pos/request/update_data.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final DataUserRepositoryCache repoCache;
-  final PrinterService service;
+  final ServicePrinter service;
   StreamSubscription<List<BluetoothDevice>>? _scanSub;
 
   SettingsBloc(this.service, this.repoCache) : super(SettingsInital()) {
@@ -34,6 +36,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsPrinterAutoConnect>(_onPrinterAutoConnect);
     on<SettingsLogoHeaderFooterInit>(_onLogoHeaderFooterInit);
     on<SettingsLogoHeaderFooterUpdate>(_onLogoHeaderFooterUpdate);
+    on<SettingsBackupRestoreinit>(_onBackupRestoreInit);
+    on<SettingsBackup>(_onBackup);
   }
 
   FutureOr<void> _onProfile(
@@ -76,7 +80,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsSyncData event,
     Emitter<SettingsState> emit,
   ) {
-    final syncData = {for (final data in SyncData.values) data: false};
+    final syncData = {for (final data in ListForDatabase.values) data: false};
     emit(SettingsSyncDataLoaded(dataSyncData: syncData));
   }
 
@@ -123,16 +127,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       emit(latestState.copyWith(currentStep: key.name));
 
       switch (key) {
-        case SyncData.Item:
+        case ListForDatabase.Item:
           await repoCache.initItem();
           break;
-        case SyncData.Kas:
+        case ListForDatabase.Kas:
           await repoCache.initFinancial();
           break;
-        case SyncData.Kontak:
+        case ListForDatabase.Kontak:
           await repoCache.initPartner();
           break;
-        case SyncData.Transaksi:
+        case ListForDatabase.Transaksi:
           await Future.wait([
             repoCache.initTransactionBuy(),
             repoCache.initTransactionSell(),
@@ -140,7 +144,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             repoCache.initTransExpense(),
           ]);
           break;
-        case SyncData.Operator:
+        case ListForDatabase.Operator:
           await repoCache.initUser();
           break;
       }
@@ -250,5 +254,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     );
     updateLogoHeaderFoter(header: event.header, footer: event.footer);
     add(SettingsLogoHeaderFooterInit());
+  }
+
+  Future<void> _onBackupRestoreInit(
+    SettingsBackupRestoreinit event,
+    Emitter<SettingsState> emit,
+  ) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final files = dir
+        .listSync()
+        .where((f) => f.path.endsWith('.xlsx'))
+        .toList();
+    emit(SettingsBackupRestoreLoaded(listFile: files));
+  }
+
+  FutureOr<void> _onBackup(SettingsBackup event, Emitter<SettingsState> emit) {
+    backupItemsToExcel(repo: repoCache);
   }
 }

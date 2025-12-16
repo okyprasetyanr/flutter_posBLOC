@@ -1,8 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:equatable/equatable.dart';
-
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 
@@ -41,7 +42,7 @@ class SettingsProfileLoaded extends SettingsState with EquatableMixin {
 }
 
 class SettingsSyncDataLoaded extends SettingsState with EquatableMixin {
-  final Map<SyncData, bool> dataSyncData;
+  final Map<ListForDatabase, bool> dataSyncData;
   final double progress;
   final String currentStep;
   final bool isSyncing;
@@ -56,7 +57,7 @@ class SettingsSyncDataLoaded extends SettingsState with EquatableMixin {
   });
 
   SettingsSyncDataLoaded copyWith({
-    Map<SyncData, bool>? dataSyncData,
+    Map<ListForDatabase, bool>? dataSyncData,
     double? progress,
     String? currentStep,
     bool? isSyncing,
@@ -108,4 +109,13 @@ class SettingsLogoHeaderFooterLoaded extends SettingsState with EquatableMixin {
 
   @override
   List<Object?> get props => [header, footer];
+}
+
+class SettingsBackupRestoreLoaded extends SettingsState with EquatableMixin {
+  final List<FileSystemEntity> listFile;
+
+  SettingsBackupRestoreLoaded({required this.listFile});
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
 }

@@ -4,7 +4,7 @@ import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PrinterService {
+class ServicePrinter {
   final Set<String> _seenMac = {};
   final List<BluetoothDevice> _devices = [];
 

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
-import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UiSyncData extends StatelessWidget {
@@ -21,7 +21,7 @@ class UiSyncData extends StatelessWidget {
             BlocSelector<
               SettingsBloc,
               SettingsState,
-              (Map<SyncData, bool>, bool, double, String)
+              (Map<ListForDatabase, bool>, bool, double, String)
             >(
               selector: (state) {
                 if (state is SettingsSyncDataLoaded) {
@@ -76,7 +76,7 @@ class UiSyncData extends StatelessWidget {
                         ],
                       )
                     else
-                      ...SyncData.values.map((syncData) {
+                      ...ListForDatabase.values.map((syncData) {
                         return CheckboxListTile(
                           dense: true,
                           activeColor: AppColor.primary,

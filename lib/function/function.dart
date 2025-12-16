@@ -8,8 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
-enum SyncData { Item, Transaksi, Kontak, Kas, Operator }
-
 final listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"];
 final listStatusTransactionFinancial = const ["Sukses", "Batal"];
 final filterItem = ["A-Z", "Z-A", "Terbaru", "Terlama", "Stock +", "Stock -"];

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
-class ImageService {
+class ServiceImage {
   final picker = ImagePicker();
 
   Future<File?> pickImage() async {

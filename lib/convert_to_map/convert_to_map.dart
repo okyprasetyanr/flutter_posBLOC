@@ -1,3 +1,4 @@
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -9,12 +10,34 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 
 Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
   return {
     'payment_debit_name': _dataSplit.getpaymentDebitName,
     'payment_name': _dataSplit.getpaymentName,
     'payment_total': _dataSplit.getpaymentTotal,
+  };
+}
+
+Map<String, dynamic> convertToMapUser(ModelUser user, String? uidUser) {
+  return {
+    FieldDataUser.status_user.name: user.getstatusUser,
+    FieldDataUser.name_user.name: user.getNameUser,
+    FieldDataUser.email_user.name: user.getEmailUser,
+    FieldDataUser.phone_user.name: user.getPhoneUser,
+    FieldDataUser.role_user.name: user.getRoleUser,
+    FieldDataUser.uid_owner.name: uidUser ?? UserSession.getUidOwner(),
+    FieldDataUser.id_branch.name: user.getIdBranchUser,
+    FieldDataUser.permissions_user.name: {
+      for (final permission in Permission.values)
+        permission.name: user.permissionsUser[permission],
+    },
+    FieldDataUser.created_user.name: formatDate(
+      date: user.getCreatedUser ?? DateTime.now(),
+      minute: false,
+    ),
+    FieldDataUser.note_user.name: user.getNoteUser,
   };
 }
 
@@ -83,17 +106,17 @@ List<Map<String, dynamic>> convertToMapCondimentOrdered(
 
 Map<String, dynamic> convertToMapItem(ModelItem item) {
   return {
-    'uid_owner': UserSession.getUidOwner(),
-    'name_item': item.getnameItem,
-    'price_item': item.getpriceItem,
-    'id_category': item.getidCategoryiItem,
-    'status_condiment': item.getstatusCondiment,
-    'url_image': item.geturlImage,
-    'qty_item': item.getqtyItem,
-    'id_branch': item.getidBranch,
-    'barcode': item.getBarcode,
-    'status_item': item.getStatusItem,
-    'date': formatDate(date: item.getDateItem),
+    FieldDataItem.uid_owner.name: UserSession.getUidOwner(),
+    FieldDataItem.name_item.name: item.getnameItem,
+    FieldDataItem.price_item.name: item.getpriceItem,
+    FieldDataItem.id_category.name: item.getidCategoryiItem,
+    FieldDataItem.status_condiment.name: item.getstatusCondiment,
+    FieldDataItem.url_image.name: item.geturlImage,
+    FieldDataItem.qty_item.name: item.getqtyItem,
+    FieldDataItem.id_branch.name: item.getidBranch,
+    FieldDataItem.barcode.name: item.getBarcode,
+    FieldDataItem.status_item.name: item.getStatusItem,
+    FieldDataItem.date.name: formatDate(date: item.getDateItem),
   };
 }
 
@@ -144,9 +167,9 @@ Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
 
 Map<String, dynamic> convertToMapCategory(ModelCategory category) {
   return {
-    'name_category': category.getnameCategory,
-    'id_branch': category.getidBranch,
-    'uid_owner': UserSession.getUidOwner(),
+    FieldDataCategory.name_category.name: category.getnameCategory,
+    FieldDataCategory.id_branch.name: category.getidBranch,
+    FieldDataCategory.uid_owner.name: UserSession.getUidOwner(),
   };
 }
 
