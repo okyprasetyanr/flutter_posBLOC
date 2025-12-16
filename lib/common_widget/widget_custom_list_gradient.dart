@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 Widget customListGradient<T>({
+  ScrollController? controller,
   List<T>? data,
   Function(T data)? getId,
   Function(T data)? getName,
@@ -11,6 +12,7 @@ Widget customListGradient<T>({
   return Padding(
     padding: const EdgeInsets.only(top: 10, bottom: 10),
     child: ListView.builder(
+      controller: controller,
       itemCount: data!.length,
       itemBuilder: (context, index) {
         final dataIndex = data[index];

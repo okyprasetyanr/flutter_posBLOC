@@ -10,6 +10,7 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 
 Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
@@ -43,27 +44,28 @@ Map<String, dynamic> convertToMapUser(ModelUser user, String? uidUser) {
 
 Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   return {
-    'id_branch': transaction.getidBranch,
-    'uid_owner': UserSession.getUidOwner(),
-    'bank_name': transaction.getbankName ?? "",
-    'bill_paid': transaction.getbillPaid,
-    'note': transaction.getnote,
-    'total_charge': transaction.gettotalCharge,
-    'total_discount': transaction.gettotalDiscount,
-    'total_ppn': transaction.gettotalPpn,
-    'payment_method': transaction.getpaymentMethod,
-    'date': formatDate(date: transaction.getdate),
-    'name_partner': transaction.getnamePartner,
-    'id_partner': transaction.getidPartner,
-    'name_operator': transaction.getnameOperator,
-    'id_operator': transaction.getidOperator,
-    'discount': transaction.getdiscount,
-    'ppn': transaction.getppn,
-    'total_item': transaction.gettotalItem,
-    'sub_total': transaction.getsubTotal,
-    'charge': transaction.getcharge,
-    'total': transaction.gettotal,
-    'status_transaction': transaction.getstatusTransaction,
+    FieldDataTransaction.id_branch.name: transaction.getidBranch,
+    FieldDataTransaction.uid_owner.name: UserSession.getUidOwner(),
+    FieldDataTransaction.bank_name.name: transaction.getbankName ?? "",
+    FieldDataTransaction.bill_paid.name: transaction.getbillPaid,
+    FieldDataTransaction.note.name: transaction.getnote,
+    FieldDataTransaction.total_charge.name: transaction.gettotalCharge,
+    FieldDataTransaction.total_discount.name: transaction.gettotalDiscount,
+    FieldDataTransaction.total_ppn.name: transaction.gettotalPpn,
+    FieldDataTransaction.payment_method.name: transaction.getpaymentMethod,
+    FieldDataTransaction.date.name: formatDate(date: transaction.getdate),
+    FieldDataTransaction.name_partner.name: transaction.getnamePartner,
+    FieldDataTransaction.id_partner.name: transaction.getidPartner,
+    FieldDataTransaction.name_operator.name: transaction.getnameOperator,
+    FieldDataTransaction.id_operator.name: transaction.getidOperator,
+    FieldDataTransaction.discount.name: transaction.getdiscount,
+    FieldDataTransaction.ppn.name: transaction.getppn,
+    FieldDataTransaction.total_item.name: transaction.gettotalItem,
+    FieldDataTransaction.sub_total.name: transaction.getsubTotal,
+    FieldDataTransaction.charge.name: transaction.getcharge,
+    FieldDataTransaction.total.name: transaction.gettotal,
+    FieldDataTransaction.status_transaction.name:
+        transaction.getstatusTransaction,
   };
 }
 
@@ -80,6 +82,26 @@ Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
     'id_category_item': _itemsOrdered.getidCategoryItem,
     'id_condiment': _itemsOrdered.getidCondiment,
     'note': _itemsOrdered.getNote,
+  };
+}
+
+Map<String, dynamic> convertToMapTransactionIncome(
+  ModelTransactionFinancial transfinancial,
+) {
+  return {
+    FieldDataTransFinancial.status_transaction.name:
+        transfinancial.statusTransaction,
+    FieldDataTransFinancial.id_financial.name: transfinancial.getidFinancial,
+    FieldDataTransFinancial.id_branch.name: transfinancial.getidBranch,
+    FieldDataTransFinancial.name_financial.name:
+        transfinancial.getnameFinancial,
+    FieldDataTransFinancial.note.name: transfinancial.getnote,
+    FieldDataTransFinancial.date.name: formatDate(
+      date: transfinancial.getdate,
+      minute: true,
+    ),
+    FieldDataTransFinancial.amount.name: transfinancial.getamount,
+    FieldDataTransFinancial.uid_owner.name: UserSession.getUidOwner(),
   };
 }
 
@@ -154,14 +176,14 @@ Map<String, dynamic> convertToMapItemBatch(
 
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
-    'id_branch': partner.getidBranch,
-    'uid_owner': UserSession.getUidOwner(),
-    'name_partner': partner.getname,
-    'phone_partner': partner.getphone,
-    'email_partner': partner.getemail,
-    'balance_partner': partner.getbalance,
-    'type': partner.gettype.name,
-    'date': formatDate(date: partner.getdate),
+    FieldDataPartner.id_branch.name: partner.getidBranch,
+    FieldDataPartner.id_branch.name: UserSession.getUidOwner(),
+    FieldDataPartner.id_branch.name: partner.getname,
+    FieldDataPartner.id_branch.name: partner.getphone,
+    FieldDataPartner.id_branch.name: partner.getemail,
+    FieldDataPartner.id_branch.name: partner.getbalance,
+    FieldDataPartner.id_branch.name: partner.gettype.name,
+    FieldDataPartner.id_branch.name: formatDate(date: partner.getdate),
   };
 }
 
@@ -175,11 +197,10 @@ Map<String, dynamic> convertToMapCategory(ModelCategory category) {
 
 Map<String, dynamic> convertToMapFinancial(ModelFinancial financial) {
   return {
-    'name_financial': financial.getnameFinancial,
-    'id_branch': financial.getidBranch,
-    'id_financial': financial.getidFinancial,
-    'type': financial.getfinancialType.name,
-    'uid_owner': UserSession.getUidOwner(),
+    FieldDataFinancial.name_financial.name: financial.getnameFinancial,
+    FieldDataFinancial.id_branch.name: financial.getidBranch,
+    FieldDataFinancial.type.name: financial.getfinancialType.name,
+    FieldDataFinancial.uid_owner.name: UserSession.getUidOwner(),
   };
 }
 

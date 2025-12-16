@@ -117,5 +117,5 @@ class SettingsBackupRestoreLoaded extends SettingsState with EquatableMixin {
   SettingsBackupRestoreLoaded({required this.listFile});
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [listFile];
 }

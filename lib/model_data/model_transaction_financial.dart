@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
 class ModelTransactionFinancial extends Equatable {
@@ -34,16 +34,17 @@ class ModelTransactionFinancial extends Equatable {
     pushWorkerDataFinancial(
       collection: isIncome ? 'transaction_income' : 'transaction_expense',
       id: invoice,
-      dataTransFinancial: {
-        'status_transaction': statusTransaction,
-        'id_financial': idFinancial,
-        'id_branch': idBranch,
-        'name_financial': nameFinancial,
-        'note': note,
-        'date': formatDate(date: date, minute: true),
-        'amount': amount,
-        'uid_owner': UserSession.getUidOwner(),
-      },
+      dataTransFinancial: convertToMapTransactionIncome(
+        ModelTransactionFinancial(
+          idFinancial: idFinancial,
+          nameFinancial: nameFinancial,
+          idBranch: idBranch,
+          invoice: invoice,
+          date: date,
+          note: note,
+          amount: amount,
+        ),
+      ),
     );
   }
 
