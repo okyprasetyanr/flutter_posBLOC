@@ -8,6 +8,7 @@ import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
+import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UiBackupRestore extends StatelessWidget {
@@ -51,7 +52,33 @@ class UiBackupRestore extends StatelessWidget {
                         controller: controller,
                         data: state,
                         getName: (data) => data.path.split('/').last,
-                        selectedData: (selectedData) {},
+                        selectedData: (selectedData) {
+                          context.read<SettingsBloc>().add(
+                            SettingsSelectedBackup(),
+                          );
+                          context.select<SettingsBloc, Future<dynamic>>((
+                            state,
+                          ) {
+                            if (state is SettingsBackupRestoreLoaded) {
+                              if ((state as SettingsBackupRestoreLoaded)
+                                      .selectedFile !=
+                                  null) {
+                                return showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (_) {
+                                    return Center(
+                                      child: customSpinKit(
+                                        color: Colors.white,
+                                        size: 30,
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                            }
+                          });
+                        },
                       );
                     },
                   ),

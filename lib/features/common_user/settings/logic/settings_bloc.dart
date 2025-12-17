@@ -268,7 +268,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(SettingsBackupRestoreLoaded(listFile: files));
   }
 
-  FutureOr<void> _onBackup(SettingsBackup event, Emitter<SettingsState> emit) {
-    backupItemsToExcel(repo: repoCache);
+  Future<void> _onBackup(
+    SettingsBackup event,
+    Emitter<SettingsState> emit,
+  ) async {
+    await backupItemsToExcel(repo: repoCache);
+    add(SettingsBackupRestoreinit());
   }
 }

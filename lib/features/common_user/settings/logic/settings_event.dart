@@ -51,4 +51,10 @@ class SettingsBackupRestoreinit extends SettingsEvent {}
 
 class SettingsBackup extends SettingsEvent {}
 
-class SettingRestore extends SettingsEvent {}
+class SettingsRestore extends SettingsEvent {}
+
+class SettingsImport extends SettingsEvent {}
+
+class SettingsSendBackup extends SettingsEvent {}
+
+class SettingsSelectedBackup extends SettingsEvent {}

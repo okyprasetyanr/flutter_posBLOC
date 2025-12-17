@@ -10,7 +10,9 @@ import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
+bool _isPickingFile = false;
+
+Future<void> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
   final excel = Excel.createExcel();
   final uidOwner = UserSession.getUidOwner();
   final sheetAccount = excel['Akun'];
@@ -52,15 +54,16 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
     TextCellValue(account.getPhoneUser),
     TextCellValue(account.getNoteUser ?? ""),
     BoolCellValue(account.getstatusUser),
-    IntCellValue(account.getRoleUser),
+    TextCellValue(account.getRoleUser.toString()),
     TextCellValue(
       account.getPermissionsUser.entries
-          .map((e) => '${e.key} = ${e.value}')
+          .map((e) => '${e.key.name} = ${e.value}')
           .join('\n'),
     ),
 
-    TextCellValue(account.getCreatedUser!.toIso8601String()),
+    TextCellValue(formatDate(date: account.getCreatedUser!, minute: false)),
   ]);
+  sheetWidthStyle(FieldDataUser.values, sheetAccount, wrapColumns: {9});
 
   //Company
   final company = repo.dataCompany!;
@@ -79,8 +82,9 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
     TextCellValue(company.getphoneCompany),
     TextCellValue(company.getHeader),
     TextCellValue(company.getFooter),
-    TextCellValue(company.created.toIso8601String()),
+    TextCellValue(formatDate(date: company.created, minute: false)),
   ]);
+  sheetWidthStyle(FieldDataCompany.values, sheetCompany);
 
   //Item
   sheetItem.appendRow([
@@ -111,9 +115,10 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       DoubleCellValue(item.getqtyItem),
       BoolCellValue(item.getstatusCondiment),
       BoolCellValue(item.getStatusItem),
-      TextCellValue(item.getDateItem.toIso8601String()),
+      TextCellValue(formatDate(date: item.getDateItem, minute: false)),
     ]);
   }
+  sheetWidthStyle(FieldDataItem.values, sheetItem);
 
   //Category
   sheetCategory.appendRow([
@@ -131,6 +136,7 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(category.getnameCategory),
     ]);
   }
+  sheetWidthStyle(FieldDataCategory.values, sheetCategory);
 
   //Customer
   sheetCustomer.appendRow([
@@ -157,9 +163,10 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(partner.getphone),
       DoubleCellValue(partner.getbalance),
       TextCellValue(partner.gettype.name),
-      TextCellValue(partner.getdate.toIso8601String()),
+      TextCellValue(formatDate(date: partner.getdate, minute: false)),
     ]);
   }
+  sheetWidthStyle(FieldDataPartner.values, sheetCustomer);
 
   //Supplier
   sheetSupplier.appendRow([
@@ -186,9 +193,10 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(partner.getphone),
       DoubleCellValue(partner.getbalance),
       TextCellValue(partner.gettype.name),
-      TextCellValue(partner.getdate.toIso8601String()),
+      TextCellValue(formatDate(date: partner.getdate, minute: false)),
     ]);
   }
+  sheetWidthStyle(FieldDataPartner.values, sheetSupplier);
 
   //Income
   sheetIncome.appendRow([
@@ -210,6 +218,7 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(financial.getfinancialType.name),
     ]);
   }
+  sheetWidthStyle(FieldDataFinancial.values, sheetIncome);
 
   //Expense
   sheetExpense.appendRow([
@@ -231,6 +240,7 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(financial.getfinancialType.name),
     ]);
   }
+  sheetWidthStyle(FieldDataFinancial.values, sheetExpense);
 
   //User
   sheetUser.appendRow([
@@ -264,9 +274,10 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
             .join('\n'),
       ),
 
-      TextCellValue(operator.getCreatedUser!.toIso8601String()),
+      TextCellValue(formatDate(date: operator.getCreatedUser!, minute: false)),
     ]);
   }
+  sheetWidthStyle(FieldDataUser.values, sheetUser);
 
   //HistorySell
   sheetHistorySell.appendRow([
@@ -300,7 +311,7 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(item.getinvoice),
       TextCellValue(item.getidBranch),
       TextCellValue(item.getnote),
-      TextCellValue(item.getdate.toIso8601String()),
+      TextCellValue(formatDate(date: item.getdate, minute: false)),
       DoubleCellValue(item.getbillPaid),
       IntCellValue(item.gettotalItem),
       TextCellValue(item.getpaymentMethod),
@@ -320,6 +331,7 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(item.getidOperator),
     ]);
   }
+  sheetWidthStyle(FieldDataTransaction.values, sheetHistorySell);
 
   //HistoryBuy
   sheetHistoryBuy.appendRow([
@@ -353,7 +365,7 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(item.getinvoice),
       TextCellValue(item.getidBranch),
       TextCellValue(item.getnote),
-      TextCellValue(item.getdate.toIso8601String()),
+      TextCellValue(formatDate(date: item.getdate, minute: false)),
       DoubleCellValue(item.getbillPaid),
       IntCellValue(item.gettotalItem),
       TextCellValue(item.getpaymentMethod),
@@ -373,6 +385,7 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(item.getidOperator),
     ]);
   }
+  sheetWidthStyle(FieldDataTransaction.values, sheetHistoryBuy);
 
   //HistoryIncome
   sheetHistoryIncome.appendRow([
@@ -395,9 +408,10 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(transIncome.getnote),
       DoubleCellValue(transIncome.getamount),
       TextCellValue(transIncome.getstatusTransaction!),
-      TextCellValue(transIncome.getdate.toIso8601String()),
+      TextCellValue(formatDate(date: transIncome.getdate, minute: false)),
     ]);
   }
+  sheetWidthStyle(FieldDataTransFinancial.values, sheetHistoryIncome);
 
   //HistoryExpense
   sheetHistoryExpense.appendRow([
@@ -420,25 +434,74 @@ Future<File> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
       TextCellValue(transExpense.getnote),
       DoubleCellValue(transExpense.getamount),
       TextCellValue(transExpense.getstatusTransaction!),
-      TextCellValue(transExpense.getdate.toIso8601String()),
+      TextCellValue(formatDate(date: transExpense.getdate, minute: false)),
     ]);
   }
-
-  final dir = await getApplicationDocumentsDirectory();
-  final file = File('${dir.path}/items_backup.xlsx');
-
-  file.writeAsBytesSync(excel.encode()!);
+  sheetWidthStyle(FieldDataTransFinancial.values, sheetHistoryExpense);
 
   // Share.shareXFiles([XFile(file.path)], text: 'Backup data item');
+  if (_isPickingFile) return; // ⛔ cegah double open
+  _isPickingFile = true;
 
-  final Uint8List bytes = await file.readAsBytes();
+  try {
+    excel.delete('Sheet1');
 
-  await FilePicker.platform.saveFile(
-    dialogTitle: 'Simpan backup',
-    fileName: 'items_backup.xlsx',
-    type: FileType.custom,
-    allowedExtensions: ['xlsx'],
-    bytes: bytes, // ⬅️ ini kuncinya
-  );
-  return file;
+    final bytesExcel = excel.encode();
+    if (bytesExcel == null) {
+      throw Exception('Gagal generate excel');
+    }
+
+    await FilePicker.platform.saveFile(
+      dialogTitle: 'Simpan backup',
+      fileName:
+          'backup_RingkasPOS_${formatDate(date: DateTime.now(), minute: false)}.xlsx',
+      bytes: Uint8List.fromList(bytesExcel),
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+    );
+  } finally {
+    _isPickingFile = false;
+  }
+}
+
+Sheet sheetWidthStyle<T extends Enum>(
+  List<T> fields,
+  Sheet sheet, {
+  int headerRow = 0,
+  Set<int>? wrapColumns,
+}) {
+  for (var i = 0; i < fields.length; i++) {
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: headerRow))
+        .cellStyle = CellStyle(
+      bold: true,
+      fontColorHex: ExcelColor.white,
+      horizontalAlign: HorizontalAlign.Center,
+      verticalAlign: VerticalAlign.Center,
+      backgroundColorHex: ExcelColor.red400,
+      textWrapping: TextWrapping.WrapText,
+    );
+
+    sheet.setColumnWidth(i, 25);
+  }
+
+  for (int row = headerRow + 1; row < sheet.maxRows; row++) {
+    for (int col = 0; col < fields.length; col++) {
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: row))
+          .cellStyle = CellStyle(
+        verticalAlign: VerticalAlign.Center,
+        horizontalAlign: wrapColumns != null
+            ? wrapColumns.contains(col)
+                  ? HorizontalAlign.Left
+                  : HorizontalAlign.Center
+            : HorizontalAlign.Center,
+        textWrapping: (wrapColumns?.contains(col) ?? false)
+            ? TextWrapping.WrapText
+            : TextWrapping.Clip,
+      );
+    }
+  }
+
+  return sheet;
 }
