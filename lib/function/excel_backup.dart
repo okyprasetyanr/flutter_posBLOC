@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -439,8 +438,7 @@ Future<void> backupItemsToExcel({required DataUserRepositoryCache repo}) async {
   }
   sheetWidthStyle(FieldDataTransFinancial.values, sheetHistoryExpense);
 
-  // Share.shareXFiles([XFile(file.path)], text: 'Backup data item');
-  if (_isPickingFile) return; // ⛔ cegah double open
+  if (_isPickingFile) return;
   _isPickingFile = true;
 
   try {

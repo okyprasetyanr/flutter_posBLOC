@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 
 class ModelItemOrdered extends Equatable {
   final String _nameItem,
@@ -96,31 +95,6 @@ class ModelItemOrdered extends Equatable {
       idCondiment: idCondimen ?? _idCondiment,
       note: note ?? _note,
       condiment: condiment ?? _condiment,
-    );
-  }
-
-  factory ModelItemOrdered.fromMap(
-    Map<String, dynamic> items,
-    List<ModelItemOrdered> condiment,
-    bool isCondiment,
-    String id_ordered,
-  ) {
-    debugPrint("Log ModelData: Transaction ItemOrdered: ${items}");
-
-    return ModelItemOrdered(
-      priceItemFinal: double.tryParse(items['price_item_final'].toString())!,
-      subTotal: double.tryParse(items['sub_total'].toString())!,
-      nameItem: items['name_item'],
-      idItem: items['id_item'],
-      idBranch: items['id_branch'],
-      idOrdered: id_ordered,
-      qtyItem: double.tryParse(items['qty_item'].toString())!,
-      priceItem: double.tryParse(items['price_item'].toString())!,
-      discountItem: int.tryParse(items['discount_item'].toString())!,
-      idCategoryItem: items['id_category_item'],
-      idCondiment: items['id_condiment'],
-      note: items['note'],
-      condiment: isCondiment ? [] : condiment,
     );
   }
 

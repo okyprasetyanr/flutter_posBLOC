@@ -12,6 +12,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/service_dart.dart';
 import 'package:flutter_pos/request/update_data.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
@@ -38,6 +39,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsLogoHeaderFooterUpdate>(_onLogoHeaderFooterUpdate);
     on<SettingsBackupRestoreinit>(_onBackupRestoreInit);
     on<SettingsBackup>(_onBackup);
+    on<SettingsImport>(_onImport);
+    on<SettingsSelectedBackup>(_onSelectedBackup);
+    on<SettingsShareBackup>(_onShareBackup);
   }
 
   FutureOr<void> _onProfile(
@@ -274,5 +278,25 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     await backupItemsToExcel(repo: repoCache);
     add(SettingsBackupRestoreinit());
+  }
+
+  FutureOr<void> _onImport(SettingsImport event, Emitter<SettingsState> emit) {}
+
+  FutureOr<void> _onSelectedBackup(
+    SettingsSelectedBackup event,
+    Emitter<SettingsState> emit,
+  ) {
+    final currentState = state as SettingsBackupRestoreLoaded;
+    emit(currentState.copyWith(selectedFile: event.fileSelected));
+  }
+
+  FutureOr<void> _onShareBackup(
+    SettingsShareBackup event,
+    Emitter<SettingsState> emit,
+  ) {
+    final currentState = state as SettingsBackupRestoreLoaded;
+    Share.shareXFiles([
+      XFile(currentState.selectedFile!.path),
+    ], text: 'Backup data item');
   }
 }

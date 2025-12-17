@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter_pos/enum/enum.dart';
 
@@ -55,6 +57,10 @@ class SettingsRestore extends SettingsEvent {}
 
 class SettingsImport extends SettingsEvent {}
 
-class SettingsSendBackup extends SettingsEvent {}
+class SettingsShareBackup extends SettingsEvent {}
 
-class SettingsSelectedBackup extends SettingsEvent {}
+class SettingsSelectedBackup extends SettingsEvent {
+  final FileSystemEntity fileSelected;
+
+  SettingsSelectedBackup({required this.fileSelected});
+}

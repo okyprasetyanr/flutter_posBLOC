@@ -8,7 +8,6 @@ import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
-import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
 
 class UiBackupRestore extends StatelessWidget {
@@ -54,29 +53,60 @@ class UiBackupRestore extends StatelessWidget {
                         getName: (data) => data.path.split('/').last,
                         selectedData: (selectedData) {
                           context.read<SettingsBloc>().add(
-                            SettingsSelectedBackup(),
+                            SettingsSelectedBackup(fileSelected: selectedData),
                           );
-                          context.select<SettingsBloc, Future<dynamic>>((
+                          context.select<SettingsBloc, Future<dynamic>?>((
                             state,
                           ) {
                             if (state is SettingsBackupRestoreLoaded) {
                               if ((state as SettingsBackupRestoreLoaded)
                                       .selectedFile !=
                                   null) {
-                                return showDialog(
+                                return showDialog<bool>(
                                   context: context,
-                                  barrierDismissible: false,
-                                  builder: (_) {
-                                    return Center(
-                                      child: customSpinKit(
-                                        color: Colors.white,
-                                        size: 30,
+                                  builder: (context) => AlertDialog(
+                                    title: Text(
+                                      "Pilih Opsi",
+                                      style: lv2TextStyle,
+                                    ),
+                                    content: Text(
+                                      "Silahkan pilih Opsi Berbagi/Pulihkan",
+                                      style: lv1TextStyle,
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, false),
+                                        child: Text(
+                                          "Batal",
+                                          style: lv1TextStyle,
+                                        ),
                                       ),
-                                    );
-                                  },
+                                      TextButton(
+                                        onPressed: () => context
+                                            .read<SettingsBloc>()
+                                            .add(SettingsShareBackup()),
+                                        child: Text(
+                                          "Bagikan",
+                                          style: lv1TextStyle,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => context
+                                            .read<SettingsBloc>()
+                                            .add(SettingsImport()),
+                                        child: Text(
+                                          "Pulihkan",
+                                          style: lv1TextStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               }
+                              ;
                             }
+                            return null;
                           });
                         },
                       );

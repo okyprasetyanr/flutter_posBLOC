@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_pos/convert_to_map/convert_to_map.dart';
+import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 
 enum FinancialType { Income, Expense }
 
