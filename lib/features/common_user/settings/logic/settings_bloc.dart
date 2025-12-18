@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,9 +8,21 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/function/excel_backup.dart';
+import 'package:flutter_pos/function/excel_restore.adrt.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/service_dart.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_company.dart';
+import 'package:flutter_pos/model_data/model_financial.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:flutter_pos/model_data/model_split.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_financial.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/update_data.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -276,11 +289,178 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsBackup event,
     Emitter<SettingsState> emit,
   ) async {
-    await backupItemsToExcel(repo: repoCache);
+    await ExcelBackupService(repo: repoCache);
     add(SettingsBackupRestoreinit());
   }
 
-  FutureOr<void> _onImport(SettingsImport event, Emitter<SettingsState> emit) {}
+  Future<void> _onImport(
+    SettingsImport event,
+    Emitter<SettingsState> emit,
+  ) async {
+    final currentState = state as SettingsBackupRestoreLoaded;
+    List<ModelItemOrdered> itemsOrdered = [];
+    List<ModelItemOrdered> itemCondiment = [];
+    List<ModelSplit> splitPayment = [];
+    await ExcelRestoreService(
+      file: currentState.selectedFile as File,
+      handlers: {
+        ListDataHeaderExcel.Riwayat_Penjualan_Item.name: (sheet) =>
+            restoreSheet<ModelItemOrdered>(
+              sheet: sheet,
+              id: FieldDataItemOrdered.id_ordered.name,
+              nested: true,
+              getMap: (data) {
+                itemsOrdered.add(
+                  fromMapItemOrdered(
+                    data,
+                    [],
+                    true,
+                    data[FieldDataItemOrdered.id_ordered.name],
+                  ),
+                );
+              },
+            ),
+
+        ListDataHeaderExcel.Riwayat_Penjualan_Tambahan.name: (sheet) =>
+            restoreSheet<ModelItemOrdered>(
+              sheet: sheet,
+              id: FieldDataItemOrdered.id_ordered.name,
+              nested: true,
+              getMap: (data) {
+                itemCondiment.add(
+                  fromMapItemOrdered(
+                    data,
+                    [],
+                    true,
+                    data[FieldDataItemOrdered.id_ordered.name],
+                  ),
+                );
+              },
+            ),
+
+        ListDataHeaderExcel.Riwayat_Pembayaran_Split.name: (sheet) =>
+            restoreSheet<ModelSplit>(
+              sheet: sheet,
+              id: FieldDataSplit.invoice.name,
+              nested: true,
+              getMap: (data) {
+                splitPayment.add(fromMapSplit(data));
+              },
+            ),
+      },
+    );
+
+    await ExcelRestoreService(
+      file: currentState.selectedFile as File,
+      handlers: {
+        ListDataHeaderExcel.Akun.name: (sheet) => restoreSheet<ModelUser>(
+          sheet: sheet,
+          id: FieldDataUser.id_user.name,
+          listDataRepo: repoCache.dataUser,
+          fromMap: (data, id) => fromMapUser(data, id),
+        ),
+
+        ListDataHeaderExcel.Usaha.name: (sheet) => restoreSheet<ModelCompany>(
+          sheet: sheet,
+          id: FieldDataCompany.id_company.name,
+          dataRepo: repoCache.dataCompany,
+          fromMap: (data, id) => fromMapCompany(data, id),
+        ),
+
+        ListDataHeaderExcel.Item.name: (sheet) => restoreSheet<ModelItem>(
+          sheet: sheet,
+          id: FieldDataItem.id_item.name,
+          listDataRepo: repoCache.dataItem,
+          fromMap: (data, id) => fromMapItem(data, id),
+        ),
+
+        ListDataHeaderExcel.Kategori.name: (sheet) =>
+            restoreSheet<ModelCategory>(
+              sheet: sheet,
+              id: FieldDataCategory.id_category.name,
+              listDataRepo: repoCache.dataCategory,
+              fromMap: (data, id) => fromMapCategory(data, id),
+            ),
+
+        ListDataHeaderExcel.Pelanggan.name: (sheet) =>
+            restoreSheet<ModelPartner>(
+              sheet: sheet,
+              id: FieldDataPartner.id_partner.name,
+              listDataRepo: repoCache.dataPartner,
+              fromMap: (data, id) => fromMapPartner(data, id),
+            ),
+
+        ListDataHeaderExcel.Pemasok.name: (sheet) => restoreSheet<ModelPartner>(
+          sheet: sheet,
+          id: FieldDataPartner.id_partner.name,
+          listDataRepo: repoCache.dataPartner,
+          fromMap: (data, id) => fromMapPartner(data, id),
+        ),
+
+        ListDataHeaderExcel.Pendapatan.name: (sheet) =>
+            restoreSheet<ModelFinancial>(
+              sheet: sheet,
+              id: FieldDataFinancial.id_financial.name,
+              listDataRepo: repoCache.dataFinancial,
+              fromMap: (data, id) => fromMapFinancial(data, id),
+            ),
+
+        ListDataHeaderExcel.Pengeluaran.name: (sheet) =>
+            restoreSheet<ModelFinancial>(
+              sheet: sheet,
+              id: FieldDataFinancial.id_financial.name,
+              listDataRepo: repoCache.dataFinancial,
+              fromMap: (data, id) => fromMapFinancial(data, id),
+            ),
+
+        ListDataHeaderExcel.Operator.name: (sheet) => restoreSheet<ModelUser>(
+          sheet: sheet,
+          id: FieldDataUser.id_user.name,
+          listDataRepo: repoCache.dataUser,
+          fromMap: (data, id) => fromMapUser(data, id),
+        ),
+
+        ListDataHeaderExcel.Riwayat_Penjualan.name: (sheet) =>
+            restoreSheet<ModelTransaction>(
+              sheet: sheet,
+              id: FieldDataTransaction.invoice.name,
+              listDataRepo: repoCache.dataTransSell,
+              fromMap: (data, id) =>
+                  fromMapTransaction(data, itemsOrdered, splitPayment, id),
+            ),
+
+        // ListDataHeaderExcel.Riwayat_Pembelian.name: (sheet) =>
+        //     restoreSheet<ModelUser>(
+        //       sheet: sheet,
+        //       id: FieldDataUser.id_user.name,
+        //       dataRepo: repoCache.dataUser,
+        //       fromMap: (data, id) => fromMapUser(data, id),
+        //     ),
+        // ListDataHeaderExcel.Riwayat_Pembelian_Item.name: (sheet) =>
+        //     restoreSheet<ModelUser>(
+        //       sheet: sheet,
+        //       id: FieldDataUser.id_user.name,
+        //       dataRepo: repoCache.dataUser,
+        //       fromMap: (data, id) => fromMapUser(data, id),
+        //     ),
+        ListDataHeaderExcel.Riwayat_Pendapatan.name: (sheet) =>
+            restoreSheet<ModelTransactionFinancial>(
+              sheet: sheet,
+              id: FieldDataTransFinancial.id_financial.name,
+              listDataRepo: repoCache.dataTransIncome,
+              fromMap: (data, id) => fromMapTransFinancial(data, id),
+            ),
+
+        ListDataHeaderExcel.Riwayat_Pengeluaran.name: (sheet) =>
+            restoreSheet<ModelTransactionFinancial>(
+              sheet: sheet,
+              id: FieldDataTransFinancial.id_financial.name,
+              listDataRepo: repoCache.dataTransIncome,
+              fromMap: (data, id) => fromMapTransFinancial(data, id),
+            ),
+      },
+    );
+  }
 
   FutureOr<void> _onSelectedBackup(
     SettingsSelectedBackup event,

@@ -64,7 +64,6 @@ class UITransactionGridViewItem extends StatelessWidget {
                         priceItem: item.getpriceItem,
                         discountItem: 0,
                         idCategoryItem: item.getidCategoryiItem,
-                        idCondiment: Uuid().v4(),
                         note: "",
                         condiment: [],
                       );

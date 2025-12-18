@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/colors/colors.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_condiment/page_condiment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/page/page_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
@@ -74,131 +75,144 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                       children: [
                         Expanded(
                           flex: 1,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                padding: const WidgetStatePropertyAll(
-                                  EdgeInsets.all(10),
-                                ),
-                                backgroundColor: WidgetStatePropertyAll(
-                                  const Color.fromARGB(255, 255, 154, 72),
-                                ),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
+                          child:
+                              BlocSelector<
+                                TransactionBloc,
+                                TransactionState,
+                                bool
+                              >(
+                                selector: (state) {
+                                  if (state is TransactionLoaded) {
+                                    return state.isSell;
+                                  }
+                                  return true;
+                                },
+                                builder: (context, state) {
+                                  return state
+                                      ? ElevatedButton(
+                                          style: ButtonStyle(
+                                            padding:
+                                                const WidgetStatePropertyAll(
+                                                  EdgeInsets.all(10),
+                                                ),
+                                            backgroundColor:
+                                                WidgetStatePropertyAll(
+                                                  const Color.fromARGB(
+                                                    255,
+                                                    255,
+                                                    154,
+                                                    72,
+                                                  ),
+                                                ),
+                                            shape: WidgetStatePropertyAll(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.fastfood_rounded,
+                                            color: Colors.white,
+                                            size: lv2IconSize,
+                                          ),
+                                          onPressed: () {
+                                            _gotoPage(!currentPage.value);
+                                          },
+                                        )
+                                      : const SizedBox.shrink();
+                                },
                               ),
-                              child: Icon(
-                                Icons.fastfood_rounded,
-                                color: Colors.white,
-                                size: lv2IconSize,
-                              ),
-                              onPressed: () {
-                                _gotoPage(!currentPage.value);
-                              },
-                            ),
-                          ),
                         ),
 
                         const SizedBox(width: 10),
                         Expanded(
                           flex: 1,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                padding: const WidgetStatePropertyAll(
-                                  EdgeInsets.all(10),
-                                ),
-                                backgroundColor: WidgetStatePropertyAll(
-                                  const Color.fromARGB(255, 255, 89, 78),
-                                ),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              padding: const WidgetStatePropertyAll(
+                                EdgeInsets.all(10),
+                              ),
+                              backgroundColor: WidgetStatePropertyAll(
+                                const Color.fromARGB(255, 255, 89, 78),
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: Icon(
-                                Icons.delete_forever_rounded,
-                                color: Colors.white,
-                                size: lv2IconSize,
-                              ),
-                              onPressed: () {
-                                context.read<TransactionBloc>().add(
-                                  TransactionDeleteItemOrdered(),
-                                );
-                                Navigator.pop(context);
-                              },
                             ),
+                            child: Icon(
+                              Icons.delete_forever_rounded,
+                              color: Colors.white,
+                              size: lv2IconSize,
+                            ),
+                            onPressed: () {
+                              context.read<TransactionBloc>().add(
+                                TransactionDeleteItemOrdered(),
+                              );
+                              Navigator.pop(context);
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           flex: 1,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                padding: const WidgetStatePropertyAll(
-                                  EdgeInsets.all(10),
-                                ),
-                                backgroundColor: WidgetStatePropertyAll(
-                                  Colors.red,
-                                ),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              padding: const WidgetStatePropertyAll(
+                                EdgeInsets.all(10),
+                              ),
+                              backgroundColor: WidgetStatePropertyAll(
+                                Colors.red,
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: Icon(
-                                Icons.close_rounded,
-                                color: Colors.white,
-                                size: lv2IconSize,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                context.read<TransactionBloc>().add(
-                                  TransactionResetSelectedItem(),
-                                );
-                              },
                             ),
+                            child: Icon(
+                              Icons.close_rounded,
+                              color: Colors.white,
+                              size: lv2IconSize,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              context.read<TransactionBloc>().add(
+                                TransactionResetSelectedItem(),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           flex: 1,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: const WidgetStatePropertyAll(
-                                  AppColor.primary,
-                                ),
-                                padding: const WidgetStatePropertyAll(
-                                  EdgeInsets.all(10),
-                                ),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: const WidgetStatePropertyAll(
+                                AppColor.primary,
+                              ),
+                              padding: const WidgetStatePropertyAll(
+                                EdgeInsets.all(10),
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              child: Icon(
-                                Icons.shopping_cart_outlined,
-                                color: Colors.white,
-                                size: lv2IconSize,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                context.read<TransactionBloc>().add(
-                                  TransactionAddOrderedItem(),
-                                );
-                              },
                             ),
+                            child: Icon(
+                              Icons.shopping_cart_outlined,
+                              color: Colors.white,
+                              size: lv2IconSize,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              context.read<TransactionBloc>().add(
+                                TransactionAddOrderedItem(),
+                              );
+                            },
                           ),
                         ),
                       ],

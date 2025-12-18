@@ -6,8 +6,8 @@ class ModelItemOrdered extends Equatable {
       _idItem,
       _idOrdered,
       _idCategoryItem,
-      _idCondiment,
       _note;
+  final String? _invoice;
   final int _discountItem;
   final double _qtyItem, _priceItem, _subTotal, _priceItemFinal;
   final List<ModelItemOrdered> _condiment;
@@ -17,6 +17,7 @@ class ModelItemOrdered extends Equatable {
   ModelItemOrdered({
     DateTime? dateBuy,
     DateTime? expiredDate,
+    String? invoice,
     required double priceItemFinal,
     required double subTotal,
     required String nameItem,
@@ -27,7 +28,6 @@ class ModelItemOrdered extends Equatable {
     required double priceItem,
     required int discountItem,
     required String idCategoryItem,
-    required String idCondiment,
     required String note,
     required List<ModelItemOrdered> condiment,
   }) : _nameItem = nameItem,
@@ -39,12 +39,12 @@ class ModelItemOrdered extends Equatable {
        _priceItem = priceItem,
        _discountItem = discountItem,
        _idCategoryItem = idCategoryItem,
-       _idCondiment = idCondiment,
        _note = note,
        _condiment = condiment,
        _priceItemFinal = priceItemFinal,
        _dateBuy = dateBuy,
-       _expiredDate = expiredDate;
+       _expiredDate = expiredDate,
+       _invoice = invoice;
 
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
@@ -56,13 +56,14 @@ class ModelItemOrdered extends Equatable {
   double get getpriceItemFinal => _priceItemFinal;
   int get getdiscountItem => _discountItem;
   String get getidCategoryItem => _idCategoryItem;
-  String get getidCondiment => _idCondiment;
   String get getNote => _note;
   List<ModelItemOrdered> get getCondiment => _condiment;
   DateTime? get getdateBuy => _dateBuy;
   DateTime? get getexpiredDate => _expiredDate;
+  String? get getinvoice => _invoice;
 
   ModelItemOrdered copyWith({
+    String? invoice,
     DateTime? dateBuy,
     DateTime? expiredDate,
     String? nameItem,
@@ -74,12 +75,12 @@ class ModelItemOrdered extends Equatable {
     double? priceItemFinal,
     int? dicountItem,
     String? idCategoryItem,
-    String? idCondimen,
     String? note,
     double? subTotal,
     List<ModelItemOrdered>? condiment,
   }) {
     return ModelItemOrdered(
+      invoice: invoice ?? _invoice,
       dateBuy: dateBuy,
       expiredDate: expiredDate ?? _expiredDate,
       subTotal: subTotal ?? _subTotal,
@@ -92,7 +93,6 @@ class ModelItemOrdered extends Equatable {
       priceItem: priceItem ?? _priceItem,
       discountItem: dicountItem ?? _discountItem,
       idCategoryItem: idCategoryItem ?? _idCategoryItem,
-      idCondiment: idCondimen ?? _idCondiment,
       note: note ?? _note,
       condiment: condiment ?? _condiment,
     );
@@ -100,6 +100,7 @@ class ModelItemOrdered extends Equatable {
 
   @override
   List<Object?> get props => [
+    _invoice,
     _dateBuy,
     _expiredDate,
     _priceItemFinal,
@@ -112,7 +113,6 @@ class ModelItemOrdered extends Equatable {
     _priceItem,
     _discountItem,
     _idCategoryItem,
-    _idCondiment,
     _note,
     _condiment,
   ];

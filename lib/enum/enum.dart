@@ -5,6 +5,7 @@ enum FieldDataCompany {
   footer,
   header,
   created_company,
+  list_branch,
 }
 
 enum FieldDataUser {
@@ -94,4 +95,76 @@ enum FieldDataTransFinancial {
   uid_owner,
 }
 
+enum FieldDataSplit { payment_debit_name, payment_total, payment_name, invoice }
+
+enum FieldDataItemOrdered {
+  invoice,
+  id_ordered,
+  uid_owner,
+  id_branch,
+  name_item,
+  id_item,
+  id_condiment,
+  qty_item,
+  discount_item,
+  price_item,
+  price_item_final,
+  sub_total,
+  id_category_item,
+  note,
+}
+
+enum FieldDataItemBatch {
+  invoice,
+  name_item,
+  id_branch,
+  id_item,
+  id_category_item,
+  note,
+  date_buy,
+  expired_date,
+  discount_item,
+  qty_item_in,
+  qty_item_out,
+  price_item,
+  sub_total,
+  price_item_final,
+}
+
+enum FieldDataBatch { uid_owner, id_branch, date_buy }
+
+enum FieldDataCounter {
+  counter_sell,
+  counter_buy,
+  counter_income,
+  counter_expense,
+}
+
+enum FieldDataListBranch {
+  name_branch,
+  phone_branch,
+  address_branch,
+  id_branch,
+}
+
 enum ListForDatabase { Item, Transaksi, Kontak, Kas, Operator }
+
+enum ListDataHeaderExcel {
+  Akun,
+  Usaha,
+  Item,
+  Kategori,
+  Pelanggan,
+  Pemasok,
+  Pendapatan,
+  Pengeluaran,
+  Operator,
+  Riwayat_Penjualan,
+  Riwayat_Pembayaran_Split,
+  Riwayat_Penjualan_Item,
+  Riwayat_Penjualan_Tambahan,
+  Riwayat_Pembelian,
+  Riwayat_Pembelian_Item,
+  Riwayat_Pendapatan,
+  Riwayat_Pengeluaran,
+}

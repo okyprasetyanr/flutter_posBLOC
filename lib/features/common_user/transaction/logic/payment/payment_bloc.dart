@@ -182,7 +182,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       List<ModelItemOrdered> itemOrdered = await List.from(
         sellState.itemOrdered ?? const [],
       );
-
       if (!sellState.isSell) {
         itemOrdered = itemOrdered
             .map((item) => item.copyWith(dateBuy: formattedDate))
@@ -229,6 +228,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
               operatorId: null,
             )
           : dataRevisiOrSaved.getinvoice;
+
+      itemOrdered = itemOrdered
+          .map((item) => item.copyWith(invoice: invoice))
+          .toList();
+
       add(PaymentAdjust(ppn: ppn, discount: discount));
       debugPrint("Log PaymentBloc: isSell: ${sellState.isSell}");
       emit(

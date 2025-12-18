@@ -64,34 +64,32 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                           BlocSelector<
                             TransactionBloc,
                             TransactionState,
-                            (String?, List<ModelItemOrdered>?, String?)
+                            (String?, List<ModelItemOrdered>?)
                           >(
                             selector: (state) {
                               if (state is TransactionLoaded) {
                                 return (
                                   state.selectedItem?.getidOrdered,
                                   state.selectedItem?.getCondiment,
-                                  state.selectedItem?.getidCondiment,
                                 );
                               }
-                              return ("", [], "");
+                              return ("", []);
                             },
                             builder: (context, stateCondiment) {
                               if (stateCondiment.$1 == null &&
-                                  stateCondiment.$2 == null &&
-                                  stateCondiment.$3 == null) {
+                                  stateCondiment.$2 == null) {
                                 return Spacer();
                               }
 
-                              double qtyitem = 0;
-
-                              qtyitem = stateCondiment.$2!
-                                  .firstWhere(
-                                    (element) =>
-                                        state[index].getidItem ==
-                                        element.getidItem,
-                                  )
-                                  .getqtyItem;
+                              double qtyitem = stateCondiment.$2!.isNotEmpty
+                                  ? stateCondiment.$2!
+                                        .firstWhere(
+                                          (element) =>
+                                              state[index].getidItem ==
+                                              element.getidItem,
+                                        )
+                                        .getqtyItem
+                                  : 0;
 
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -149,7 +147,6 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                 discountItem: 0,
                                                 idCategoryItem: state[index]
                                                     .getidCategoryiItem,
-                                                idCondiment: stateCondiment.$3!,
                                                 note: "",
                                                 condiment: [],
                                               );
@@ -214,7 +211,6 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                 discountItem: 0,
                                                 idCategoryItem: state[index]
                                                     .getidCategoryiItem,
-                                                idCondiment: stateCondiment.$3!,
                                                 note: "",
                                                 condiment: [],
                                               );

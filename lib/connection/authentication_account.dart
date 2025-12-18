@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -45,20 +46,24 @@ Future<UserCredential?> authenticatorAccount({
       final map = data.data()!;
       context.read<DataUserRepositoryCache>().dataAccount = await ModelUser(
         idUser: uidUser,
-        statusUser: map['status_user'],
-        nameUser: map['name_user'],
-        emailUser: map['email_user'],
-        phoneUser: map['phone_user'],
-        roleUser: int.tryParse(map['role_user'].toString())!,
-        idBranchUser: map['id_branch'],
+        statusUser: map[FieldDataUser.status_user.name],
+        nameUser: map[FieldDataUser.name_user.name],
+        emailUser: map[FieldDataUser.email_user.name],
+        phoneUser: map[FieldDataUser.phone_user.name],
+        roleUser: int.tryParse(map[FieldDataUser.role_user.name].toString())!,
+        idBranchUser: map[FieldDataUser.id_branch.name],
         permissionsUser: {
           for (final permission in Permission.values)
-            permission: map['status_user'] ?? false
-                ? map['permissions_user'][permission.name] ?? false
+            permission: map[FieldDataUser.status_user.name] ?? false
+                ? map[FieldDataUser.permissions_user.name][permission.name] ??
+                      false
                 : false,
         },
-        createdUser: parseDate(date: map['created_user'], minute: false),
-        noteUser: map['note_user'],
+        createdUser: parseDate(
+          date: map[FieldDataUser.created_user.name],
+          minute: false,
+        ),
+        noteUser: map[FieldDataUser.note_user.name],
       );
 
       final pref = await SharedPreferences.getInstance();

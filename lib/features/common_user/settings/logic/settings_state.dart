@@ -116,6 +116,7 @@ class SettingsBackupRestoreLoaded extends SettingsState with EquatableMixin {
   final FileSystemEntity? selectedFile;
 
   SettingsBackupRestoreLoaded({this.selectedFile, required this.listFile});
+
   SettingsBackupRestoreLoaded copyWith({
     List<FileSystemEntity>? listFile,
     FileSystemEntity? selectedFile,

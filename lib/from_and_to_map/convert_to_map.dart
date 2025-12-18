@@ -15,9 +15,9 @@ import 'package:flutter_pos/model_data/model_user.dart';
 
 Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
   return {
-    'payment_debit_name': _dataSplit.getpaymentDebitName,
-    'payment_name': _dataSplit.getpaymentName,
-    'payment_total': _dataSplit.getpaymentTotal,
+    FieldDataSplit.payment_debit_name.name: _dataSplit.getpaymentDebitName,
+    FieldDataSplit.payment_name.name: _dataSplit.getpaymentName,
+    FieldDataSplit.payment_total.name: _dataSplit.getpaymentTotal,
   };
 }
 
@@ -71,17 +71,17 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
 
 Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
   return {
-    'sub_total': _itemsOrdered.getsubTotal,
-    'name_item': _itemsOrdered.getnameItem,
-    'id_item': _itemsOrdered.getidItem,
-    'id_branch': _itemsOrdered.getidBranch,
-    'qty_item': _itemsOrdered.getqtyItem,
-    'price_item': _itemsOrdered.getpriceItem,
-    'price_item_final': _itemsOrdered.getpriceItemFinal,
-    'discount_item': _itemsOrdered.getdiscountItem,
-    'id_category_item': _itemsOrdered.getidCategoryItem,
-    'id_condiment': _itemsOrdered.getidCondiment,
-    'note': _itemsOrdered.getNote,
+    FieldDataItemOrdered.invoice.name: _itemsOrdered.getinvoice,
+    FieldDataItemOrdered.sub_total.name: _itemsOrdered.getsubTotal,
+    FieldDataItemOrdered.name_item.name: _itemsOrdered.getnameItem,
+    FieldDataItemOrdered.id_item.name: _itemsOrdered.getidItem,
+    FieldDataItemOrdered.id_branch.name: _itemsOrdered.getidBranch,
+    FieldDataItemOrdered.qty_item.name: _itemsOrdered.getqtyItem,
+    FieldDataItemOrdered.price_item.name: _itemsOrdered.getpriceItem,
+    FieldDataItemOrdered.price_item_final.name: _itemsOrdered.getpriceItemFinal,
+    FieldDataItemOrdered.discount_item.name: _itemsOrdered.getdiscountItem,
+    FieldDataItemOrdered.id_category_item.name: _itemsOrdered.getidCategoryItem,
+    FieldDataItemOrdered.note.name: _itemsOrdered.getNote,
   };
 }
 
@@ -105,27 +105,6 @@ Map<String, dynamic> convertToMapTransactionIncome(
   };
 }
 
-List<Map<String, dynamic>> convertToMapCondimentOrdered(
-  List<ModelItemOrdered> itemsCondiment,
-) {
-  return itemsCondiment.map((condiment) {
-    return {
-      'sub_total': condiment.getsubTotal,
-      'name_item': condiment.getnameItem,
-      'id_item': condiment.getidItem,
-      'id_branch': condiment.getidBranch,
-      'qty_item': condiment.getqtyItem,
-      'price_item': condiment.getpriceItem,
-      'price_item_final': condiment.getpriceItemFinal,
-      'discount_item': condiment.getdiscountItem,
-      'id_category_item': condiment.getidCategoryItem,
-      'id_condiment': condiment.getidCondiment,
-      'note': condiment.getNote,
-      'condiment': {},
-    };
-  }).toList();
-}
-
 Map<String, dynamic> convertToMapItem(ModelItem item) {
   return {
     FieldDataItem.uid_owner.name: UserSession.getUidOwner(),
@@ -144,9 +123,9 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
 
 Map<String, dynamic> convertToMapBatch(ModelBatch batch) {
   return {
-    'uid_owner': UserSession.getUidOwner(),
-    'id_branch': batch.getidBranch,
-    'date_buy': formatDate(date: batch.getdate_buy),
+    FieldDataBatch.uid_owner.name: UserSession.getUidOwner(),
+    FieldDataBatch.id_branch.name: batch.getidBranch,
+    FieldDataBatch.date_buy.name: formatDate(date: batch.getdate_buy),
   };
 }
 
@@ -155,22 +134,22 @@ Map<String, dynamic> convertToMapItemBatch(
   String invoice,
 ) {
   return {
-    'invoice': itemBatch.getinvoice,
-    'name_item': itemBatch.getnameItem,
-    'id_branch': itemBatch.getidBranch,
-    'id_item': itemBatch.getidItem,
-    'id_category_item': itemBatch.getidCategoryItem,
-    'note': itemBatch.getnote,
-    'date_buy': formatDate(date: itemBatch.getdateBuy),
-    'expired_date': itemBatch.getexpiredDate != null
+    FieldDataItemBatch.invoice.name: itemBatch.getinvoice,
+    FieldDataItemBatch.name_item.name: itemBatch.getnameItem,
+    FieldDataItemBatch.id_branch.name: itemBatch.getidBranch,
+    FieldDataItemBatch.id_item.name: itemBatch.getidItem,
+    FieldDataItemBatch.id_category_item.name: itemBatch.getidCategoryItem,
+    FieldDataItemBatch.note.name: itemBatch.getnote,
+    FieldDataItemBatch.date_buy.name: formatDate(date: itemBatch.getdateBuy),
+    FieldDataItemBatch.expired_date.name: itemBatch.getexpiredDate != null
         ? formatDate(date: itemBatch.getexpiredDate!, minute: false)
         : null,
-    'discount_item': itemBatch.getdiscountItem,
-    'qty_item_in': itemBatch.getqtyItem_in,
-    'qty_item_out': itemBatch.getqtyItem_out,
-    'price_item': itemBatch.getpriceItem,
-    'sub_total': itemBatch.getsubTotal,
-    'price_item_final': itemBatch.getpriceItemFinal,
+    FieldDataItemBatch.discount_item.name: itemBatch.getdiscountItem,
+    FieldDataItemBatch.qty_item_in.name: itemBatch.getqtyItem_in,
+    FieldDataItemBatch.qty_item_out.name: itemBatch.getqtyItem_out,
+    FieldDataItemBatch.price_item.name: itemBatch.getpriceItem,
+    FieldDataItemBatch.sub_total.name: itemBatch.getsubTotal,
+    FieldDataItemBatch.price_item_final.name: itemBatch.getpriceItemFinal,
   };
 }
 
@@ -206,23 +185,23 @@ Map<String, dynamic> convertToMapFinancial(ModelFinancial financial) {
 
 Map<String, dynamic> convertToMapCounter(ModelCounter dataCounter) {
   return {
-    'counter_sell': dataCounter.getcounterSell,
-    'counter_buy': dataCounter.getcounterBuy,
-    'counter_income': dataCounter.getcounterIncome,
-    'counter_expense': dataCounter.getcounterExpense,
+    FieldDataCounter.counter_sell.name: dataCounter.getcounterSell,
+    FieldDataCounter.counter_buy.name: dataCounter.getcounterBuy,
+    FieldDataCounter.counter_income.name: dataCounter.getcounterIncome,
+    FieldDataCounter.counter_expense.name: dataCounter.getcounterExpense,
   };
 }
 
-Map<String, dynamic> convertToMapBranch({
+Map<String, dynamic> convertToMapCompanySignUp({
   required String nameCompany,
   required String phoneCompany,
   required String created,
   required List<Map<String, dynamic>> listBranch,
 }) {
   return {
-    'created_company': created,
-    'name_company': nameCompany,
-    'phone_company': phoneCompany,
-    'list_branch': listBranch,
+    FieldDataCompany.created_company.name: created,
+    FieldDataCompany.name_company.name: nameCompany,
+    FieldDataCompany.phone_company.name: phoneCompany,
+    FieldDataCompany.list_branch.name: listBranch,
   };
 }

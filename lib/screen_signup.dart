@@ -360,7 +360,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
               await pushWorkerDataBranch(
                 collection: 'companies',
                 id: uidUser,
-                dataBranch: convertToMapBranch(
+                dataBranch: convertToMapCompanySignUp(
                   created: formatDate(date: DateTime.now(), minute: false),
                   nameCompany: nameCompanyController.text,
                   phoneCompany: phoneCompanyController.text,

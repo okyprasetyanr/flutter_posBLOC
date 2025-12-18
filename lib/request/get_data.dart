@@ -8,7 +8,6 @@ import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -29,7 +28,7 @@ List<ModelFinancial> getDataListFinancial(QuerySnapshot data) {
 
 List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
   List listbranch = data['list_branch'] ?? const [];
-  return listbranch.map((map) => fromMapBranch(map, data.id)).toList();
+  return listbranch.map((map) => fromMapListBranch(map, data.id)).toList();
 }
 
 ModelCompany getDataCompany(DocumentSnapshot data) {
@@ -119,7 +118,7 @@ Future<List<ModelTransaction>> getDataListTransaction(
           .get();
 
       final splitData = splitSnapshot.docs
-          .map((splitDoc) => ModelSplit.fromMap(splitDoc.data()))
+          .map((splitDoc) => fromMapSplit(splitDoc.data()))
           .toList();
 
       return fromMapTransaction(
@@ -140,9 +139,7 @@ List<ModelPartner> getDataListPartner(QuerySnapshot data) {
 }
 
 List<ModelUser> getDataListUser(QuerySnapshot<Map<String, dynamic>> data) {
-  return data.docs
-      .map((map) => fromMapUser(map.data() as Map<String, dynamic>, map.id))
-      .toList();
+  return data.docs.map((map) => fromMapUser(map.data(), map.id)).toList();
 }
 
 List<ModelItem> getDataListItem(QuerySnapshot data) {
