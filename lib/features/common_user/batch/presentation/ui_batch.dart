@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
@@ -61,7 +61,7 @@ class _UiBatchState extends State<UiBatch> {
         Row(
           children: [
             customButtonIcon(
-              backgroundColor: AppColor.primary,
+              backgroundColor: AppPropertyColor.primary,
               icon: Icon(Icons.menu_rounded, color: Colors.white),
               label: Text("Menu", style: lv05TextStyleWhite),
               onPressed: () => isOpen.value = !isOpen.value,
@@ -266,7 +266,7 @@ class _UiBatchState extends State<UiBatch> {
                     formatDate(date: state.getdateBuy),
                   ),
                   customButtonIcon(
-                    backgroundColor: AppColor.primary,
+                    backgroundColor: AppPropertyColor.primary,
                     icon: Icon(Icons.close_rounded, color: Colors.white),
                     label: Text("Tutup", style: lv05TextStyleWhite),
                     onPressed: () {

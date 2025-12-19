@@ -4,7 +4,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UITransactionPopUpPriceAndCustom extends StatefulWidget {
   const UITransactionPopUpPriceAndCustom({super.key});

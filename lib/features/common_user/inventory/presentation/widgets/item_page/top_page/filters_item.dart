@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class UIFiltersItem extends StatelessWidget {

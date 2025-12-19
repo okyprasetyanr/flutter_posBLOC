@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 
 Future<void> customDatePicker(
   bool dateEnd,
@@ -21,10 +21,10 @@ Future<void> customDatePicker(
         data: Theme.of(context).copyWith(
           datePickerTheme: DatePickerThemeData(
             confirmButtonStyle: const ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll(AppColor.primary),
+              foregroundColor: WidgetStatePropertyAll(AppPropertyColor.primary),
             ),
             cancelButtonStyle: const ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll(AppColor.delete),
+              foregroundColor: WidgetStatePropertyAll(AppPropertyColor.delete),
             ),
             headerHelpStyle: const TextStyle(
               fontFamily: 'Poppins',
@@ -38,12 +38,12 @@ Future<void> customDatePicker(
             yearStyle: const TextStyle(
               fontFamily: 'Poppins',
               fontSize: 18,
-              color: AppColor.primary,
+              color: AppPropertyColor.primary,
             ),
           ),
           dialogTheme: DialogThemeData(backgroundColor: Colors.black),
           colorScheme: ColorScheme.light(
-            primary: AppColor.primary,
+            primary: AppPropertyColor.primary,
             onPrimary: Colors.white,
             onSurface: Colors.black,
             surface: Colors.white,

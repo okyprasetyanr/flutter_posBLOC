@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 void customSnackBarAccess({required BuildContext context}) {
   ScaffoldMessenger.of(context).showSnackBar(
@@ -15,7 +15,7 @@ void customSnackBarAccess({required BuildContext context}) {
       ),
       duration: Duration(seconds: 2),
       behavior: SnackBarBehavior.floating,
-      backgroundColor: AppColor.primary,
+      backgroundColor: AppPropertyColor.primary,
     ),
   );
 }

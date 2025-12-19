@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_pos/features/common_user/operator/logic/operator_state.d
 import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
@@ -409,7 +409,7 @@ class _UIOperatorState extends State<UIOperator> {
                         Expanded(
                           flex: 2,
                           child: customButtonIcon(
-                            backgroundColor: AppColor.primary,
+                            backgroundColor: AppPropertyColor.primary,
                             icon: Icon(
                               Icons.check_box_outlined,
                               color: Colors.white,
@@ -447,7 +447,8 @@ class _UIOperatorState extends State<UIOperator> {
                                               ) {
                                                 return CheckboxListTile(
                                                   dense: true,
-                                                  activeColor: AppColor.primary,
+                                                  activeColor:
+                                                      AppPropertyColor.primary,
                                                   checkboxScaleFactor: 0.8,
                                                   title: Text(
                                                     permission.name.replaceAll(
@@ -496,7 +497,7 @@ class _UIOperatorState extends State<UIOperator> {
           width: double.infinity,
           child: customButtonIcon(
             icon: Icon(Icons.check_rounded, color: Colors.white),
-            backgroundColor: AppColor.primary,
+            backgroundColor: AppPropertyColor.primary,
             label: Text("Simpan", style: lv05TextStyleWhite),
             onPressed: () {
               if (!_formKey.currentState!.validate()) {

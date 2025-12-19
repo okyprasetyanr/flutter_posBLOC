@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
@@ -11,9 +11,9 @@ import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
@@ -145,8 +145,8 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                 ),
                                                 Container(
                                                   decoration: BoxDecoration(
-                                                    color:
-                                                        AppColor.primarylight3,
+                                                    color: AppPropertyColor
+                                                        .primarylight3,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           5,
@@ -316,7 +316,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 icon: Icon(Icons.contacts_rounded, color: Colors.white),
-                backgroundColor: AppColor.primary,
+                backgroundColor: AppPropertyColor.primary,
               ),
             ),
             const SizedBox(width: 10),
@@ -346,7 +346,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   navUpDownTransition(context, '/sellpayment', false);
                 },
                 child: Icon(Icons.attach_money_rounded, color: Colors.white),
-                backgroundColor: AppColor.primary,
+                backgroundColor: AppPropertyColor.primary,
               ),
             ),
           ],

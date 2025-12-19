@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class CondimentSwitch extends StatelessWidget {
   const CondimentSwitch({super.key});
@@ -31,7 +31,7 @@ class CondimentSwitch extends StatelessWidget {
             height: 33,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: state ? AppColor.primary : Colors.white,
+              color: state ? AppPropertyColor.primary : Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: (state ? Colors.black : Colors.green).withValues(

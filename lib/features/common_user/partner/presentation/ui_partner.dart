@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_reset.dart';
@@ -480,7 +480,7 @@ class _UIPartnerState extends State<UIPartner> {
               }),
               style: lv05TextStyleWhite,
             ),
-            backgroundColor: AppColor.primary,
+            backgroundColor: AppPropertyColor.primary,
           ),
         ),
         Align(
@@ -500,7 +500,7 @@ class _UIPartnerState extends State<UIPartner> {
   }
 
   Future<void> _onRefresh() async {
-    await context.read<DataUserRepositoryCache>().initData();
+    await context.read<DataUserRepositoryCache>().initPartner();
     _initData();
   }
 

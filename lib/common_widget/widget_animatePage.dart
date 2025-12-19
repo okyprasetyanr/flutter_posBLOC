@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class WidgetAnimatePage extends StatelessWidget {
   final bool change;

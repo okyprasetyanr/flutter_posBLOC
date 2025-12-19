@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 
 class LayoutTopBottomMainMenu extends StatelessWidget {
@@ -45,7 +45,7 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
             right: 10,
             bottom: paddingBottomMain,
           ),
-          decoration: BoxDecoration(color: AppColor.primary),
+          decoration: BoxDecoration(color: AppPropertyColor.primary),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,6 +69,7 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
+
               Row(
                 children: [
                   listTileText(
@@ -140,7 +141,7 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Pesan Kenyang!", style: labelTextStyle),
+              Text(AppPropertyText.AppName, style: labelTextStyle),
               ValueListenableBuilder<String?>(
                 valueListenable: nameCompany!,
                 builder: (context, value, child) => Text(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -9,8 +9,8 @@ import 'package:flutter_pos/features/common_user/transaction/presentation/widget
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/list_view_category.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/saved_cart.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/bottom_page/list_view_ordered_item.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
@@ -56,8 +56,7 @@ class _UITransactionState extends State<UITransaction> {
   }
 
   Future<void> _onRefresh() async {
-    await context.read<DataUserRepositoryCache>().initData();
-    await context.read<DataUserRepositoryCache>().initCounter();
+    await context.read<DataUserRepositoryCache>().initTransaction();
     initData();
   }
 
@@ -108,7 +107,9 @@ class _UITransactionState extends State<UITransaction> {
                     padding: const WidgetStatePropertyAll(
                       EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     ),
-                    backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+                    backgroundColor: WidgetStatePropertyAll(
+                      AppPropertyColor.primary,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),

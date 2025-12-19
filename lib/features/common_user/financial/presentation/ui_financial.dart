@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_state.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
@@ -246,7 +246,7 @@ class _UiFinancialState extends State<UiFinancial> {
         Align(
           alignment: Alignment.centerRight,
           child: customButtonIcon(
-            backgroundColor: AppColor.primary,
+            backgroundColor: AppPropertyColor.primary,
             icon: Icon(Icons.check_rounded, color: Colors.white),
             label: Text(
               context.select<FinancialBloc, String>((value) {

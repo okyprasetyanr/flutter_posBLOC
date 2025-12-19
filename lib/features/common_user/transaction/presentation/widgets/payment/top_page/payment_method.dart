@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
@@ -8,8 +8,8 @@ import 'package:flutter_pos/features/common_user/transaction/presentation/widget
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/debit_payment.dart';
 import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UIPaymentPaymentMethod extends StatelessWidget {
   final Function(int) gotoPage;
@@ -95,7 +95,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                 minimumSize: WidgetStatePropertyAll(Size(0, 0)),
                 padding: const WidgetStatePropertyAll(EdgeInsets.all(7)),
                 backgroundColor: WidgetStatePropertyAll(
-                  isSelected ? AppColor.primary : Colors.white,
+                  isSelected ? AppPropertyColor.primary : Colors.white,
                 ),
                 iconColor: WidgetStatePropertyAll(
                   isSelected ? Colors.white : Colors.black,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_event.dart';
@@ -8,8 +8,8 @@ import 'package:flutter_pos/features/common_user/transaction/logic/financial/tra
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
@@ -92,7 +92,9 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                     padding: const WidgetStatePropertyAll(
                       EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     ),
-                    backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+                    backgroundColor: WidgetStatePropertyAll(
+                      AppPropertyColor.primary,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -294,7 +296,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                   );
                   _resetForm();
                 },
-                backgroundColor: AppColor.primary,
+                backgroundColor: AppPropertyColor.primary,
                 icon: Icon(Icons.check_rounded, color: Colors.white),
                 label: Text("Simpan", style: lv05TextStyleWhite),
               ),
@@ -312,7 +314,6 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
 
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initFinancial();
-    await context.read<DataUserRepositoryCache>().initCounter();
     _initData();
   }
 

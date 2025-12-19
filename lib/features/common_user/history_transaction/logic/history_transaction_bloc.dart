@@ -10,7 +10,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 
 class HistoryTransactionBloc
     extends Bloc<HistoryTransactionEvent, HistoryTransactionState> {
