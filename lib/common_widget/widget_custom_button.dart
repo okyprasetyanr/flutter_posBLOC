@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Widget customButton({
   VoidCallback? onPressed,
   Color? backgroundColor,
-  Icon? child,
+  Widget? child,
 }) {
   return Padding(
     padding: EdgeInsets.only(left: 5, right: 5, bottom: 5, top: 0),
@@ -11,6 +11,7 @@ Widget customButton({
       onPressed: onPressed,
       child: child,
       style: ButtonStyle(
+        elevation: WidgetStatePropertyAll(4),
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         minimumSize: WidgetStatePropertyAll(Size(0, 0)),
         padding: WidgetStatePropertyAll(

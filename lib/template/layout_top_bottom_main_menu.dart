@@ -53,7 +53,7 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   if (rotation == Orientation.portrait)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

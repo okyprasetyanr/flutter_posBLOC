@@ -271,7 +271,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon ?? SizedBox(width: 10),
+          icon ?? const SizedBox(width: 10),
           const SizedBox(height: 5),
           Text(text, style: lv05TextStyle, textAlign: TextAlign.center),
         ],

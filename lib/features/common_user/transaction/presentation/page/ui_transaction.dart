@@ -217,7 +217,10 @@ class _UITransactionState extends State<UITransaction> {
                   },
                   builder: (context, state) {
                     return state
-                        ? SizedBox(width: 50, child: UITransactionSavedCart())
+                        ? const SizedBox(
+                            width: 50,
+                            child: UITransactionSavedCart(),
+                          )
                         : SizedBox.shrink();
                   },
                 ),
