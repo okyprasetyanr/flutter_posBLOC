@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/app_property/colors.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/function.dart';

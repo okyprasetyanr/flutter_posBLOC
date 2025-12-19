@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/app_property/colors.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 
 Future<void> customDatePicker(
   bool dateEnd,

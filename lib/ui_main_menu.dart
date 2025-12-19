@@ -3,7 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/app_property/colors.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
@@ -16,6 +16,7 @@ import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
+import 'package:hive/hive.dart';
 
 class UIMainMenu extends StatefulWidget {
   const UIMainMenu({super.key});
@@ -284,7 +285,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
             children: [
               GridView.count(
                 crossAxisCount: 3,
-                padding: const EdgeInsets.all(10),
                 shrinkWrap: true,
                 childAspectRatio: 1,
                 mainAxisSpacing: 10,
@@ -483,8 +483,8 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((spot) {
                         return LineTooltipItem(
-                          formatQtyOrPrice(spot.y),
-                          const TextStyle(color: Colors.white),
+                          formatPriceRp(spot.y),
+                          lv05TextStyleWhite,
                         );
                       }).toList();
                     },
