@@ -347,6 +347,23 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
                 splitPayment.add(fromMapSplit(data));
               },
             ),
+
+        ListDataHeaderExcel.Riwayat_Pembelian_Item.name: (sheet) =>
+            restoreSheet<ModelItemOrdered>(
+              sheet: sheet,
+              id: FieldDataItemOrdered.id_ordered.name,
+              nested: true,
+              getMap: (data) {
+                itemsOrdered.add(
+                  fromMapItemOrdered(
+                    data,
+                    [],
+                    true,
+                    data[FieldDataItemOrdered.id_ordered.name],
+                  ),
+                );
+              },
+            ),
       },
     );
 
@@ -425,24 +442,31 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
               sheet: sheet,
               id: FieldDataTransaction.invoice.name,
               listDataRepo: repoCache.dataTransSell,
-              fromMap: (data, id) =>
-                  fromMapTransaction(data, itemsOrdered, splitPayment, id),
+              fromMap: (data, id) => fromMapTransaction(
+                data,
+                itemsOrdered
+                    .where((element) => element.getinvoice == id)
+                    .toList(),
+                splitPayment,
+                id,
+              ),
             ),
 
-        // ListDataHeaderExcel.Riwayat_Pembelian.name: (sheet) =>
-        //     restoreSheet<ModelUser>(
-        //       sheet: sheet,
-        //       id: FieldDataUser.id_user.name,
-        //       dataRepo: repoCache.dataUser,
-        //       fromMap: (data, id) => fromMapUser(data, id),
-        //     ),
-        // ListDataHeaderExcel.Riwayat_Pembelian_Item.name: (sheet) =>
-        //     restoreSheet<ModelUser>(
-        //       sheet: sheet,
-        //       id: FieldDataUser.id_user.name,
-        //       dataRepo: repoCache.dataUser,
-        //       fromMap: (data, id) => fromMapUser(data, id),
-        //     ),
+        ListDataHeaderExcel.Riwayat_Pembelian.name: (sheet) =>
+            restoreSheet<ModelTransaction>(
+              sheet: sheet,
+              id: FieldDataTransaction.invoice.name,
+              listDataRepo: repoCache.dataTransBuy,
+              fromMap: (data, id) => fromMapTransaction(
+                data,
+                itemsOrdered
+                    .where((element) => element.getinvoice == id)
+                    .toList(),
+                splitPayment,
+                id,
+              ),
+            ),
+
         ListDataHeaderExcel.Riwayat_Pendapatan.name: (sheet) =>
             restoreSheet<ModelTransactionFinancial>(
               sheet: sheet,

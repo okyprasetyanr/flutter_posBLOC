@@ -371,16 +371,17 @@ class ExcelBackupService {
       TextCellValue(FieldDataSplit.payment_total.name),
     ]);
 
-    for (final trans in repo.dataTransSell) {
-      for (final split in trans.getdataSplit) {
-        sheetHistorySplitPayment.appendRow([
-          TextCellValue(split.paymentInvoice!),
-          TextCellValue(split.getpaymentName),
-          TextCellValue(split.getpaymentDebitName!),
-          DoubleCellValue(split.getpaymentTotal),
-        ]);
-      }
-    }
+    repo.dataTransSell.expand((element) => element.getdataSplit).forEach((
+      element,
+    ) {
+      sheetHistorySplitPayment.appendRow([
+        TextCellValue(element.paymentInvoice!),
+        TextCellValue(element.getpaymentName),
+        TextCellValue(element.getpaymentDebitName!),
+        DoubleCellValue(element.getpaymentTotal),
+      ]);
+    });
+
     sheetWidthStyle(FieldDataTransaction.values, sheetHistorySell);
 
     //HistorySellItem
@@ -398,22 +399,22 @@ class ExcelBackupService {
       TextCellValue(FieldDataItemOrdered.note.name),
     ]);
 
-    for (final transSellItem in repo.dataTransSell) {
-      for (final item in transSellItem.getitemsOrdered) {
-        sheetHistorySellItem.appendRow([
-          TextCellValue(uidOwner),
-          TextCellValue(item.getidBranch),
-          TextCellValue(item.getidCategoryItem),
-          TextCellValue(item.getidItem),
-          TextCellValue(item.getnameItem),
-          DoubleCellValue(item.getqtyItem),
-          DoubleCellValue(item.getpriceItem),
-          IntCellValue(item.getdiscountItem),
-          DoubleCellValue(item.getsubTotal),
-          TextCellValue(item.getNote),
-        ]);
-      }
-    }
+    repo.dataTransSell.expand((element) => element.getitemsOrdered).forEach((
+      element,
+    ) {
+      sheetHistorySellItem.appendRow([
+        TextCellValue(uidOwner),
+        TextCellValue(element.getidBranch),
+        TextCellValue(element.getidCategoryItem),
+        TextCellValue(element.getidItem),
+        TextCellValue(element.getnameItem),
+        DoubleCellValue(element.getqtyItem),
+        DoubleCellValue(element.getpriceItem),
+        IntCellValue(element.getdiscountItem),
+        DoubleCellValue(element.getsubTotal),
+        TextCellValue(element.getNote),
+      ]);
+    });
     sheetWidthStyle(FieldDataItemOrdered.values, sheetHistorySellItem);
 
     //HistorySellCondiment

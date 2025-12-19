@@ -229,9 +229,17 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             )
           : dataRevisiOrSaved.getinvoice;
 
-      itemOrdered = itemOrdered
-          .map((item) => item.copyWith(invoice: invoice))
-          .toList();
+      if (!sellState.isSell) {
+        itemOrdered = itemOrdered
+            .map(
+              (item) => item.copyWith(dateBuy: formattedDate, invoice: invoice),
+            )
+            .toList();
+      } else {
+        itemOrdered = itemOrdered
+            .map((item) => item.copyWith(invoice: invoice))
+            .toList();
+      }
 
       add(PaymentAdjust(ppn: ppn, discount: discount));
       debugPrint("Log PaymentBloc: isSell: ${sellState.isSell}");

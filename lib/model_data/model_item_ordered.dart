@@ -80,7 +80,7 @@ class ModelItemOrdered extends Equatable {
     List<ModelItemOrdered>? condiment,
   }) {
     return ModelItemOrdered(
-      invoice: invoice ?? _invoice,
+      invoice: invoice,
       dateBuy: dateBuy,
       expiredDate: expiredDate ?? _expiredDate,
       subTotal: subTotal ?? _subTotal,
