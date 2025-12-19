@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/push_data.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
@@ -299,7 +299,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(10),
         child: customButtonIcon(
-          backgroundColor: AppColor.primary,
+          backgroundColor: AppPropertyColor.primary,
           icon: Icon(
             Icons.check_rounded,
             color: Colors.white,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final labelTextStyle = GoogleFonts.poppins(
@@ -21,13 +21,13 @@ final titleTextStyle = GoogleFonts.poppins(
 );
 
 final subTitleTextStyle = GoogleFonts.poppins(
-  color: AppColor.primary,
+  color: AppPropertyColor.primary,
   fontWeight: FontWeight.w900,
   fontSize: 15,
 );
 
 final transactionSuccessTextStyle = GoogleFonts.poppins(
-  color: AppColor.primary,
+  color: AppPropertyColor.primary,
   fontWeight: FontWeight.w700,
   fontSize: 20,
   shadows: [
@@ -47,7 +47,7 @@ final transactionSuccessPaidTextStyle = GoogleFonts.poppins(
     Shadow(
       offset: Offset(2, 2),
       blurRadius: 4,
-      color: AppColor.primary.withValues(alpha: 0.4),
+      color: AppPropertyColor.primary.withValues(alpha: 0.4),
     ),
   ],
 );
@@ -102,7 +102,7 @@ final lv05TextStyleBold = GoogleFonts.poppins(
 );
 
 final lv1TextStylePrimaryPrice = GoogleFonts.poppins(
-  color: AppColor.primary,
+  color: AppPropertyColor.primary,
   fontWeight: FontWeight.w800,
   fontSize: 12,
 );
@@ -124,7 +124,7 @@ final textStyleItemCondiment = GoogleFonts.poppins(
 
 final textStyleItemNormal = GoogleFonts.poppins(
   textStyle: const TextStyle(
-    backgroundColor: AppColor.primary,
+    backgroundColor: AppPropertyColor.primary,
     color: Colors.white,
     fontWeight: FontWeight.w400,
     fontSize: 10,
@@ -144,7 +144,7 @@ final lv1TextStyleBold = GoogleFonts.poppins(
 );
 
 final lv05textStylePrice = GoogleFonts.poppins(
-  color: AppColor.primary,
+  color: AppPropertyColor.primary,
   fontWeight: FontWeight.w600,
   fontSize: 10,
 );
@@ -186,7 +186,7 @@ final lv2TextStyle = GoogleFonts.poppins(
 );
 
 final lv2textStylePrice = GoogleFonts.poppins(
-  color: AppColor.primary,
+  color: AppPropertyColor.primary,
   fontWeight: FontWeight.w900,
   fontSize: 12,
 );

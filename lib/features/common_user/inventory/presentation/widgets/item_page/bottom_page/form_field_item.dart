@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/
 import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UIInventoryFormFieldItem extends StatelessWidget {
   final TextEditingController nameItemController;
@@ -71,7 +71,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                 SizedBox(
                   width: 100,
                   child: customButton(
-                    backgroundColor: AppColor.primary,
+                    backgroundColor: AppPropertyColor.primary,
                     child: Icon(
                       Icons.image_search_rounded,
                       color: Colors.white,

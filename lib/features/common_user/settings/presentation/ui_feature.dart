@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UiFeature extends StatelessWidget {
   final ScrollController controller;
@@ -44,7 +44,9 @@ class UiFeature extends StatelessWidget {
                         height: 30,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: state ? AppColor.primary : Colors.white,
+                          color: state
+                              ? AppPropertyColor.primary
+                              : Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: (state ? Colors.black : Colors.green)

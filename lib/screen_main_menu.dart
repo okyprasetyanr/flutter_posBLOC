@@ -8,8 +8,8 @@ import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_main_menu.dart';
 
 class ScreenMainMenu extends StatefulWidget {
@@ -22,7 +22,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   final currentPage = PageController();
   bool loading = true;
   final nameCompany = ValueNotifier<String?>(null);
-
+  final selectedMenu = ValueNotifier<String>("Main");
   Map<Permission, bool> getPermission = {};
   @override
   void initState() {
@@ -53,7 +53,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
   Future<void> initUserSession() async {
     final repo = context.read<DataUserRepositoryCache>();
     await UserSession.init(repo);
-
+    nameCompany.value = repo.dataCompany!.getnameCompany;
     getNameCompany();
   }
 
@@ -62,9 +62,7 @@ class _ScreenMainMenuState extends State<ScreenMainMenu> {
         .collection("companies")
         .doc(UserSession.getUidOwner())
         .get();
-    if (data.exists) {
-      nameCompany.value = data['name_company'];
-    }
+    if (data.exists) {}
   }
 
   _pageView(int page) {

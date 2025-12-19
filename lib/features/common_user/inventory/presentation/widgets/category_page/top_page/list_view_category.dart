@@ -4,8 +4,8 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIInventoryListViewCategory extends StatelessWidget {

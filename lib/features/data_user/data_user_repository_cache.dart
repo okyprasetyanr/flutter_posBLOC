@@ -37,16 +37,13 @@ class DataUserRepositoryCache {
 
     await initCompany();
     await initFinancial();
-    await initTransIncome();
-    await initTransExpense();
+    await initTransFinancial();
     await initItem();
     await initCategory();
     await initPartner();
-    await initTransactionSell();
-    await initTransactionBuy();
+    await initTransaction();
     await initBatch();
     await initUser();
-    await initCounter();
 
     for (var a in dataItem) {
       debugPrint("Log DataUserRepositoryCache item: $a");
@@ -86,27 +83,16 @@ class DataUserRepositoryCache {
     dataFinancial = await repo.getFinancial();
   }
 
-  Future<void> initCounter() async {
+  Future<void> initTransFinancial() async {
+    dataTransIncome = await repo.getTransIncome();
+    dataTransExpense = await repo.getTransExpense();
     dataCounter = await repo.getCounter();
   }
 
-  Future<void> initTransIncome() async {
-    dataTransIncome = await repo.getTransIncome();
-    debugPrint(
-      "Log DataUserRepositoryCache dataTransactionIncome: $dataTransIncome",
-    );
-  }
-
-  Future<void> initTransExpense() async {
-    dataTransExpense = await repo.getTransExpense();
-  }
-
-  Future<void> initTransactionSell() async {
+  Future<void> initTransaction() async {
     dataTransSell = await repo.getTransactionSell();
-  }
-
-  Future<void> initTransactionBuy() async {
     dataTransBuy = await repo.getTransactionBuy();
+    dataCounter = await repo.getCounter();
   }
 
   Future<void> initItem() async {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_condiment/page_condiment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/page/page_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 
 class UITransactionPopUpItem extends StatefulWidget {
   const UITransactionPopUpItem({super.key});
@@ -191,7 +191,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: const WidgetStatePropertyAll(
-                                AppColor.primary,
+                                AppPropertyColor.primary,
                               ),
                               padding: const WidgetStatePropertyAll(
                                 EdgeInsets.all(10),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
@@ -14,8 +14,8 @@ import 'package:flutter_pos/features/common_user/transaction/presentation/widget
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
@@ -318,7 +318,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                         color: Colors.white,
                       ),
                       textStyle: lv05TextStyleWhite,
-                      backgroundColor: AppColor.primary,
+                      backgroundColor: AppPropertyColor.primary,
                       function: () {
                         final billPaid =
                             (context.read<PaymentBloc>().state as PaymentLoaded)

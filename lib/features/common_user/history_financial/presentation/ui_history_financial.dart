@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_event.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/date_picker.dart';
@@ -401,7 +401,10 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Icon(Icons.print_rounded, color: AppColor.primary),
+                  child: Icon(
+                    Icons.print_rounded,
+                    color: AppPropertyColor.primary,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
@@ -413,7 +416,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.all(8),
                     elevation: 2,
-                    backgroundColor: AppColor.primary,
+                    backgroundColor: AppPropertyColor.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -429,8 +432,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
   }
 
   Future<void> refreshIndicator() async {
-    await context.read<DataUserRepositoryCache>().initTransIncome();
-    await context.read<DataUserRepositoryCache>().initTransExpense();
+    await context.read<DataUserRepositoryCache>().initTransFinancial();
     _initData();
   }
 }

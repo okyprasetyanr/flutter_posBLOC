@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 
@@ -41,7 +41,7 @@ class UITransactionSuccess extends StatelessWidget {
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: AppColor.primarylight1,
+            color: AppPropertyColor.primarylight1,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
@@ -56,7 +56,7 @@ class UITransactionSuccess extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColor.primarylight2,
+              color: AppPropertyColor.primarylight2,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
@@ -106,7 +106,7 @@ class UITransactionSuccess extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColor.primarylight3,
+        color: AppPropertyColor.primarylight3,
         border: BoxBorder.all(
           color: Colors.grey,
           style: BorderStyle.solid,

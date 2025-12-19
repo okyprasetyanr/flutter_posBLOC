@@ -155,10 +155,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           break;
         case ListForDatabase.Transaksi:
           await Future.wait([
-            repoCache.initTransactionBuy(),
-            repoCache.initTransactionSell(),
-            repoCache.initTransIncome(),
-            repoCache.initTransExpense(),
+            repoCache.initTransaction(),
+            repoCache.initTransFinancial(),
           ]);
           break;
         case ListForDatabase.Operator:

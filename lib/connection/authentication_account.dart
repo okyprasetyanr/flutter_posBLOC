@@ -7,7 +7,7 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -68,6 +68,9 @@ Future<UserCredential?> authenticatorAccount({
 
       final pref = await SharedPreferences.getInstance();
       await pref.setString('uid_owner', uidOwner);
+
+      final repo = context.read<DataUserRepositoryCache>();
+      await UserSession.init(repo);
 
       Navigator.pop(context);
       navUpDownTransition(context, '/mainmenu', true);

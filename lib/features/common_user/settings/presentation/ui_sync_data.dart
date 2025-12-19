@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UiSyncData extends StatelessWidget {
   final ScrollController controller;
@@ -41,7 +41,7 @@ class UiSyncData extends StatelessWidget {
                   children: [
                     Center(child: Text("Sinkron Data", style: titleTextStyle)),
                     customButtonIcon(
-                      backgroundColor: AppColor.primary,
+                      backgroundColor: AppPropertyColor.primary,
                       icon: Icon(Icons.publish_rounded, color: Colors.white),
                       label: Text("Kirim Data", style: lv05TextStyleWhite),
                       onPressed: () =>
@@ -64,7 +64,7 @@ class UiSyncData extends StatelessWidget {
                             backgroundColor: Colors.white,
                             icon: Icon(
                               Icons.cancel_rounded,
-                              color: AppColor.delete,
+                              color: AppPropertyColor.delete,
                             ),
                             label: Text("Batalkan", style: lv05TextStyleBold),
                             onPressed: () {
@@ -79,7 +79,7 @@ class UiSyncData extends StatelessWidget {
                       ...ListForDatabase.values.map((syncData) {
                         return CheckboxListTile(
                           dense: true,
-                          activeColor: AppColor.primary,
+                          activeColor: AppPropertyColor.primary,
                           checkboxScaleFactor: 0.8,
                           title: Text(
                             syncData.name.replaceAll("_", " "),
@@ -98,7 +98,7 @@ class UiSyncData extends StatelessWidget {
 
                     const SizedBox(height: 10),
                     customButtonIcon(
-                      backgroundColor: AppColor.primary,
+                      backgroundColor: AppPropertyColor.primary,
                       icon: Icon(Icons.download_rounded, color: Colors.white),
                       label: Text("Ambil Data", style: lv05TextStyleWhite),
                       onPressed: () =>

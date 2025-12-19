@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
@@ -19,8 +19,8 @@ import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/category_page/top_page/list_view_category.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
-import 'package:flutter_pos/style_and_transition/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_reset.dart';
@@ -175,7 +175,9 @@ class _UIInventoryState extends State<UIInventory> {
                 padding: const WidgetStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 ),
-                backgroundColor: WidgetStatePropertyAll(AppColor.primary),
+                backgroundColor: WidgetStatePropertyAll(
+                  AppPropertyColor.primary,
+                ),
               ),
             ),
 

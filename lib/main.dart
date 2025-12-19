@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/colors/colors.dart';
+import 'package:flutter_pos/app_property/colors.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
@@ -9,8 +9,8 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/firebase_options.dart';
 import 'package:flutter_pos/function/service_dart.dart';
 import 'package:flutter_pos/routes/routes.dart';
-import 'package:flutter_pos/style_and_transition/style/style_font_size.dart';
-import 'package:flutter_pos/style_and_transition/transition_navigator/transition_up_down.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/foundation.dart';
@@ -208,7 +208,10 @@ class _MainAppState extends State<ScreenLogin> {
                               Column(
                                 children: [
                                   const SizedBox(height: 220),
-                                  Text("Aplikasi POS", style: titleTextStyle),
+                                  Text(
+                                    AppPropertyText.AppName,
+                                    style: titleTextStyle,
+                                  ),
                                   const SizedBox(height: 10),
                                   Material(
                                     borderRadius: BorderRadius.all(
@@ -284,7 +287,7 @@ class _MainAppState extends State<ScreenLogin> {
                                   const SizedBox(height: 20),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColor.primary,
+                                      backgroundColor: AppPropertyColor.primary,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 30,
                                         vertical: 10,
@@ -322,7 +325,7 @@ class _MainAppState extends State<ScreenLogin> {
                                   const SizedBox(height: 20),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColor.primary,
+                                      backgroundColor: AppPropertyColor.primary,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 30,
                                         vertical: 10,

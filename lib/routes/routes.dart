@@ -12,9 +12,9 @@ import 'package:flutter_pos/features/common_user/transaction/presentation/page/u
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_success.dart';
 import 'package:flutter_pos/main.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.dart';
-import 'package:flutter_pos/screen_main_menu.dart';
 import 'package:flutter_pos/screen_signup.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/page/ui_setting_menu.dart';
+import 'package:flutter_pos/ui_main_menu.dart';
 
 final routesPage = {
   '/print': (context) => const UIPrint(),
@@ -29,7 +29,7 @@ final routesPage = {
   '/batch': (context) => const UiBatch(),
   '/partner': (context) => const UIPartner(),
   '/login': (context) => const ScreenLogin(),
-  '/mainmenu': (context) => const ScreenMainMenu(),
+  '/mainmenu': (context) => const UIMainMenu(),
   '/inventory': (context) => const UIInventory(),
   '/sell': (context) => const UITransaction(),
   '/sellpayment': (context) => const UITransactionPayment(),
