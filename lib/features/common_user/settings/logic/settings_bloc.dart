@@ -10,7 +10,7 @@ import 'package:flutter_pos/features/common_user/settings/logic/settings_state.d
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/function/excel_backup.dart';
-import 'package:flutter_pos/function/excel_restore.adrt.dart';
+import 'package:flutter_pos/function/excel_restore.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/service_dart.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -55,6 +55,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsImport>(_onImport);
     on<SettingsSelectedBackup>(_onSelectedBackup);
     on<SettingsShareBackup>(_onShareBackup);
+    on<SettingsReset>(_onReset);
   }
 
   FutureOr<void> _onProfile(
@@ -287,7 +288,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsBackup event,
     Emitter<SettingsState> emit,
   ) async {
-    await ExcelBackupService(repo: repoCache);
+    debugPrint("Log BackupRestoreBloc: Backup: masuk");
+    await ExcelBackupService(repo: repoCache).backupItemsToExcel();
+
     add(SettingsBackupRestoreinit());
   }
 
@@ -302,186 +305,203 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     await ExcelRestoreService(
       file: currentState.selectedFile as File,
       handlers: {
-        ListDataHeaderExcel.Riwayat_Penjualan_Item.name: (sheet) =>
-            restoreSheet<ModelItemOrdered>(
-              sheet: sheet,
-              id: FieldDataItemOrdered.id_ordered.name,
-              nested: true,
-              getMap: (data) {
-                itemsOrdered.add(
-                  fromMapItemOrdered(
-                    data,
-                    [],
-                    true,
-                    data[FieldDataItemOrdered.id_ordered.name],
-                  ),
-                );
-              },
-            ),
+        ListDataHeaderExcel.Riwayat_Penjualan_Item.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelItemOrdered>(
+          sheet: sheet,
+          id: FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_"),
+          nested: true,
+          getMap: (data) {
+            itemsOrdered.add(
+              fromMapItemOrdered(
+                data,
+                [],
+                true,
+                data[FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_")],
+              ),
+            );
+          },
+        ),
 
-        ListDataHeaderExcel.Riwayat_Penjualan_Tambahan.name: (sheet) =>
-            restoreSheet<ModelItemOrdered>(
-              sheet: sheet,
-              id: FieldDataItemOrdered.id_ordered.name,
-              nested: true,
-              getMap: (data) {
-                itemCondiment.add(
-                  fromMapItemOrdered(
-                    data,
-                    [],
-                    true,
-                    data[FieldDataItemOrdered.id_ordered.name],
-                  ),
-                );
-              },
-            ),
+        ListDataHeaderExcel.Riwayat_Penjualan_Tambahan.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelItemOrdered>(
+          sheet: sheet,
+          id: FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_"),
+          nested: true,
+          getMap: (data) {
+            itemCondiment.add(
+              fromMapItemOrdered(
+                data,
+                [],
+                true,
+                data[FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_")],
+              ),
+            );
+          },
+        ),
 
-        ListDataHeaderExcel.Riwayat_Pembayaran_Split.name: (sheet) =>
-            restoreSheet<ModelSplit>(
-              sheet: sheet,
-              id: FieldDataSplit.invoice.name,
-              nested: true,
-              getMap: (data) {
-                splitPayment.add(fromMapSplit(data));
-              },
-            ),
+        ListDataHeaderExcel.Riwayat_Pembayaran_Split.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelSplit>(
+          sheet: sheet,
+          id: FieldDataSplit.invoice.name.replaceAll(" ", "_"),
+          nested: true,
+          getMap: (data) {
+            splitPayment.add(fromMapSplit(data));
+          },
+        ),
 
-        ListDataHeaderExcel.Riwayat_Pembelian_Item.name: (sheet) =>
-            restoreSheet<ModelItemOrdered>(
-              sheet: sheet,
-              id: FieldDataItemOrdered.id_ordered.name,
-              nested: true,
-              getMap: (data) {
-                itemsOrdered.add(
-                  fromMapItemOrdered(
-                    data,
-                    [],
-                    true,
-                    data[FieldDataItemOrdered.id_ordered.name],
-                  ),
-                );
-              },
-            ),
+        ListDataHeaderExcel.Riwayat_Pembelian_Item.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelItemOrdered>(
+          sheet: sheet,
+          id: FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_"),
+          nested: true,
+          getMap: (data) {
+            itemsOrdered.add(
+              fromMapItemOrdered(
+                data,
+                [],
+                true,
+                data[FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_")],
+              ),
+            );
+          },
+        ),
       },
-    );
+    ).restore();
 
     await ExcelRestoreService(
       file: currentState.selectedFile as File,
       handlers: {
-        ListDataHeaderExcel.Akun.name: (sheet) => restoreSheet<ModelUser>(
-          sheet: sheet,
-          id: FieldDataUser.id_user.name,
-          listDataRepo: repoCache.dataUser,
-          fromMap: (data, id) => fromMapUser(data, id),
-        ),
+        ListDataHeaderExcel.Akun.name.replaceAll(" ", "_"): (sheet) =>
+            restoreSheet<ModelUser>(
+              sheet: sheet,
+              id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
+              listDataRepo: repoCache.dataUser,
+              fromMap: (data, id) => fromMapUser(data, id),
+            ),
 
-        ListDataHeaderExcel.Usaha.name: (sheet) => restoreSheet<ModelCompany>(
-          sheet: sheet,
-          id: FieldDataCompany.id_company.name,
-          dataRepo: repoCache.dataCompany,
-          fromMap: (data, id) => fromMapCompany(data, id),
-        ),
+        ListDataHeaderExcel.Usaha.name.replaceAll(" ", "_"): (sheet) =>
+            restoreSheet<ModelCompany>(
+              sheet: sheet,
+              id: FieldDataCompany.id_company.name.replaceAll(" ", "_"),
+              dataRepo: repoCache.dataCompany,
+              fromMap: (data, id) => fromMapCompany(data, id),
+            ),
 
-        ListDataHeaderExcel.Item.name: (sheet) => restoreSheet<ModelItem>(
-          sheet: sheet,
-          id: FieldDataItem.id_item.name,
-          listDataRepo: repoCache.dataItem,
-          fromMap: (data, id) => fromMapItem(data, id),
-        ),
+        ListDataHeaderExcel.Item.name.replaceAll(" ", "_"): (sheet) =>
+            restoreSheet<ModelItem>(
+              sheet: sheet,
+              id: FieldDataItem.id_item.name.replaceAll(" ", "_"),
+              listDataRepo: repoCache.dataItem,
+              fromMap: (data, id) => fromMapItem(data, id),
+            ),
 
-        ListDataHeaderExcel.Kategori.name: (sheet) =>
+        ListDataHeaderExcel.Kategori.name.replaceAll(" ", "_"): (sheet) =>
             restoreSheet<ModelCategory>(
               sheet: sheet,
-              id: FieldDataCategory.id_category.name,
+              id: FieldDataCategory.id_category.name.replaceAll(" ", "_"),
               listDataRepo: repoCache.dataCategory,
               fromMap: (data, id) => fromMapCategory(data, id),
             ),
 
-        ListDataHeaderExcel.Pelanggan.name: (sheet) =>
+        ListDataHeaderExcel.Pelanggan.name.replaceAll(" ", "_"): (sheet) =>
             restoreSheet<ModelPartner>(
               sheet: sheet,
-              id: FieldDataPartner.id_partner.name,
+              id: FieldDataPartner.id_partner.name.replaceAll(" ", "_"),
               listDataRepo: repoCache.dataPartner,
               fromMap: (data, id) => fromMapPartner(data, id),
             ),
 
-        ListDataHeaderExcel.Pemasok.name: (sheet) => restoreSheet<ModelPartner>(
-          sheet: sheet,
-          id: FieldDataPartner.id_partner.name,
-          listDataRepo: repoCache.dataPartner,
-          fromMap: (data, id) => fromMapPartner(data, id),
-        ),
+        ListDataHeaderExcel.Pemasok.name.replaceAll(" ", "_"): (sheet) =>
+            restoreSheet<ModelPartner>(
+              sheet: sheet,
+              id: FieldDataPartner.id_partner.name.replaceAll(" ", "_"),
+              listDataRepo: repoCache.dataPartner,
+              fromMap: (data, id) => fromMapPartner(data, id),
+            ),
 
-        ListDataHeaderExcel.Pendapatan.name: (sheet) =>
+        ListDataHeaderExcel.Pendapatan.name.replaceAll(" ", "_"): (sheet) =>
             restoreSheet<ModelFinancial>(
               sheet: sheet,
-              id: FieldDataFinancial.id_financial.name,
+              id: FieldDataFinancial.id_financial.name.replaceAll(" ", "_"),
               listDataRepo: repoCache.dataFinancial,
               fromMap: (data, id) => fromMapFinancial(data, id),
             ),
 
-        ListDataHeaderExcel.Pengeluaran.name: (sheet) =>
+        ListDataHeaderExcel.Pengeluaran.name.replaceAll(" ", "_"): (sheet) =>
             restoreSheet<ModelFinancial>(
               sheet: sheet,
-              id: FieldDataFinancial.id_financial.name,
+              id: FieldDataFinancial.id_financial.name.replaceAll(" ", "_"),
               listDataRepo: repoCache.dataFinancial,
               fromMap: (data, id) => fromMapFinancial(data, id),
             ),
 
-        ListDataHeaderExcel.Operator.name: (sheet) => restoreSheet<ModelUser>(
+        ListDataHeaderExcel.Operator.name.replaceAll(" ", "_"): (sheet) =>
+            restoreSheet<ModelUser>(
+              sheet: sheet,
+              id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
+              listDataRepo: repoCache.dataUser,
+              fromMap: (data, id) => fromMapUser(data, id),
+            ),
+
+        ListDataHeaderExcel.Riwayat_Penjualan.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelTransaction>(
           sheet: sheet,
-          id: FieldDataUser.id_user.name,
-          listDataRepo: repoCache.dataUser,
-          fromMap: (data, id) => fromMapUser(data, id),
+          id: FieldDataTransaction.invoice.name.replaceAll(" ", "_"),
+          listDataRepo: repoCache.dataTransSell,
+          fromMap: (data, id) => fromMapTransaction(
+            data,
+            itemsOrdered.where((element) => element.getinvoice == id).toList(),
+            splitPayment,
+            id,
+          ),
         ),
 
-        ListDataHeaderExcel.Riwayat_Penjualan.name: (sheet) =>
-            restoreSheet<ModelTransaction>(
-              sheet: sheet,
-              id: FieldDataTransaction.invoice.name,
-              listDataRepo: repoCache.dataTransSell,
-              fromMap: (data, id) => fromMapTransaction(
-                data,
-                itemsOrdered
-                    .where((element) => element.getinvoice == id)
-                    .toList(),
-                splitPayment,
-                id,
-              ),
-            ),
+        ListDataHeaderExcel.Riwayat_Pembelian.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelTransaction>(
+          sheet: sheet,
+          id: FieldDataTransaction.invoice.name.replaceAll(" ", "_"),
+          listDataRepo: repoCache.dataTransBuy,
+          fromMap: (data, id) => fromMapTransaction(
+            data,
+            itemsOrdered.where((element) => element.getinvoice == id).toList(),
+            splitPayment,
+            id,
+          ),
+        ),
 
-        ListDataHeaderExcel.Riwayat_Pembelian.name: (sheet) =>
-            restoreSheet<ModelTransaction>(
-              sheet: sheet,
-              id: FieldDataTransaction.invoice.name,
-              listDataRepo: repoCache.dataTransBuy,
-              fromMap: (data, id) => fromMapTransaction(
-                data,
-                itemsOrdered
-                    .where((element) => element.getinvoice == id)
-                    .toList(),
-                splitPayment,
-                id,
-              ),
-            ),
+        ListDataHeaderExcel.Riwayat_Pendapatan.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelTransactionFinancial>(
+          sheet: sheet,
+          id: FieldDataTransFinancial.id_financial.name.replaceAll(" ", "_"),
+          listDataRepo: repoCache.dataTransIncome,
+          fromMap: (data, id) => fromMapTransFinancial(data, id),
+        ),
 
-        ListDataHeaderExcel.Riwayat_Pendapatan.name: (sheet) =>
-            restoreSheet<ModelTransactionFinancial>(
-              sheet: sheet,
-              id: FieldDataTransFinancial.id_financial.name,
-              listDataRepo: repoCache.dataTransIncome,
-              fromMap: (data, id) => fromMapTransFinancial(data, id),
-            ),
-
-        ListDataHeaderExcel.Riwayat_Pengeluaran.name: (sheet) =>
-            restoreSheet<ModelTransactionFinancial>(
-              sheet: sheet,
-              id: FieldDataTransFinancial.id_financial.name,
-              listDataRepo: repoCache.dataTransIncome,
-              fromMap: (data, id) => fromMapTransFinancial(data, id),
-            ),
+        ListDataHeaderExcel.Riwayat_Pengeluaran.name.replaceAll(
+          " ",
+          "_",
+        ): (sheet) => restoreSheet<ModelTransactionFinancial>(
+          sheet: sheet,
+          id: FieldDataTransFinancial.id_financial.name.replaceAll(" ", "_"),
+          listDataRepo: repoCache.dataTransIncome,
+          fromMap: (data, id) => fromMapTransFinancial(data, id),
+        ),
       },
-    );
+    ).restore();
   }
 
   FutureOr<void> _onSelectedBackup(
@@ -500,5 +520,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     Share.shareXFiles([
       XFile(currentState.selectedFile!.path),
     ], text: 'Backup data item');
+  }
+
+  FutureOr<void> _onReset(SettingsReset event, Emitter<SettingsState> emit) {
+    repoCache.dataBatch.clear();
+    repoCache.dataCategory.clear();
+    repoCache.dataItem.clear();
+    repoCache.dataPartner.clear();
+    repoCache.dataCounter.clear();
+    repoCache.dataFinancial.clear();
+    repoCache.dataTransSell.clear();
+    repoCache.dataTransBuy.clear();
+    repoCache.dataTransIncome.clear();
+    repoCache.dataTransExpense.clear();
   }
 }

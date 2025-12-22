@@ -1,11 +1,14 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:path_provider/path_provider.dart';
 
 bool _isPickingFile = false;
 
@@ -590,21 +593,29 @@ class ExcelBackupService {
     }
     sheetWidthStyle(FieldDataTransFinancial.values, sheetHistoryExpense);
 
+    debugPrint("Log ExcelBackup: isPickingFile:${_isPickingFile}");
+
     if (_isPickingFile) return;
     _isPickingFile = true;
 
     try {
-      excel.delete('Sheet1');
+      if (excel.tables.containsKey('Sheet1')) {
+        excel.delete('Sheet1');
+      }
 
       final bytesExcel = excel.encode();
       if (bytesExcel == null) {
         throw Exception('Gagal generate excel');
       }
+      final backupName =
+          'backup_RingkasPOS_${formatDate(date: DateTime.now(), minute: true)}.xlsx';
+      final dir = await getApplicationDocumentsDirectory();
+      final internalFile = File('${dir.path}/${backupName}');
+      await internalFile.writeAsBytes(bytesExcel);
 
       await FilePicker.platform.saveFile(
         dialogTitle: 'Simpan backup',
-        fileName:
-            'backup_RingkasPOS_${formatDate(date: DateTime.now(), minute: false)}.xlsx',
+        fileName: backupName,
         bytes: Uint8List.fromList(bytesExcel),
         type: FileType.custom,
         allowedExtensions: ['xlsx'],

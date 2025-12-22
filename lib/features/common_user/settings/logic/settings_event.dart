@@ -53,6 +53,8 @@ class SettingsBackupRestoreinit extends SettingsEvent {}
 
 class SettingsBackup extends SettingsEvent {}
 
+class SettingsReset extends SettingsEvent {}
+
 class SettingsRestore extends SettingsEvent {}
 
 class SettingsImport extends SettingsEvent {}

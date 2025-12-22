@@ -6,7 +6,7 @@ import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_menu.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
-import 'package:flutter_pos/features/common_user/settings/presentation/ui_backup_restore.dart';
+import 'package:flutter_pos/features/common_user/settings/presentation/ui_backup_restore_reset.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_logo_header_footer.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_profil.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_feature.dart';
@@ -116,7 +116,7 @@ class _UISettingsState extends State<UISettings> {
               ),
               const SizedBox(height: 10),
               WidgetCustomTextMenu(
-                text: "Cadangkan/Pulihkan",
+                text: "Cadangkan/Pulihkan/Reset",
                 onTap: () async {
                   customBottomSheet(
                     context: context,
