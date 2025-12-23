@@ -301,28 +301,28 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                   ),
                                   Row(
                                     children: [
-                                      Expanded(
-                                        child: Text.rich(
-                                          TextSpan(
-                                            text: "Status: ",
-                                            style: lv05TextStyle,
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    "${dataTransaction.getstatusTransaction}",
-                                                style:
-                                                    dataTransaction
-                                                            .getstatusTransaction ==
-                                                        statusTransaction(
-                                                          index: 0,
-                                                        )
-                                                    ? lv05textStylePrice
-                                                    : lv05TextStyleRedPrice,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                      //   Expanded(
+                                      //     child: Text.rich(
+                                      //       TextSpan(
+                                      //         text: "Status: ",
+                                      //         style: lv05TextStyle,
+                                      //         children: [
+                                      //           TextSpan(
+                                      //             text:
+                                      //                 "${dataTransaction.getstatusTransaction}",
+                                      //             style:
+                                      //                 dataTransaction
+                                      //                         .getstatusTransaction ==
+                                      //                     statusTransaction(
+                                      //                       index: 0,
+                                      //                     )
+                                      //                 ? lv05textStylePrice
+                                      //                 : lv05TextStyleRedPrice,
+                                      //           ),
+                                      //         ],
+                                      //       ),
+                                      //     ),
+                                      //   ),
                                       Expanded(
                                         child: Text(
                                           "${dataTransaction.getpaymentMethod}",
@@ -555,19 +555,20 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: Text("Konfirmasi", style: lv2TextStyle),
-                              content: Text.rich(
-                                TextSpan(
-                                  text: "Revisi ${state.$1!.getinvoice}?",
-                                  style: lv1TextStyle,
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          "\nKonfirmasi Revisi berarti membatalkan Transaksi ini dan memulai Revisi.",
-                                      style: lv05TextStyle,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              content: SizedBox.shrink(),
+                              // Text.rich(
+                              //   TextSpan(
+                              //     text: "Revisi ${state.$1!.getinvoice}?",
+                              //     style: lv1TextStyle,
+                              //     children: [
+                              //       TextSpan(
+                              //         text:
+                              //             "\nKonfirmasi Revisi berarti membatalkan Transaksi ini dan memulai Revisi.",
+                              //         style: lv05TextStyle,
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
                               actions: [
                                 TextButton(
                                   onPressed: () =>

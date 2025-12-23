@@ -97,7 +97,7 @@ class UiBackupRestore extends StatelessWidget {
                                 TextButton(
                                   onPressed: () {
                                     context.read<SettingsBloc>().add(
-                                      SettingsImport(),
+                                      SettingsRestore(),
                                     );
                                     Navigator.pop(context);
                                   },

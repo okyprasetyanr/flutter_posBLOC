@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/function/function.dart';
 
 typedef SheetHandler = Future<void> Function(Sheet sheet);
 
@@ -43,23 +44,19 @@ Future<void> restoreSheet<T>({
     final row = sheet.rows[i];
     if (row.every((element) => element == null)) continue;
 
-    try {
-      final map = _mapRow(headers, row);
+    final map = _mapRow(headers, row);
 
-      if (!nested) {
-        final model = fromMap!(map, map[id]);
-        if (listDataRepo != null) {
-          listDataRepo.add(model);
-        } else {
-          dataRepo = model;
-        }
-        debugPrint("Log Restore: Cek Data: $listDataRepo");
+    if (!nested) {
+      final model = fromMap!(map, map[id]);
+      if (listDataRepo != null) {
+        listDataRepo.add(model);
       } else {
-        getMap!(map);
-        debugPrint("Log Restore: Cek Data nested False: $listDataRepo");
+        dataRepo = model;
       }
-    } catch (e) {
-      debugPrint("Restore error: $e");
+      debugPrint("Log Restore: Cek Data: $listDataRepo");
+    } else {
+      getMap!(map);
+      debugPrint("Log Restore: Cek Data nested False: $listDataRepo");
     }
   }
 }
@@ -68,20 +65,27 @@ Map<String, dynamic> _mapRow(List<String?> headers, List<Data?> row) {
   final Map<String, dynamic> result = {};
 
   for (int i = 0; i < headers.length; i++) {
-    final cell = row.length > i ? row[i]?.value : null;
+    if (headers[i] == null) continue;
 
-    if (cell is TextCellValue) {
-      result[headers[i]!] = cell.value;
-    } else if (cell is IntCellValue) {
-      result[headers[i]!] = cell.value;
-    } else if (cell is DoubleCellValue) {
-      result[headers[i]!] = cell.value;
-    } else if (cell is BoolCellValue) {
-      result[headers[i]!] = cell.value;
-    } else if (cell is TextSpan) {
-      result[headers[i]!] = cell.value;
-    } else {
+    final cellValue = row.length > i ? row[i]?.value : null;
+
+    if (cellValue == null) {
       result[headers[i]!] = null;
+      continue;
+    }
+
+    if (cellValue is TextCellValue) {
+      result[headers[i]!] = cellValue.value.toString();
+    } else if (cellValue is IntCellValue) {
+      result[headers[i]!] = cellValue.value;
+    } else if (cellValue is DoubleCellValue) {
+      result[headers[i]!] = cellValue.value;
+    } else if (cellValue is BoolCellValue) {
+      result[headers[i]!] = cellValue.value;
+    } else if (cellValue is DateCellValue) {
+      result[headers[i]!] = cellValue.toString();
+    } else {
+      result[headers[i]!] = cellValue.toString();
     }
   }
 

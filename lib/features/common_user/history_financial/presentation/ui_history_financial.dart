@@ -289,28 +289,28 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                                   ),
                                   Row(
                                     children: [
-                                      Expanded(
-                                        child: Text.rich(
-                                          TextSpan(
-                                            text: "Status: ",
-                                            style: lv05TextStyle,
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    "${dataTransaction.getstatusTransaction}",
-                                                style:
-                                                    dataTransaction
-                                                            .getstatusTransaction ==
-                                                        statusTransaction(
-                                                          index: 0,
-                                                        )
-                                                    ? lv05textStylePrice
-                                                    : lv05TextStyleRedPrice,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                      // Expanded(
+                                      //   child: Text.rich(
+                                      //     TextSpan(
+                                      //       text: "Status: ",
+                                      //       style: lv05TextStyle,
+                                      //       children: [
+                                      //         TextSpan(
+                                      //           text:
+                                      //               "${dataTransaction.getstatusTransaction}",
+                                      //           style:
+                                      //               dataTransaction
+                                      //                       .getstatusTransaction ==
+                                      //                   statusTransaction(
+                                      //                     index: 0,
+                                      //                   )
+                                      //               ? lv05textStylePrice
+                                      //               : lv05TextStyleRedPrice,
+                                      //         ),
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       Expanded(
                                         child: Text(
                                           "${formatPriceRp(dataTransaction.getamount)}",

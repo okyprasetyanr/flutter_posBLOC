@@ -10,6 +10,7 @@ import 'package:flutter_pos/features/common_user/settings/logic/settings_state.d
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/function/excel_backup.dart';
+import 'package:flutter_pos/function/excel_parse_flag.dart';
 import 'package:flutter_pos/function/excel_restore.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/service_dart.dart';
@@ -52,7 +53,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsLogoHeaderFooterUpdate>(_onLogoHeaderFooterUpdate);
     on<SettingsBackupRestoreinit>(_onBackupRestoreInit);
     on<SettingsBackup>(_onBackup);
-    on<SettingsImport>(_onImport);
+    on<SettingsRestore>(_onRestore);
     on<SettingsSelectedBackup>(_onSelectedBackup);
     on<SettingsShareBackup>(_onShareBackup);
     on<SettingsReset>(_onReset);
@@ -294,8 +295,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     add(SettingsBackupRestoreinit());
   }
 
-  Future<void> _onImport(
-    SettingsImport event,
+  Future<void> _onRestore(
+    SettingsRestore event,
     Emitter<SettingsState> emit,
   ) async {
     final currentState = state as SettingsBackupRestoreLoaded;
@@ -379,14 +380,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     await ExcelRestoreService(
       file: currentState.selectedFile as File,
       handlers: {
-        ListDataHeaderExcel.Akun.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelUser>(
-              sheet: sheet,
-              id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataUser,
-              fromMap: (data, id) => fromMapUser(data, id),
-            ),
-
+        // ListDataHeaderExcel.Akun.name.replaceAll(" ", "_"): (sheet) =>
+        //     restoreSheet<ModelUser>(
+        //       sheet: sheet,
+        //       id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
+        //       listDataRepo: repoCache.dataUser,
+        //       fromMap: (data, id) => fromMapUser(data, id),
+        //     ),
         ListDataHeaderExcel.Usaha.name.replaceAll(" ", "_"): (sheet) =>
             restoreSheet<ModelCompany>(
               sheet: sheet,
@@ -443,14 +443,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
               fromMap: (data, id) => fromMapFinancial(data, id),
             ),
 
-        ListDataHeaderExcel.Operator.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelUser>(
-              sheet: sheet,
-              id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataUser,
-              fromMap: (data, id) => fromMapUser(data, id),
-            ),
-
+        // ListDataHeaderExcel.Operator.name.replaceAll(" ", "_"): (sheet) =>
+        //     restoreSheet<ModelUser>(
+        //       sheet: sheet,
+        //       id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
+        //       listDataRepo: repoCache.dataUser,
+        //       fromMap: (data, id) => fromMapUser(data, id),
+        //     ),
         ListDataHeaderExcel.Riwayat_Penjualan.name.replaceAll(
           " ",
           "_",

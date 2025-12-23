@@ -85,10 +85,10 @@ class ExcelBackupService {
       TextCellValue(account.getPhoneUser),
       TextCellValue(account.getNoteUser ?? ""),
       BoolCellValue(account.getstatusUser),
-      TextCellValue(account.getRoleUser.toString()),
+      IntCellValue(account.getRoleUser),
       TextCellValue(
         account.getPermissionsUser.entries
-            .map((e) => '${e.key.name} = ${e.value}')
+            .map((element) => '${element.key.name} = ${element.value}')
             .join('\n'),
       ),
 
@@ -301,7 +301,7 @@ class ExcelBackupService {
         IntCellValue(operator.getRoleUser),
         TextCellValue(
           operator.getPermissionsUser.entries
-              .map((e) => '${e.key} = ${e.value}')
+              .map((element) => '${element.key.name} = ${element.value}')
               .join('\n'),
         ),
 

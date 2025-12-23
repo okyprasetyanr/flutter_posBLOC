@@ -91,13 +91,13 @@ String statusTransaction({int? index}) {
 
 String formatDate({required DateTime date, bool? minute}) {
   final useMinute = minute ?? true;
-  final pattern = useMinute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyy';
+  final pattern = useMinute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyyy';
   return DateFormat(pattern).format(date);
 }
 
 DateTime parseDate({required String date, bool? minute}) {
   final useMinute = minute ?? true;
-  final pattern = useMinute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyy';
+  final pattern = useMinute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyyy';
   return DateFormat(pattern).parse(date);
 }
 

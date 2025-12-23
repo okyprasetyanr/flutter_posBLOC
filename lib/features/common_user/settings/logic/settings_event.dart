@@ -57,8 +57,6 @@ class SettingsReset extends SettingsEvent {}
 
 class SettingsRestore extends SettingsEvent {}
 
-class SettingsImport extends SettingsEvent {}
-
 class SettingsShareBackup extends SettingsEvent {}
 
 class SettingsSelectedBackup extends SettingsEvent {
