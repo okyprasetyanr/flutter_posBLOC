@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
@@ -69,6 +70,7 @@ ModelItem fromMapItem(Map<String, dynamic> data, String id) {
 }
 
 ModelPartner fromMapPartner(Map<String, dynamic> data, String id) {
+  debugPrint("Log fromMap: $data");
   return ModelPartner(
     idBranch: data[FieldDataPartner.id_branch.name],
     id: id,

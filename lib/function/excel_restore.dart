@@ -82,8 +82,6 @@ Map<String, dynamic> _mapRow(List<String?> headers, List<Data?> row) {
       result[headers[i]!] = cellValue.value;
     } else if (cellValue is BoolCellValue) {
       result[headers[i]!] = cellValue.value;
-    } else if (cellValue is DateCellValue) {
-      result[headers[i]!] = cellValue.toString();
     } else {
       result[headers[i]!] = cellValue.toString();
     }
