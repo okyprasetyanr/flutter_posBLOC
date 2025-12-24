@@ -136,10 +136,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                       false,
                       "Tanggal mulai",
                       context,
-                      parseDate(
-                        date: formatDate(date: DateTime.now()),
-                        minute: false,
-                      ),
+                      parseDate(date: DateTime.now(), minute: false),
                       (picked) => pickedDateStart = picked,
                     );
 
@@ -147,10 +144,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                       true,
                       "Tanggal selesai",
                       context,
-                      parseDate(
-                        date: formatDate(date: DateTime.now()),
-                        minute: false,
-                      ),
+                      parseDate(date: DateTime.now(), minute: false),
                       (picked) => pickedDateEnd = picked,
                     );
 

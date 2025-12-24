@@ -16,7 +16,6 @@ import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
-import 'package:hive/hive.dart';
 
 class UIMainMenu extends StatefulWidget {
   const UIMainMenu({super.key});

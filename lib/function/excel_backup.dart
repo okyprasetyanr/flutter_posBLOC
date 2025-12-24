@@ -384,14 +384,13 @@ class ExcelBackupService {
         DoubleCellValue(element.getpaymentTotal),
       ]);
     });
-
-    sheetWidthStyle(FieldDataTransaction.values, sheetHistorySell);
+    sheetWidthStyle(FieldDataTransaction.values, sheetHistorySplitPayment);
 
     //HistorySellItem
     sheetHistorySellItem.appendRow([
       TextCellValue(FieldDataItemOrdered.uid_owner.name),
       TextCellValue(FieldDataItemOrdered.id_branch.name),
-      TextCellValue(FieldDataItemOrdered.id_condiment.name),
+      TextCellValue(FieldDataItemOrdered.id_ordered.name),
       TextCellValue(FieldDataItemOrdered.id_category_item.name),
       TextCellValue(FieldDataItemOrdered.id_item.name),
       TextCellValue(FieldDataItemOrdered.name_item.name),
@@ -408,6 +407,7 @@ class ExcelBackupService {
       sheetHistorySellItem.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(element.getidBranch),
+        TextCellValue(element.getidOrdered),
         TextCellValue(element.getidCategoryItem),
         TextCellValue(element.getidItem),
         TextCellValue(element.getnameItem),
@@ -424,7 +424,7 @@ class ExcelBackupService {
     sheetHistorySellCondiment.appendRow([
       TextCellValue(FieldDataItemOrdered.uid_owner.name),
       TextCellValue(FieldDataItemOrdered.id_branch.name),
-      TextCellValue(FieldDataItemOrdered.id_condiment.name),
+      TextCellValue(FieldDataItemOrdered.id_ordered.name),
       TextCellValue(FieldDataItemOrdered.id_category_item.name),
       TextCellValue(FieldDataItemOrdered.id_item.name),
       TextCellValue(FieldDataItemOrdered.name_item.name),
@@ -442,6 +442,7 @@ class ExcelBackupService {
           sheetHistorySellCondiment.appendRow([
             TextCellValue(uidOwner),
             TextCellValue(element.getidBranch),
+            TextCellValue(element.getidOrdered),
             TextCellValue(element.getidCategoryItem),
             TextCellValue(element.getidItem),
             TextCellValue(element.getnameItem),
@@ -512,7 +513,7 @@ class ExcelBackupService {
     sheetHistoryBuyItem.appendRow([
       TextCellValue(FieldDataItemOrdered.uid_owner.name),
       TextCellValue(FieldDataItemOrdered.id_branch.name),
-      TextCellValue(FieldDataItemOrdered.id_condiment.name),
+      TextCellValue(FieldDataItemOrdered.id_ordered.name),
       TextCellValue(FieldDataItemOrdered.id_category_item.name),
       TextCellValue(FieldDataItemOrdered.id_item.name),
       TextCellValue(FieldDataItemOrdered.name_item.name),
@@ -528,6 +529,7 @@ class ExcelBackupService {
         sheetHistoryBuyItem.appendRow([
           TextCellValue(uidOwner),
           TextCellValue(item.getidBranch),
+          TextCellValue(item.getidOrdered),
           TextCellValue(item.getidCategoryItem),
           TextCellValue(item.getidItem),
           TextCellValue(item.getnameItem),

@@ -108,10 +108,7 @@ class _UIReportState extends State<UIReport> {
                                 false,
                                 "Tanggal mulai",
                                 context,
-                                parseDate(
-                                  date: formatDate(date: DateTime.now()),
-                                  minute: false,
-                                ),
+                                parseDate(date: DateTime.now(), minute: false),
                                 (picked) => pickedDateStart = picked,
                               );
 
@@ -119,10 +116,7 @@ class _UIReportState extends State<UIReport> {
                                 true,
                                 "Tanggal selesai",
                                 context,
-                                parseDate(
-                                  date: formatDate(date: DateTime.now()),
-                                  minute: false,
-                                ),
+                                parseDate(date: DateTime.now(), minute: false),
                                 (picked) => pickedDateEnd = picked,
                               );
 

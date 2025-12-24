@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/function/function.dart';
 
 typedef SheetHandler = Future<void> Function(Sheet sheet);
 
@@ -82,6 +81,8 @@ Map<String, dynamic> _mapRow(List<String?> headers, List<Data?> row) {
       result[headers[i]!] = cellValue.value;
     } else if (cellValue is BoolCellValue) {
       result[headers[i]!] = cellValue.value;
+    } else if (cellValue is DateCellValue) {
+      result[headers[i]!] = cellValue.toString();
     } else {
       result[headers[i]!] = cellValue.toString();
     }

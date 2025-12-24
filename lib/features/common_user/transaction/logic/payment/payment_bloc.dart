@@ -177,7 +177,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   ) async {
     final sellState = event.context.read<TransactionBloc>().state;
     if (sellState is TransactionLoaded) {
-      final formattedDate = parseDate(date: formatDate(date: DateTime.now()));
+      final formattedDate = parseDate(date: DateTime.now());
 
       List<ModelItemOrdered> itemOrdered = await List.from(
         sellState.itemOrdered ?? const [],
@@ -254,7 +254,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             billPaid: 0,
             note: note,
             paymentMethod: "Cash",
-            date: formattedDate,
+            date: formattedDate!,
             invoice: invoice,
             namePartner: sellState.selectedPartner?.getname ?? "",
             idPartner: sellState.selectedPartner?.getid ?? "",

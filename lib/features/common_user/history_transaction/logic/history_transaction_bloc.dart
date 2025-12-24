@@ -100,7 +100,7 @@ class HistoryTransactionBloc
       );
 
       final itemOrdered = dataTransaction[indexdataTrans].getitemsOrdered;
-      final dateNow = parseDate(date: DateTime.now().toString(), minute: false);
+      final dateNow = parseDate(date: DateTime.now(), minute: false);
       for (int i = 0; i < itemOrdered.length; i++) {
         for (final item in event.dateExpired) {
           if (itemOrdered[i].getidOrdered == item['id_ordered']) {

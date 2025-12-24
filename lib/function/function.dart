@@ -95,10 +95,25 @@ String formatDate({required DateTime date, bool? minute}) {
   return DateFormat(pattern).format(date);
 }
 
-DateTime parseDate({required String date, bool? minute}) {
-  final useMinute = minute ?? true;
-  final pattern = useMinute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyyy';
-  return DateFormat(pattern).parse(date);
+DateTime? parseDate({dynamic date, bool minute = true}) {
+  if (date == null) return null;
+
+  if (date is DateTime) return date;
+
+  if (date is String) {
+    try {
+      final pattern = minute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyyy';
+      return DateFormat(pattern).parse(date);
+    } catch (_) {
+      try {
+        return DateTime.parse(date);
+      } catch (_) {
+        return null;
+      }
+    }
+  }
+
+  return null;
 }
 
 DateTime dateYMDEndBLOC(DateTime? dateTime) {

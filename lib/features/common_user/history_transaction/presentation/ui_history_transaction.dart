@@ -146,10 +146,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                       false,
                       "Tanggal mulai",
                       context,
-                      parseDate(
-                        date: formatDate(date: DateTime.now()),
-                        minute: false,
-                      ),
+                      parseDate(date: DateTime.now(), minute: false),
                       (picked) => pickedDateStart = picked,
                     );
 
@@ -157,10 +154,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                       true,
                       "Tanggal selesai",
                       context,
-                      parseDate(
-                        date: formatDate(date: DateTime.now()),
-                        minute: false,
-                      ),
+                      parseDate(date: DateTime.now(), minute: false),
                       (picked) => pickedDateEnd = picked,
                     );
 

@@ -28,7 +28,7 @@ ModelTransactionFinancial fromMapTransFinancial(
     nameFinancial: data[FieldDataTransFinancial.name_financial.name],
     idBranch: data[FieldDataTransFinancial.id_branch.name],
     invoice: id,
-    date: parseDate(date: data[FieldDataTransFinancial.date.name]),
+    date: parseDate(date: data[FieldDataTransFinancial.date.name])!,
     note: data[FieldDataTransFinancial.date.name],
     amount: data[FieldDataTransFinancial.amount.name].toDouble(),
   );
@@ -54,18 +54,19 @@ ModelCategory fromMapCategory(Map<String, dynamic> data, String id) {
 }
 
 ModelItem fromMapItem(Map<String, dynamic> data, String id) {
+  debugPrint("Log fromMap: Item: $data");
   return ModelItem(
-    nameItem: data[FieldDataItem.name_item.name],
-    idItem: id,
-    priceItem: data[FieldDataItem.price_item.name].toDouble(),
-    idCategoryItem: data[FieldDataItem.id_category.name],
-    statusCondiment: data[FieldDataItem.status_condiment.name],
-    urlImage: data[FieldDataItem.url_image.name],
-    qtyItem: data[FieldDataItem.qty_item.name].toDouble(),
-    idBranch: data[FieldDataItem.id_branch.name],
-    barcode: data[FieldDataItem.barcode.name],
-    statusItem: data[FieldDataItem.status_item.name],
-    date: parseDate(date: data[FieldDataItem.date.name]),
+    nameItem: data[FieldDataItem.name_item.name], //
+    idItem: id, //
+    priceItem: data[FieldDataItem.price_item.name].toDouble(), //
+    idCategoryItem: data[FieldDataItem.id_category.name], //
+    statusCondiment: data[FieldDataItem.status_condiment.name], //
+    urlImage: data[FieldDataItem.url_image.name], //
+    qtyItem: data[FieldDataItem.qty_item.name].toDouble(), //
+    idBranch: data[FieldDataItem.id_branch.name], //
+    barcode: data[FieldDataItem.barcode.name], //
+    statusItem: data[FieldDataItem.status_item.name], //
+    date: parseDate(date: data[FieldDataItem.date.name]) ?? DateTime.now(), //
   );
 }
 
@@ -82,7 +83,7 @@ ModelPartner fromMapPartner(Map<String, dynamic> data, String id) {
       (element) => element.name == data[FieldDataPartner.type.name],
       orElse: () => PartnerType.customer,
     ),
-    date: parseDate(date: data[FieldDataPartner.date.name]),
+    date: parseDate(date: data[FieldDataPartner.date.name])!,
   );
 }
 
@@ -142,7 +143,7 @@ ModelCompany fromMapCompany(
     created: parseDate(
       date: data[FieldDataCompany.created_company.name],
       minute: false,
-    ),
+    )!,
   );
 }
 
@@ -168,7 +169,7 @@ ModelBatch fromMapBatch(
   return ModelBatch(
     invoice: id,
     idBranch: data[FieldDataBatch.id_branch.name],
-    date_buy: parseDate(date: data[FieldDataBatch.date_buy.name]),
+    date_buy: parseDate(date: data[FieldDataBatch.date_buy.name])!,
     items_batch: dataList ?? [],
   );
 }
@@ -186,7 +187,7 @@ ModelItemBatch fromMapItembatch(
     idOrdered: id,
     idCategoryItem: data[FieldDataItemBatch.id_category_item.name],
     note: data[FieldDataItemBatch.note.name],
-    date_buy: parseDate(date: data[FieldDataItemBatch.date_buy.name]),
+    date_buy: parseDate(date: data[FieldDataItemBatch.date_buy.name])!,
     expiredDate: data[FieldDataItemBatch.expired_date.name] != null
         ? parseDate(date: data[FieldDataItemBatch.expired_date.name])
         : null,
@@ -242,7 +243,7 @@ ModelTransaction fromMapTransaction(
     bankName: data[FieldDataTransaction.bank_name.name],
     itemsOrdered: itemsOrdered,
     dataSplit: splitData,
-    date: parseDate(date: data[FieldDataTransaction.date.name]),
+    date: parseDate(date: data[FieldDataTransaction.date.name])!,
     note: data[FieldDataTransaction.note.name],
     invoice: id,
     namePartner: data[FieldDataTransaction.name_partner.name],
