@@ -279,7 +279,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final dir = await getApplicationDocumentsDirectory();
     final files = dir
         .listSync()
-        .where((f) => f.path.endsWith('.xlsx'))
+        .where((element) => element.path.endsWith('.xlsx'))
         .toList();
     emit(SettingsBackupRestoreLoaded(listFile: files));
   }
@@ -288,8 +288,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsBackup event,
     Emitter<SettingsState> emit,
   ) async {
-    debugPrint("Log BackupRestoreBloc: Backup: masuk");
-    await ExcelBackupService(repo: repoCache).backupItemsToExcel();
+    await ExcelBackupService(
+      context: event.context,
+      repo: repoCache,
+      name: event.name,
+    ).backupItemsToExcel();
 
     add(SettingsBackupRestoreinit());
   }
@@ -302,204 +305,238 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     List<ModelItemOrdered> itemsOrdered = [];
     List<ModelItemOrdered> itemCondiment = [];
     List<ModelSplit> splitPayment = [];
+    bool isCorrect = false;
     await ExcelRestoreService(
       file: currentState.selectedFile as File,
       handlers: {
-        ListDataHeaderExcel.Riwayat_Penjualan_Item.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelItemOrdered>(
+        ListDataHeaderExcel.Akun.name: (sheet) => restoreSheet<ModelUser>(
           sheet: sheet,
-          id: FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_"),
-          nested: true,
+          id: FieldDataUser.id_user.name,
+          listDataRepo: repoCache.dataUser,
           getMap: (data) {
-            itemsOrdered.add(
-              fromMapItemOrdered(
-                data,
-                [],
-                true,
-                data[FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_")],
-              ),
-            );
+            if (data[FieldDataUser.id_user.name] ==
+                repoCache.dataAccount!.idUser) {
+              isCorrect = true;
+            }
           },
-        ),
-
-        ListDataHeaderExcel.Riwayat_Penjualan_Tambahan.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelItemOrdered>(
-          sheet: sheet,
-          id: FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_"),
           nested: true,
-          getMap: (data) {
-            itemCondiment.add(
-              fromMapItemOrdered(
-                data,
-                [],
-                true,
-                data[FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_")],
-              ),
-            );
-          },
-        ),
-
-        ListDataHeaderExcel.Riwayat_Pembayaran_Split.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelSplit>(
-          sheet: sheet,
-          id: FieldDataSplit.invoice.name.replaceAll(" ", "_"),
-          nested: true,
-          getMap: (data) {
-            splitPayment.add(fromMapSplit(data));
-          },
-        ),
-
-        ListDataHeaderExcel.Riwayat_Pembelian_Item.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelItemOrdered>(
-          sheet: sheet,
-          id: FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_"),
-          nested: true,
-          getMap: (data) {
-            itemsOrdered.add(
-              fromMapItemOrdered(
-                data,
-                [],
-                true,
-                data[FieldDataItemOrdered.id_ordered.name.replaceAll(" ", "_")],
-              ),
-            );
-          },
         ),
       },
     ).restore();
 
-    await ExcelRestoreService(
-      file: currentState.selectedFile as File,
-      handlers: {
-        // ListDataHeaderExcel.Akun.name.replaceAll(" ", "_"): (sheet) =>
-        //     restoreSheet<ModelUser>(
-        //       sheet: sheet,
-        //       id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
-        //       listDataRepo: repoCache.dataUser,
-        //       fromMap: (data, id) => fromMapUser(data, id),
-        //     ),
-        ListDataHeaderExcel.Usaha.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelCompany>(
-              sheet: sheet,
-              id: FieldDataCompany.id_company.name.replaceAll(" ", "_"),
-              dataRepo: repoCache.dataCompany,
-              fromMap: (data, id) => fromMapCompany(data, id),
-            ),
-
-        ListDataHeaderExcel.Item.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelItem>(
-              sheet: sheet,
-              id: FieldDataItem.id_item.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataItem,
-              fromMap: (data, id) => fromMapItem(data, id),
-            ),
-
-        ListDataHeaderExcel.Kategori.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelCategory>(
-              sheet: sheet,
-              id: FieldDataCategory.id_category.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataCategory,
-              fromMap: (data, id) => fromMapCategory(data, id),
-            ),
-
-        ListDataHeaderExcel.Pelanggan.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelPartner>(
-              sheet: sheet,
-              id: FieldDataPartner.id_partner.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataPartner,
-              fromMap: (data, id) => fromMapPartner(data, id),
-            ),
-
-        ListDataHeaderExcel.Pemasok.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelPartner>(
-              sheet: sheet,
-              id: FieldDataPartner.id_partner.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataPartner,
-              fromMap: (data, id) => fromMapPartner(data, id),
-            ),
-
-        ListDataHeaderExcel.Pendapatan.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelFinancial>(
-              sheet: sheet,
-              id: FieldDataFinancial.id_financial.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataFinancial,
-              fromMap: (data, id) => fromMapFinancial(data, id),
-            ),
-
-        ListDataHeaderExcel.Pengeluaran.name.replaceAll(" ", "_"): (sheet) =>
-            restoreSheet<ModelFinancial>(
-              sheet: sheet,
-              id: FieldDataFinancial.id_financial.name.replaceAll(" ", "_"),
-              listDataRepo: repoCache.dataFinancial,
-              fromMap: (data, id) => fromMapFinancial(data, id),
-            ),
-
-        // ListDataHeaderExcel.Operator.name.replaceAll(" ", "_"): (sheet) =>
-        //     restoreSheet<ModelUser>(
-        //       sheet: sheet,
-        //       id: FieldDataUser.id_user.name.replaceAll(" ", "_"),
-        //       listDataRepo: repoCache.dataUser,
-        //       fromMap: (data, id) => fromMapUser(data, id),
-        //     ),
-        ListDataHeaderExcel.Riwayat_Penjualan.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelTransaction>(
-          sheet: sheet,
-          id: FieldDataTransaction.invoice.name.replaceAll(" ", "_"),
-          listDataRepo: repoCache.dataTransSell,
-          fromMap: (data, id) => fromMapTransaction(
-            data,
-            itemsOrdered.where((element) => element.getinvoice == id).toList(),
-            splitPayment,
-            id,
+    if (isCorrect) {
+      await ExcelRestoreService(
+        file: currentState.selectedFile as File,
+        handlers: {
+          ListDataHeaderExcel.Riwayat_Penjualan_Item.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelItemOrdered>(
+            sheet: sheet,
+            id: FieldDataItemOrdered.id_ordered.name,
+            nested: true,
+            getMap: (data) {
+              itemsOrdered.add(
+                fromMapItemOrdered(
+                  data,
+                  [],
+                  true,
+                  data[FieldDataItemOrdered.id_ordered.name.replaceAll(
+                    " ",
+                    "_",
+                  )],
+                ),
+              );
+            },
           ),
-        ),
 
-        ListDataHeaderExcel.Riwayat_Pembelian.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelTransaction>(
-          sheet: sheet,
-          id: FieldDataTransaction.invoice.name.replaceAll(" ", "_"),
-          listDataRepo: repoCache.dataTransBuy,
-          fromMap: (data, id) => fromMapTransaction(
-            data,
-            itemsOrdered.where((element) => element.getinvoice == id).toList(),
-            splitPayment,
-            id,
+          ListDataHeaderExcel.Riwayat_Penjualan_Tambahan.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelItemOrdered>(
+            sheet: sheet,
+            id: FieldDataItemOrdered.id_ordered.name,
+            nested: true,
+            getMap: (data) {
+              itemCondiment.add(
+                fromMapItemOrdered(
+                  data,
+                  [],
+                  true,
+                  data[FieldDataItemOrdered.id_ordered.name.replaceAll(
+                    " ",
+                    "_",
+                  )],
+                ),
+              );
+            },
           ),
-        ),
 
-        ListDataHeaderExcel.Riwayat_Pendapatan.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelTransactionFinancial>(
-          sheet: sheet,
-          id: FieldDataTransFinancial.id_financial.name.replaceAll(" ", "_"),
-          listDataRepo: repoCache.dataTransIncome,
-          fromMap: (data, id) => fromMapTransFinancial(data, id),
-        ),
+          ListDataHeaderExcel.Riwayat_Pembayaran_Split.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelSplit>(
+            sheet: sheet,
+            id: FieldDataSplit.invoice.name,
+            nested: true,
+            getMap: (data) {
+              splitPayment.add(fromMapSplit(data));
+            },
+          ),
 
-        ListDataHeaderExcel.Riwayat_Pengeluaran.name.replaceAll(
-          " ",
-          "_",
-        ): (sheet) => restoreSheet<ModelTransactionFinancial>(
-          sheet: sheet,
-          id: FieldDataTransFinancial.id_financial.name.replaceAll(" ", "_"),
-          listDataRepo: repoCache.dataTransIncome,
-          fromMap: (data, id) => fromMapTransFinancial(data, id),
-        ),
-      },
-    ).restore();
+          ListDataHeaderExcel.Riwayat_Pembelian_Item.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelItemOrdered>(
+            sheet: sheet,
+            id: FieldDataItemOrdered.id_ordered.name,
+            nested: true,
+            getMap: (data) {
+              itemsOrdered.add(
+                fromMapItemOrdered(
+                  data,
+                  [],
+                  true,
+                  data[FieldDataItemOrdered.id_ordered.name.replaceAll(
+                    " ",
+                    "_",
+                  )],
+                ),
+              );
+            },
+          ),
+        },
+      ).restore();
+
+      await ExcelRestoreService(
+        file: currentState.selectedFile as File,
+        handlers: {
+          // ListDataHeaderExcel.Akun.name: (sheet) =>
+          //     restoreSheet<ModelUser>(
+          //       sheet: sheet,
+          //       id: FieldDataUser.id_user.name,
+          //       listDataRepo: repoCache.dataUser,
+          //       fromMap: (data, id) => fromMapUser(data, id),
+          //     ),
+          ListDataHeaderExcel.Usaha.name: (sheet) => restoreSheet<ModelCompany>(
+            sheet: sheet,
+            id: FieldDataCompany.id_company.name,
+            dataRepo: repoCache.dataCompany,
+            fromMap: (data, id) => fromMapCompany(data, id),
+          ),
+
+          ListDataHeaderExcel.Item.name: (sheet) => restoreSheet<ModelItem>(
+            sheet: sheet,
+            id: FieldDataItem.id_item.name,
+            listDataRepo: repoCache.dataItem,
+            fromMap: (data, id) => fromMapItem(data, id),
+          ),
+
+          ListDataHeaderExcel.Kategori.name: (sheet) =>
+              restoreSheet<ModelCategory>(
+                sheet: sheet,
+                id: FieldDataCategory.id_category.name,
+                listDataRepo: repoCache.dataCategory,
+                fromMap: (data, id) => fromMapCategory(data, id),
+              ),
+
+          ListDataHeaderExcel.Pelanggan.name: (sheet) =>
+              restoreSheet<ModelPartner>(
+                sheet: sheet,
+                id: FieldDataPartner.id_partner.name,
+                listDataRepo: repoCache.dataPartner,
+                fromMap: (data, id) => fromMapPartner(data, id),
+              ),
+
+          ListDataHeaderExcel.Pemasok.name: (sheet) =>
+              restoreSheet<ModelPartner>(
+                sheet: sheet,
+                id: FieldDataPartner.id_partner.name,
+                listDataRepo: repoCache.dataPartner,
+                fromMap: (data, id) => fromMapPartner(data, id),
+              ),
+
+          ListDataHeaderExcel.Pendapatan.name: (sheet) =>
+              restoreSheet<ModelFinancial>(
+                sheet: sheet,
+                id: FieldDataFinancial.id_financial.name,
+                listDataRepo: repoCache.dataFinancial,
+                fromMap: (data, id) => fromMapFinancial(data, id),
+              ),
+
+          ListDataHeaderExcel.Pengeluaran.name: (sheet) =>
+              restoreSheet<ModelFinancial>(
+                sheet: sheet,
+                id: FieldDataFinancial.id_financial.name,
+                listDataRepo: repoCache.dataFinancial,
+                fromMap: (data, id) => fromMapFinancial(data, id),
+              ),
+
+          // ListDataHeaderExcel.Operator.name: (sheet) =>
+          //     restoreSheet<ModelUser>(
+          //       sheet: sheet,
+          //       id: FieldDataUser.id_user.name,
+          //       listDataRepo: repoCache.dataUser,
+          //       fromMap: (data, id) => fromMapUser(data, id),
+          //     ),
+          ListDataHeaderExcel.Riwayat_Penjualan.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelTransaction>(
+            sheet: sheet,
+            id: FieldDataTransaction.invoice.name,
+            listDataRepo: repoCache.dataTransSell,
+            fromMap: (data, id) => fromMapTransaction(
+              data,
+              itemsOrdered
+                  .where((element) => element.getinvoice == id)
+                  .toList(),
+              splitPayment,
+              id,
+            ),
+          ),
+
+          ListDataHeaderExcel.Riwayat_Pembelian.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelTransaction>(
+            sheet: sheet,
+            id: FieldDataTransaction.invoice.name,
+            listDataRepo: repoCache.dataTransBuy,
+            fromMap: (data, id) => fromMapTransaction(
+              data,
+              itemsOrdered
+                  .where((element) => element.getinvoice == id)
+                  .toList(),
+              splitPayment,
+              id,
+            ),
+          ),
+
+          ListDataHeaderExcel.Riwayat_Pendapatan.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelTransactionFinancial>(
+            sheet: sheet,
+            id: FieldDataTransFinancial.id_financial.name,
+            listDataRepo: repoCache.dataTransIncome,
+            fromMap: (data, id) => fromMapTransFinancial(data, id),
+          ),
+
+          ListDataHeaderExcel.Riwayat_Pengeluaran.name.replaceAll(
+            " ",
+            "_",
+          ): (sheet) => restoreSheet<ModelTransactionFinancial>(
+            sheet: sheet,
+            id: FieldDataTransFinancial.id_financial.name,
+            listDataRepo: repoCache.dataTransIncome,
+            fromMap: (data, id) => fromMapTransFinancial(data, id),
+          ),
+        },
+      ).restore();
+    } else {
+      emit(currentState.copyWith(isCorrent: isCorrect));
+    }
   }
 
   FutureOr<void> _onSelectedBackup(

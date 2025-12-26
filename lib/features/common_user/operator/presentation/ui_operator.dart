@@ -47,21 +47,27 @@ class _UIOperatorState extends State<UIOperator> {
     super.dispose();
   }
 
+  List<String> roleFilterTypeList = [];
   List<String> roleTypeList = [];
 
+  bool isOwner = false;
   @override
   void initState() {
     super.initState();
     _initData();
-    bool isOwner = false;
     isOwner =
         context.read<DataUserRepositoryCache>().dataAccount!.getIdUser ==
         UserSession.uid_owner;
-    roleTypeList = [
+    roleFilterTypeList = [
+      "All",
       for (final role
           in isOwner
               ? RoleType.values
               : RoleType.values.where((element) => element.id != 1))
+        role.name,
+    ];
+    roleTypeList = [
+      for (final role in RoleType.values.where((element) => element.id != 1))
         role.name,
     ];
   }
@@ -130,14 +136,14 @@ class _UIOperatorState extends State<UIOperator> {
           children: [
             Expanded(
               child: WidgetDropDownFilter(
-                filters: roleTypeList
-                    .where((element) => element != RoleType.Pemilik.name)
-                    .toList(),
+                filters: roleFilterTypeList,
                 text: "Pilih Operator",
                 selectedValue: (indexFilter) {
                   context.read<OperatorBloc>().add(
                     OperatorFilterOperator(
-                      roleUser: RoleTypeX.fromString(roleTypeList[indexFilter]),
+                      roleUser: RoleTypeX.fromString(
+                        roleFilterTypeList[indexFilter],
+                      ),
                     ),
                   );
                 },
@@ -187,129 +193,143 @@ class _UIOperatorState extends State<UIOperator> {
     return Column(
       children: [
         Expanded(
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: customTextField(
-                        index: 0,
+          child: BlocListener<OperatorBloc, OperatorState>(
+            listenWhen: (previous, current) =>
+                previous is OperatorLoaded &&
+                current is OperatorLoaded &&
+                (previous.selectedData != current.selectedData ||
+                    previous.idBranch != current.idBranch),
+            listener: (context, state) {
+              final currentState = state;
+              if (currentState is OperatorLoaded) {
+                if (currentState.selectedData == null) {
+                  nameController.clear();
+                  phoneController.clear();
+                  emailController.clear();
+                  noteController.clear();
+                  passwordController.clear();
+                } else {
+                  final selectedData = currentState.selectedData;
+                  nameController.text = selectedData?.getNameUser ?? "";
+                  phoneController.text = selectedData?.getPhoneUser ?? "";
+                  emailController.text = selectedData?.getEmailUser ?? "";
+                  noteController.text = selectedData?.getNoteUser ?? "";
+                }
+                branchController.text = currentState.idBranch!;
+                debugPrint("Log UIOperator: IDBranch: masuk");
+              }
+            },
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: [
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: customTextField(
+                          index: 0,
+                          nodes: nodes,
+                          inputType: TextInputType.text,
+                          context: context,
+                          text: "Nama Operator",
+                          controller: nameController,
+                          enable: true,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Nama tidak boleh kosong";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 1,
+                        child: customTextField(
+                          context: context,
+                          controller: phoneController,
+                          enable: true,
+                          index: 1,
+                          inputType: TextInputType.text,
+                          nodes: nodes,
+                          text: "Nomor Operator",
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+                  BlocSelector<OperatorBloc, OperatorState, bool>(
+                    selector: (state) {
+                      if (state is OperatorLoaded) {
+                        return state.isEdit;
+                      }
+                      return false;
+                    },
+                    builder: (context, state) {
+                      return customTextField(
+                        index: 2,
                         nodes: nodes,
-                        inputType: TextInputType.text,
+                        inputType: TextInputType.emailAddress,
                         context: context,
-                        text: "Nama Operator",
-                        controller: nameController,
-                        enable: true,
+                        text: "E-mail Operator",
+                        controller: emailController,
+                        enable: !state,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "Nama tidak boleh kosong";
+                            return "E-mail tidak boleh kosong";
                           }
                           return null;
                         },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  // BlocSelector<OperatorBloc, OperatorState, bool>(
+                  //   selector: (state) =>
+                  //       state is OperatorLoaded ? state.isEdit : false,
+                  //   builder: (context, state) => state
+                  //       ? SizedBox.shrink()
+                  //       :
+                  customTextField(
+                    context: context,
+                    controller: passwordController,
+                    enable: true,
+                    index: 3,
+                    inputType: TextInputType.text,
+                    nodes: nodes,
+                    text: "Password Operator",
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Password tidak boleh kosong";
+                      }
+                      return null;
+                    },
+                  ),
+
+                  // ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: customTextField(
+                          context: context,
+                          controller: noteController,
+                          enable: true,
+                          index: 4,
+                          inputType: TextInputType.text,
+                          nodes: nodes,
+                          text: "Catatan",
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 1,
-                      child: customTextField(
-                        context: context,
-                        controller: phoneController,
-                        enable: true,
-                        index: 1,
-                        inputType: TextInputType.text,
-                        nodes: nodes,
-                        text: "Nomor Operator",
-                      ),
-                    ),
-                  ],
-                ),
 
-                const SizedBox(height: 10),
-                BlocSelector<OperatorBloc, OperatorState, bool>(
-                  selector: (state) {
-                    if (state is OperatorLoaded) {
-                      return state.isEdit;
-                    }
-                    return false;
-                  },
-                  builder: (context, state) {
-                    return customTextField(
-                      index: 2,
-                      nodes: nodes,
-                      inputType: TextInputType.emailAddress,
-                      context: context,
-                      text: "E-mail Operator",
-                      controller: emailController,
-                      enable: !state,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "E-mail tidak boleh kosong";
-                        }
-                        return null;
-                      },
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 10),
-                // BlocSelector<OperatorBloc, OperatorState, bool>(
-                //   selector: (state) =>
-                //       state is OperatorLoaded ? state.isEdit : false,
-                //   builder: (context, state) => state
-                //       ? SizedBox.shrink()
-                //       :
-                customTextField(
-                  context: context,
-                  controller: passwordController,
-                  enable: true,
-                  index: 3,
-                  inputType: TextInputType.text,
-                  nodes: nodes,
-                  text: "Password Operator",
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Password tidak boleh kosong";
-                    }
-                    return null;
-                  },
-                ),
-
-                // ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: customTextField(
-                        context: context,
-                        controller: noteController,
-                        enable: true,
-                        index: 4,
-                        inputType: TextInputType.text,
-                        nodes: nodes,
-                        text: "Catatan",
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 1,
-                      child: BlocListener<OperatorBloc, OperatorState>(
-                        listener: (context, state) {
-                          if (state is OperatorLoaded) {
-                            branchController.text = state.dataBranch!
-                                .firstWhere(
-                                  (element) =>
-                                      element.getidBranch == state.idBranch,
-                                )
-                                .getareaBranch;
-                          }
-                        },
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 1,
                         child: customTextField(
                           inputType: TextInputType.text,
                           context: context,
@@ -318,203 +338,160 @@ class _UIOperatorState extends State<UIOperator> {
                           enable: false,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-
-                BlocListener<OperatorBloc, OperatorState>(
-                  listenWhen: (previous, current) =>
-                      previous is OperatorLoaded &&
-                      current is OperatorLoaded &&
-                      previous.selectedData != current.selectedData,
-                  listener: (context, state) {
-                    final currentState = state;
-                    if (currentState is OperatorLoaded) {
-                      if (currentState.selectedData == null) {
-                        nameController.clear();
-                        phoneController.clear();
-                        emailController.clear();
-                        noteController.clear();
-                        passwordController.clear();
-                      } else {
-                        final selectedData = currentState.selectedData!;
-                        nameController.text = selectedData.getNameUser;
-                        phoneController.text = selectedData.getPhoneUser;
-                        emailController.text = selectedData.getEmailUser;
-                        noteController.text = selectedData.getNoteUser ?? "";
-                      }
-                    }
-                  },
-                  child: BlocSelector<OperatorBloc, OperatorState, (bool, ModelUser?)>(
-                    selector: (state) => state is OperatorLoaded
-                        ? (state.isEdit, state.selectedData)
-                        : (false, null),
-                    builder: (context, state) => Row(
-                      children: [
-                        Expanded(
-                          child: WidgetDropDownFilter(
-                            initialValue: state.$1
-                                ? roleTypeList.firstWhere(
-                                    (element) =>
-                                        element ==
-                                        RoleTypeX.fromId(
-                                          state.$2!.getRoleUser,
-                                        )!.name,
-                                  )
-                                : null,
-                            filters: roleTypeList
-                                .where(
-                                  (element) =>
-                                      element != RoleType.All.name &&
-                                      element != RoleType.Pemilik.name,
-                                )
-                                .toList(),
-                            text: "Jenis Operator",
-                            selectedValue: (index) {
-                              context.read<OperatorBloc>().add(
-                                OperatorSelectedData(
-                                  selectedRole: RoleTypeX.fromString(
-                                    roleTypeList[index],
-                                  )!.id,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: WidgetDropDownFilter(
-                            initialValue: state.$1
-                                ? statusData.firstWhere(
-                                    (element) =>
-                                        element ==
-                                        statusData[state.$2!.getstatusUser
-                                            ? 0
-                                            : 1],
-                                  )
-                                : null,
-                            filters: statusData,
-                            text: "Status",
-                            selectedValue: (indexFilter) {
-                              context.read<OperatorBloc>().add(
-                                OperatorSelectedData(
-                                  selectedStatus: indexFilter == 0,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          flex: 2,
-                          child: customButtonIcon(
-                            backgroundColor: AppPropertyColor.primary,
-                            icon: Icon(
-                              Icons.check_box_outlined,
-                              color: Colors.white,
-                            ),
-                            label: Text(
-                              "Ijin Akses",
-                              style: lv05TextStyleWhite,
-                            ),
-                            onPressed: () {
-                              customBottomSheet(
-                                context: context,
-                                resetItemForm: () {},
-                                content: (scrollController) =>
-                                    BlocSelector<
-                                      OperatorBloc,
-                                      OperatorState,
-                                      Map<Permission, bool>?
-                                    >(
-                                      selector: (state) =>
-                                          state is OperatorLoaded
-                                          ? state.selectedPermission
-                                          : null,
-                                      builder: (context, state) => Column(
-                                        children: [
-                                          Text(
-                                            "Ijin Akses",
-                                            style: lv1TextStyle,
-                                          ),
-                                          Expanded(
-                                            child: ListView(
-                                              controller: scrollController,
-                                              shrinkWrap: true,
-                                              children: Permission.values.map((
-                                                permission,
-                                              ) {
-                                                return CheckboxListTile(
-                                                  dense: true,
-                                                  activeColor:
-                                                      AppPropertyColor.primary,
-                                                  checkboxScaleFactor: 0.8,
-                                                  title: Text(
-                                                    permission.name.replaceAll(
-                                                      "_",
-                                                      " ",
-                                                    ),
-                                                    style: lv05TextStyle,
-                                                  ),
-                                                  value:
-                                                      state![permission] ??
-                                                      false,
-                                                  onChanged: (val) {
-                                                    context
-                                                        .read<OperatorBloc>()
-                                                        .add(
-                                                          OperatorSelectedData(
-                                                            selectedPermission:
-                                                                {
-                                                                  ...state,
-                                                                  permission:
-                                                                      val!,
-                                                                },
-                                                          ),
-                                                        );
-                                                  },
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                ],
+              ),
             ),
           ),
         ),
+        BlocSelector<OperatorBloc, OperatorState, (bool, ModelUser?)>(
+          selector: (state) => state is OperatorLoaded
+              ? (state.isEdit, state.selectedData)
+              : (false, null),
+          builder: (context, state) => Row(
+            children: [
+              Expanded(
+                child: WidgetDropDownFilter(
+                  initialValue: state.$1
+                      ? roleTypeList.firstWhere(
+                          (element) =>
+                              element ==
+                              RoleTypeX.fromId(state.$2!.getRoleUser)!.name,
+                        )
+                      : null,
+                  filters: roleTypeList,
+                  text: "Jenis Operator",
+                  selectedValue: (index) {
+                    context.read<OperatorBloc>().add(
+                      OperatorSelectedData(
+                        selectedRole: RoleTypeX.fromString(
+                          roleTypeList[index],
+                        )!.id,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: WidgetDropDownFilter(
+                  initialValue: state.$1
+                      ? statusData.firstWhere(
+                          (element) =>
+                              element ==
+                              statusData[state.$2!.getstatusUser ? 0 : 1],
+                        )
+                      : null,
+                  filters: statusData,
+                  text: "Status",
+                  selectedValue: (indexFilter) {
+                    context.read<OperatorBloc>().add(
+                      OperatorSelectedData(selectedStatus: indexFilter == 0),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 1,
+                child: customButtonIcon(
+                  backgroundColor: AppPropertyColor.primary,
+                  icon: Icon(Icons.check_box_outlined, color: Colors.white),
+                  label: Text("Ijin Akses", style: lv05TextStyleWhite),
+                  onPressed: () {
+                    customBottomSheet(
+                      context: context,
+                      resetItemForm: () {},
+                      content: (scrollController) =>
+                          BlocSelector<
+                            OperatorBloc,
+                            OperatorState,
+                            Map<Permission, bool>?
+                          >(
+                            selector: (state) => state is OperatorLoaded
+                                ? state.selectedPermission
+                                : null,
+                            builder: (context, state) => Column(
+                              children: [
+                                Text("Ijin Akses", style: lv1TextStyle),
+                                Expanded(
+                                  child: ListView(
+                                    controller: scrollController,
+                                    shrinkWrap: true,
+                                    children: Permission.values.map((
+                                      permission,
+                                    ) {
+                                      return CheckboxListTile(
+                                        dense: true,
+                                        activeColor: AppPropertyColor.primary,
+                                        checkboxScaleFactor: 0.8,
+                                        title: Text(
+                                          permission.name.replaceAll("_", " "),
+                                          style: lv05TextStyle,
+                                        ),
+                                        value: state![permission] ?? false,
+                                        onChanged: (val) {
+                                          context.read<OperatorBloc>().add(
+                                            OperatorSelectedData(
+                                              selectedPermission: {
+                                                ...state,
+                                                permission: val!,
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+
         SizedBox(
           width: double.infinity,
-          child: customButtonIcon(
-            icon: Icon(Icons.check_rounded, color: Colors.white),
-            backgroundColor: AppPropertyColor.primary,
-            label: Text("Simpan", style: lv05TextStyleWhite),
-            onPressed: () {
-              if (!_formKey.currentState!.validate()) {
-                return;
-              } else {
-                context.read<OperatorBloc>().add(
-                  OperatorUploadData(
-                    context: context,
-                    password: passwordController.text,
-                    email: emailController.text,
-                    name: nameController.text,
-                    note: noteController.text,
-                    phone: phoneController.text,
-                  ),
-                );
+          child: BlocSelector<OperatorBloc, OperatorState, bool>(
+            selector: (state) {
+              if (state is OperatorLoaded) {
+                return state.isEdit;
               }
-              ;
+              return false;
+            },
+            builder: (context, state) {
+              return customButtonIcon(
+                icon: Icon(Icons.check_rounded, color: Colors.white),
+                backgroundColor: AppPropertyColor.primary,
+                label: Text(
+                  state ? "Edit" : "Simpan",
+                  style: lv05TextStyleWhite,
+                ),
+                onPressed: () {
+                  if (!_formKey.currentState!.validate() && !state) {
+                    return;
+                  } else {
+                    context.read<OperatorBloc>().add(
+                      OperatorUploadData(
+                        context: context,
+                        password: passwordController.text,
+                        email: emailController.text,
+                        name: nameController.text,
+                        note: noteController.text,
+                        phone: phoneController.text,
+                      ),
+                    );
+                  }
+                  ;
+                },
+              );
             },
           ),
         ),

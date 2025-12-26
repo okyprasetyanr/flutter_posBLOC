@@ -61,6 +61,4 @@ class OperatorRemoveData extends OperatorEvent {
   OperatorRemoveData({required this.data});
 }
 
-class OperatorPermission extends OperatorEvent {}
-
 class OperatorResetPassword extends OperatorEvent {}

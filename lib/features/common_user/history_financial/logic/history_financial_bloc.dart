@@ -135,6 +135,7 @@ class HistoryFinancialBloc
     );
     await dataTrans[index].updateCancelDataFinancial(isIncome);
     add(HistoryFinancialGetData());
+    repoCache.notifyChanged();
   }
 
   FutureOr<void> _onSelectedFilter(

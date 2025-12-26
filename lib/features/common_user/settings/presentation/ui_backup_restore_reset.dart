@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
@@ -12,7 +14,14 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 
 class UiBackupRestore extends StatelessWidget {
   final ScrollController controller;
-  const UiBackupRestore({super.key, required this.controller});
+  final TextEditingController nameBackupController;
+  final GlobalKey<FormState> formKey;
+  const UiBackupRestore({
+    super.key,
+    required this.controller,
+    required this.nameBackupController,
+    required this.formKey,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,36 +30,136 @@ class UiBackupRestore extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Cadangkan", style: subTitleTextStyleBold),
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
+                  flex: 5,
+                  child: Form(
+                    key: formKey,
+                    child: customTextField(
+                      text: "Nama",
+                      controller: nameBackupController,
+                      validator: (value) => value!.isEmpty
+                          ? "Nama diperlukan untuk Pencadangan"
+                          : null,
+                      inputType: TextInputType.text,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 3,
                   child: customButtonIcon(
                     backgroundColor: AppPropertyColor.primary,
                     icon: Icon(Icons.backup_rounded, color: Colors.white),
                     label: Text("Cadangkan", style: lv05TextStyleWhite),
                     onPressed: () {
-                      context.read<SettingsBloc>().add(SettingsBackup());
+                      final bloc =
+                          context.read<SettingsBloc>().state
+                              as SettingsBackupRestoreLoaded;
+                      if (formKey.currentState!.validate()) {
+                        final listFile = bloc.listFile;
+                        final inputName = nameBackupController.text.trim();
+                        if (listFile.contains("$inputName.xlsx")) {
+                          customSnackBar(context, "Nama sudah digunakan!");
+                        } else {
+                          context.read<SettingsBloc>().add(
+                            SettingsBackup(name: inputName, context: context),
+                          );
+                        }
+                      } else {
+                        return;
+                      }
+                      if (bloc.isCorrect) {
+                        customSnackBar(
+                          context,
+                          "File ini diCadangkan oleh Akun yang bukan anda! Pilih Pencadangan anda!",
+                        );
+                      }
                     },
                   ),
                 ),
-                const SizedBox(width: 20),
+              ],
+            ),
+            Text(
+              "Disarankan tidak mengubah nama File ketika sudah ditahap memilih Folder!",
+              style: lv05TextStyleItalic,
+            ),
+            const SizedBox(height: 10),
+            Container(height: 1, width: double.infinity, color: Colors.grey),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text("Reset Data", style: subTitleTextStyleBold),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: customButtonIcon(
                     backgroundColor: Colors.white,
                     icon: Icon(Icons.folder_delete_rounded, color: Colors.red),
                     label: Text("Reset", style: lv05TextStyleRed),
                     onPressed: () {
-                      context.read<SettingsBloc>().add(SettingsReset());
+                      showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(
+                            "Konfirmasi Reset Data",
+                            style: lv2TextStyle,
+                          ),
+                          content: Text(
+                            "Anda yakin ingin melakukan Reset Data?",
+                            style: lv1TextStyle,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: Text("Batal", style: lv1TextStyle),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.read<SettingsBloc>().add(
+                                  SettingsReset(),
+                                );
+                                Navigator.pop(context, true);
+                              },
+                              child: Text("Reset", style: lv1TextStyle),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   ),
                 ),
               ],
             ),
+
             const SizedBox(height: 10),
             Container(height: 1, width: double.infinity, color: Colors.grey),
             const SizedBox(height: 10),
-            Text("Pulihkan", style: titleTextStyle),
+            Row(
+              children: [
+                Expanded(
+                  child: Text("Pemulihan", style: subTitleTextStyleBold),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: customButtonIcon(
+                    backgroundColor: AppPropertyColor.primary,
+                    icon: Icon(Icons.file_copy_rounded, color: Colors.white),
+                    label: Text("Pulihkan File", style: lv05TextStyleWhite),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+            ),
+
             Expanded(
               child:
                   BlocSelector<

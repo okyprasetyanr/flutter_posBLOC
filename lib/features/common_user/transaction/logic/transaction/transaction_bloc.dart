@@ -278,9 +278,20 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       if (event.mode != null) {
         if (event.mode!) {
-          qty++;
+          if (!UserSession.getStatusFifo()) {
+            qty++;
+          } else if (qty <
+              currentState.dataItem!
+                  .firstWhere(
+                    (element) => element.getidItem == selectedItem.getidItem,
+                  )
+                  .getqtyItem) {
+            qty++;
+          }
         } else {
-          qty--;
+          if (qty > 0) {
+            qty--;
+          }
         }
       }
       debugPrint("Log TransactionBloc: AdjustItem value: ${event.note}");

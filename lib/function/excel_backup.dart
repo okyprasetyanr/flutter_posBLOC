@@ -3,19 +3,25 @@ import 'dart:typed_data';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:path_provider/path_provider.dart';
 
 bool _isPickingFile = false;
 
 class ExcelBackupService {
+  final BuildContext context;
   final DataUserRepositoryCache repo;
+  final String name;
 
-  ExcelBackupService({required this.repo});
+  ExcelBackupService({
+    required this.context,
+    required this.repo,
+    required this.name,
+  });
   Future<void> backupItemsToExcel() async {
     final excel = Excel.createExcel();
     final uidOwner = UserSession.getUidOwner();
@@ -609,19 +615,22 @@ class ExcelBackupService {
       if (bytesExcel == null) {
         throw Exception('Gagal generate excel');
       }
-      final backupName =
-          'backup_RingkasPOS_${formatDate(date: DateTime.now(), minute: true)}.xlsx';
+
+      final backupName = name;
+
       final dir = await getApplicationDocumentsDirectory();
-      final internalFile = File('${dir.path}/${backupName}');
+      final internalFile = File('${dir.path}/$backupName.xlsx');
       await internalFile.writeAsBytes(bytesExcel);
 
-      await FilePicker.platform.saveFile(
-        dialogTitle: 'Simpan backup',
-        fileName: backupName,
-        bytes: Uint8List.fromList(bytesExcel),
+      final savePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Simpan file backup',
+        fileName: '$backupName.xlsx',
         type: FileType.custom,
         allowedExtensions: ['xlsx'],
+        bytes: Uint8List.fromList(bytesExcel),
       );
+
+      if (savePath == null) return;
     } finally {
       _isPickingFile = false;
     }

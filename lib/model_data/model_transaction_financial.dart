@@ -36,6 +36,7 @@ class ModelTransactionFinancial extends Equatable {
       id: invoice,
       dataTransFinancial: convertToMapTransactionIncome(
         ModelTransactionFinancial(
+          statusTransaction: statusTransaction,
           idFinancial: idFinancial,
           nameFinancial: nameFinancial,
           idBranch: idBranch,

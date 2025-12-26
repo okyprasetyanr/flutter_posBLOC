@@ -352,5 +352,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         ),
       );
     }
+    repoCache.notifyChanged();
   }
 }

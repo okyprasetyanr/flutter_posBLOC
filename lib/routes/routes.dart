@@ -14,7 +14,7 @@ import 'package:flutter_pos/main.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.dart';
 import 'package:flutter_pos/screen_signup.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/page/ui_setting_menu.dart';
-import 'package:flutter_pos/ui_main_menu.dart';
+import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
 
 final routesPage = {
   '/print': (context) => const UIPrint(),

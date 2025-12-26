@@ -20,6 +20,12 @@ final titleTextStyle = GoogleFonts.poppins(
   fontSize: 17,
 );
 
+final subTitleTextStyleBold = GoogleFonts.poppins(
+  color: Colors.black,
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
+);
+
 final titleTextStyleWhite = GoogleFonts.poppins(
   color: Colors.white,
   fontWeight: FontWeight.w600,

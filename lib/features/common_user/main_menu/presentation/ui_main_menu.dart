@@ -8,7 +8,11 @@ import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar_access.dart';
+import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
+import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
+import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
+import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/report_algoritm.dart';
@@ -32,6 +36,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
   @override
   void initState() {
     super.initState();
+    context.read<DataReportBloc>().add(DataReportGetData());
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _listenConnection();
     });
@@ -191,90 +196,171 @@ class _UIMainMenuState extends State<UIMainMenu> {
         const SizedBox(width: 10),
         Expanded(
           flex: 2,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DoubleWave(mirror: false),
-              Flexible(
-                fit: FlexFit.loose,
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                        color: Colors.black26,
-                      ),
-                    ],
-                  ),
-                  child: Wrap(
+          child:
+              BlocSelector<
+                DataReportBloc,
+                DataReportState,
+                (double, double, int, int, double, double)
+              >(
+                selector: (state) {
+                  if (state is DataReportLoaded) {
+                    return (
+                      state.totalSell,
+                      state.totalNeto,
+                      state.totalTransaction,
+                      state.totalItemTranasction,
+                      state.totalIncome,
+                      state.totalExpense,
+                    );
+                  }
+                  return (0.0, 0.0, 0, 0, 0.0, 0.0);
+                },
+                builder: (context, state) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Center(
-                        child: Text("Laporan Singkat", style: lv1TextStyleBold),
+                      SizedBox(
+                        width: 150,
+                        child:
+                            BlocSelector<
+                              DataReportBloc,
+                              DataReportState,
+                              String
+                            >(
+                              selector: (state) {
+                                if (state is DataReportLoaded) {
+                                  return state.idBranch!;
+                                }
+                                return "";
+                              },
+                              builder: (context, state) {
+                                return WidgetDropdownBranch(
+                                  idBranch: state,
+                                  selectedIdBranch: (selectedIdBranch) =>
+                                      context.read<DataReportBloc>().add(
+                                        DataReportGetData(
+                                          idBranch: selectedIdBranch,
+                                        ),
+                                      ),
+                                );
+                              },
+                            ),
                       ),
-                      rowContent("Total Penjualan", formatPriceRp(0)),
-                      rowContent("Total Keuntungan", formatPriceRp(0)),
-                      rowContent("Jumlah Transaksi", formatPriceRp(0)),
-                      rowContent("Jumlah Item Terjual", formatPriceRp(0)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
+                      DoubleWave(mirror: false),
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                                color: Colors.black26,
+                              ),
+                            ],
+                          ),
+                          child: Wrap(
+                            children: [
+                              Center(
+                                child: Text(
+                                  "Laporan Singkat",
+                                  style: lv1TextStyleBold,
+                                ),
+                              ),
+                              rowContent(
+                                "Total Penjualan",
+                                formatPriceRp(state.$1),
+                              ),
+                              rowContent(
+                                "Total Keuntungan",
+                                formatPriceRp(state.$2),
+                              ),
+                              rowContent(
+                                "Jumlah Transaksi",
+                                formatQtyOrPrice(state.$3.toDouble()),
+                              ),
+                              rowContent(
+                                "Jumlah Item Terjual",
+                                formatQtyOrPrice(state.$4.toDouble()),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
 
-              Flexible(
-                fit: FlexFit.loose,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                        color: Colors.black26,
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                                color: Colors.black26,
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Wrap(
+                              children: [
+                                rowContent(
+                                  "Total Pendapatan",
+                                  formatPriceRp(state.$5),
+                                ),
+                                rowContent(
+                                  "Total Pengeluaran",
+                                  formatPriceRp(state.$6),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
+                      DoubleWave(mirror: true),
                     ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Wrap(
-                      children: [
-                        rowContent("Total Pendapatan", formatPriceRp(0)),
-                        rowContent("Total Pengeluaran", formatPriceRp(0)),
-                      ],
-                    ),
-                  ),
-                ),
+                  );
+                },
               ),
-              DoubleWave(mirror: true),
-            ],
-          ),
         ),
       ],
     );
   }
 
   Widget widgetBottom() {
-    final spots = buildWeeklyTransactionSpots(
-      context.read<DataUserRepositoryCache>().dataTransSell,
-    );
+    final dataSell = context
+        .read<DataUserRepositoryCache>()
+        .dataTransSell
+        .where(
+          (element) =>
+              element.getstatusTransaction != statusTransaction(index: 3),
+        )
+        .toList();
+    final spots = (dataSell.isEmpty)
+        ? [const FlSpot(0, 0)]
+        : buildWeeklyTransactionSpots(dataSell);
+
     final labels = buildWeeklyLabels();
-    final maxY = spots
-        .map((element) => element.y)
-        .fold<double>(
-          0,
-          (previous, current) => current > previous ? current : previous,
-        );
+    double rawMaxY = spots.isEmpty
+        ? 0
+        : spots.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+    final maxY = rawMaxY == 0 ? 1000.0 : rawMaxY;
+    double smartInterval = calculateSmartInterval(rawMaxY);
+    double adjustedMaxY = (rawMaxY / smartInterval).ceil() * smartInterval;
+    if (adjustedMaxY == 0) adjustedMaxY = smartInterval * 4;
 
     return Column(
       children: [
@@ -430,8 +516,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                 minX: 0,
                 maxX: 6,
                 minY: 0,
-                maxY: maxY == 0 ? 100000 : maxY * 1.2,
-
+                maxY: maxY * 1.2,
                 gridData: FlGridData(show: true, drawVerticalLine: false),
 
                 borderData: FlBorderData(
@@ -442,13 +527,23 @@ class _UIMainMenuState extends State<UIMainMenu> {
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
-                      reservedSize: 60,
+                      reservedSize: 30,
                       showTitles: true,
-                      interval: maxY / 4,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          formatPriceRp((value / 1000)),
-                          style: lv05TextStyle,
+                      interval: smartInterval,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        String text;
+                        if (value >= 1000000) {
+                          text = '${(value / 1000000).toStringAsFixed(1)}jt';
+                        } else if (value >= 1000) {
+                          text = '${(value / 1000).toInt()}k';
+                        } else {
+                          text = value.toInt().toString();
+                        }
+
+                        return SideTitleWidget(
+                          meta: meta,
+                          space: 8,
+                          child: Text(text, style: lv05TextStyle, maxLines: 1),
                         );
                       },
                     ),
@@ -510,6 +605,33 @@ class _UIMainMenuState extends State<UIMainMenu> {
       ],
     );
   }
+}
+
+double calculateSmartInterval(double maxVal) {
+  if (maxVal <= 0) return 10000; // Default 10k jika data kosong
+
+  // Hitung interval kasar (ingin membagi grafik jadi 4-5 bagian)
+  double rawInterval = maxVal / 4;
+
+  // List kelipatan "cantik" yang diinginkan
+  List<double> anchors = [
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    50000,
+    100000,
+    250000,
+    500000,
+    1000000,
+  ];
+
+  // Cari angka di anchors yang paling mendekati rawInterval tapi lebih besar sedikit
+  return anchors.firstWhere(
+    (a) => a >= rawInterval,
+    orElse: () => (rawInterval / 100000).ceil() * 100000.0,
+  );
 }
 
 Widget listTileText(

@@ -35,7 +35,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
 
   OperatorLoaded copyWith({
     List<ModelBranch>? dataBranch,
-    List<ModelUser>? dataOperator,
+    List<ModelUser>? dataUser,
     List<ModelUser>? filteredData,
     String? idBranch,
     RoleType? filterRoleUser,
@@ -50,7 +50,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
       selectedPermission: selectedPermission ?? this.selectedPermission,
       isEdit: isEdit ?? this.isEdit,
       dataBranch: dataBranch ?? this.dataBranch,
-      dataUser: dataOperator ?? this.dataUser,
+      dataUser: dataUser ?? this.dataUser,
       filteredData: filteredData ?? this.filteredData,
       idBranch: idBranch ?? this.idBranch,
       filterRoleUser: filterRoleUser ?? this.filterRoleUser,

@@ -39,7 +39,7 @@ class UICategoryButtonCategory extends StatelessWidget {
             resetCategoryForm();
           },
           icon: const Icon(Icons.check_rounded, color: Colors.white),
-          label: Text(state ? "Simpan" : "Edit", style: lv1TextStyleWhite),
+          label: Text(state ? "Edit" : "Simpan", style: lv1TextStyleWhite),
           backgroundColor: AppPropertyColor.primary,
         );
       },

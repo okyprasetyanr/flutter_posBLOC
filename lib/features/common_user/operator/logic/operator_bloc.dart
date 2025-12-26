@@ -15,7 +15,6 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   OperatorBloc(this.repoCache) : super(OperatorInitial()) {
     on<OperatorGetData>(_onGetData);
     on<OperatorFilterOperator>(_onFilterOperator);
-    on<OperatorPermission>(_onPermission);
     on<OperatorRemoveData>(_onRemove);
     on<OperatorUploadData>(_onUpload);
     on<OperatorSelectedData>(_onSelectedData);
@@ -31,7 +30,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   }) {
     if (idBranch == null) {
       final currentState = state as OperatorLoaded;
-      idBranch == currentState.idBranch;
+      idBranch = currentState.idBranch;
     }
 
     debugPrint("Log OperatorBloc: $roleUser , $statusUser, $idBranch");
@@ -71,8 +70,9 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       roleUser: roleUser,
       statusUser: statusUser,
     );
+
     emit(
-      OperatorLoaded(
+      currentState.copyWith(
         dataBranch: dataBranch,
         idBranch: idBranch,
         dataUser: dataUser,
@@ -112,24 +112,23 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     final currentState = state as OperatorLoaded;
     final roleUser = currentState.filterRoleUser;
     final statusUser = currentState.filterStatusUser;
-    final dataFiltered = currentState.dataUser.where(
-      (element) => element.getNameUser.toLowerCase().contains(event.search),
-    );
-    final filteredData = dataFiltered
-        .where(
-          (element) =>
-              element.getstatusUser == statusUser &&
-              RoleType.values.contains(roleUser),
-        )
-        .toList();
+    final dataFiltered = currentState.dataUser.where((element) {
+      final search = element.getNameUser.toLowerCase().contains(
+        event.search.toLowerCase(),
+      );
+      if (!search) return false;
+      final byStatus = element.getstatusUser == statusUser;
+      if (!byStatus) return false;
 
-    emit(currentState.copyWith(filteredData: filteredData));
+      if (roleUser != null) {
+        final byRole = element.roleUser == roleUser;
+        if (!byRole) return false;
+      }
+      return true;
+    }).toList();
+    debugPrint("Log OperatorBloc: onSearch: $roleUser, $statusUser");
+    emit(currentState.copyWith(filteredData: dataFiltered));
   }
-
-  FutureOr<void> _onPermission(
-    OperatorPermission event,
-    Emitter<OperatorState> emit,
-  ) {}
 
   FutureOr<void> _onRemove(
     OperatorRemoveData event,
@@ -148,20 +147,21 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     add(OperatorGetData());
   }
 
-  FutureOr<void> _onSelectedData(
+  Future<void> _onSelectedData(
     OperatorSelectedData event,
     Emitter<OperatorState> emit,
-  ) {
+  ) async {
     final currentState = state as OperatorLoaded;
-    final selectedData = event.selectedData;
+    final selectedData = await event.selectedData ?? currentState.selectedData;
+
     emit(
       currentState.copyWith(
-        selectedData: event.selectedData,
-        isEdit: event.selectedData != null ? true : false,
-        selectedRole: event.selectedRole ?? selectedData!.getRoleUser,
-        selectedStatus: event.selectedStatus ?? selectedData!.getstatusUser,
+        selectedData: selectedData,
+        isEdit: selectedData != null ? true : false,
+        selectedRole: event.selectedRole ?? selectedData?.getRoleUser,
+        selectedStatus: event.selectedStatus ?? selectedData?.getstatusUser,
         selectedPermission:
-            event.selectedPermission ?? selectedData!.getPermissionsUser,
+            event.selectedPermission ?? selectedData?.getPermissionsUser,
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
-enum RoleType { All, Pemilik, Kasir, Admin }
+enum RoleType { Pemilik, Kasir, Admin }
 
 extension RoleTypeX on RoleType {
   static RoleType? fromString(String value) {
@@ -25,8 +25,6 @@ extension RoleTypeX on RoleType {
 extension RoleTypeExt on RoleType {
   int get id {
     switch (this) {
-      case RoleType.All:
-        return 0;
       case RoleType.Pemilik:
         return 1;
       case RoleType.Kasir:

@@ -106,7 +106,7 @@ class HistoryTransactionBloc
           if (itemOrdered[i].getidOrdered == item['id_ordered']) {
             itemOrdered[i] = itemOrdered[i].copyWith(
               dateBuy: dateNow,
-              expiredDate: item['expired_date'],
+              expiredDate: parseDate(date: item['expired_date']),
             );
           }
         }
@@ -130,6 +130,7 @@ class HistoryTransactionBloc
       );
 
       add(HistoryTransactionGetData());
+      repoCache.notifyChanged();
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
@@ -31,6 +33,16 @@ class DataUserRepositoryCache {
 
   DataUserRepositoryCache(this.repo);
 
+  final _changeController = StreamController<void>.broadcast();
+
+  Stream<void> get onChanged => _changeController.stream;
+
+  void notifyChanged() {
+    if (!_changeController.isClosed) {
+      _changeController.add(null);
+    }
+  }
+
   Future<bool> initData() async {
     // await Future.wait([
     // ]);
@@ -44,6 +56,8 @@ class DataUserRepositoryCache {
     await initTransaction();
     await initBatch();
     await initUser();
+
+    notifyChanged();
 
     for (var a in dataItem) {
       debugPrint("Log DataUserRepositoryCache item: $a");

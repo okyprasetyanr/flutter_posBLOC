@@ -1,6 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
+import 'package:flutter/material.dart';
+
 import 'package:flutter_pos/enum/enum.dart';
 
 class SettingsEvent {}
@@ -51,7 +54,11 @@ class SettingsLogoHeaderFooterUpdate extends SettingsEvent {
 
 class SettingsBackupRestoreinit extends SettingsEvent {}
 
-class SettingsBackup extends SettingsEvent {}
+class SettingsBackup extends SettingsEvent {
+  BuildContext context;
+  String name;
+  SettingsBackup({required this.context, required this.name});
+}
 
 class SettingsReset extends SettingsEvent {}
 

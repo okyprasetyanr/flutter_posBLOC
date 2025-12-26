@@ -26,6 +26,8 @@ class UiLogoHeaderFooter extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
+            Text("Logo,Header & Footer", style: subTitleTextStyleBold),
+            const SizedBox(height: 10),
             Image.asset("assets/logo.png", height: 150, width: 150),
             const SizedBox(height: 10),
             Align(

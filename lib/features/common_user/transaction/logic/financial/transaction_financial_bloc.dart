@@ -124,6 +124,7 @@ class TransFinancialBloc
     updateLocal.add(data);
 
     add(TransFinancialResetSelected());
+    repoCache.notifyChanged();
   }
 
   FutureOr<void> _onResetSelected(

@@ -96,6 +96,33 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     double expense = 0.0;
     final summary = ModelReportSummary(cash: cash, qris: qris, debit: debit);
 
+    final incomeTrans = repoCache.getTransactionIncome(idBranch).where((
+      element,
+    ) {
+      return (element.getdate.isAtSameMomentAs(dateStart) ||
+              element.getdate.isAfter(dateStart)) &&
+          (element.getdate.isAtSameMomentAs(dateEnd) ||
+              element.getdate.isBefore(dateEnd)) &&
+          element.getstatusTransaction == statusTransaction(index: 0);
+    });
+
+    final expenseTrans = repoCache.getTransactionExpense(idBranch).where((
+      element,
+    ) {
+      return (element.getdate.isAtSameMomentAs(dateStart) ||
+              element.getdate.isAfter(dateStart)) &&
+          (element.getdate.isAtSameMomentAs(dateEnd) ||
+              element.getdate.isBefore(dateEnd)) &&
+          element.getstatusTransaction == statusTransaction(index: 0);
+    });
+
+    for (final e in incomeTrans) {
+      income += e.getamount;
+    }
+    for (final e in expenseTrans) {
+      expense += e.getamount;
+    }
+
     final report = ModelReport(
       summary: summary,
       ppnAmount: ppnAmount,

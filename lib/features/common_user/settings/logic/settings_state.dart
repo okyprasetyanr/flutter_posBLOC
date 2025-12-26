@@ -114,10 +114,16 @@ class SettingsLogoHeaderFooterLoaded extends SettingsState with EquatableMixin {
 class SettingsBackupRestoreLoaded extends SettingsState with EquatableMixin {
   final List<FileSystemEntity> listFile;
   final FileSystemEntity? selectedFile;
+  final bool isCorrect;
 
-  SettingsBackupRestoreLoaded({this.selectedFile, required this.listFile});
+  SettingsBackupRestoreLoaded({
+    this.selectedFile,
+    required this.listFile,
+    this.isCorrect = false,
+  });
 
   SettingsBackupRestoreLoaded copyWith({
+    bool? isCorrent,
     List<FileSystemEntity>? listFile,
     FileSystemEntity? selectedFile,
   }) {
@@ -128,5 +134,5 @@ class SettingsBackupRestoreLoaded extends SettingsState with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [listFile, selectedFile];
+  List<Object?> get props => [listFile, selectedFile, isCorrect];
 }

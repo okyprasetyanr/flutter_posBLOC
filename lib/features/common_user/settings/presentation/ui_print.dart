@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UIPrint extends StatelessWidget {
   const UIPrint({super.key});
@@ -10,7 +11,7 @@ class UIPrint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Printer BLoC')),
+      appBar: AppBar(title: Text('Printer', style: subTitleTextStyleBold)),
       body: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {
           final bloc = context.read<SettingsBloc>();
