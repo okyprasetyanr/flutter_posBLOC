@@ -1,19 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
-final listStatusTransaction = const ["Sukses", "Tersimpan", "Revisi", "Batal"];
-final listStatusTransactionFinancial = const ["Sukses", "Batal"];
-final filterItem = ["A-Z", "Z-A", "Terbaru", "Terlama", "Stock +", "Stock -"];
-final statusData = const ["Aktif", "Nonaktif"];
-final filterTypeItem = const ["All", "Condiment", "Normal"];
-final roleOperator = RoleType.values.map((map) => map.name).toList();
+final listStatusTransaction = ListStatusTransaction.values
+    .map((map) => map)
+    .toList();
+
+final listStatusTransactionFinancial = ListStatusTransactionFinancial.values
+    .map((map) => map)
+    .toList();
+
+final filterItem = FilterItem.values.map((map) => map).toList();
+
+final statusData = StatusData.values.map((map) => map).toList();
+
+final filterTypeItem = FilterTypeItem.values.map((map) => map).toList();
+
 List<ModelCategory> filterCategory = [
   ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
 ];

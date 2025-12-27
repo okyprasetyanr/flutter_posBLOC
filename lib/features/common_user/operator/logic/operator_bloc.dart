@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_state.dart';
@@ -25,7 +26,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   List<ModelUser> filterData({
     required List<ModelUser> dataUser,
     RoleType? roleUser,
-    bool? statusUser,
+    StatusData? statusUser,
     String? idBranch,
   }) {
     if (idBranch == null) {
@@ -54,6 +55,9 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     OperatorGetData event,
     Emitter<OperatorState> emit,
   ) async {
+    if (event.firstLaunch) {
+      emit(OperatorInitial());
+    }
     final currentState = state is OperatorLoaded
         ? state as OperatorLoaded
         : OperatorLoaded();

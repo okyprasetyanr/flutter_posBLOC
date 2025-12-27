@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
@@ -223,20 +225,20 @@ class _UIInventoryState extends State<UIInventory> {
                   UIFiltersItem(
                     filters: filterItem,
                     statusItem: statusData,
-                    filterjenis: filterTypeItem,
+                    filterType: filterTypeItem,
                     filterCategory: filterCategory,
                     onFilterChangedCallBack:
                         ({
                           int? filter,
                           int? status,
-                          int? filterjenis,
+                          int? filterType,
                           int? filterIDCategory,
                         }) {
                           context.read<InventoryBloc>().add(
                             InventoryFilterItem(
                               filter: filter,
                               status: status,
-                              filterType: filterjenis,
+                              filterType: filterTypeItem,
                               filterByCategory: filterIDCategory,
                             ),
                           );
@@ -315,44 +317,21 @@ class _UIInventoryState extends State<UIInventory> {
                         duration: const Duration(milliseconds: 500),
                         child: SizedBox(
                           width: 100,
-                          child: DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
-                              label: Text("Jenis Item", style: lv1TextStyle),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 4,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                            ),
-                            style: lv05TextStyle,
-                            initialValue:
-                                filterTypeItem[context
-                                    .select<InventoryBloc, int>((value) {
-                                      final blocurrentState = value.state;
-                                      if (blocurrentState is InventoryLoaded) {
-                                        return blocurrentState.indexStatusItem;
-                                      }
-                                      return 0;
-                                    })],
-                            items: filterTypeItem
-                                .map(
-                                  (map) => DropdownMenuItem(
-                                    value: map,
-                                    child: Text(map, style: lv05TextStyle),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              context.read<InventoryBloc>().add(
-                                InventoryFilterItem(
-                                  filterType: filterTypeItem.indexOf(value!),
+                          child: WidgetDropDownFilter(
+                            initialValue: context
+                                .select<InventoryBloc, FilterTypeItem>((value) {
+                                  final blocurrentState = value.state;
+                                  if (blocurrentState is InventoryLoaded) {
+                                    return blocurrentState.filterTypeItem;
+                                  }
+                                  return FilterTypeItem.All;
+                                }),
+                            filters: filterTypeItem,
+                            text: "Jenis Item",
+                            selectedValue: (selectedEnum) =>
+                                context.read<InventoryBloc>().add(
+                                  InventoryFilterItem(filterType: selectedEnum),
                                 ),
-                              );
-                            },
                           ),
                         ),
                       ),

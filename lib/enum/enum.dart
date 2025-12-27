@@ -168,3 +168,32 @@ enum ListDataHeaderExcel {
   Riwayat_Pendapatan,
   Riwayat_Pengeluaran,
 }
+
+enum ListStatusTransactionFinancial { Sukses, Batal }
+
+enum ListStatusTransaction { Sukses, Tersimpan, Revisi, Batal }
+
+enum FilterTypeItem { All, Condiment, Normal }
+
+enum StatusData { Aktif, Nonaktif }
+
+enum FilterItem { A_Z, Z_A, Terbaru, Terlama, Stock_Plus, Stock_Minus }
+
+extension FilterItemX on FilterItem {
+  String get label {
+    switch (this) {
+      case FilterItem.A_Z:
+        return "A-Z";
+      case FilterItem.Z_A:
+        return "Z-A";
+      case FilterItem.Terbaru:
+        return "Terbaru";
+      case FilterItem.Terlama:
+        return "Terlama";
+      case FilterItem.Stock_Plus:
+        return "Stock+";
+      case FilterItem.Stock_Minus:
+        return "Stock-";
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 
 class OperatorEvent {}
@@ -6,21 +7,27 @@ class OperatorEvent {}
 class OperatorGetData extends OperatorEvent {
   final String? idBranch;
   final RoleType? roleUser;
-  final bool? statusUser;
+  final StatusData? statusUser;
+  final bool firstLaunch;
 
-  OperatorGetData({this.idBranch, this.roleUser, this.statusUser});
+  OperatorGetData({
+    this.firstLaunch = false,
+    this.idBranch,
+    this.roleUser,
+    this.statusUser,
+  });
 }
 
 class OperatorFilterOperator extends OperatorEvent {
   final RoleType? roleUser;
-  final bool? statusUser;
+  final StatusData? statusUser;
 
   OperatorFilterOperator({this.roleUser, this.statusUser});
 }
 
 class OperatorSelectedData extends OperatorEvent {
   final ModelUser? selectedData;
-  final int? selectedRole;
+  final RoleType? selectedRole;
   final bool? selectedStatus;
   final Map<Permission, bool>? selectedPermission;
   OperatorSelectedData({

@@ -84,11 +84,7 @@ class UIProfile extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               Text("Tipe Pengguna", style: lv05TextStyleBold),
-                              CustomText(
-                                text: RoleTypeX.fromId(
-                                  dataAccount.getRoleUser,
-                                )!.name,
-                              ),
+                              CustomText(text: dataAccount.getRoleUser.name),
                               const SizedBox(height: 10),
                               Text("Usaha", style: subTitleTextStyle),
                               Text("Nama", style: lv05TextStyleBold),

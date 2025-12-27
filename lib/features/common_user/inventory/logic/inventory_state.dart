@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -22,9 +23,9 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
   final File? image;
   final String? idBranch;
   final String? areaBranch;
-  final int indexFilterItem;
-  final int indexStatusItem;
-  final int indexFilterTypeItem;
+  final FilterItem filterItem;
+  final StatusData statusItem;
+  final FilterTypeItem filterTypeItem;
   final int indexFilterByCategoryItem;
   final bool condimentForm;
   final List<ModelBranch>? dataBranch;
@@ -41,9 +42,9 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     this.filteredDataCategory = const [],
     this.dataSelectedCategoryItem,
     this.indexFilterByCategoryItem = 0,
-    this.indexFilterTypeItem = 0,
-    this.indexFilterItem = 0,
-    this.indexStatusItem = 0,
+    this.filterTypeItem = FilterTypeItem.All,
+    this.filterItem = FilterItem.A_Z,
+    this.statusItem = StatusData.Aktif,
     this.condimentForm = false,
     this.dataSelectedCategory,
     this.dataSelectedItem,
@@ -59,9 +60,9 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     File? image,
     String? idBranch,
     String? areaBranch,
-    int? indexFilterItem,
-    int? indexStatusItem,
-    int? indexFilterTypeItem,
+    FilterItem? indexFilterItem,
+    StatusData? indexStatusItem,
+    FilterTypeItem? filterTypeItem,
     int? indexFilterIDCategoryItem,
     bool? condimentForm,
     List<ModelBranch>? dataBranch,
@@ -78,9 +79,9 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
       filteredDataCategory: filteredDataCategory ?? this.filteredDataCategory,
       indexFilterByCategoryItem:
           indexFilterIDCategoryItem ?? this.indexFilterByCategoryItem,
-      indexFilterItem: indexFilterItem ?? this.indexFilterItem,
-      indexFilterTypeItem: indexFilterTypeItem ?? this.indexFilterTypeItem,
-      indexStatusItem: indexStatusItem ?? this.indexStatusItem,
+      filterItem: indexFilterItem ?? this.filterItem,
+      filterTypeItem: filterTypeItem ?? this.filterTypeItem,
+      statusItem: indexStatusItem ?? this.statusItem,
       condimentForm: condimentForm ?? this.condimentForm,
       idBranch: idBranch ?? this.idBranch,
       areaBranch: areaBranch ?? this.areaBranch,
@@ -100,9 +101,9 @@ class InventoryLoaded extends InventoryState with EquatableMixin {
     image,
     idBranch,
     areaBranch,
-    indexFilterItem,
-    indexStatusItem,
-    indexFilterTypeItem,
+    filterItem,
+    statusItem,
+    filterTypeItem,
     indexFilterByCategoryItem,
     condimentForm,
     dataBranch,

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
-enum RoleType { Pemilik, Kasir, Admin }
+enum RoleType { All, Pemilik, Kasir, Admin }
 
 extension RoleTypeX on RoleType {
   static RoleType? fromString(String value) {
@@ -25,6 +25,8 @@ extension RoleTypeX on RoleType {
 extension RoleTypeExt on RoleType {
   int get id {
     switch (this) {
+      case RoleType.All:
+        return 0;
       case RoleType.Pemilik:
         return 1;
       case RoleType.Kasir:
@@ -59,7 +61,7 @@ class ModelUser extends Equatable {
   final String nameUser;
   final String emailUser;
   final String phoneUser;
-  final int roleUser;
+  final RoleType roleUser;
   final String? idBranchUser;
   final Map<Permission, bool> permissionsUser;
   final DateTime? createdUser;
@@ -84,7 +86,7 @@ class ModelUser extends Equatable {
   String get getNameUser => nameUser;
   String get getEmailUser => emailUser;
   String get getPhoneUser => phoneUser;
-  int get getRoleUser => roleUser;
+  RoleType get getRoleUser => roleUser;
   String? get getIdBranchUser => idBranchUser;
   Map<Permission, bool> get getPermissionsUser => permissionsUser;
   DateTime? get getCreatedUser => createdUser;
@@ -96,7 +98,7 @@ class ModelUser extends Equatable {
     String? nameUser,
     String? emailUser,
     String? phoneUser,
-    int? roleUser,
+    RoleType? roleUser,
     String? idBranchUser,
     Map<Permission, bool>? permissionsUser,
     DateTime? createdUser,

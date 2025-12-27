@@ -125,9 +125,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   ) async {
     final currentState = state;
     if (currentState is InventoryLoaded) {
-      final status = event.status ?? currentState.indexStatusItem;
-      final filter = event.filter ?? currentState.indexFilterItem;
-      final filterType = event.filterType ?? currentState.indexFilterTypeItem;
+      final status = event.status ?? currentState.statusItem;
+      final filter = event.filter ?? currentState.filterItem;
+      final filterType = event.filterType ?? currentState.this.filterTypeItem;
       final filterByCategory =
           event.filterByCategory ?? currentState.indexFilterByCategoryItem;
 
@@ -142,7 +142,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
           indexStatusItem: status,
           indexFilterItem: filter,
-          indexFilterTypeItem: filterType,
+          filterTypeItem: filterType,
           indexFilterIDCategoryItem: filterByCategory,
         ),
       );
@@ -164,9 +164,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final areaBranch = dataBranch
         .firstWhere((element) => element.getidBranch == idBranch)
         .getareaBranch;
-    final status = currentState.indexStatusItem;
-    final filter = currentState.indexFilterItem;
-    final filterType = currentState.indexFilterTypeItem;
+    final status = currentState.statusItem;
+    final filter = currentState.filterItem;
+    final filterType = currentState.filterTypeItem;
     final filterByCategory = currentState.indexFilterByCategoryItem;
 
     final dataItem = repoCache.getItem(idBranch);
@@ -197,9 +197,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           filterType: filterType,
           filterByCategory: filterByCategory,
         ),
-        indexFilterItem: filter,
-        indexFilterTypeItem: filterType,
-        indexStatusItem: status,
+        filterItem: filter,
+        filterTypeItem: filterType,
+        statusItem: status,
         indexFilterByCategoryItem: filterByCategory,
       ),
     );
@@ -360,9 +360,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         : currentState.dataItem;
     final filteredItem = _filterItem(
       items: filtered,
-      status: currentState.indexStatusItem,
-      filter: currentState.indexFilterItem,
-      filterType: currentState.indexFilterTypeItem,
+      status: currentState.statusItem,
+      filter: currentState.filterItem,
+      filterType: currentState.filterTypeItem,
       filterByCategory: currentState.indexFilterByCategoryItem,
     );
     emit(currentState.copyWith(filteredDataItem: filteredItem));

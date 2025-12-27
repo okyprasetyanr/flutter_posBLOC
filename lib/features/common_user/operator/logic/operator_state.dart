@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 
@@ -12,23 +13,23 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   final List<ModelUser> filteredData;
   final String? idBranch;
   final RoleType? filterRoleUser;
-  final bool filterStatusUser;
+  final StatusData filterStatusUser;
   final ModelUser? selectedData;
   final bool isEdit;
   final bool selectedStatus;
-  final int selectedRole;
+  final RoleType selectedRole;
   final Map<Permission, bool> selectedPermission;
 
   OperatorLoaded({
     this.selectedPermission = const {},
     this.selectedStatus = true,
-    this.selectedRole = 2,
+    this.selectedRole = RoleType.All,
     this.dataBranch,
     this.dataUser = const [],
     this.filteredData = const [],
     this.idBranch,
     this.filterRoleUser,
-    this.filterStatusUser = true,
+    this.filterStatusUser = StatusData.Aktif,
     this.isEdit = false,
     this.selectedData,
   });
@@ -39,11 +40,11 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
     List<ModelUser>? filteredData,
     String? idBranch,
     RoleType? filterRoleUser,
-    bool? filterStatusUser,
+    StatusData? filterStatusUser,
     ModelUser? selectedData,
     bool? isEdit,
     bool? selectedStatus,
-    int? selectedRole,
+    RoleType? selectedRole,
     Map<Permission, bool>? selectedPermission,
   }) {
     return OperatorLoaded(

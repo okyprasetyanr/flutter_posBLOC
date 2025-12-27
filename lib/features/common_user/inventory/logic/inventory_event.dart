@@ -1,3 +1,4 @@
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 
@@ -34,7 +35,7 @@ class InventoryResetItemForm extends InventoryEvent {}
 class InventoryFilterItem extends InventoryEvent {
   final int? filter;
   final int? status;
-  final int? filterType;
+  final FilterTypeItem? filterType;
   final int? filterByCategory;
 
   InventoryFilterItem({

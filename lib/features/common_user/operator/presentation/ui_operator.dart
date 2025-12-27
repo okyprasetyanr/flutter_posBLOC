@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
@@ -47,8 +48,8 @@ class _UIOperatorState extends State<UIOperator> {
     super.dispose();
   }
 
-  List<String> roleFilterTypeList = [];
-  List<String> roleTypeList = [];
+  List<RoleType> roleFilterTypeList = [];
+  List<RoleType> roleTypeList = [];
 
   bool isOwner = false;
   @override
@@ -59,21 +60,22 @@ class _UIOperatorState extends State<UIOperator> {
         context.read<DataUserRepositoryCache>().dataAccount!.getIdUser ==
         UserSession.uid_owner;
     roleFilterTypeList = [
-      "All",
       for (final role
           in isOwner
               ? RoleType.values
               : RoleType.values.where((element) => element.id != 1))
-        role.name,
+        role,
     ];
     roleTypeList = [
-      for (final role in RoleType.values.where((element) => element.id != 1))
-        role.name,
+      for (final role in RoleType.values.where(
+        (element) => element.id != 1 && element.id != 0,
+      ))
+        role,
     ];
   }
 
   void _initData() {
-    context.read<OperatorBloc>().add(OperatorGetData());
+    context.read<OperatorBloc>().add(OperatorGetData(firstLaunch: true));
   }
 
   @override
@@ -135,28 +137,50 @@ class _UIOperatorState extends State<UIOperator> {
         Row(
           children: [
             Expanded(
-              child: WidgetDropDownFilter(
-                filters: roleFilterTypeList,
-                text: "Pilih Operator",
-                selectedValue: (indexFilter) {
-                  context.read<OperatorBloc>().add(
-                    OperatorFilterOperator(
-                      roleUser: RoleTypeX.fromString(
-                        roleFilterTypeList[indexFilter],
-                      ),
-                    ),
+              child: BlocSelector<OperatorBloc, OperatorState, RoleType?>(
+                selector: (state) {
+                  if (state is OperatorLoaded) {
+                    return state.filterRoleUser;
+                  }
+                  return null;
+                },
+                builder: (context, state) {
+                  return WidgetDropDownFilter(
+                    initialValue: state != null
+                        ? roleFilterTypeList.firstWhere(
+                            (element) => element == state,
+                          )
+                        : null,
+                    filters: roleFilterTypeList,
+                    text: "Pilih Operator",
+                    selectedValue: (indexFilter) {
+                      context.read<OperatorBloc>().add(
+                        OperatorFilterOperator(roleUser: indexFilter),
+                      );
+                    },
                   );
                 },
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: WidgetDropDownFilter(
-                filters: statusData,
-                text: "Pilih Status",
-                selectedValue: (indexFilter) {
-                  context.read<OperatorBloc>().add(
-                    OperatorFilterOperator(statusUser: indexFilter == 0),
+              child: BlocSelector<OperatorBloc, OperatorState, StatusData?>(
+                selector: (state) {
+                  if (state is OperatorLoaded) {
+                    return state.filterStatusUser;
+                  }
+                  return StatusData.Aktif;
+                },
+                builder: (context, state) {
+                  return WidgetDropDownFilter(
+                    initialValue: state,
+                    filters: statusData,
+                    text: "Pilih Status",
+                    selectedValue: (selectedEnum) {
+                      context.read<OperatorBloc>().add(
+                        OperatorFilterOperator(statusUser: selectedEnum),
+                      );
+                    },
                   );
                 },
               ),
@@ -194,11 +218,18 @@ class _UIOperatorState extends State<UIOperator> {
       children: [
         Expanded(
           child: BlocListener<OperatorBloc, OperatorState>(
-            listenWhen: (previous, current) =>
-                previous is OperatorLoaded &&
-                current is OperatorLoaded &&
-                (previous.selectedData != current.selectedData ||
-                    previous.idBranch != current.idBranch),
+            listenWhen: (previous, current) {
+              if (previous is! OperatorLoaded && current is OperatorLoaded) {
+                return true;
+              }
+
+              if (previous is OperatorLoaded && current is OperatorLoaded) {
+                return previous.selectedData != current.selectedData ||
+                    previous.idBranch != current.idBranch;
+              }
+
+              return false;
+            },
             listener: (context, state) {
               final currentState = state;
               if (currentState is OperatorLoaded) {
@@ -215,7 +246,12 @@ class _UIOperatorState extends State<UIOperator> {
                   emailController.text = selectedData?.getEmailUser ?? "";
                   noteController.text = selectedData?.getNoteUser ?? "";
                 }
-                branchController.text = currentState.idBranch!;
+                branchController.text = currentState.dataBranch!
+                    .firstWhere(
+                      (element) =>
+                          element.getidBranch == currentState.idBranch!,
+                    )
+                    .getareaBranch;
                 debugPrint("Log UIOperator: IDBranch: masuk");
               }
             },
@@ -356,20 +392,14 @@ class _UIOperatorState extends State<UIOperator> {
                 child: WidgetDropDownFilter(
                   initialValue: state.$1
                       ? roleTypeList.firstWhere(
-                          (element) =>
-                              element ==
-                              RoleTypeX.fromId(state.$2!.getRoleUser)!.name,
+                          (element) => element == state.$2!.getRoleUser,
                         )
                       : null,
                   filters: roleTypeList,
                   text: "Jenis Operator",
-                  selectedValue: (index) {
+                  selectedValue: (selectedEnum) {
                     context.read<OperatorBloc>().add(
-                      OperatorSelectedData(
-                        selectedRole: RoleTypeX.fromString(
-                          roleTypeList[index],
-                        )!.id,
-                      ),
+                      OperatorSelectedData(selectedRole: selectedEnum),
                     );
                   },
                 ),

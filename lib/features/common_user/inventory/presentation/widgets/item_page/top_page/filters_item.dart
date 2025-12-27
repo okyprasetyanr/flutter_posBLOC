@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -7,15 +9,15 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class UIFiltersItem extends StatelessWidget {
-  final List<String> filters;
-  final List<String> statusItem;
-  final List<String> filterjenis;
+  final List<FilterItem> filters;
+  final List<StatusData> statusItem;
+  final List<FilterTypeItem> filterType;
   final List<ModelCategory> filterCategory;
 
   final Function({
     int filter,
-    int status,
-    int filterjenis,
+    StatusData status,
+    FilterTypeItem filterType,
     int filterIDCategory,
   })
   onFilterChangedCallBack;
@@ -24,14 +26,14 @@ class UIFiltersItem extends StatelessWidget {
     super.key,
     required this.filters,
     required this.statusItem,
-    required this.filterjenis,
+    required this.filterType,
     required this.filterCategory,
     required this.onFilterChangedCallBack,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.select<InventoryBloc, int>;
+    final bloc = context.select<InventoryBloc, Enum>;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -40,41 +42,18 @@ class UIFiltersItem extends StatelessWidget {
           Flexible(
             flex: 1,
             fit: FlexFit.loose,
-            child: DropdownButtonFormField<String>(
-              style: lv05TextStyle,
-              decoration: InputDecoration(
-                label: Text("Pilih Filter", style: lv1TextStyle),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              initialValue:
-                  filters[bloc((value) {
-                    final blocurrentState = value.state;
-                    if (blocurrentState is InventoryLoaded) {
-                      return blocurrentState.indexFilterItem;
-                    }
-                    return 0;
-                  })],
-              items: filters
-                  .map(
-                    (map) => DropdownMenuItem(
-                      value: map,
-                      child: Text(
-                        map,
-                        style: lv05TextStyle,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value == null) return;
-                onFilterChangedCallBack(filter: filters.indexOf(value));
+            child: WidgetDropDownFilter(
+              initialValue: bloc((value) {
+                final blocurrentState = value.state;
+                if (blocurrentState is InventoryLoaded) {
+                  return blocurrentState.filterItem;
+                }
+                return FilterItem.A_Z;
+              }),
+              filters: filters,
+              text: "Pilih Filter",
+              selectedValue: (selectedEnum) {
+                onFilterChangedCallBack(filter: selectedEnum);
               },
             ),
           ),
@@ -151,37 +130,50 @@ class UIFiltersItem extends StatelessWidget {
           Flexible(
             flex: 1,
             fit: FlexFit.loose,
-            child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                label: Text("Pilih Status", style: lv1TextStyle),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue:
-                  statusItem[bloc((value) {
-                    final blocurrentState = value.state;
-                    if (blocurrentState is InventoryLoaded) {
-                      return blocurrentState.indexStatusItem;
-                    }
-                    return 0;
-                  })],
-              items: statusItem
-                  .map(
-                    (map) => DropdownMenuItem(
-                      value: map,
-                      child: Text(map, style: lv05TextStyle),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value == null) return;
-                onFilterChangedCallBack(status: statusItem.indexOf(value));
-              },
+            child: WidgetDropDownFilter(
+              initialValue: bloc((value) {
+                final blocurrentState = value.state;
+                if (blocurrentState is InventoryLoaded) {
+                  return blocurrentState.statusItem;
+                }
+                return StatusData.Aktif;
+              }),
+              filters: statusItem,
+              text: "Pilih Status",
+              onChanged: (value) => onFilterChangedCallBack(status: value),
             ),
+
+            //  DropdownButtonFormField<String>(
+            //   decoration: InputDecoration(
+            //     isDense: true,
+            //     contentPadding: const EdgeInsets.symmetric(vertical: 4),
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(6),
+            //     ),
+            //     label: Text("Pilih Status", style: lv1TextStyle),
+            //     floatingLabelBehavior: FloatingLabelBehavior.always,
+            //   ),
+            //   initialValue:
+            //       statusItem[bloc((value) {
+            //         final blocurrentState = value.state;
+            //         if (blocurrentState is InventoryLoaded) {
+            //           return blocurrentState.statusItem;
+            //         }
+            //         return 0;
+            //       })],
+            //   items: statusItem
+            //       .map(
+            //         (map) => DropdownMenuItem(
+            //           value: map,
+            //           child: Text(map, style: lv05TextStyle),
+            //         ),
+            //       )
+            //       .toList(),
+            //   onChanged: (value) {
+            //     if (value == null) return;
+            //     onFilterChangedCallBack(status: statusItem.indexOf(value));
+            //   },
+            // ),
           ),
         ],
       ),

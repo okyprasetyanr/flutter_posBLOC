@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-Widget WidgetDropDownFilter<T>({
-  String? initialValue,
-  required List<String> filters,
+Widget WidgetDropDownFilter<T extends Enum>({
+  required T? initialValue,
+  required List<T> filters,
   required String text,
-  required Function(int indexFilter) selectedValue,
+  required Function(T selectedEnum) selectedValue,
 }) {
-  return DropdownButtonFormField<String>(
+  return DropdownButtonFormField<T>(
     style: lv05TextStyle,
     decoration: InputDecoration(
       label: Text(text, style: lv1TextStyle),
@@ -16,13 +16,13 @@ Widget WidgetDropDownFilter<T>({
       contentPadding: const EdgeInsets.symmetric(vertical: 4),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
     ),
-    initialValue: initialValue ?? filters.first,
+    initialValue: initialValue,
     items: filters
         .map(
           (map) => DropdownMenuItem(
             value: map,
             child: Text(
-              map,
+              map.name,
               style: lv05TextStyle,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -31,7 +31,7 @@ Widget WidgetDropDownFilter<T>({
         )
         .toList(),
     onChanged: (value) {
-      selectedValue(filters.indexOf(value!));
+      selectedValue(value!);
     },
   );
 }
