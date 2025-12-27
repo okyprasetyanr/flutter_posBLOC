@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
@@ -283,7 +284,11 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                                 backgroundColor: Colors.white,
                                 function: () {
                                   context.read<PaymentBloc>().add(
-                                    PaymentProcess(index: 1, context: context),
+                                    PaymentProcess(
+                                      statusTransaction:
+                                          ListStatusTransaction.Tersimpan,
+                                      context: context,
+                                    ),
                                   );
                                   customSnackBar(
                                     context,
@@ -331,7 +336,10 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                           );
                         }
                         context.read<PaymentBloc>().add(
-                          PaymentProcess(index: 0, context: context),
+                          PaymentProcess(
+                            statusTransaction: ListStatusTransaction.Sukses,
+                            context: context,
+                          ),
                         );
                         navUpDownTransition(
                           context,

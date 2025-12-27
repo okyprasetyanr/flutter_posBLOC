@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
@@ -197,11 +198,21 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
             SizedBox(
               width: 100,
               child: WidgetDropDownFilter(
-                filters: ["All", ...listStatusTransaction],
+                initialValue: context
+                    .select<HistoryTransactionBloc, ListStatusTransaction>((
+                      bloc,
+                    ) {
+                      final state = bloc.state;
+                      if (state is HistoryTransactionLoaded) {
+                        return state.filter;
+                      }
+                      return ListStatusTransaction.All;
+                    }),
+                filters: listStatusTransaction,
                 text: "Pilih Filter",
-                selectedValue: (indexFilter) {
+                selectedValue: (selectedEnum) {
                   context.read<HistoryTransactionBloc>().add(
-                    HistoryTransactionSelectedFilter(indexFilter: indexFilter),
+                    HistoryTransactionSelectedFilter(filter: selectedEnum),
                   );
                 },
               ),
@@ -295,28 +306,27 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                   ),
                                   Row(
                                     children: [
-                                      //   Expanded(
-                                      //     child: Text.rich(
-                                      //       TextSpan(
-                                      //         text: "Status: ",
-                                      //         style: lv05TextStyle,
-                                      //         children: [
-                                      //           TextSpan(
-                                      //             text:
-                                      //                 "${dataTransaction.getstatusTransaction}",
-                                      //             style:
-                                      //                 dataTransaction
-                                      //                         .getstatusTransaction ==
-                                      //                     statusTransaction(
-                                      //                       index: 0,
-                                      //                     )
-                                      //                 ? lv05textStylePrice
-                                      //                 : lv05TextStyleRedPrice,
-                                      //           ),
-                                      //         ],
-                                      //       ),
-                                      //     ),
-                                      //   ),
+                                      Expanded(
+                                        child: Text.rich(
+                                          TextSpan(
+                                            text: "Status: ",
+                                            style: lv05TextStyle,
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "${dataTransaction.getstatusTransaction}",
+                                                style:
+                                                    dataTransaction
+                                                            .getstatusTransaction ==
+                                                        ListStatusTransaction
+                                                            .Sukses
+                                                    ? lv05textStylePrice
+                                                    : lv05TextStyleRedPrice,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                       Expanded(
                                         child: Text(
                                           "${dataTransaction.getpaymentMethod}",
@@ -443,7 +453,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                       : const SizedBox.shrink(),
 
                   rowContent("Operator", transaction.getnameOperator),
-                  rowContent("Status", transaction.getstatusTransaction!),
+                  rowContent("Status", transaction.getstatusTransaction!.name),
                   ...transaction.getitemsOrdered.map((item) {
                     return Padding(
                       padding: EdgeInsets.all(10),
@@ -516,7 +526,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                   onPressed: () {
                     state.$2
                         ? transaction.getstatusTransaction ==
-                                  statusTransaction(index: 3)
+                                  ListStatusTransaction.Batal
                               ? customSnackBar(context, "Sudah diBatalkan!")
                               : _expiredConfirm(transaction.getitemsOrdered)
                         : UserSession.fifo
@@ -540,7 +550,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                 ElevatedButton(
                   onPressed: () {
                     state.$1!.getstatusTransaction ==
-                            statusTransaction(index: 3)
+                            ListStatusTransaction.Batal
                         ? customSnackBar(
                             context,
                             "Transaksi sudah dibantalkan!",

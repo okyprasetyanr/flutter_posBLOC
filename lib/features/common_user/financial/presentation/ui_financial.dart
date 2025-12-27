@@ -263,6 +263,7 @@ class _UiFinancialState extends State<UiFinancial> {
               context.read<FinancialBloc>().add(
                 FinancialUploadDataFinancial(name: nameController.text),
               );
+              nameController.clear();
             },
           ),
         ),

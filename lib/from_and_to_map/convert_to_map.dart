@@ -23,11 +23,11 @@ Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
 
 Map<String, dynamic> convertToMapUser(ModelUser user, String? uidUser) {
   return {
-    FieldDataUser.status_user.name: user.getstatusUser,
+    FieldDataUser.status_user.name: user.getstatusUser.name,
     FieldDataUser.name_user.name: user.getNameUser,
     FieldDataUser.email_user.name: user.getEmailUser,
     FieldDataUser.phone_user.name: user.getPhoneUser,
-    FieldDataUser.role_user.name: user.getRoleUser,
+    FieldDataUser.role_user.name: user.getRoleUser.name,
     FieldDataUser.uid_owner.name: uidUser ?? UserSession.getUidOwner(),
     FieldDataUser.id_branch.name: user.getIdBranchUser,
     FieldDataUser.permissions_user.name: {
@@ -65,7 +65,7 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
     FieldDataTransaction.charge.name: transaction.getcharge,
     FieldDataTransaction.total.name: transaction.gettotal,
     FieldDataTransaction.status_transaction.name:
-        transaction.getstatusTransaction,
+        transaction.getstatusTransaction!.name,
   };
 }
 
@@ -90,7 +90,7 @@ Map<String, dynamic> convertToMapTransactionIncome(
 ) {
   return {
     FieldDataTransFinancial.status_transaction.name:
-        transfinancial.statusTransaction,
+        transfinancial.statusTransaction!.name,
     FieldDataTransFinancial.id_financial.name: transfinancial.getidFinancial,
     FieldDataTransFinancial.id_branch.name: transfinancial.getidBranch,
     FieldDataTransFinancial.name_financial.name:
@@ -111,12 +111,12 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
     FieldDataItem.name_item.name: item.getnameItem,
     FieldDataItem.price_item.name: item.getpriceItem,
     FieldDataItem.id_category.name: item.getidCategoryiItem,
-    FieldDataItem.status_condiment.name: item.getstatusCondiment,
+    FieldDataItem.status_condiment.name: item.getstatusCondiment.name,
     FieldDataItem.url_image.name: item.geturlImage,
     FieldDataItem.qty_item.name: item.getqtyItem,
     FieldDataItem.id_branch.name: item.getidBranch,
     FieldDataItem.barcode.name: item.getBarcode,
-    FieldDataItem.status_item.name: item.getStatusItem,
+    FieldDataItem.status_item.name: item.getStatusItem.name,
     FieldDataItem.date.name: formatDate(date: item.getDateItem),
   };
 }
@@ -156,13 +156,13 @@ Map<String, dynamic> convertToMapItemBatch(
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
     FieldDataPartner.id_branch.name: partner.getidBranch,
-    FieldDataPartner.id_branch.name: UserSession.getUidOwner(),
-    FieldDataPartner.id_branch.name: partner.getname,
-    FieldDataPartner.id_branch.name: partner.getphone,
-    FieldDataPartner.id_branch.name: partner.getemail,
-    FieldDataPartner.id_branch.name: partner.getbalance,
-    FieldDataPartner.id_branch.name: partner.gettype.name,
-    FieldDataPartner.id_branch.name: formatDate(date: partner.getdate),
+    FieldDataPartner.uid_owner.name: UserSession.getUidOwner(),
+    FieldDataPartner.name_partner.name: partner.getname,
+    FieldDataPartner.phone_partner.name: partner.getphone,
+    FieldDataPartner.email_partner.name: partner.getemail,
+    FieldDataPartner.balance_partner.name: partner.getbalance,
+    FieldDataPartner.type.name: partner.gettype.name,
+    FieldDataPartner.date.name: formatDate(date: partner.getdate),
   };
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_event.dart';
@@ -187,11 +188,22 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
             SizedBox(
               width: 100,
               child: WidgetDropDownFilter(
-                filters: ["All", ...listStatusTransactionFinancial],
+                initialValue: context
+                    .select<
+                      HistoryFinancialBloc,
+                      ListStatusTransactionFinancial
+                    >((bloc) {
+                      final state = bloc.state;
+                      if (state is HistoryFinancialLoaded) {
+                        return state.filter;
+                      }
+                      return ListStatusTransactionFinancial.All;
+                    }),
+                filters: listStatusTransactionFinancial,
                 text: "Pilih Filter",
-                selectedValue: (indexFilter) {
+                selectedValue: (selectedEnum) {
                   context.read<HistoryFinancialBloc>().add(
-                    HistoryFinancialSelectedFilter(indexFilter: indexFilter),
+                    HistoryFinancialSelectedFilter(filter: selectedEnum),
                   );
                   searchController.clear();
                 },
@@ -283,28 +295,27 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                                   ),
                                   Row(
                                     children: [
-                                      // Expanded(
-                                      //   child: Text.rich(
-                                      //     TextSpan(
-                                      //       text: "Status: ",
-                                      //       style: lv05TextStyle,
-                                      //       children: [
-                                      //         TextSpan(
-                                      //           text:
-                                      //               "${dataTransaction.getstatusTransaction}",
-                                      //           style:
-                                      //               dataTransaction
-                                      //                       .getstatusTransaction ==
-                                      //                   statusTransaction(
-                                      //                     index: 0,
-                                      //                   )
-                                      //               ? lv05textStylePrice
-                                      //               : lv05TextStyleRedPrice,
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //   ),
-                                      // ),
+                                      Expanded(
+                                        child: Text.rich(
+                                          TextSpan(
+                                            text: "Status: ",
+                                            style: lv05TextStyle,
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "${dataTransaction.getstatusTransaction}",
+                                                style:
+                                                    dataTransaction
+                                                            .getstatusTransaction ==
+                                                        ListStatusTransaction
+                                                            .Sukses
+                                                    ? lv05textStylePrice
+                                                    : lv05TextStyleRedPrice,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                       Expanded(
                                         child: Text(
                                           "${formatPriceRp(dataTransaction.getamount)}",
@@ -358,7 +369,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 children: [
                   rowContent("Nomor Faktur", transaction.getinvoice),
                   rowContent("Tanggal", transaction.getdate.toString()),
-                  rowContent("Status", transaction.getstatusTransaction!),
+                  rowContent("Status", transaction.getstatusTransaction!.name),
                   rowContent("Total", formatPriceRp(transaction.getamount)),
                 ],
               ),
@@ -368,7 +379,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 ElevatedButton(
                   onPressed: () {
                     transaction.getstatusTransaction ==
-                            statusTransaction(index: 3)
+                            ListStatusTransaction.Batal
                         ? customSnackBar(context, "Sudah diBatalkan!")
                         : context.read<HistoryFinancialBloc>().add(
                             HistoryFinancialCancelData(),

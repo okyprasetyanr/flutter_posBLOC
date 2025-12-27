@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 
 class ModelItem extends Equatable {
@@ -11,7 +12,7 @@ class ModelItem extends Equatable {
       _barcode;
   final DateTime _date;
   final double _priceItem, _qtyItem;
-  final bool _statusCondiment, _statusItem;
+  final StatusData _statusCondiment, _statusItem;
 
   ModelItem({
     required double qtyItem,
@@ -19,11 +20,11 @@ class ModelItem extends Equatable {
     required String idItem,
     required double priceItem,
     required String idCategoryItem,
-    required bool statusCondiment,
+    required StatusData statusCondiment,
     required String urlImage,
     required String idBranch,
     required String barcode,
-    required bool statusItem,
+    required StatusData statusItem,
     required DateTime date,
   }) : _nameItem = nameItem,
        _idItem = idItem,
@@ -41,12 +42,12 @@ class ModelItem extends Equatable {
   String get getidItem => _idItem;
   double get getpriceItem => _priceItem;
   String get getidCategoryiItem => _idCategoryItem;
-  bool get getstatusCondiment => _statusCondiment;
+  StatusData get getstatusCondiment => _statusCondiment;
   String get geturlImage => _urlImage;
   double get getqtyItem => _qtyItem;
   String get getidBranch => _idBranch;
   String get getBarcode => _barcode;
-  bool get getStatusItem => _statusItem;
+  StatusData get getStatusItem => _statusItem;
   DateTime get getDateItem => _date;
 
   ModelItem copyWith({
@@ -55,11 +56,11 @@ class ModelItem extends Equatable {
     String? idItem,
     double? priceItem,
     String? idCategoryItem,
-    bool? statusCondiment,
+    StatusData? statusCondiment,
     String? urlImage,
     String? idBranch,
     String? barcode,
-    bool? statusItem,
+    StatusData? statusItem,
     DateTime? date,
   }) {
     return ModelItem(

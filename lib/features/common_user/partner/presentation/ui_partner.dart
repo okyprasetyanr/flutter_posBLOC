@@ -51,8 +51,17 @@ class _UIPartnerState extends State<UIPartner> {
   }
 
   Future<void> _initData() async {
-    final bloc = context.read<PartnerBloc>();
-    bloc.add(PartnerGetData());
+    context.read<PartnerBloc>().add(PartnerGetData());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bloc = (context.read<PartnerBloc>().state as PartnerLoaded);
+    final text = bloc.dataBranch!
+        .firstWhere((element) => element.getidBranch == bloc.idBranch)
+        .getareaBranch;
+    branchController.text = text;
   }
 
   @override
@@ -421,29 +430,11 @@ class _UIPartnerState extends State<UIPartner> {
                       const SizedBox(width: 10),
                       Expanded(
                         flex: 1,
-                        child: BlocListener<PartnerBloc, PartnerState>(
-                          listenWhen: (previous, current) =>
-                              previous is PartnerLoaded &&
-                              current is PartnerLoaded &&
-                              previous.idBranch != current.idBranch,
-                          listener: (context, state) {
-                            if (state is PartnerLoaded &&
-                                state.idBranch != null) {
-                              branchController.text = state.dataBranch!
-                                  .firstWhere(
-                                    (e) => e.getidBranch == state.idBranch,
-                                  )
-                                  .getareaBranch;
-                            } else {
-                              branchController.text = "Mohon Tunggu";
-                            }
-                          },
-                          child: customTextField(
-                            controller: branchController,
-                            enable: false,
-                            inputType: TextInputType.text,
-                            text: "Cabang",
-                          ),
+                        child: customTextField(
+                          controller: branchController,
+                          enable: false,
+                          inputType: TextInputType.text,
+                          text: "Cabang",
                         ),
                       ),
                     ],

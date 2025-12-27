@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class HistoryTransactionState {}
@@ -17,12 +18,12 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   final DateTime? dateStart;
   final DateTime? dateEnd;
   final String search;
-  final int indexFilter;
+  final ListStatusTransaction filter;
   final String displayDate;
 
   HistoryTransactionLoaded({
     this.displayDate = "Hari ini",
-    this.indexFilter = 0,
+    this.filter = ListStatusTransaction.All,
     this.search = "",
     this.dateEnd,
     this.dateStart,
@@ -43,10 +44,10 @@ class HistoryTransactionLoaded extends HistoryTransactionState
     ModelTransaction? selectedData,
     bool? isSell,
     String? search,
-    int? indexFilter,
+    ListStatusTransaction? filter,
   }) => HistoryTransactionLoaded(
     displayDate: displayDate ?? this.displayDate,
-    indexFilter: indexFilter ?? this.indexFilter,
+    filter: filter ?? this.filter,
     search: search ?? this.search,
     dateEnd: dateEnd,
     dateStart: dateStart,
@@ -61,7 +62,7 @@ class HistoryTransactionLoaded extends HistoryTransactionState
   List<Object?> get props => [
     displayDate,
     search,
-    indexFilter,
+    filter,
     dateStart,
     dateEnd,
     idBranch,

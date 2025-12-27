@@ -12,10 +12,9 @@ class UIFiltersItem extends StatelessWidget {
   final List<FilterItem> filters;
   final List<StatusData> statusItem;
   final List<FilterTypeItem> filterType;
-  final List<ModelCategory> filterCategory;
 
   final Function({
-    int filter,
+    FilterItem filter,
     StatusData status,
     FilterTypeItem filterType,
     int filterIDCategory,
@@ -27,13 +26,11 @@ class UIFiltersItem extends StatelessWidget {
     required this.filters,
     required this.statusItem,
     required this.filterType,
-    required this.filterCategory,
     required this.onFilterChangedCallBack,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.select<InventoryBloc, Enum>;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -43,7 +40,7 @@ class UIFiltersItem extends StatelessWidget {
             flex: 1,
             fit: FlexFit.loose,
             child: WidgetDropDownFilter(
-              initialValue: bloc((value) {
+              initialValue: context.select<InventoryBloc, FilterItem>((value) {
                 final blocurrentState = value.state;
                 if (blocurrentState is InventoryLoaded) {
                   return blocurrentState.filterItem;
@@ -52,6 +49,7 @@ class UIFiltersItem extends StatelessWidget {
               }),
               filters: filters,
               text: "Pilih Filter",
+              extension: (extension) => extension.label,
               selectedValue: (selectedEnum) {
                 onFilterChangedCallBack(filter: selectedEnum);
               },
@@ -60,68 +58,66 @@ class UIFiltersItem extends StatelessWidget {
 
           const SizedBox(width: 10),
 
-          // ===== KATEGORI =====
+          // ===== CATEGORY =====
           SizedBox(
             width: 120,
-            child: DropdownButtonFormField<ModelCategory>(
-              style: lv05TextStyle,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                label: Text("Pilih Kategori", style: lv1TextStyle),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: () {
-                final index = bloc((value) {
-                  final s = value.state;
-                  if (s is InventoryLoaded) {
-                    return s.indexFilterByCategoryItem;
-                  }
-                  return 0;
-                });
-
-                if (index < 0 || index >= filterCategory.length) {
-                  return filterCategory[0];
-                }
-
-                return filterCategory[index];
-              }(),
-
-              items: filterCategory
-                  .where(
-                    (data) =>
-                        data.getidBranch == "0" ||
-                        data.getidBranch ==
-                            (context.read<InventoryBloc>().state
-                                    as InventoryLoaded)
-                                .idBranch,
-                  )
-                  .map(
-                    (map) => DropdownMenuItem<ModelCategory>(
-                      value: map,
-                      child: Text(
-                        map.getnameCategory,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+            child:
+                BlocSelector<
+                  InventoryBloc,
+                  InventoryState,
+                  (List<ModelCategory>, int?)
+                >(
+                  selector: (state) => state is InventoryLoaded
+                      ? (
+                          state.filteredDataCategory,
+                          state.indexFilterByCategoryItem,
+                        )
+                      : ([], null),
+                  builder: (context, state) {
+                    return DropdownButtonFormField<ModelCategory>(
+                      style: lv05TextStyle,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        label: Text("Pilih Kategori", style: lv1TextStyle),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
-                    ),
-                  )
-                  .toList(),
-              onTap: () {
-                if (filterCategory.isEmpty) {
-                  customSnackBar(context, "Cabang tidak memiliki Kategori");
-                }
-              },
-              onChanged: (value) {
-                if (value == null) return;
-                onFilterChangedCallBack(
-                  filterIDCategory: filterCategory.indexOf(value),
-                );
-              },
-            ),
+                      initialValue: state.$2 != null
+                          ? state.$1[state.$2!]
+                          : null,
+
+                      items: state.$1
+                          .map(
+                            (map) => DropdownMenuItem<ModelCategory>(
+                              value: map,
+                              child: Text(
+                                map.getnameCategory,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onTap: () {
+                        if (state.$1.isEmpty) {
+                          customSnackBar(
+                            context,
+                            "Cabang tidak memiliki Kategori",
+                          );
+                        }
+                      },
+                      onChanged: (value) {
+                        if (value == null) return;
+                        onFilterChangedCallBack(
+                          filterIDCategory: state.$1.indexOf(value),
+                        );
+                      },
+                    );
+                  },
+                ),
           ),
 
           const SizedBox(width: 10),
@@ -131,7 +127,7 @@ class UIFiltersItem extends StatelessWidget {
             flex: 1,
             fit: FlexFit.loose,
             child: WidgetDropDownFilter(
-              initialValue: bloc((value) {
+              initialValue: context.select<InventoryBloc, StatusData>((value) {
                 final blocurrentState = value.state;
                 if (blocurrentState is InventoryLoaded) {
                   return blocurrentState.statusItem;
@@ -140,40 +136,10 @@ class UIFiltersItem extends StatelessWidget {
               }),
               filters: statusItem,
               text: "Pilih Status",
-              onChanged: (value) => onFilterChangedCallBack(status: value),
+              selectedValue: (selectedEnum) {
+                onFilterChangedCallBack(status: selectedEnum);
+              },
             ),
-
-            //  DropdownButtonFormField<String>(
-            //   decoration: InputDecoration(
-            //     isDense: true,
-            //     contentPadding: const EdgeInsets.symmetric(vertical: 4),
-            //     border: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(6),
-            //     ),
-            //     label: Text("Pilih Status", style: lv1TextStyle),
-            //     floatingLabelBehavior: FloatingLabelBehavior.always,
-            //   ),
-            //   initialValue:
-            //       statusItem[bloc((value) {
-            //         final blocurrentState = value.state;
-            //         if (blocurrentState is InventoryLoaded) {
-            //           return blocurrentState.statusItem;
-            //         }
-            //         return 0;
-            //       })],
-            //   items: statusItem
-            //       .map(
-            //         (map) => DropdownMenuItem(
-            //           value: map,
-            //           child: Text(map, style: lv05TextStyle),
-            //         ),
-            //       )
-            //       .toList(),
-            //   onChanged: (value) {
-            //     if (value == null) return;
-            //     onFilterChangedCallBack(status: statusItem.indexOf(value));
-            //   },
-            // ),
           ),
         ],
       ),

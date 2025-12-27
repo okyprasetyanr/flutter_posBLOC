@@ -90,8 +90,8 @@ class ExcelBackupService {
       TextCellValue(account.getEmailUser),
       TextCellValue(account.getPhoneUser),
       TextCellValue(account.getNoteUser ?? ""),
-      BoolCellValue(account.getstatusUser),
-      IntCellValue(account.getRoleUser),
+      TextCellValue(account.getstatusUser.name),
+      TextCellValue(account.getRoleUser.name),
       TextCellValue(
         account.getPermissionsUser.entries
             .map((element) => '${element.key.name} = ${element.value}')
@@ -150,8 +150,8 @@ class ExcelBackupService {
         TextCellValue(item.getnameItem),
         DoubleCellValue(item.getpriceItem),
         DoubleCellValue(item.getqtyItem),
-        BoolCellValue(item.getstatusCondiment),
-        BoolCellValue(item.getStatusItem),
+        TextCellValue(item.getstatusCondiment.name),
+        TextCellValue(item.getStatusItem.name),
         TextCellValue(formatDate(date: item.getDateItem, minute: false)),
       ]);
     }
@@ -303,8 +303,8 @@ class ExcelBackupService {
         TextCellValue(operator.getEmailUser),
         TextCellValue(operator.getPhoneUser),
         TextCellValue(operator.getNoteUser ?? ""),
-        BoolCellValue(operator.getstatusUser),
-        IntCellValue(operator.getRoleUser),
+        TextCellValue(operator.getstatusUser.name),
+        TextCellValue(operator.getRoleUser.name),
         TextCellValue(
           operator.getPermissionsUser.entries
               .map((element) => '${element.key.name} = ${element.value}')
@@ -363,7 +363,7 @@ class ExcelBackupService {
         IntCellValue(item.getcharge),
         DoubleCellValue(item.gettotalCharge),
         DoubleCellValue(item.gettotal),
-        TextCellValue(item.getstatusTransaction!),
+        TextCellValue(item.getstatusTransaction!.name),
         TextCellValue(item.getnamePartner),
         TextCellValue(item.getidPartner),
         TextCellValue(item.getnameOperator),
@@ -506,7 +506,7 @@ class ExcelBackupService {
         IntCellValue(item.getcharge),
         DoubleCellValue(item.gettotalCharge),
         DoubleCellValue(item.gettotal),
-        TextCellValue(item.getstatusTransaction!),
+        TextCellValue(item.getstatusTransaction!.name),
         TextCellValue(item.getnamePartner),
         TextCellValue(item.getidPartner),
         TextCellValue(item.getnameOperator),
@@ -569,7 +569,7 @@ class ExcelBackupService {
         TextCellValue(transIncome.getnameFinancial),
         TextCellValue(transIncome.getnote),
         DoubleCellValue(transIncome.getamount),
-        TextCellValue(transIncome.getstatusTransaction!),
+        TextCellValue(transIncome.getstatusTransaction!.name),
         TextCellValue(formatDate(date: transIncome.getdate, minute: false)),
       ]);
     }
@@ -595,7 +595,7 @@ class ExcelBackupService {
         TextCellValue(transExpense.getnameFinancial),
         TextCellValue(transExpense.getnote),
         DoubleCellValue(transExpense.getamount),
-        TextCellValue(transExpense.getstatusTransaction!),
+        TextCellValue(transExpense.getstatusTransaction!.name),
         TextCellValue(formatDate(date: transExpense.getdate, minute: false)),
       ]);
     }

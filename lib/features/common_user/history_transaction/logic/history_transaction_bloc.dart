@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
@@ -114,7 +115,7 @@ class HistoryTransactionBloc
 
       dataTransaction[indexdataTrans] = dataTransaction[indexdataTrans]
           .copyWith(
-            statusTransaction: statusTransaction(index: 3),
+            statusTransaction: ListStatusTransaction.Batal,
             bankName: dataTransaction[indexdataTrans].getbankName,
             itemsOrdered: itemOrdered,
           );
@@ -146,7 +147,7 @@ class HistoryTransactionBloc
       final updateFor = currentState.copyWith(
         filteredData: _filterData(
           dataTransaction: dataTransaction,
-          indexFilter: currentState.indexFilter,
+          filter: currentState.filter,
           dateStart: dateStart,
           dateEnd: dateEnd,
           search: event.search,
@@ -207,21 +208,21 @@ class HistoryTransactionBloc
       currentState.copyWith(
         filteredData: _filterData(
           dataTransaction: currentState.dataTransaction,
-          indexFilter: event.indexFilter,
+          filter: event.filter,
           dateStart: dateStart,
           dateEnd: dateEnd,
           search: currentState.search,
         ),
         dateStart: currentState.dateStart,
         dateEnd: currentState.dateEnd,
-        indexFilter: event.indexFilter,
+        filter: event.filter,
       ),
     );
   }
 
   List<ModelTransaction> _filterData({
     required List<ModelTransaction> dataTransaction,
-    required int indexFilter,
+    required ListStatusTransaction filter,
     required DateTime dateStart,
     required DateTime dateEnd,
     required String search,
@@ -238,8 +239,8 @@ class HistoryTransactionBloc
 
       if (!dateValid) return false;
 
-      if (indexFilter > 0) {
-        final statusTarget = listStatusTransaction[indexFilter - 1];
+      if (filter != ListStatusTransaction.All) {
+        final statusTarget = status == filter;
         if (status != statusTarget) return false;
       }
 

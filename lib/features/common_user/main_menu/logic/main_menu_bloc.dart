@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -47,7 +48,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
               element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == statusTransaction(index: 0);
+          element.getstatusTransaction == ListStatusTransaction.Sukses;
     }).toList();
 
     double netSales = 0;
@@ -76,7 +77,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
               element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == statusTransaction(index: 0);
+          element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
     final expenseTrans = repoCache.getTransactionExpense(idBranch).where((
@@ -86,7 +87,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
               element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == statusTransaction(index: 0);
+          element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
     for (final e in incomeTrans) {

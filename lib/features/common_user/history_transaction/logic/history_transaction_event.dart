@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class HistoryTransactionEvent {}
@@ -46,7 +47,7 @@ class HistoryTransactionSearchData extends HistoryTransactionEvent {
 }
 
 class HistoryTransactionSelectedFilter extends HistoryTransactionEvent {
-  final int indexFilter;
+  final ListStatusTransaction filter;
 
-  HistoryTransactionSelectedFilter({required this.indexFilter});
+  HistoryTransactionSelectedFilter({required this.filter});
 }

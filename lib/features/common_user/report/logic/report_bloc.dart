@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_state.dart';
@@ -34,14 +35,14 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
                     element.getdate.isAfter(dateStart)) &&
                 (element.getdate.isAtSameMomentAs(dateEnd) ||
                     element.getdate.isBefore(dateEnd)) &&
-                element.getstatusTransaction == statusTransaction(index: 0);
+                element.getstatusTransaction == ListStatusTransaction.Sukses;
           }).toList()
         : repoCache.getTransactionBuy(idBranch).where((element) {
             return (element.getdate.isAtSameMomentAs(dateStart) ||
                     element.getdate.isAfter(dateStart)) &&
                 (element.getdate.isAtSameMomentAs(dateEnd) ||
                     element.getdate.isBefore(dateEnd)) &&
-                element.getstatusTransaction == statusTransaction(index: 0);
+                element.getstatusTransaction == ListStatusTransaction.Sukses;
           }).toList();
 
     double qris = 0;
@@ -103,7 +104,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
               element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == statusTransaction(index: 0);
+          element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
     final expenseTrans = repoCache.getTransactionExpense(idBranch).where((
@@ -113,7 +114,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
               element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == statusTransaction(index: 0);
+          element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
     for (final e in incomeTrans) {

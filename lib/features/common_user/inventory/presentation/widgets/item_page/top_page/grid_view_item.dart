@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
@@ -58,7 +59,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             urlImage: item.geturlImage,
                             idBranch: item.getidBranch,
                             barcode: item.getBarcode,
-                            statusItem: true,
+                            statusItem: StatusData.Aktif,
                             date: item.getDateItem,
                           ),
                         ),
@@ -128,7 +129,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                     ),
                   ),
 
-                  if (item.getstatusCondiment)
+                  if (item.getstatusCondiment == StatusData.Aktif)
                     Positioned(
                       top: -5,
                       right: -15,

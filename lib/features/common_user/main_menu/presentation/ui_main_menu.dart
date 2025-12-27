@@ -10,13 +10,13 @@ import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar_access.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/report_algoritm.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
@@ -346,7 +346,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
         .dataTransSell
         .where(
           (element) =>
-              element.getstatusTransaction != statusTransaction(index: 3),
+              element.getstatusTransaction != ListStatusTransaction.Batal,
         )
         .toList();
     final spots = (dataSell.isEmpty)

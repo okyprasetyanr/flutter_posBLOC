@@ -36,7 +36,7 @@ class UIInventorySearchAndBranchCategory extends StatelessWidget {
           flex: 2,
           child: BlocSelector<InventoryBloc, InventoryState, String>(
             selector: (state) =>
-                state is InventoryLoaded ? state.idBranch ?? "" : "",
+                state is InventoryLoaded ? state.idBranch! : "",
             builder: (context, state) {
               return WidgetDropdownBranch(
                 idBranch: state,

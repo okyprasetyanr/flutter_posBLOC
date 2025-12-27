@@ -6,7 +6,6 @@ class InventoryEvent {}
 
 class InventoryGetData extends InventoryEvent {
   final String? idBranch;
-
   InventoryGetData({this.idBranch});
 }
 
@@ -33,8 +32,8 @@ class InventoryResetCategoryForm extends InventoryEvent {}
 class InventoryResetItemForm extends InventoryEvent {}
 
 class InventoryFilterItem extends InventoryEvent {
-  final int? filter;
-  final int? status;
+  final FilterItem? filter;
+  final StatusData? status;
   final FilterTypeItem? filterType;
   final int? filterByCategory;
 

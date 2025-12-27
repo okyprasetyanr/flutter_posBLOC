@@ -1,60 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/request/push_data.dart';
-
-enum RoleType { All, Pemilik, Kasir, Admin }
-
-extension RoleTypeX on RoleType {
-  static RoleType? fromString(String value) {
-    try {
-      return RoleType.values.firstWhere((e) => e.name == value);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  static RoleType? fromId(int value) {
-    try {
-      return RoleType.values.firstWhere((element) => element.id == value);
-    } catch (_) {
-      return null;
-    }
-  }
-}
-
-extension RoleTypeExt on RoleType {
-  int get id {
-    switch (this) {
-      case RoleType.All:
-        return 0;
-      case RoleType.Pemilik:
-        return 1;
-      case RoleType.Kasir:
-        return 2;
-      case RoleType.Admin:
-        return 3;
-    }
-  }
-}
-
-enum Permission {
-  Stok,
-  Inventory,
-  Penjualan,
-  Pembelian,
-  Pendapatan,
-  Pengeluaran,
-  Data_Pelanggan,
-  Data_Pemasok,
-  Data_Pemasukan,
-  Data_Pengeluaran,
-  Data_Operator,
-  Riwayat_Penjualan,
-  Riwayat_Pembelian,
-  Riwayat_Pendapatan,
-  Riwayat_Pengeluaran,
-  Laporan,
-}
 
 class ModelUser extends Equatable {
   final String? idUser;
@@ -66,10 +13,10 @@ class ModelUser extends Equatable {
   final Map<Permission, bool> permissionsUser;
   final DateTime? createdUser;
   final String? noteUser;
-  final bool statusUser;
+  final StatusData statusUser;
 
   const ModelUser({
-    this.statusUser = false,
+    this.statusUser = StatusData.Nonaktif,
     this.idUser,
     required this.nameUser,
     required this.emailUser,
@@ -81,7 +28,7 @@ class ModelUser extends Equatable {
     this.noteUser,
   });
 
-  bool get getstatusUser => statusUser;
+  StatusData get getstatusUser => statusUser;
   String? get getIdUser => idUser;
   String get getNameUser => nameUser;
   String get getEmailUser => emailUser;
@@ -93,7 +40,7 @@ class ModelUser extends Equatable {
   String? get getNoteUser => noteUser;
 
   ModelUser copyWith({
-    bool? statusUser,
+    StatusData? statusUser,
     String? idUser,
     String? nameUser,
     String? emailUser,

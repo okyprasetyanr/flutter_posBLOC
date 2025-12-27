@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -52,7 +53,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         event.idBranch ?? currentState.idBranch ?? listBranch.first.getidBranch;
     final listItem = repo
         .getItem(idBranch)
-        .where((element) => element.getStatusItem)
+        .where((element) => element.getStatusItem == StatusData.Aktif)
         .toList();
     listItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
     List<ModelCategory> listCategory = [
@@ -68,7 +69,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         .getTransactionSell(idBranch)
         .where(
           (element) =>
-              element.getstatusTransaction == statusTransaction(index: 1),
+              element.getstatusTransaction == ListStatusTransaction.Tersimpan,
         )
         .toList();
 
@@ -79,7 +80,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         dataTransactionSaved: dataTransactionSaved,
         dataPartner: partner,
         filteredItem: currentState.isSell
-            ? listItem.where((element) => !element.getstatusCondiment).toList()
+            ? listItem
+                  .where(
+                    (element) =>
+                        element.getstatusCondiment == StatusData.Nonaktif,
+                  )
+                  .toList()
             : listItem,
         selectedIDBranch: idBranch,
         selectedCategory: selectedIdCategory,
@@ -124,7 +130,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ),
       );
       if (currentState.isSell) {
-        list = list.where((element) => !element.getstatusCondiment).toList();
+        list = list
+            .where(
+              (element) => element.getstatusCondiment == StatusData.Nonaktif,
+            )
+            .toList();
       }
       String finalidCategory =
           idCategory ?? currentState.selectedCategory!.getidCategory;

@@ -46,15 +46,17 @@ Future<UserCredential?> authenticatorAccount({
       final map = data.data()!;
       context.read<DataUserRepositoryCache>().dataAccount = await ModelUser(
         idUser: uidUser,
-        statusUser: map[FieldDataUser.status_user.name],
+        statusUser: StatusDataX.fromString(map[FieldDataUser.status_user.name]),
         nameUser: map[FieldDataUser.name_user.name],
         emailUser: map[FieldDataUser.email_user.name],
         phoneUser: map[FieldDataUser.phone_user.name],
-        roleUser: int.tryParse(map[FieldDataUser.role_user.name].toString())!,
+        roleUser: RoleTypeX.fromString(map[FieldDataUser.role_user.name])!,
         idBranchUser: map[FieldDataUser.id_branch.name],
         permissionsUser: {
           for (final permission in Permission.values)
-            permission: map[FieldDataUser.status_user.name] ?? false
+            permission:
+                StatusDataX.fromString(map[FieldDataUser.status_user.name]) ==
+                    StatusData.Aktif
                 ? map[FieldDataUser.permissions_user.name][permission.name] ??
                       false
                 : false,

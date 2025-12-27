@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
@@ -34,7 +35,8 @@ class UIInventoryFormFieldItem extends StatelessWidget {
       listenWhen: (previous, current) =>
           previous is InventoryLoaded &&
           current is InventoryLoaded &&
-          previous.dataSelectedItem != current.dataSelectedItem,
+          previous.dataSelectedItem != current.dataSelectedItem &&
+          previous.idBranch != current.idBranch,
       listener: (context, state) {
         if (state is InventoryLoaded) {
           final dataSelectedItem = state.dataSelectedItem;
@@ -45,7 +47,8 @@ class UIInventoryFormFieldItem extends StatelessWidget {
           );
           context.read<InventoryBloc>().add(
             InventoryCondimentForm(
-              condimentForm: dataSelectedItem?.getstatusCondiment ?? false,
+              condimentForm:
+                  dataSelectedItem?.getstatusCondiment == StatusData.Aktif,
             ),
           );
         }

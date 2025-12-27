@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
@@ -52,9 +53,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   List<ModelItem> _filterItem({
-    required int status,
-    required int filter,
-    required int filterType,
+    required StatusData status,
+    required FilterItem filter,
+    required FilterTypeItem filterType,
     required int filterByCategory,
     List<ModelItem>? items,
   }) {
@@ -64,55 +65,46 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     List<ModelItem> item = items ?? List.from(currentState.dataItem);
 
     List<ModelItem> list = item.where((element) {
-      final byStatusItem = status == 0
-          ? element.getStatusItem
-          : !element.getStatusItem;
+      final byStatusItem = element.getStatusItem == status;
 
       if (filterByCategory > 0) {
         final byCategory =
             element.getidCategoryiItem ==
-            filterCategory[filterByCategory].getidCategory;
+            currentState.filteredDataCategory[filterByCategory].getidCategory;
         if (!byCategory) return false;
       }
 
-      // ["All", "Condiment", "Normal"]
-      if (filterType > 0) {
-        final byTypeItem = filterType == 1
-            ? element.getstatusCondiment
-            : !element.getstatusCondiment;
+      if (filterType != FilterTypeItem.All) {
+        final byTypeItem = element.getstatusCondiment == filterType;
         if (!byTypeItem) return false;
       }
 
       return byStatusItem;
     }).toList();
 
-    // ["A-Z", "Z-A", "Terbaru", "Terlama", "Stock +", "Stock -"];
     switch (filter) {
-      case 0:
-        list.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
-        break;
-      case 1:
-        list.sort((a, b) => b.getnameItem.compareTo(a.getnameItem));
-        break;
-      case 2:
-        list.sort(
-          (a, b) => formatDate(
-            date: b.getDateItem,
-          ).compareTo(formatDate(date: a.getDateItem)),
-        );
-        break;
-      case 3:
-        list.sort(
-          (a, b) => formatDate(
-            date: b.getDateItem,
-          ).compareTo(formatDate(date: a.getDateItem)),
-        );
-        break;
-      case 4:
-        list.sort((a, b) => a.getqtyItem.compareTo(b.getqtyItem));
-        break;
-      case 5:
+      case FilterItem.A_Z:
         list.sort((a, b) => b.getqtyItem.compareTo(a.getqtyItem));
+        break;
+      case FilterItem.Z_A:
+        list.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
+      case FilterItem.Terbaru:
+        list.sort((a, b) => b.getnameItem.compareTo(a.getnameItem));
+      case FilterItem.Terlama:
+        list.sort(
+          (a, b) => formatDate(
+            date: b.getDateItem,
+          ).compareTo(formatDate(date: a.getDateItem)),
+        );
+      case FilterItem.Stock_Plus:
+        list.sort(
+          (a, b) => formatDate(
+            date: b.getDateItem,
+          ).compareTo(formatDate(date: a.getDateItem)),
+        );
+        break;
+      case FilterItem.Stock_Minus:
+        list.sort((a, b) => a.getqtyItem.compareTo(b.getqtyItem));
         break;
     }
 
@@ -127,7 +119,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     if (currentState is InventoryLoaded) {
       final status = event.status ?? currentState.statusItem;
       final filter = event.filter ?? currentState.filterItem;
-      final filterType = event.filterType ?? currentState.this.filterTypeItem;
+      final filterType = event.filterType ?? currentState.filterTypeItem;
       final filterByCategory =
           event.filterByCategory ?? currentState.indexFilterByCategoryItem;
 
@@ -172,7 +164,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final dataItem = repoCache.getItem(idBranch);
     debugPrint("Log InventoryBloc: items: $dataItem");
     final dataCategory = repoCache.getCategory(idBranch);
-    filterCategory = [
+    final filteredDataCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...dataCategory,
     ];
@@ -184,7 +176,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     emit(
       InventoryLoaded(
-        filteredDataCategory: dataCategory,
+        filteredDataCategory: filteredDataCategory,
         idBranch: idBranch,
         areaBranch: areaBranch,
         dataBranch: dataBranch,
@@ -231,13 +223,15 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       idItem: idUser,
       priceItem: double.tryParse(event.price)!,
       idCategoryItem: event.selectedIdCategory,
-      statusCondiment: currentState.condimentForm,
+      statusCondiment: currentState.condimentForm
+          ? StatusData.Aktif
+          : StatusData.Nonaktif,
       urlImage:
           //  imageUrl ??
           "",
       idBranch: currentState.idBranch!,
       barcode: event.codeBarcode,
-      statusItem: true,
+      statusItem: StatusData.Aktif,
       date: parseDate(date: DateTime.now())!,
     );
 

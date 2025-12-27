@@ -13,25 +13,17 @@ class UIInventoryListViewCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<
-      InventoryBloc,
-      InventoryState,
-      (List<ModelCategory>?, String?)
-    >(
-      selector: (state) => state is InventoryLoaded
-          ? (state.filteredDataCategory, state.idBranch)
-          : (null, null),
+    return BlocSelector<InventoryBloc, InventoryState, List<ModelCategory>?>(
+      selector: (state) => state is InventoryLoaded ? state.dataCategory : null,
       builder: (context, state) {
-        debugPrint("Log UIInventory category: search: ${state.$1}");
-        if (state.$1 == null) {
+        debugPrint("Log UIInventory category: search: ${state}");
+        if (state == null) {
           return Padding(
             padding: const EdgeInsets.all(10),
             child: SpinKitThreeBounce(color: Colors.blue, size: lv1IconSize),
           );
         }
-        final dataCategory = state.$1!
-            .where((data) => data.getidBranch == state.$2)
-            .toList();
+        final dataCategory = state;
         return Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: ListView.builder(

@@ -274,7 +274,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: ElevatedButton.icon(
-                              onPressed: () {
+                              onPressed: () async {
                                 context.read<PartnerBloc>().add(
                                   PartnerStatusPartner(
                                     isCustomer:
@@ -283,7 +283,11 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                             .isSell,
                                   ),
                                 );
-                                navUpDownTransition(context, '/partner', false);
+                                await navUpDownTransition(
+                                  context,
+                                  '/partner',
+                                  false,
+                                );
                               },
                               icon: const Icon(Icons.add),
                               label: Text(

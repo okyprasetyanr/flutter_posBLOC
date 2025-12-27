@@ -55,9 +55,6 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     OperatorGetData event,
     Emitter<OperatorState> emit,
   ) async {
-    if (event.firstLaunch) {
-      emit(OperatorInitial());
-    }
     final currentState = state is OperatorLoaded
         ? state as OperatorLoaded
         : OperatorLoaded();
@@ -151,12 +148,12 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     add(OperatorGetData());
   }
 
-  Future<void> _onSelectedData(
+  FutureOr<void> _onSelectedData(
     OperatorSelectedData event,
     Emitter<OperatorState> emit,
-  ) async {
+  ) {
     final currentState = state as OperatorLoaded;
-    final selectedData = await event.selectedData ?? currentState.selectedData;
+    final selectedData = event.selectedData ?? currentState.selectedData;
 
     emit(
       currentState.copyWith(

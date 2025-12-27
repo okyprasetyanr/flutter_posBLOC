@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_event.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_state.dart';
@@ -105,7 +106,7 @@ class HistoryFinancialBloc
       final updateFor = currentState.copyWith(
         filteredData: _filterData(
           dataTransaction: dataTransaction,
-          indexFilter: currentState.indexFilter,
+          filter: currentState.filter,
           dateStart: dateStart,
           dateEnd: dateEnd,
           search: event.search,
@@ -131,7 +132,7 @@ class HistoryFinancialBloc
       (element) => element.getinvoice == currentState.selectedData!.getinvoice,
     );
     dataTrans[index] = dataTrans[index].copyWith(
-      statusTransaction: statusTransaction(index: 3),
+      statusTransaction: ListStatusTransaction.Batal,
     );
     await dataTrans[index].updateCancelDataFinancial(isIncome);
     add(HistoryFinancialGetData());
@@ -150,21 +151,21 @@ class HistoryFinancialBloc
       currentState.copyWith(
         filteredData: _filterData(
           dataTransaction: currentState.dataTransaction,
-          indexFilter: event.indexFilter,
+          filter: event.filter,
           dateStart: dateStart,
           dateEnd: dateEnd,
           search: currentState.search,
         ),
         dateStart: currentState.dateStart,
         dateEnd: currentState.dateEnd,
-        indexFilter: event.indexFilter,
+        indexFilter: event.filter,
       ),
     );
   }
 
   List<ModelTransactionFinancial> _filterData({
     required List<ModelTransactionFinancial> dataTransaction,
-    required int indexFilter,
+    required ListStatusTransactionFinancial filter,
     required DateTime dateStart,
     required DateTime dateEnd,
     required String search,
@@ -181,8 +182,8 @@ class HistoryFinancialBloc
 
       if (!dateValid) return false;
 
-      if (indexFilter > 0) {
-        final statusTarget = listStatusTransactionFinancial[indexFilter - 1];
+      if (filter != ListStatusTransactionFinancial.All) {
+        final statusTarget = status == filter;
         if (status != statusTarget) return false;
       }
 

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 
 class HistoryFinancialState {}
@@ -14,12 +15,12 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
   final DateTime? dateStart;
   final DateTime? dateEnd;
   final String search;
-  final int indexFilter;
+  final ListStatusTransactionFinancial filter;
   final String displayDate;
 
   HistoryFinancialLoaded({
     this.displayDate = "Hari ini",
-    this.indexFilter = 0,
+    this.filter = ListStatusTransactionFinancial.All,
     this.search = "",
     this.dataTransaction = const [],
     this.filteredData = const [],
@@ -40,11 +41,11 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
     DateTime? dateStart,
     DateTime? dateEnd,
     String? search,
-    int? indexFilter,
+    ListStatusTransactionFinancial? indexFilter,
   }) {
     return HistoryFinancialLoaded(
       displayDate: displayDate ?? this.displayDate,
-      indexFilter: indexFilter ?? this.indexFilter,
+      filter: indexFilter ?? this.filter,
       search: search ?? this.search,
       dataTransaction: dataTransaction ?? this.dataTransaction,
       dateEnd: dateEnd,
@@ -60,7 +61,7 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
   List<Object?> get props => [
     displayDate,
     search,
-    indexFilter,
+    filter,
     dataTransaction,
     filteredData,
     idBranch,

@@ -75,7 +75,17 @@ class _UIOperatorState extends State<UIOperator> {
   }
 
   void _initData() {
-    context.read<OperatorBloc>().add(OperatorGetData(firstLaunch: true));
+    context.read<OperatorBloc>().add(OperatorGetData());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bloc = (context.read<OperatorBloc>().state as OperatorLoaded);
+    final text = bloc.dataBranch!
+        .firstWhere((element) => element.getidBranch == bloc.idBranch)
+        .getareaBranch;
+    branchController.text = text;
   }
 
   @override
@@ -218,18 +228,10 @@ class _UIOperatorState extends State<UIOperator> {
       children: [
         Expanded(
           child: BlocListener<OperatorBloc, OperatorState>(
-            listenWhen: (previous, current) {
-              if (previous is! OperatorLoaded && current is OperatorLoaded) {
-                return true;
-              }
-
-              if (previous is OperatorLoaded && current is OperatorLoaded) {
-                return previous.selectedData != current.selectedData ||
-                    previous.idBranch != current.idBranch;
-              }
-
-              return false;
-            },
+            listenWhen: (previous, current) =>
+                previous is OperatorLoaded &&
+                current is OperatorLoaded &&
+                previous.selectedData != current.selectedData,
             listener: (context, state) {
               final currentState = state;
               if (currentState is OperatorLoaded) {
@@ -246,12 +248,6 @@ class _UIOperatorState extends State<UIOperator> {
                   emailController.text = selectedData?.getEmailUser ?? "";
                   noteController.text = selectedData?.getNoteUser ?? "";
                 }
-                branchController.text = currentState.dataBranch!
-                    .firstWhere(
-                      (element) =>
-                          element.getidBranch == currentState.idBranch!,
-                    )
-                    .getareaBranch;
                 debugPrint("Log UIOperator: IDBranch: masuk");
               }
             },
@@ -394,7 +390,7 @@ class _UIOperatorState extends State<UIOperator> {
                       ? roleTypeList.firstWhere(
                           (element) => element == state.$2!.getRoleUser,
                         )
-                      : null,
+                      : RoleType.Kasir,
                   filters: roleTypeList,
                   text: "Jenis Operator",
                   selectedValue: (selectedEnum) {
@@ -409,16 +405,14 @@ class _UIOperatorState extends State<UIOperator> {
                 child: WidgetDropDownFilter(
                   initialValue: state.$1
                       ? statusData.firstWhere(
-                          (element) =>
-                              element ==
-                              statusData[state.$2!.getstatusUser ? 0 : 1],
+                          (element) => element == state.$2!.getstatusUser,
                         )
-                      : null,
+                      : StatusData.Aktif,
                   filters: statusData,
                   text: "Status",
-                  selectedValue: (indexFilter) {
+                  selectedValue: (selectedEnum) {
                     context.read<OperatorBloc>().add(
-                      OperatorSelectedData(selectedStatus: indexFilter == 0),
+                      OperatorSelectedData(selectedStatus: selectedEnum),
                     );
                   },
                 ),

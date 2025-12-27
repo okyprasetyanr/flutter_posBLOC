@@ -8,14 +8,8 @@ class OperatorGetData extends OperatorEvent {
   final String? idBranch;
   final RoleType? roleUser;
   final StatusData? statusUser;
-  final bool firstLaunch;
 
-  OperatorGetData({
-    this.firstLaunch = false,
-    this.idBranch,
-    this.roleUser,
-    this.statusUser,
-  });
+  OperatorGetData({this.idBranch, this.roleUser, this.statusUser});
 }
 
 class OperatorFilterOperator extends OperatorEvent {
@@ -28,7 +22,7 @@ class OperatorFilterOperator extends OperatorEvent {
 class OperatorSelectedData extends OperatorEvent {
   final ModelUser? selectedData;
   final RoleType? selectedRole;
-  final bool? selectedStatus;
+  final StatusData? selectedStatus;
   final Map<Permission, bool>? selectedPermission;
   OperatorSelectedData({
     this.selectedData,

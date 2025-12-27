@@ -169,13 +169,27 @@ enum ListDataHeaderExcel {
   Riwayat_Pengeluaran,
 }
 
-enum ListStatusTransactionFinancial { Sukses, Batal }
+enum ListStatusTransactionFinancial { All, Sukses, Batal }
 
-enum ListStatusTransaction { Sukses, Tersimpan, Revisi, Batal }
+enum ListStatusTransaction { All, Sukses, Tersimpan, Revisi, Batal }
+
+extension ListStatusTransactionX on ListStatusTransaction {
+  static ListStatusTransaction fromString(String value) {
+    return ListStatusTransaction.values.firstWhere(
+      (element) => element.name == value,
+    );
+  }
+}
 
 enum FilterTypeItem { All, Condiment, Normal }
 
 enum StatusData { Aktif, Nonaktif }
+
+extension StatusDataX on StatusData {
+  static StatusData fromString(String value) {
+    return StatusData.values.firstWhere((element) => element.name == value);
+  }
+}
 
 enum FilterItem { A_Z, Z_A, Terbaru, Terlama, Stock_Plus, Stock_Minus }
 
@@ -191,9 +205,78 @@ extension FilterItemX on FilterItem {
       case FilterItem.Terlama:
         return "Terlama";
       case FilterItem.Stock_Plus:
-        return "Stock+";
+        return "Stock +";
       case FilterItem.Stock_Minus:
-        return "Stock-";
+        return "Stock -";
     }
   }
+}
+
+enum TotalBranch { one, two, three }
+
+extension TotalBranchX on TotalBranch {
+  int get number {
+    switch (this) {
+      case TotalBranch.one:
+        return 1;
+      case TotalBranch.two:
+        return 2;
+      case TotalBranch.three:
+        return 3;
+    }
+  }
+}
+
+enum RoleType { All, Pemilik, Kasir, Admin }
+
+extension RoleTypeX on RoleType {
+  static RoleType? fromString(String value) {
+    try {
+      return RoleType.values.firstWhere((e) => e.name == value);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static RoleType? fromId(int value) {
+    try {
+      return RoleType.values.firstWhere((element) => element.id == value);
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
+extension RoleTypeExt on RoleType {
+  int get id {
+    switch (this) {
+      case RoleType.All:
+        return 0;
+      case RoleType.Pemilik:
+        return 1;
+      case RoleType.Kasir:
+        return 2;
+      case RoleType.Admin:
+        return 3;
+    }
+  }
+}
+
+enum Permission {
+  Stok,
+  Inventory,
+  Penjualan,
+  Pembelian,
+  Pendapatan,
+  Pengeluaran,
+  Data_Pelanggan,
+  Data_Pemasok,
+  Data_Pemasukan,
+  Data_Pengeluaran,
+  Data_Operator,
+  Riwayat_Penjualan,
+  Riwayat_Pembelian,
+  Riwayat_Pendapatan,
+  Riwayat_Pengeluaran,
+  Laporan,
 }

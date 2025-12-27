@@ -20,7 +20,6 @@ import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/category_page/bottom_page/text_field_and_branch.dart';
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/category_page/top_page/list_view_category.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
@@ -108,9 +107,18 @@ class _UIInventoryState extends State<UIInventory> {
   }
 
   Future<void> _initData() async {
-    final bloc = context.read<InventoryBloc>();
-    bloc.add(InventoryFilterItem());
-    bloc.add(InventoryGetData());
+    context.read<InventoryBloc>().add(InventoryGetData());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bloc = context.read<InventoryBloc>().state;
+    if (bloc is InventoryLoaded) {
+      branchController.text = bloc.dataBranch!
+          .firstWhere((element) => element.getidBranch == bloc.idBranch!)
+          .getareaBranch;
+    }
   }
 
   Future<void> _onRefresh() async {
@@ -226,19 +234,18 @@ class _UIInventoryState extends State<UIInventory> {
                     filters: filterItem,
                     statusItem: statusData,
                     filterType: filterTypeItem,
-                    filterCategory: filterCategory,
                     onFilterChangedCallBack:
                         ({
-                          int? filter,
-                          int? status,
-                          int? filterType,
+                          FilterItem? filter,
+                          StatusData? status,
+                          FilterTypeItem? filterType,
                           int? filterIDCategory,
                         }) {
                           context.read<InventoryBloc>().add(
                             InventoryFilterItem(
                               filter: filter,
                               status: status,
-                              filterType: filterTypeItem,
+                              filterType: filterType,
                               filterByCategory: filterIDCategory,
                             ),
                           );
@@ -378,37 +385,15 @@ class _UIInventoryState extends State<UIInventory> {
                             const SizedBox(width: 10),
                             Expanded(
                               flex: 1,
-                              child:
-                                  BlocListener<InventoryBloc, InventoryState>(
-                                    listenWhen: (previous, current) =>
-                                        previous is InventoryLoaded &&
-                                        current is InventoryLoaded &&
-                                        previous.idBranch != current.idBranch,
-                                    listener: (context, state) {
-                                      if (state is InventoryLoaded &&
-                                          state.idBranch != null) {
-                                        branchController.text = state
-                                            .dataBranch!
-                                            .firstWhere(
-                                              (e) =>
-                                                  e.getidBranch ==
-                                                  state.idBranch,
-                                            )
-                                            .getareaBranch;
-                                      } else {
-                                        branchController.text = "Mohon Tunggu";
-                                      }
-                                    },
-                                    child: customTextField(
-                                      index: 0,
-                                      nodes: nodes,
-                                      controller: branchController,
-                                      enable: false,
-                                      inputType: TextInputType.text,
-                                      context: context,
-                                      text: "Cabang",
-                                    ),
-                                  ),
+                              child: customTextField(
+                                index: 0,
+                                nodes: nodes,
+                                controller: branchController,
+                                enable: false,
+                                inputType: TextInputType.text,
+                                context: context,
+                                text: "Cabang",
+                              ),
                             ),
                           ],
                         ),

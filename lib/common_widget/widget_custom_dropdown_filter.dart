@@ -5,6 +5,7 @@ Widget WidgetDropDownFilter<T extends Enum>({
   required T? initialValue,
   required List<T> filters,
   required String text,
+  Function(T extension)? extension,
   required Function(T selectedEnum) selectedValue,
 }) {
   return DropdownButtonFormField<T>(
@@ -22,7 +23,7 @@ Widget WidgetDropDownFilter<T extends Enum>({
           (map) => DropdownMenuItem(
             value: map,
             child: Text(
-              map.name,
+              extension != null ? extension(map) : map.name,
               style: lv05TextStyle,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

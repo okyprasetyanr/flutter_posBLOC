@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -26,7 +27,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
   final passwordController = TextEditingController();
   final nameCompanyController = TextEditingController();
   final phoneCompanyController = TextEditingController();
-  final totalBranch = ["1", "2", "3"];
+  final totalBranch = TotalBranch.values.map((map) => map).toList();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -182,12 +183,12 @@ class _ScreenSignupState extends State<ScreenSignup> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: WidgetDropDownFilter(
+                              initialValue: TotalBranch.one,
                               filters: totalBranch,
                               text: "Total Cabang",
+                              extension: (extension) => extension.number,
                               selectedValue: (indexFilter) =>
-                                  updateBranchFields(
-                                    int.parse(totalBranch[indexFilter]),
-                                  ),
+                                  updateBranchFields(indexFilter.number),
                             ),
                           ),
                         ],
@@ -333,13 +334,13 @@ class _ScreenSignupState extends State<ScreenSignup> {
 
               final data = ModelUser(
                 idBranchUser: null,
-                statusUser: true,
+                statusUser: StatusData.Aktif,
                 createdUser: dateNowYMDBLOC(),
                 idUser: uidUser,
                 nameUser: nameCompanyController.text,
                 emailUser: emailCompanyController.text,
                 phoneUser: phoneCompanyController.text,
-                roleUser: 0,
+                roleUser: RoleType.Pemilik,
                 permissionsUser: {
                   for (final permission in Permission.values) permission: true,
                 },

@@ -1,3 +1,4 @@
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 
 class HistoryFinancialEvent {}
@@ -35,7 +36,7 @@ class HistoryFinancialSearchData extends HistoryFinancialEvent {
 class HistoryFinancialCancelData extends HistoryFinancialEvent {}
 
 class HistoryFinancialSelectedFilter extends HistoryFinancialEvent {
-  final int indexFilter;
+  final ListStatusTransactionFinancial filter;
 
-  HistoryFinancialSelectedFilter({required this.indexFilter});
+  HistoryFinancialSelectedFilter({required this.filter});
 }

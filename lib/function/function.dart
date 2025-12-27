@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -21,10 +20,6 @@ final filterItem = FilterItem.values.map((map) => map).toList();
 final statusData = StatusData.values.map((map) => map).toList();
 
 final filterTypeItem = FilterTypeItem.values.map((map) => map).toList();
-
-List<ModelCategory> filterCategory = [
-  ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
-];
 
 String formatPriceRp(double nominal) {
   final nominalfinal = "${formatQtyOrPrice(nominal)}"
@@ -91,10 +86,6 @@ String generateInvoice({
   final operator = idOP.substring(0, 4);
   debugPrint("Log Function: GenerateInvoice: $operator");
   return "$operator-$branch-$queue-$uuid";
-}
-
-String statusTransaction({int? index}) {
-  return listStatusTransaction[index!];
 }
 
 String formatDate({required DateTime date, bool? minute}) {

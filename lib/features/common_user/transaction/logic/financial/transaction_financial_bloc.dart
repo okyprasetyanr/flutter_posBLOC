@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_state.dart';
@@ -74,7 +75,7 @@ class TransFinancialBloc
     );
 
     final data = ModelTransactionFinancial(
-      statusTransaction: statusTransaction(index: 0),
+      statusTransaction: ListStatusTransaction.Sukses,
       idFinancial: selectedData.getidFinancial,
       nameFinancial: selectedData.getnameFinancial,
       idBranch: selectedData.getidBranch,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -21,7 +22,8 @@ class ModelTransaction extends Equatable {
       _note,
       _idBranch,
       _idOperator;
-  final String? _bankName, _statusTransaction;
+  final String? _bankName;
+  final ListStatusTransaction? _statusTransaction;
   final int _discount, _ppn, _totalItem, _charge;
   final double _subTotal,
       _total,
@@ -34,7 +36,7 @@ class ModelTransaction extends Equatable {
 
   ModelTransaction({
     required String idBranch,
-    String? statusTransaction,
+    ListStatusTransaction? statusTransaction,
     required List<ModelItemOrdered> itemsOrdered,
     required List<ModelSplit> dataSplit,
     required DateTime date,
@@ -102,11 +104,11 @@ class ModelTransaction extends Equatable {
   double get gettotalPpn => _totalPpn;
   List<ModelSplit> get getdataSplit => _dataSplit;
   List<ModelItemOrdered> get getitemsOrdered => _itemsOrdered;
-  String? get getstatusTransaction => _statusTransaction;
+  ListStatusTransaction? get getstatusTransaction => _statusTransaction;
 
   ModelTransaction copyWith({
     String? idBranch,
-    String? statusTransaction,
+    ListStatusTransaction? statusTransaction,
     String? bankName,
     DateTime? date,
     String? note,

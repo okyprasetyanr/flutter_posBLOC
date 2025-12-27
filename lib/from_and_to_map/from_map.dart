@@ -23,7 +23,9 @@ ModelTransactionFinancial fromMapTransFinancial(
   String id,
 ) {
   return ModelTransactionFinancial(
-    statusTransaction: data[FieldDataTransFinancial.status_transaction.name],
+    statusTransaction: ListStatusTransactionX.fromString(
+      data[FieldDataTransFinancial.status_transaction.name],
+    ),
     idFinancial: data[FieldDataTransFinancial.id_financial.name],
     nameFinancial: data[FieldDataTransFinancial.name_financial.name],
     idBranch: data[FieldDataTransFinancial.id_branch.name],
@@ -56,17 +58,19 @@ ModelCategory fromMapCategory(Map<String, dynamic> data, String id) {
 ModelItem fromMapItem(Map<String, dynamic> data, String id) {
   debugPrint("Log fromMap: Item: $data");
   return ModelItem(
-    nameItem: data[FieldDataItem.name_item.name], //
-    idItem: id, //
-    priceItem: data[FieldDataItem.price_item.name].toDouble(), //
-    idCategoryItem: data[FieldDataItem.id_category.name], //
-    statusCondiment: data[FieldDataItem.status_condiment.name], //
-    urlImage: data[FieldDataItem.url_image.name], //
-    qtyItem: data[FieldDataItem.qty_item.name].toDouble(), //
-    idBranch: data[FieldDataItem.id_branch.name], //
-    barcode: data[FieldDataItem.barcode.name], //
-    statusItem: data[FieldDataItem.status_item.name], //
-    date: parseDate(date: data[FieldDataItem.date.name]) ?? DateTime.now(), //
+    nameItem: data[FieldDataItem.name_item.name],
+    idItem: id,
+    priceItem: data[FieldDataItem.price_item.name].toDouble(),
+    idCategoryItem: data[FieldDataItem.id_category.name],
+    statusCondiment: StatusDataX.fromString(
+      data[FieldDataItem.status_condiment.name],
+    ),
+    urlImage: data[FieldDataItem.url_image.name],
+    qtyItem: data[FieldDataItem.qty_item.name].toDouble(),
+    idBranch: data[FieldDataItem.id_branch.name],
+    barcode: data[FieldDataItem.barcode.name],
+    statusItem: StatusDataX.fromString(data[FieldDataItem.status_item.name]),
+    date: parseDate(date: data[FieldDataItem.date.name]) ?? DateTime.now(),
   );
 }
 
@@ -108,15 +112,17 @@ ModelSplit fromMapSplit(Map<String, dynamic> split) {
 ModelUser fromMapUser(Map<String, dynamic> data, String id) {
   return ModelUser(
     idUser: id,
-    statusUser: data[FieldDataUser.status_user.name],
+    statusUser: StatusDataX.fromString(data[FieldDataUser.status_user.name]),
     nameUser: data[FieldDataUser.name_user.name],
     emailUser: data[FieldDataUser.email_user.name],
     phoneUser: data[FieldDataUser.phone_user.name],
-    roleUser: int.tryParse(data[FieldDataUser.role_user.name].toString())!,
+    roleUser: RoleTypeX.fromString(data[FieldDataUser.role_user.name])!,
     idBranchUser: data[FieldDataUser.id_branch.name],
     permissionsUser: {
       for (final permission in Permission.values)
-        permission: data[FieldDataUser.status_user.name] ?? false
+        permission:
+            StatusDataX.fromString(data[FieldDataUser.status_user.name]) ==
+                StatusData.Aktif
             ? data[FieldDataUser.permissions_user.name][permission.name] ??
                   false
             : false,
@@ -281,6 +287,8 @@ ModelTransaction fromMapTransaction(
     total:
         double.tryParse(data[FieldDataTransaction.total.name].toString()) ??
         0.0,
-    statusTransaction: data[FieldDataTransaction.status_transaction.name],
+    statusTransaction: ListStatusTransactionX.fromString(
+      data[FieldDataTransaction.status_transaction.name],
+    ),
   );
 }

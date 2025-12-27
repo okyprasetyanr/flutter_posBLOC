@@ -91,12 +91,8 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         repoCache.dataPartner.add(partner);
       }
 
-      final dataPartner = partner.gettype.name == "customer"
-          ? repoCache.getCustomer(partner.getidBranch)
-          : repoCache.getSupplier(partner.getidBranch);
-      dataPartner.sort((a, b) => a.getname.compareTo(b.getname));
       add(PartnerResetSelectedPartner());
-      emit(currentState.copyWith(dataPartner: dataPartner));
+      add(PartnerGetData());
     }
   }
 

@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
 class ModelTransactionFinancial extends Equatable {
   final String invoice, idBranch, idFinancial, nameFinancial, note;
-  final String? statusTransaction;
+  final ListStatusTransaction? statusTransaction;
   final DateTime date;
   final double amount;
 
@@ -26,7 +27,7 @@ class ModelTransactionFinancial extends Equatable {
   String get getidFinancial => idFinancial;
   String get getnameFinancial => nameFinancial;
   String get getnote => note;
-  String? get getstatusTransaction => statusTransaction;
+  ListStatusTransaction? get getstatusTransaction => statusTransaction;
   DateTime get getdate => date;
   double get getamount => amount;
 
@@ -62,7 +63,7 @@ class ModelTransactionFinancial extends Equatable {
     String? idFinancial,
     String? nameFinancial,
     String? note,
-    String? statusTransaction,
+    ListStatusTransaction? statusTransaction,
     DateTime? date,
     double? amount,
   }) => ModelTransactionFinancial(

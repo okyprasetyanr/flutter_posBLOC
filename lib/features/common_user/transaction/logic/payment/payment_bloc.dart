@@ -308,7 +308,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     final currentState = state;
     if (currentState is PaymentLoaded) {
       final transaction = currentState.transaction_sell!.copyWith(
-        statusTransaction: statusTransaction(index: event.index),
+        statusTransaction: event.statusTransaction,
       );
       final bloc = event.context.read<DataUserRepositoryCache>();
       await transaction.pushDataTransaction(

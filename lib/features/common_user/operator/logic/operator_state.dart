@@ -16,13 +16,13 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   final StatusData filterStatusUser;
   final ModelUser? selectedData;
   final bool isEdit;
-  final bool selectedStatus;
+  final StatusData selectedStatus;
   final RoleType selectedRole;
   final Map<Permission, bool> selectedPermission;
 
   OperatorLoaded({
     this.selectedPermission = const {},
-    this.selectedStatus = true,
+    this.selectedStatus = StatusData.Aktif,
     this.selectedRole = RoleType.All,
     this.dataBranch,
     this.dataUser = const [],
@@ -43,7 +43,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
     StatusData? filterStatusUser,
     ModelUser? selectedData,
     bool? isEdit,
-    bool? selectedStatus,
+    StatusData? selectedStatus,
     RoleType? selectedRole,
     Map<Permission, bool>? selectedPermission,
   }) {

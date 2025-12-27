@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_pos/enum/enum.dart';
 
 class PaymentEvent {}
 
@@ -37,10 +38,10 @@ class PaymentGetTransaction extends PaymentEvent {
 }
 
 class PaymentProcess extends PaymentEvent {
-  final int index;
+  final ListStatusTransaction statusTransaction;
   final BuildContext context;
 
-  PaymentProcess({required this.index, required this.context});
+  PaymentProcess({required this.statusTransaction, required this.context});
 }
 
 class PaymentResetSplit extends PaymentEvent {}

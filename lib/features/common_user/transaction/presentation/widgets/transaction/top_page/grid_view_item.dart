@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -132,7 +133,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (item.getstatusCondiment)
+                  if (item.getstatusCondiment == StatusData.Aktif)
                     Positioned(
                       top: -5,
                       right: -15,
