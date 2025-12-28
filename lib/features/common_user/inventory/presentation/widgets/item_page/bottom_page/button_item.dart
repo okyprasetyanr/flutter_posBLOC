@@ -59,7 +59,6 @@ class UIInventoryButtonItem extends StatelessWidget {
                   priceItemController.text.isEmpty ||
                   codeBarcodeController.text.isEmpty ||
                   selectedIdCategoryItem.value == null) {
-                formKey.currentState!.reset();
                 customSnackBar(
                   context,
                   "Data belum lengkap atau tidak sesuai!",
@@ -73,7 +72,7 @@ class UIInventoryButtonItem extends StatelessWidget {
                     selectedIdCategory: selectedIdCategoryItem.value!,
                   ),
                 );
-                resetItemForm();
+                formKey.currentState!.reset();
               }
             },
             label: BlocSelector<InventoryBloc, InventoryState, String?>(

@@ -36,7 +36,7 @@ class HistoryFinancialSearchData extends HistoryFinancialEvent {
 class HistoryFinancialCancelData extends HistoryFinancialEvent {}
 
 class HistoryFinancialSelectedFilter extends HistoryFinancialEvent {
-  final ListStatusTransactionFinancial filter;
+  final ListStatusTransaction filter;
 
   HistoryFinancialSelectedFilter({required this.filter});
 }

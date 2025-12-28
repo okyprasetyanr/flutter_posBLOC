@@ -15,12 +15,12 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
   final DateTime? dateStart;
   final DateTime? dateEnd;
   final String search;
-  final ListStatusTransactionFinancial filter;
+  final ListStatusTransaction filter;
   final String displayDate;
 
   HistoryFinancialLoaded({
     this.displayDate = "Hari ini",
-    this.filter = ListStatusTransactionFinancial.All,
+    this.filter = ListStatusTransaction.All,
     this.search = "",
     this.dataTransaction = const [],
     this.filteredData = const [],
@@ -41,7 +41,7 @@ class HistoryFinancialLoaded extends HistoryFinancialState with EquatableMixin {
     DateTime? dateStart,
     DateTime? dateEnd,
     String? search,
-    ListStatusTransactionFinancial? indexFilter,
+    ListStatusTransaction? indexFilter,
   }) {
     return HistoryFinancialLoaded(
       displayDate: displayDate ?? this.displayDate,

@@ -380,7 +380,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             id: FieldDataSplit.invoice.name,
             nested: true,
             getMap: (data) {
-              splitPayment.add(fromMapSplit(data));
+              splitPayment.add(
+                fromMapSplit(data, invoice: data[FieldDataSplit.invoice]),
+              );
             },
           ),
 

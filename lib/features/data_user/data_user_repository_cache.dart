@@ -100,13 +100,13 @@ class DataUserRepositoryCache {
   Future<void> initTransFinancial() async {
     dataTransIncome = await repo.getTransIncome();
     dataTransExpense = await repo.getTransExpense();
-    dataCounter = await repo.getCounter();
+    dataCounter = await repo.getCounter(dataCompany);
   }
 
   Future<void> initTransaction() async {
     dataTransSell = await repo.getTransactionSell();
     dataTransBuy = await repo.getTransactionBuy();
-    dataCounter = await repo.getCounter();
+    dataCounter = await repo.getCounter(dataCompany);
   }
 
   Future<void> initItem() async {

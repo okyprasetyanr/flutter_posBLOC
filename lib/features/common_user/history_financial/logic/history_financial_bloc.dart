@@ -165,7 +165,7 @@ class HistoryFinancialBloc
 
   List<ModelTransactionFinancial> _filterData({
     required List<ModelTransactionFinancial> dataTransaction,
-    required ListStatusTransactionFinancial filter,
+    required ListStatusTransaction filter,
     required DateTime dateStart,
     required DateTime dateEnd,
     required String search,
@@ -184,7 +184,7 @@ class HistoryFinancialBloc
 
       if (filter != ListStatusTransactionFinancial.All) {
         final statusTarget = status == filter;
-        if (status != statusTarget) return false;
+        if (!statusTarget) return false;
       }
 
       if (search.isNotEmpty) {

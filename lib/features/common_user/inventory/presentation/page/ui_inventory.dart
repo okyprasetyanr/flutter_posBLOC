@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
@@ -25,7 +26,6 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_reset.dart';
-import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_navigation_gesture.dart';
 
 class UIInventory extends StatefulWidget {
@@ -108,17 +108,6 @@ class _UIInventoryState extends State<UIInventory> {
 
   Future<void> _initData() async {
     context.read<InventoryBloc>().add(InventoryGetData());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final bloc = context.read<InventoryBloc>().state;
-    if (bloc is InventoryLoaded) {
-      branchController.text = bloc.dataBranch!
-          .firstWhere((element) => element.getidBranch == bloc.idBranch!)
-          .getareaBranch;
-    }
   }
 
   Future<void> _onRefresh() async {
@@ -374,8 +363,9 @@ class _UIInventoryState extends State<UIInventory> {
                           codeBarcodeController: codeBarcodeController,
                           priceItemController: priceItemController,
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Expanded(
                               child: DropdownCategoryItem(
@@ -385,15 +375,25 @@ class _UIInventoryState extends State<UIInventory> {
                             const SizedBox(width: 10),
                             Expanded(
                               flex: 1,
-                              child: customTextField(
-                                index: 0,
-                                nodes: nodes,
-                                controller: branchController,
-                                enable: false,
-                                inputType: TextInputType.text,
-                                context: context,
-                                text: "Cabang",
-                              ),
+                              child:
+                                  customTextBranch<
+                                    InventoryBloc,
+                                    InventoryState
+                                  >(
+                                    context,
+                                    result: (state) {
+                                      if (state is InventoryLoaded) {
+                                        return state.dataBranch!
+                                            .firstWhere(
+                                              (element) =>
+                                                  element.getidBranch ==
+                                                  state.idBranch,
+                                            )
+                                            .getareaBranch;
+                                      }
+                                      return "";
+                                    },
+                                  ),
                             ),
                           ],
                         ),

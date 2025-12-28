@@ -11,10 +11,6 @@ final listStatusTransaction = ListStatusTransaction.values
     .map((map) => map)
     .toList();
 
-final listStatusTransactionFinancial = ListStatusTransactionFinancial.values
-    .map((map) => map)
-    .toList();
-
 final filterItem = FilterItem.values.map((map) => map).toList();
 
 final statusData = StatusData.values.map((map) => map).toList();

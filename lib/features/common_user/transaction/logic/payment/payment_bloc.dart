@@ -125,7 +125,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
               ModelSplit(
                 paymentName: "Debit",
                 paymentTotal: 0,
-                paymentDebitName: event.bankName,
+                paymentDebitName: event.bankName ?? "",
               ),
             );
           }
@@ -336,10 +336,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           .doc(UserSession.uid_owner)
           .collection('branch')
           .doc(transaction.getidBranch)
-          .update({
+          .set({
             currentState.isSell ? 'counter_sell' : 'counter_buy':
                 FieldValue.increment(1),
-          });
+          }, SetOptions(merge: true));
     }
 
     final sellState = event.context.read<TransactionBloc>();

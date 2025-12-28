@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
@@ -52,16 +53,6 @@ class _UIPartnerState extends State<UIPartner> {
 
   Future<void> _initData() async {
     context.read<PartnerBloc>().add(PartnerGetData());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final bloc = (context.read<PartnerBloc>().state as PartnerLoaded);
-    final text = bloc.dataBranch!
-        .firstWhere((element) => element.getidBranch == bloc.idBranch)
-        .getareaBranch;
-    branchController.text = text;
   }
 
   @override
@@ -351,7 +342,7 @@ class _UIPartnerState extends State<UIPartner> {
             },
           ),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 10),
         BlocListener<PartnerBloc, PartnerState>(
           listenWhen: (previous, current) =>
               previous is PartnerLoaded &&
@@ -413,8 +404,9 @@ class _UIPartnerState extends State<UIPartner> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Expanded(
                         child: customTextField(
@@ -430,11 +422,21 @@ class _UIPartnerState extends State<UIPartner> {
                       const SizedBox(width: 10),
                       Expanded(
                         flex: 1,
-                        child: customTextField(
-                          controller: branchController,
-                          enable: false,
-                          inputType: TextInputType.text,
-                          text: "Cabang",
+                        child: customTextBranch<PartnerBloc, PartnerState>(
+                          context,
+                          result: (state) {
+                            if (state is PartnerLoaded) {
+                              return state.dataBranch
+                                      ?.firstWhere(
+                                        (element) =>
+                                            element.getidBranch ==
+                                            state.idBranch,
+                                      )
+                                      .getareaBranch ??
+                                  "";
+                            }
+                            return "";
+                          },
                         ),
                       ),
                     ],
@@ -477,7 +479,7 @@ class _UIPartnerState extends State<UIPartner> {
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             child: Text(
               "PANDUAN:\nUntuk hapus Kategori, silahkan geser kiri Kategori yang diinginkan.",
               style: lv05TextStyle,

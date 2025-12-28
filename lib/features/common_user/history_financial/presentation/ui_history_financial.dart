@@ -189,17 +189,23 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
               width: 100,
               child: WidgetDropDownFilter(
                 initialValue: context
-                    .select<
-                      HistoryFinancialBloc,
-                      ListStatusTransactionFinancial
-                    >((bloc) {
+                    .select<HistoryFinancialBloc, ListStatusTransaction>((
+                      bloc,
+                    ) {
                       final state = bloc.state;
                       if (state is HistoryFinancialLoaded) {
                         return state.filter;
                       }
-                      return ListStatusTransactionFinancial.All;
+                      return ListStatusTransaction.All;
                     }),
-                filters: listStatusTransactionFinancial,
+                filters: listStatusTransaction
+                    .where(
+                      (element) =>
+                          element == ListStatusTransaction.All &&
+                          element == ListStatusTransaction.Sukses &&
+                          element == ListStatusTransaction.Batal,
+                    )
+                    .toList(),
                 text: "Pilih Filter",
                 selectedValue: (selectedEnum) {
                   context.read<HistoryFinancialBloc>().add(
@@ -303,7 +309,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                                             children: [
                                               TextSpan(
                                                 text:
-                                                    "${dataTransaction.getstatusTransaction}",
+                                                    "${dataTransaction.getstatusTransaction!.name}",
                                                 style:
                                                     dataTransaction
                                                             .getstatusTransaction ==

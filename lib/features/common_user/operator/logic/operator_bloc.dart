@@ -40,8 +40,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         final byStatus = element.getstatusUser == statusUser;
         if (!byStatus) return false;
       }
-      if (roleUser != null && roleUser.id != 0) {
-        final byRole = element.getRoleUser == roleUser.id;
+      if (roleUser != RoleType.All) {
+        final byRole = element.getRoleUser == roleUser;
         if (!byRole) return false;
       }
       final byIdBranch = element.getIdBranchUser == idBranch;

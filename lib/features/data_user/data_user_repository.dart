@@ -108,13 +108,13 @@ class DataUserRepository {
     return getDataListBatch(data);
   }
 
-  Future<List<ModelCounter>> getCounter() async {
+  Future<List<ModelCounter>> getCounter(ModelCompany? dataCompany) async {
     final data = await _db
         .collection('counter')
         .doc(UserSession.uid_owner)
         .collection('branch')
         .get();
 
-    return getDataCounter(data);
+    return getDataCounter(data, dataCompany);
   }
 }

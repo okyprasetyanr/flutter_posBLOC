@@ -208,7 +208,11 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                       }
                       return ListStatusTransaction.All;
                     }),
-                filters: listStatusTransaction,
+                filters: listStatusTransaction
+                    .where(
+                      (element) => element != ListStatusTransaction.Tersimpan,
+                    )
+                    .toList(),
                 text: "Pilih Filter",
                 selectedValue: (selectedEnum) {
                   context.read<HistoryTransactionBloc>().add(
@@ -314,7 +318,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                             children: [
                                               TextSpan(
                                                 text:
-                                                    "${dataTransaction.getstatusTransaction}",
+                                                    "${dataTransaction.getstatusTransaction!.name}",
                                                 style:
                                                     dataTransaction
                                                             .getstatusTransaction ==

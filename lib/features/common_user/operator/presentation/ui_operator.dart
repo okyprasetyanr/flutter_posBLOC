@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
@@ -76,16 +77,6 @@ class _UIOperatorState extends State<UIOperator> {
 
   void _initData() {
     context.read<OperatorBloc>().add(OperatorGetData());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final bloc = (context.read<OperatorBloc>().state as OperatorLoaded);
-    final text = bloc.dataBranch!
-        .firstWhere((element) => element.getidBranch == bloc.idBranch)
-        .getareaBranch;
-    branchController.text = text;
   }
 
   @override
@@ -342,8 +333,9 @@ class _UIOperatorState extends State<UIOperator> {
                   ),
 
                   // ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
@@ -362,12 +354,19 @@ class _UIOperatorState extends State<UIOperator> {
                       const SizedBox(width: 10),
                       Expanded(
                         flex: 1,
-                        child: customTextField(
-                          inputType: TextInputType.text,
-                          context: context,
-                          text: "Cabang",
-                          controller: branchController,
-                          enable: false,
+                        child: customTextBranch<OperatorBloc, OperatorState>(
+                          context,
+                          result: (state) {
+                            if (state is OperatorLoaded) {
+                              return state.dataBranch!
+                                  .firstWhere(
+                                    (element) =>
+                                        element.getidBranch == state.idBranch,
+                                  )
+                                  .getareaBranch;
+                            }
+                            return "";
+                          },
                         ),
                       ),
                     ],

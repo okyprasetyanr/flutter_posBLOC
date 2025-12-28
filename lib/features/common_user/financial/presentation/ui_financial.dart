@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_event.dart';
@@ -185,6 +186,7 @@ class _UiFinancialState extends State<UiFinancial> {
         ),
         const SizedBox(height: 10),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
               flex: 3,
@@ -216,29 +218,21 @@ class _UiFinancialState extends State<UiFinancial> {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 5),
             Expanded(
               flex: 2,
-              child: BlocListener<FinancialBloc, FinancialState>(
-                listenWhen: (previous, current) =>
-                    previous is FinancialLoaded &&
-                    current is FinancialLoaded &&
-                    previous.idBranch != current.idBranch,
-                listener: (context, state) {
-                  if (state is FinancialLoaded && state.idBranch != null) {
-                    branchController.text = state.dataBranch!
-                        .firstWhere((e) => e.getidBranch == state.idBranch)
+              child: customTextBranch<FinancialBloc, FinancialState>(
+                context,
+                result: (state) {
+                  if (state is FinancialLoaded) {
+                    return state.dataBranch!
+                        .firstWhere(
+                          (element) => element.getidBranch == state.idBranch,
+                        )
                         .getareaBranch;
-                  } else {
-                    branchController.text = "Mohon Tunggu";
                   }
+                  return "";
                 },
-                child: customTextField(
-                  controller: branchController,
-                  enable: false,
-                  inputType: TextInputType.text,
-                  text: "Cabang",
-                ),
               ),
             ),
           ],

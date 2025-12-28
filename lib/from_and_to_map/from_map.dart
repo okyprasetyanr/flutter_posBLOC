@@ -100,11 +100,13 @@ ModelBranch fromMapListBranch(Map<String, dynamic> data, String id) {
   );
 }
 
-ModelSplit fromMapSplit(Map<String, dynamic> split) {
+ModelSplit fromMapSplit(Map<String, dynamic> split, {required String invoice}) {
   return ModelSplit(
-    paymentName: split[FieldDataSplit.payment_name],
+    paymentDebitName: split[FieldDataSplit.payment_debit_name.name],
+    paymentInvoice: invoice,
+    paymentName: split[FieldDataSplit.payment_name.name],
     paymentTotal: double.tryParse(
-      split[FieldDataSplit.payment_total].toString(),
+      split[FieldDataSplit.payment_total.name].toString(),
     )!,
   );
 }
@@ -154,16 +156,16 @@ ModelCompany fromMapCompany(
 }
 
 ModelCounter fromMapCounter(
-  Map<String, dynamic> data,
+  Map<String, dynamic>? data,
   String id, {
   DocumentSnapshot? dataList,
 }) {
   return ModelCounter(
     idBranch: id,
-    counterSell: data[FieldDataCounter.counter_sell.name],
-    counterBuy: data[FieldDataCounter.counter_buy.name],
-    counterIncome: data[FieldDataCounter.counter_income.name],
-    counterExpense: data[FieldDataCounter.counter_expense.name],
+    counterSell: data?[FieldDataCounter.counter_sell.name] ?? 0,
+    counterBuy: data?[FieldDataCounter.counter_buy.name] ?? 0,
+    counterIncome: data?[FieldDataCounter.counter_income.name] ?? 0,
+    counterExpense: data?[FieldDataCounter.counter_expense.name] ?? 0,
   );
 }
 
@@ -180,11 +182,7 @@ ModelBatch fromMapBatch(
   );
 }
 
-ModelItemBatch fromMapItembatch(
-  Map<String, dynamic> data,
-  String id, {
-  DocumentSnapshot? dataList,
-}) {
+ModelItemBatch fromMapItembatch(Map<String, dynamic> data, String id) {
   return ModelItemBatch(
     invoice: data[FieldDataItemBatch.invoice.name],
     nameItem: data[FieldDataItemBatch.name_item.name],

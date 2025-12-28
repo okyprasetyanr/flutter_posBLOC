@@ -51,7 +51,14 @@ class HistoryTransactionBloc
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isIncome = event.isSell ?? currentState.isSell;
     final dataTransaction = isIncome
-        ? repoCache.getTransactionSell(idBranch)
+        ? repoCache
+              .getTransactionSell(idBranch)
+              .where(
+                (element) =>
+                    element.getstatusTransaction !=
+                    ListStatusTransaction.Tersimpan,
+              )
+              .toList()
         : repoCache.getTransactionBuy(idBranch);
 
     final filteredData = dataTransaction.where((element) {
@@ -241,7 +248,7 @@ class HistoryTransactionBloc
 
       if (filter != ListStatusTransaction.All) {
         final statusTarget = status == filter;
-        if (status != statusTarget) return false;
+        if (!statusTarget) return false;
       }
 
       if (search.isNotEmpty) {
