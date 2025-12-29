@@ -60,7 +60,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
       idBranch: idBranch ?? this.idBranch,
       filterRoleUser: filterRoleUser ?? this.filterRoleUser,
       filterStatusUser: filterStatusUser ?? this.filterStatusUser,
-      selectedData: selectedData ?? this.selectedData,
+      selectedData: selectedData,
       selectedRole: selectedRole ?? this.selectedRole,
       selectedStatus: selectedStatus ?? this.selectedStatus,
     );

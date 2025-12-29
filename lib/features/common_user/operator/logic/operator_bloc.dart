@@ -22,6 +22,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     on<OperatorSelectedData>(_onSelectedData);
     on<OperatorResetPassword>(_onResetPassword);
     on<OperatorSearch>(_onSearch, transformer: debounceRestartable());
+    on<OperatorResetForm>(_onResetForm);
   }
 
   List<ModelUser> filterData({
@@ -155,7 +156,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   ) {
     final currentState = state as OperatorLoaded;
     final selectedData = event.selectedData ?? currentState.selectedData;
-
+    debugPrint("Log OperatorBloc: selectedData: $selectedData");
     emit(
       currentState.copyWith(
         selectedData: selectedData,
@@ -222,20 +223,54 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Emitter<OperatorState> emit,
   ) async {
     final currentState = state as OperatorLoaded;
-
+    final selectedData = currentState.selectedData;
     final email = currentState.selectedData?.getEmailUser;
     if (email == null || email.isEmpty) {
-      emit(currentState.copyWith(resetStatus: ResetPasswordStatus.failure));
+      emit(
+        currentState.copyWith(
+          resetStatus: ResetPasswordStatus.failure,
+          selectedData: selectedData,
+        ),
+      );
       return;
     }
 
-    emit(currentState.copyWith(resetStatus: ResetPasswordStatus.loading));
+    emit(
+      currentState.copyWith(
+        resetStatus: ResetPasswordStatus.loading,
+        selectedData: selectedData,
+      ),
+    );
 
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      emit(currentState.copyWith(resetStatus: ResetPasswordStatus.success));
+      emit(
+        currentState.copyWith(
+          resetStatus: ResetPasswordStatus.success,
+          selectedData: selectedData,
+        ),
+      );
     } catch (e) {
-      emit(currentState.copyWith(resetStatus: ResetPasswordStatus.failure));
+      emit(
+        currentState.copyWith(
+          resetStatus: ResetPasswordStatus.failure,
+          selectedData: selectedData,
+        ),
+      );
     }
+    emit(
+      currentState.copyWith(
+        resetStatus: ResetPasswordStatus.idle,
+        selectedData: selectedData,
+      ),
+    );
+  }
+
+  FutureOr<void> _onResetForm(
+    OperatorResetForm event,
+    Emitter<OperatorState> emit,
+  ) {
+    final currentState = state as OperatorLoaded;
+    emit(currentState.copyWith(selectedData: null, isEdit: false));
   }
 }

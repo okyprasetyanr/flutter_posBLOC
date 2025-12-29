@@ -24,7 +24,6 @@ Future<UserCredential?> authenticatorAccount({
     customSnackBar(context, "Tidak ada koneksi!");
     return null;
   }
-
   try {
     if (signup) {
       return await FirebaseAuth.instance.createUserWithEmailAndPassword(

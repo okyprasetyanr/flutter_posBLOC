@@ -311,78 +311,95 @@ class _UIOperatorState extends State<UIOperator> {
                       );
                     },
                   ),
+
                   const SizedBox(height: 10),
-                  BlocSelector<OperatorBloc, OperatorState, bool>(
-                    selector: (state) =>
-                        state is OperatorLoaded ? state.isEdit : false,
-                    builder: (context, state) => state
-                        ? BlocSelector<
-                            OperatorBloc,
-                            OperatorState,
-                            ResetPasswordStatus
-                          >(
-                            selector: (state) => state is OperatorLoaded
-                                ? state.resetStatus
-                                : ResetPasswordStatus.idle,
-                            builder: (context, stateReset) {
-                              passwordController.clear();
-                              return customButtonIcon(
-                                onPressed: () {
-                                  switch (stateReset) {
-                                    case ResetPasswordStatus.idle:
-                                      break;
-                                    case ResetPasswordStatus.loading:
-                                      showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (_) {
-                                          return Center(
-                                            child: customSpinKit(
-                                              color: Colors.white,
-                                              size: 30,
-                                            ),
-                                          );
-                                        },
+                  BlocListener<OperatorBloc, OperatorState>(
+                    listenWhen: (previous, current) =>
+                        previous is OperatorLoaded &&
+                        current is OperatorLoaded &&
+                        previous.isEdit != current.isEdit,
+                    listener: (context, state) {
+                      if (state is OperatorLoaded && state.isEdit) {
+                        passwordController.clear();
+                      }
+                    },
+                    child: BlocSelector<OperatorBloc, OperatorState, bool>(
+                      selector: (state) =>
+                          state is OperatorLoaded ? state.isEdit : false,
+                      builder: (context, isEdit) {
+                        return isEdit
+                            ? BlocSelector<
+                                OperatorBloc,
+                                OperatorState,
+                                ResetPasswordStatus
+                              >(
+                                selector: (state) => state is OperatorLoaded
+                                    ? state.resetStatus
+                                    : ResetPasswordStatus.idle,
+                                builder: (context, stateReset) {
+                                  passwordController.clear();
+                                  return customButtonIcon(
+                                    onPressed: () {
+                                      context.read<OperatorBloc>().add(
+                                        OperatorResetPassword(),
                                       );
-                                    case ResetPasswordStatus.success:
-                                      {
-                                        Navigator.pop(context);
-                                        customSnackBar(
-                                          context,
-                                          "Reset Kata Sandi berhasil dikirim ke E-mail!",
-                                        );
+                                      switch (stateReset) {
+                                        case ResetPasswordStatus.idle:
+                                          break;
+                                        case ResetPasswordStatus.loading:
+                                          showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (_) {
+                                              return Center(
+                                                child: customSpinKit(
+                                                  color: Colors.white,
+                                                  size: 30,
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        case ResetPasswordStatus.success:
+                                          {
+                                            Navigator.pop(context);
+                                            customSnackBar(
+                                              context,
+                                              "Reset Kata Sandi berhasil dikirim ke E-mail!",
+                                            );
+                                          }
+                                        case ResetPasswordStatus.failure:
+                                          {
+                                            Navigator.pop(context);
+                                            customSnackBar(
+                                              context,
+                                              "Terjadi kesalahan, silahkan Ulangi!",
+                                            );
+                                          }
                                       }
-                                    case ResetPasswordStatus.failure:
-                                      {
-                                        Navigator.pop(context);
-                                        customSnackBar(
-                                          context,
-                                          "Terjadi kesalahan, silahkan Ulangi!",
-                                        );
-                                      }
-                                  }
+                                    },
+                                    backgroundColor: AppPropertyColor.primary,
+                                    icon: Icon(
+                                      Icons.lock_reset_rounded,
+                                      color: Colors.white,
+                                    ),
+                                    label: Text(
+                                      "Reset Kata Sandi",
+                                      style: lv05TextStyleWhite,
+                                    ),
+                                  );
                                 },
-                                backgroundColor: AppPropertyColor.primary,
-                                icon: Icon(
-                                  Icons.lock_reset_rounded,
-                                  color: Colors.white,
-                                ),
-                                label: Text(
-                                  "Reset Kata Sandi",
-                                  style: lv05TextStyleWhite,
-                                ),
+                              )
+                            : customTextField(
+                                context: context,
+                                controller: passwordController,
+                                enable: true,
+                                index: 3,
+                                inputType: TextInputType.text,
+                                nodes: nodes,
+                                text: "Password Operator",
                               );
-                            },
-                          )
-                        : customTextField(
-                            context: context,
-                            controller: passwordController,
-                            enable: true,
-                            index: 3,
-                            inputType: TextInputType.text,
-                            nodes: nodes,
-                            text: "Password Operator",
-                          ),
+                      },
+                    ),
                   ),
                   const SizedBox(height: 5),
                   Row(
@@ -544,7 +561,14 @@ class _UIOperatorState extends State<UIOperator> {
                     top: 0,
                   ),
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<OperatorBloc>().add(OperatorResetForm());
+                      passwordController.clear();
+                      nameController.clear();
+                      emailController.clear();
+                      phoneController.clear();
+                      noteController.clear();
+                    },
                     label: Text("Bersihkan", style: lv05TextStyle),
                     icon: Icon(
                       Icons.restart_alt_rounded,
