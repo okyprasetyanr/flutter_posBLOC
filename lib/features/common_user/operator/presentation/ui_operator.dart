@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_pos/features/common_user/operator/logic/operator_state.d
 import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
@@ -310,29 +312,78 @@ class _UIOperatorState extends State<UIOperator> {
                     },
                   ),
                   const SizedBox(height: 10),
-                  // BlocSelector<OperatorBloc, OperatorState, bool>(
-                  //   selector: (state) =>
-                  //       state is OperatorLoaded ? state.isEdit : false,
-                  //   builder: (context, state) => state
-                  //       ? SizedBox.shrink()
-                  //       :
-                  customTextField(
-                    context: context,
-                    controller: passwordController,
-                    enable: true,
-                    index: 3,
-                    inputType: TextInputType.text,
-                    nodes: nodes,
-                    text: "Password Operator",
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Password tidak boleh kosong";
-                      }
-                      return null;
-                    },
+                  BlocSelector<OperatorBloc, OperatorState, bool>(
+                    selector: (state) =>
+                        state is OperatorLoaded ? state.isEdit : false,
+                    builder: (context, state) => state
+                        ? BlocSelector<
+                            OperatorBloc,
+                            OperatorState,
+                            ResetPasswordStatus
+                          >(
+                            selector: (state) => state is OperatorLoaded
+                                ? state.resetStatus
+                                : ResetPasswordStatus.idle,
+                            builder: (context, stateReset) {
+                              passwordController.clear();
+                              return customButtonIcon(
+                                onPressed: () {
+                                  switch (stateReset) {
+                                    case ResetPasswordStatus.idle:
+                                      break;
+                                    case ResetPasswordStatus.loading:
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (_) {
+                                          return Center(
+                                            child: customSpinKit(
+                                              color: Colors.white,
+                                              size: 30,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    case ResetPasswordStatus.success:
+                                      {
+                                        Navigator.pop(context);
+                                        customSnackBar(
+                                          context,
+                                          "Reset Kata Sandi berhasil dikirim ke E-mail!",
+                                        );
+                                      }
+                                    case ResetPasswordStatus.failure:
+                                      {
+                                        Navigator.pop(context);
+                                        customSnackBar(
+                                          context,
+                                          "Terjadi kesalahan, silahkan Ulangi!",
+                                        );
+                                      }
+                                  }
+                                },
+                                backgroundColor: AppPropertyColor.primary,
+                                icon: Icon(
+                                  Icons.lock_reset_rounded,
+                                  color: Colors.white,
+                                ),
+                                label: Text(
+                                  "Reset Kata Sandi",
+                                  style: lv05TextStyleWhite,
+                                ),
+                              );
+                            },
+                          )
+                        : customTextField(
+                            context: context,
+                            controller: passwordController,
+                            enable: true,
+                            index: 3,
+                            inputType: TextInputType.text,
+                            nodes: nodes,
+                            text: "Password Operator",
+                          ),
                   ),
-
-                  // ),
                   const SizedBox(height: 5),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -482,40 +533,78 @@ class _UIOperatorState extends State<UIOperator> {
 
         SizedBox(
           width: double.infinity,
-          child: BlocSelector<OperatorBloc, OperatorState, bool>(
-            selector: (state) {
-              if (state is OperatorLoaded) {
-                return state.isEdit;
-              }
-              return false;
-            },
-            builder: (context, state) {
-              return customButtonIcon(
-                icon: Icon(Icons.check_rounded, color: Colors.white),
-                backgroundColor: AppPropertyColor.primary,
-                label: Text(
-                  state ? "Edit" : "Simpan",
-                  style: lv05TextStyleWhite,
-                ),
-                onPressed: () {
-                  if (!_formKey.currentState!.validate() && !state) {
-                    return;
-                  } else {
-                    context.read<OperatorBloc>().add(
-                      OperatorUploadData(
-                        context: context,
-                        password: passwordController.text,
-                        email: emailController.text,
-                        name: nameController.text,
-                        note: noteController.text,
-                        phone: phoneController.text,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 5,
+                    right: 0,
+                    bottom: 5,
+                    top: 0,
+                  ),
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    label: Text("Bersihkan", style: lv05TextStyle),
+                    icon: Icon(
+                      Icons.restart_alt_rounded,
+                      size: lv2IconSize,
+                      color: Colors.black,
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(Colors.white),
+                      minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                      padding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: BlocSelector<OperatorBloc, OperatorState, bool>(
+                  selector: (state) {
+                    if (state is OperatorLoaded) {
+                      return state.isEdit;
+                    }
+                    return false;
+                  },
+                  builder: (context, state) {
+                    return customButtonIcon(
+                      icon: Icon(Icons.check_rounded, color: Colors.white),
+                      backgroundColor: AppPropertyColor.primary,
+                      label: Text(
+                        state ? "Edit" : "Simpan",
+                        style: lv05TextStyleWhite,
+                      ),
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate() && !state) {
+                          return;
+                        } else {
+                          context.read<OperatorBloc>().add(
+                            OperatorUploadData(
+                              context: context,
+                              password: passwordController.text,
+                              email: emailController.text,
+                              name: nameController.text,
+                              note: noteController.text,
+                              phone: phoneController.text,
+                            ),
+                          );
+                        }
+                        ;
+                      },
                     );
-                  }
-                  ;
-                },
-              );
-            },
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ],

@@ -1,1 +1,39 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"marketplacemandiri","appId":"1:270816365340:android:3d4f4db20185ec875b08d9","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"marketplacemandiri","configurations":{"android":"1:270816365340:android:3d4f4db20185ec875b08d9","ios":"1:270816365340:ios:14cc45d710395a935b08d9","macos":"1:270816365340:ios:14cc45d710395a935b08d9","web":"1:270816365340:web:b91f46cfbb6894a65b08d9","windows":"1:270816365340:web:70f408f100fc5e245b08d9"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "marketplacemandiri",
+          "appId": "1:270816365340:android:3d4f4db20185ec875b08d9",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "marketplacemandiri",
+          "configurations": {
+            "android": "1:270816365340:android:3d4f4db20185ec875b08d9",
+            "ios": "1:270816365340:ios:14cc45d710395a935b08d9",
+            "macos": "1:270816365340:ios:14cc45d710395a935b08d9",
+            "web": "1:270816365340:web:b91f46cfbb6894a65b08d9",
+            "windows": "1:270816365340:web:70f408f100fc5e245b08d9"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

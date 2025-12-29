@@ -122,7 +122,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                   index: 1,
                   nodes: nodes,
                   inputType: TextInputType.text,
-                  text: "Password",
+                  text: "Kata Sandi",
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Tidak boleh kosong!";

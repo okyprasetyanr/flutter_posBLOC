@@ -280,3 +280,5 @@ enum Permission {
   Riwayat_Pengeluaran,
   Laporan,
 }
+
+enum ResetPasswordStatus { idle, loading, success, failure }

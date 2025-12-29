@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
@@ -216,8 +217,25 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     Navigator.of(context).pop();
   }
 
-  FutureOr<void> _onResetPassword(
+  Future<void> _onResetPassword(
     OperatorResetPassword event,
     Emitter<OperatorState> emit,
-  ) {}
+  ) async {
+    final currentState = state as OperatorLoaded;
+
+    final email = currentState.selectedData?.getEmailUser;
+    if (email == null || email.isEmpty) {
+      emit(currentState.copyWith(resetStatus: ResetPasswordStatus.failure));
+      return;
+    }
+
+    emit(currentState.copyWith(resetStatus: ResetPasswordStatus.loading));
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      emit(currentState.copyWith(resetStatus: ResetPasswordStatus.success));
+    } catch (e) {
+      emit(currentState.copyWith(resetStatus: ResetPasswordStatus.failure));
+    }
+  }
 }

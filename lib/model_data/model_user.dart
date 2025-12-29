@@ -76,6 +76,8 @@ class ModelUser extends Equatable {
           phoneUser: phoneUser,
           roleUser: roleUser,
           permissionsUser: permissionsUser,
+          idBranchUser: idBranchUser,
+          statusUser: statusUser,
         ),
         uidOwner,
       ),

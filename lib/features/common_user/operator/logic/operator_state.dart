@@ -18,6 +18,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   final bool isEdit;
   final StatusData selectedStatus;
   final RoleType selectedRole;
+  final ResetPasswordStatus resetStatus;
   final Map<Permission, bool> selectedPermission;
 
   OperatorLoaded({
@@ -28,6 +29,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
     this.dataUser = const [],
     this.filteredData = const [],
     this.idBranch,
+    this.resetStatus = ResetPasswordStatus.idle,
     this.filterRoleUser,
     this.filterStatusUser = StatusData.Aktif,
     this.isEdit = false,
@@ -35,6 +37,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   });
 
   OperatorLoaded copyWith({
+    ResetPasswordStatus? resetStatus,
     List<ModelBranch>? dataBranch,
     List<ModelUser>? dataUser,
     List<ModelUser>? filteredData,
@@ -48,6 +51,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
     Map<Permission, bool>? selectedPermission,
   }) {
     return OperatorLoaded(
+      resetStatus: resetStatus ?? this.resetStatus,
       selectedPermission: selectedPermission ?? this.selectedPermission,
       isEdit: isEdit ?? this.isEdit,
       dataBranch: dataBranch ?? this.dataBranch,
