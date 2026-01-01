@@ -79,6 +79,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         dataBranch: dataBranch,
         idBranch: idBranch,
         dataUser: dataUser,
+        isEdit: false,
         filteredData: filteredData,
         filterRoleUser: roleUser,
         filterStatusUser: statusUser,
@@ -101,6 +102,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       roleUser: roleUser,
       statusUser: statusUser,
     );
+
+    debugPrint("Log OperatorBloc: onFilter: $filteredData");
 
     emit(
       currentState.copyWith(
@@ -206,11 +209,11 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         password: event.password,
         signup: true,
       );
-
       if (credential == null) return Navigator.of(context).pop();
       final uid = credential.user!.uid;
 
       data = data.copyWith(idBranchUser: currentState.idBranch, idUser: uid);
+      dataOperator.add(data);
     }
     debugPrint("Log OperatorBloc: upload: ${data}");
     await data.pushDataUser();

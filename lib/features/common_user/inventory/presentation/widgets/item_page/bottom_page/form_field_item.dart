@@ -35,8 +35,8 @@ class UIInventoryFormFieldItem extends StatelessWidget {
       listenWhen: (previous, current) =>
           previous is InventoryLoaded &&
           current is InventoryLoaded &&
-          previous.dataSelectedItem != current.dataSelectedItem &&
-          previous.idBranch != current.idBranch,
+          (previous.dataSelectedItem != current.dataSelectedItem ||
+              previous.idBranch != current.idBranch),
       listener: (context, state) {
         if (state is InventoryLoaded) {
           final dataSelectedItem = state.dataSelectedItem;

@@ -30,7 +30,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
     this.filteredData = const [],
     this.idBranch,
     this.resetStatus = ResetPasswordStatus.idle,
-    this.filterRoleUser,
+    this.filterRoleUser = RoleType.All,
     this.filterStatusUser = StatusData.Aktif,
     this.isEdit = false,
     this.selectedData,

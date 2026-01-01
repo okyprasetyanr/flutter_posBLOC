@@ -42,18 +42,18 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyBGzaj1hzVWZJJZzf6TfrDqBRSKyaqLshY',
-    appId: '1:270816365340:web:b91f46cfbb6894a65b08d9',
+    appId: '1:270816365340:web:70f408f100fc5e245b08d9',
     messagingSenderId: '270816365340',
     projectId: 'marketplacemandiri',
     authDomain: 'marketplacemandiri.firebaseapp.com',
     databaseURL: 'https://marketplacemandiri-default-rtdb.firebaseio.com',
     storageBucket: 'marketplacemandiri.firebasestorage.app',
-    measurementId: 'G-HQC3XR24KB',
+    measurementId: 'G-9PYYZLCCJT',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyASZN1gi_4aGiOsuIzplQYZr8bdOai6QFw',
-    appId: '1:270816365340:android:3d4f4db20185ec875b08d9',
+    appId: '1:270816365340:android:0ae6f7332aea9a165b08d9',
     messagingSenderId: '270816365340',
     projectId: 'marketplacemandiri',
     databaseURL: 'https://marketplacemandiri-default-rtdb.firebaseio.com',
@@ -62,12 +62,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBFExiQ0BwS7D3yyzZbsBTdjqwS7LS5g_o',
-    appId: '1:270816365340:ios:14cc45d710395a935b08d9',
+    appId: '1:270816365340:ios:591c3ac1cce316b35b08d9',
     messagingSenderId: '270816365340',
     projectId: 'marketplacemandiri',
     databaseURL: 'https://marketplacemandiri-default-rtdb.firebaseio.com',
     storageBucket: 'marketplacemandiri.firebasestorage.app',
-    iosBundleId: 'com.example.flutterPos',
+    iosBundleId: 'com.ringkaspos.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -90,4 +90,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'marketplacemandiri.firebasestorage.app',
     measurementId: 'G-9PYYZLCCJT',
   );
+
 }

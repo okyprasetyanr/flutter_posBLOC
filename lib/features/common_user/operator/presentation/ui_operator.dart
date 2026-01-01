@@ -312,7 +312,7 @@ class _UIOperatorState extends State<UIOperator> {
                     },
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   BlocListener<OperatorBloc, OperatorState>(
                     listenWhen: (previous, current) =>
                         previous is OperatorLoaded &&
@@ -401,7 +401,6 @@ class _UIOperatorState extends State<UIOperator> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 5),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -562,12 +561,7 @@ class _UIOperatorState extends State<UIOperator> {
                   ),
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      context.read<OperatorBloc>().add(OperatorResetForm());
-                      passwordController.clear();
-                      nameController.clear();
-                      emailController.clear();
-                      phoneController.clear();
-                      noteController.clear();
+                      resetForm();
                     },
                     label: Text("Bersihkan", style: lv05TextStyle),
                     icon: Icon(
@@ -638,5 +632,14 @@ class _UIOperatorState extends State<UIOperator> {
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initUser();
     _initData();
+  }
+
+  void resetForm() {
+    context.read<OperatorBloc>().add(OperatorResetForm());
+    passwordController.clear();
+    nameController.clear();
+    emailController.clear();
+    phoneController.clear();
+    noteController.clear();
   }
 }

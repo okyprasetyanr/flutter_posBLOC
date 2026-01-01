@@ -82,11 +82,6 @@ void main() async {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    await Hive.initFlutter();
     await Hive.openBox('firestoreQueue');
     await FirestoreWorker.processQueueHive();
     debugPrint('Log Main: FirestoreWorker masuk');
@@ -142,12 +137,14 @@ class _MainAppState extends State<ScreenLogin> {
     //       return SizedBox();
     //     } else {
     return _login();
+
     //     }git
     //   },
     // );
   }
 
   Widget _login() {
+    print(Firebase.app().options.projectId);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
