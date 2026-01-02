@@ -1,60 +1,21 @@
 {
   "project_info": {
-    "project_number": "270816365340",
-    "firebase_url": "https://marketplacemandiri-default-rtdb.firebaseio.com",
-    "project_id": "marketplacemandiri",
-    "storage_bucket": "marketplacemandiri.firebasestorage.app"
+    "project_number": "950605811460",
+    "project_id": "ringkaspos",
+    "storage_bucket": "ringkaspos.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:270816365340:android:f9d574fc972503925b08d9",
+        "mobilesdk_app_id": "1:950605811460:android:feffab00934e57acf50a51",
         "android_client_info": {
-          "package_name": "com.example.flutter_mandiri"
+          "package_name": "com.ringkas.pos"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyASZN1gi_4aGiOsuIzplQYZr8bdOai6QFw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:270816365340:android:3d4f4db20185ec875b08d9",
-        "android_client_info": {
-          "package_name": "com.example.flutter_pos"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyASZN1gi_4aGiOsuIzplQYZr8bdOai6QFw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:270816365340:android:0ae6f7332aea9a165b08d9",
-        "android_client_info": {
-          "package_name": "com.ringkaspos.app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyASZN1gi_4aGiOsuIzplQYZr8bdOai6QFw"
+          "current_key": "AIzaSyBF-B01PRXL11O1XzrgRZumUNcyKUKZmhA"
         }
       ],
       "services": {

@@ -23,7 +23,7 @@ Widget WidgetDropDownFilter<T extends Enum>({
           (map) => DropdownMenuItem(
             value: map,
             child: Text(
-              extension != null ? extension(map) : map.name,
+              extension != null ? extension(map).toString() : map.name,
               style: lv05TextStyle,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

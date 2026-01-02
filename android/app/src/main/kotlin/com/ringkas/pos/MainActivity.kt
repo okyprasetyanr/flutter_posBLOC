@@ -1,4 +1,4 @@
-package com.ringkaspos.app
+package com.ringkas.pos
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -82,6 +82,11 @@ void main() async {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await Hive.initFlutter();
     await Hive.openBox('firestoreQueue');
     await FirestoreWorker.processQueueHive();
     debugPrint('Log Main: FirestoreWorker masuk');
