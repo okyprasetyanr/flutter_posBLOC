@@ -221,10 +221,6 @@ class _UIOperatorState extends State<UIOperator> {
       children: [
         Expanded(
           child: BlocListener<OperatorBloc, OperatorState>(
-            listenWhen: (previous, current) =>
-                previous is OperatorLoaded &&
-                current is OperatorLoaded &&
-                previous.selectedData != current.selectedData,
             listener: (context, state) {
               final currentState = state;
               if (currentState is OperatorLoaded) {

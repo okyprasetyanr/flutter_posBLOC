@@ -24,7 +24,7 @@ class OperatorLoaded extends OperatorState with EquatableMixin {
   OperatorLoaded({
     this.selectedPermission = const {},
     this.selectedStatus = StatusData.Aktif,
-    this.selectedRole = RoleType.All,
+    this.selectedRole = RoleType.Kasir,
     this.dataBranch,
     this.dataUser = const [],
     this.filteredData = const [],

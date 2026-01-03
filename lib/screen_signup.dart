@@ -336,7 +336,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 idBranchUser: null,
                 statusUser: StatusData.Aktif,
                 createdUser: dateNowYMDBLOC(),
-                idUser: uidUser,
+                idUser: null,
                 nameUser: nameCompanyController.text,
                 emailUser: emailCompanyController.text,
                 phoneUser: phoneCompanyController.text,

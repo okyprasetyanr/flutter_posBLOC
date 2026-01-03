@@ -342,9 +342,41 @@ class TransactionListViewOrderedItem extends StatelessWidget {
               child: customButton(
                 onPressed: () {
                   final bloc = context.read<TransactionBloc>();
-                  if (bloc.state is TransactionLoaded &&
-                      (bloc.state as TransactionLoaded).itemOrdered!.isEmpty) {
-                    return customSnackBar(context, "Belum ada Pesanan!");
+                  if (bloc.state is TransactionLoaded) {
+                    final itemOrdered =
+                        (bloc.state as TransactionLoaded).itemOrdered!;
+                    final listItem =
+                        (bloc.state as TransactionLoaded).dataItem!;
+                    if (itemOrdered.isEmpty) {
+                      return customSnackBar(context, "Belum ada Pesanan!");
+                    } else if (UserSession.getStatusFifo() &&
+                        (bloc.state as TransactionLoaded).isSell) {
+                      Map<String, double> dataItem = {};
+                      itemOrdered.forEach((element) {
+                        dataItem.containsKey(element.getidItem)
+                            ? dataItem[element.getidItem] =
+                                  dataItem[element.getidItem]! +
+                                  element.getqtyItem
+                            : dataItem[element.getidItem] = element.getqtyItem;
+                      });
+
+                      final isQtyNotEnough = dataItem.entries.any((entry) {
+                        final key = entry.key;
+                        final value = entry.value;
+
+                        final item = listItem.firstWhere(
+                          (element) => element.getidItem == key,
+                        );
+
+                        return item.getqtyItem < value;
+                      });
+                      if (isQtyNotEnough) {
+                        return customSnackBar(
+                          context,
+                          "FIFO: Ada Item yang melebihi batas jumlah Stok!",
+                        );
+                      }
+                    }
                   }
 
                   navUpDownTransition(context, '/sellpayment', false);

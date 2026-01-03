@@ -26,7 +26,7 @@ class DataUserRepository {
   Future<List<ModelFinancial>> getFinancial() async {
     final data = await _db
         .collection('financial')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
     return getDataListFinancial(data);
   }
@@ -34,7 +34,7 @@ class DataUserRepository {
   Future<List<ModelTransactionFinancial>> getTransIncome() async {
     final data = await _db
         .collection('transaction_income')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
     return getDataListTransFinancial(data);
   }
@@ -42,7 +42,7 @@ class DataUserRepository {
   Future<List<ModelUser>> getUser() async {
     final data = await _db
         .collection('users')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
     return getDataListUser(data);
   }
@@ -50,7 +50,7 @@ class DataUserRepository {
   Future<List<ModelTransactionFinancial>> getTransExpense() async {
     final data = await _db
         .collection('transaction_expense')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
     return getDataListTransFinancial(data);
   }
@@ -58,7 +58,7 @@ class DataUserRepository {
   Future<List<ModelItem>> getItem() async {
     final data = await _db
         .collection('items')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
     return getDataListItem(data);
   }
@@ -66,7 +66,7 @@ class DataUserRepository {
   Future<List<ModelCategory>> getCategory() async {
     final data = await _db
         .collection('category')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
 
     return getDataListCategory(data);
@@ -75,7 +75,7 @@ class DataUserRepository {
   Future<List<ModelPartner>> getPartner() async {
     final data = await _db
         .collection('partners')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
 
     return getDataListPartner(data);
@@ -84,7 +84,7 @@ class DataUserRepository {
   Future<List<ModelTransaction>> getTransactionSell() async {
     final data = await _db
         .collection('transaction_sell')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
 
     return await getDataListTransaction(data, isSell: true);
@@ -93,7 +93,7 @@ class DataUserRepository {
   Future<List<ModelTransaction>> getTransactionBuy() async {
     final data = await _db
         .collection('transaction_buy')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
 
     return await getDataListTransaction(data, isSell: false);
@@ -102,7 +102,7 @@ class DataUserRepository {
   Future<List<ModelBatch>> getBatch() async {
     final data = await _db
         .collection('batch')
-        .where('uid_owner', isEqualTo: UserSession.uid_owner)
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
 
     return getDataListBatch(data);
@@ -111,7 +111,7 @@ class DataUserRepository {
   Future<List<ModelCounter>> getCounter(ModelCompany? dataCompany) async {
     final data = await _db
         .collection('counter')
-        .doc(UserSession.uid_owner)
+        .doc(UserSession.getUidOwner())
         .collection('branch')
         .get();
 

@@ -130,8 +130,12 @@ class _UISettingsState extends State<UISettings> {
               WidgetCustomTextMenu(
                 text: "Cadangkan/Pulihkan/Reset",
                 onTap: () async {
+                  final nameOperator = context
+                      .read<DataUserRepositoryCache>()
+                      .dataAccount!
+                      .getNameUser;
                   nameBackupController.text =
-                      '${context.read<DataUserRepositoryCache>().dataAccount!.getNameUser.substring(0, 5)}_${formatDate(date: DateTime.now(), minute: true)}';
+                      '${nameOperator.length < 5 ? nameOperator : nameOperator.substring(0, 5)}_${formatDate(date: DateTime.now(), minute: true)}';
 
                   context.read<SettingsBloc>().add(SettingsBackupRestoreinit());
 

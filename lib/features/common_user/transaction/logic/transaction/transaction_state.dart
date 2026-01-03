@@ -66,7 +66,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   }) {
     return TransactionLoaded(
       revision: revision ?? this.revision,
-      selectedTransaction: selectedTransaction ?? this.selectedTransaction,
+      selectedTransaction: selectedTransaction,
       dataTransactionSaved: dataTransactionSaved ?? this.dataTransactionSaved,
       selectedPartner: selectedPartner ?? selectedPartner,
       dataPartner: dataPartner ?? this.dataPartner,

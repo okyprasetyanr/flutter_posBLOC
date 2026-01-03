@@ -143,7 +143,7 @@ class _MainAppState extends State<ScreenLogin> {
     //     } else {
     return _login();
 
-    //     }git
+    //     }
     //   },
     // );
   }
@@ -197,7 +197,7 @@ class _MainAppState extends State<ScreenLogin> {
                         Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Login",
+                            "Masuk",
                             style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,

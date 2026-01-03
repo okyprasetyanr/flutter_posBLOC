@@ -206,7 +206,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                     state[index].getnameItem,
                                                 idItem: state[index].getidItem,
                                                 idOrdered: stateCondiment.$1!,
-                                                qtyItem: qtyitem + 1,
+                                                qtyItem: qtyitem,
                                                 priceItem:
                                                     state[index].getpriceItem,
                                                 discountItem: 0,

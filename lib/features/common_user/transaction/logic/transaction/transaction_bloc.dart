@@ -208,9 +208,21 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       if (existingCondiment != null) {
         double qty = existingCondiment.getqtyItem;
         if (event.add) {
-          qty++;
+          if (!UserSession.getStatusFifo()) {
+            qty++;
+          } else if (qty <
+              currentState.dataItem!
+                  .firstWhere(
+                    (element) =>
+                        element.getidItem == existingCondiment.getidItem,
+                  )
+                  .getqtyItem) {
+            qty++;
+          }
         } else {
-          qty--;
+          if (qty > 0) {
+            qty--;
+          }
         }
         final subTotal = existingCondiment.getpriceItem * qty;
         final updatedCondiment = existingCondiment.copyWith(
@@ -225,7 +237,31 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             )
             .toList();
       } else {
-        updatedList = [...condimentList, event.selectedCondiment];
+        double qty = event.selectedCondiment.getqtyItem;
+        if (event.add) {
+          if (!UserSession.getStatusFifo()) {
+            qty++;
+          } else if (qty <
+              currentState.dataItem!
+                  .firstWhere(
+                    (element) =>
+                        element.getidItem == event.selectedCondiment.getidItem,
+                  )
+                  .getqtyItem) {
+            qty++;
+          }
+        } else {
+          if (qty > 0) {
+            qty--;
+          }
+        }
+        updatedList = [
+          ...condimentList,
+          event.selectedCondiment.copyWith(
+            qtyItem: qty,
+            subTotal: event.selectedCondiment.getpriceItem * qty,
+          ),
+        ];
       }
       emit(
         currentState.copyWith(
@@ -291,11 +327,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           if (!UserSession.getStatusFifo()) {
             qty++;
           } else if (qty <
-              currentState.dataItem!
-                  .firstWhere(
-                    (element) => element.getidItem == selectedItem.getidItem,
-                  )
-                  .getqtyItem) {
+                  currentState.dataItem!
+                      .firstWhere(
+                        (element) =>
+                            element.getidItem == selectedItem.getidItem,
+                      )
+                      .getqtyItem &&
+              currentState.isSell) {
+            qty++;
+          } else if (!currentState.isSell) {
             qty++;
           }
         } else {
