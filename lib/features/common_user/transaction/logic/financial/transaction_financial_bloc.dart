@@ -85,7 +85,6 @@ class TransFinancialBloc
         queue: isIncome
             ? counter.getcounterIncome + 1
             : counter.getcounterExpense + 1,
-        operatorId: null,
       ),
       date: selectedData.getdate,
       note: event.note,

@@ -135,6 +135,7 @@ enum FieldDataBatch { uid_owner, id_branch, date_buy }
 
 enum FieldDataCounter {
   counter_sell,
+  counter_sell_saved,
   counter_buy,
   counter_income,
   counter_expense,

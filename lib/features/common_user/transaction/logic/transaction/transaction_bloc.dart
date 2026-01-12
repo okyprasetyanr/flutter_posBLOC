@@ -17,9 +17,9 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
-  final DataUserRepositoryCache repo;
+  final DataUserRepositoryCache repoCache;
 
-  TransactionBloc(this.repo) : super(TransactionLoaded()) {
+  TransactionBloc(this.repoCache) : super(TransactionLoaded()) {
     on<TransactionGetData>(_onGetData);
     on<TransactionSearchItem>(
       _onSellSearchItem,
@@ -47,25 +47,25 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ? (state as TransactionLoaded)
         : TransactionLoaded();
 
-    final listBranch = repo.getBranch();
+    final listBranch = repoCache.getBranch();
 
     String idBranch =
         event.idBranch ?? currentState.idBranch ?? listBranch.first.getidBranch;
-    final listItem = repo
+    final listItem = repoCache
         .getItem(idBranch)
         .where((element) => element.getStatusItem == StatusData.Aktif)
         .toList();
     listItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
     List<ModelCategory> listCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
-      ...repo.getCategory(idBranch),
+      ...repoCache.getCategory(idBranch),
     ];
 
     List<ModelPartner> partner = currentState.isSell
-        ? repo.getCustomer(idBranch)
-        : repo.getSupplier(idBranch);
+        ? repoCache.getCustomer(idBranch)
+        : repoCache.getSupplier(idBranch);
 
-    List<ModelTransaction> dataTransactionSaved = repo
+    List<ModelTransaction> dataTransactionSaved = repoCache
         .getTransactionSell(idBranch)
         .where(
           (element) =>
@@ -460,10 +460,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      repo.dataTransSell.removeWhere(
+      final dataTransactionSell = repoCache.dataTransSell;
+      await deleteDataTransaction(
+        event.invoice,
+        dataTransactionSell
+            .firstWhere((element) => element.getinvoice == event.invoice)
+            .getitemsOrdered,
+      );
+
+      dataTransactionSell.removeWhere(
         (element) => element.getinvoice == event.invoice,
       );
-      await deleteDataTransaction(event.invoice);
       add(TransactionGetData());
     }
   }

@@ -163,6 +163,7 @@ ModelCounter fromMapCounter(
   return ModelCounter(
     idBranch: id,
     counterSell: data?[FieldDataCounter.counter_sell.name] ?? 0,
+    counterSellSaved: data?[FieldDataCounter.counter_sell_saved.name] ?? 0,
     counterBuy: data?[FieldDataCounter.counter_buy.name] ?? 0,
     counterIncome: data?[FieldDataCounter.counter_income.name] ?? 0,
     counterExpense: data?[FieldDataCounter.counter_expense.name] ?? 0,

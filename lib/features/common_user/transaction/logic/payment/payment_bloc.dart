@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/request/delete_data.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   DataUserRepositoryCache repoCache;
@@ -175,104 +177,101 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     PaymentGetTransaction event,
     Emitter<PaymentState> emit,
   ) async {
-    final sellState = event.context.read<TransactionBloc>().state;
-    if (sellState is TransactionLoaded) {
-      final formattedDate = parseDate(date: DateTime.now());
+    final sellState =
+        event.context.read<TransactionBloc>().state as TransactionLoaded;
+    debugPrint(
+      "Log PaymentBloc: dataRevisiOrSaved: ${sellState.selectedTransaction}",
+    );
+    final formattedDate = parseDate(date: DateTime.now());
 
-      List<ModelItemOrdered> itemOrdered = await List.from(
-        sellState.itemOrdered ?? const [],
-      );
-      if (!sellState.isSell) {
-        itemOrdered = itemOrdered
-            .map((item) => item.copyWith(dateBuy: formattedDate))
-            .toList();
-      }
-      int itemTotal = 0;
-      double priceTotal = 0;
-      for (int indexItem = 0; indexItem < itemOrdered.length; indexItem++) {
-        final Item = itemOrdered[indexItem];
-        itemTotal++;
-        priceTotal += Item.getsubTotal;
-        final condiment = Item.getCondiment;
-        for (
-          int indexCondiment = 0;
-          indexCondiment < condiment.length;
-          indexCondiment++
-        ) {
-          itemTotal++;
-          priceTotal += condiment[indexCondiment].getsubTotal;
-        }
-      }
-
-      final ModelTransaction? dataRevisiOrSaved = sellState.selectedTransaction;
-      debugPrint(
-        "Log PaymentBloc: dataRevisiOrSaved: ${sellState.selectedTransaction}",
-      );
-      final isNewTransaction = dataRevisiOrSaved == null;
-
-      final note = isNewTransaction ? "" : dataRevisiOrSaved.getnote;
-      final discount = isNewTransaction ? 0 : dataRevisiOrSaved.getdiscount;
-      final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
-
-      debugPrint("Log PaymentBloc: isSell: ${repoCache.dataAccount!}");
-      final counter = repoCache.dataCounter.firstWhere(
-        (element) => element.getidBranch == sellState.idBranch,
-      );
-      final invoice = isNewTransaction || sellState.revision
-          ? generateInvoice(
-              idOP: repoCache.dataAccount!.getNameUser,
-              branchId: sellState.idBranch!,
-              queue: sellState.isSell
-                  ? counter.getcounterSell + 1
-                  : counter.getcounterBuy + 1,
-              operatorId: null,
-            )
-          : dataRevisiOrSaved.getinvoice;
-
-      if (!sellState.isSell) {
-        itemOrdered = itemOrdered
-            .map(
-              (item) => item.copyWith(dateBuy: formattedDate, invoice: invoice),
-            )
-            .toList();
-      } else {
-        itemOrdered = itemOrdered
-            .map((item) => item.copyWith(invoice: invoice))
-            .toList();
-      }
-
-      add(PaymentAdjust(ppn: ppn, discount: discount));
-      debugPrint("Log PaymentBloc: isSell: ${sellState.isSell}");
-      emit(
-        PaymentLoaded(
-          isSell: sellState.isSell,
-          itemOrdered: itemOrdered,
-          transaction_sell: ModelTransaction(
-            idBranch: sellState.idBranch!,
-            itemsOrdered: itemOrdered,
-            dataSplit: [],
-            billPaid: 0,
-            note: note,
-            paymentMethod: "Cash",
-            date: formattedDate!,
-            invoice: invoice,
-            namePartner: sellState.selectedPartner?.getname ?? "",
-            idPartner: sellState.selectedPartner?.getid ?? "",
-            nameOperator: "",
-            idOperator: "",
-            discount: discount,
-            ppn: ppn,
-            totalItem: itemTotal,
-            subTotal: priceTotal,
-            charge: 0,
-            total: priceTotal,
-            totalCharge: 0,
-            totalDiscount: 0,
-            totalPpn: 0,
-          ),
-        ),
-      );
+    List<ModelItemOrdered> itemOrdered = await List.from(
+      sellState.itemOrdered ?? const [],
+    );
+    if (!sellState.isSell) {
+      itemOrdered = itemOrdered
+          .map((item) => item.copyWith(dateBuy: formattedDate))
+          .toList();
     }
+    int itemTotal = 0;
+    double priceTotal = 0;
+    for (int indexItem = 0; indexItem < itemOrdered.length; indexItem++) {
+      final Item = itemOrdered[indexItem];
+      itemTotal++;
+      priceTotal += Item.getsubTotal;
+      final condiment = Item.getCondiment;
+      for (
+        int indexCondiment = 0;
+        indexCondiment < condiment.length;
+        indexCondiment++
+      ) {
+        itemTotal++;
+        priceTotal += condiment[indexCondiment].getsubTotal;
+      }
+    }
+
+    final ModelTransaction? dataRevisiOrSaved = sellState.selectedTransaction;
+    final isNewTransaction = dataRevisiOrSaved == null;
+    final note = isNewTransaction ? "" : dataRevisiOrSaved.getnote;
+    final discount = isNewTransaction ? 0 : dataRevisiOrSaved.getdiscount;
+    final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
+
+    debugPrint("Log PaymentBloc: isSell: ${repoCache.dataAccount!}");
+    final counter = repoCache.dataCounter.firstWhere(
+      (element) => element.getidBranch == sellState.idBranch,
+    );
+
+    final invoice = generateInvoice(
+      idOP: repoCache.dataAccount!.getNameUser,
+      branchId: sellState.idBranch,
+      queue: sellState.isSell
+          ? counter.getcounterSell + 1
+          : counter.getcounterBuy + 1,
+    );
+
+    if (!sellState.isSell) {
+      itemOrdered = itemOrdered
+          .map(
+            (item) => item.copyWith(dateBuy: formattedDate, invoice: invoice),
+          )
+          .toList();
+    } else {
+      itemOrdered = itemOrdered
+          .map((item) => item.copyWith(invoice: invoice))
+          .toList();
+    }
+
+    add(PaymentAdjust(ppn: ppn, discount: discount));
+    debugPrint("Log PaymentBloc: isSell: ${sellState.isSell}");
+    emit(
+      PaymentLoaded(
+        revisionInvoice: dataRevisiOrSaved?.getinvoice,
+        isSell: sellState.isSell,
+        itemOrdered: itemOrdered,
+        transaction_sell: ModelTransaction(
+          idBranch: sellState.idBranch!,
+          itemsOrdered: itemOrdered,
+          dataSplit: [],
+          billPaid: 0,
+          note: note,
+          paymentMethod: "Cash",
+          date: formattedDate!,
+          invoice: invoice,
+          namePartner: sellState.selectedPartner?.getname ?? "",
+          idPartner: sellState.selectedPartner?.getid ?? "",
+          nameOperator: "",
+          idOperator: "",
+          discount: discount,
+          ppn: ppn,
+          totalItem: itemTotal,
+          subTotal: priceTotal,
+          charge: 0,
+          total: priceTotal,
+          totalCharge: 0,
+          totalDiscount: 0,
+          totalPpn: 0,
+        ),
+      ),
+    );
   }
 
   FutureOr<void> _onPaymentNote(PaymentNote event, Emitter<PaymentState> emit) {
@@ -307,14 +306,41 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   ) async {
     final currentState = state;
     if (currentState is PaymentLoaded) {
+      final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
+      final counter = repoCache.dataCounter.firstWhere(
+        (element) =>
+            element.getidBranch == currentState.transaction_sell!.getidBranch,
+      );
+
+      final invoice = saved
+          ? repoCache.dataTransSell.any(
+                  (element) =>
+                      element.getinvoice == currentState.revisionInvoice,
+                )
+                ? null
+                : generateInvoice(
+                    idOP: repoCache.dataAccount!.getNameUser,
+                    branchId: currentState.transaction_sell?.getidBranch,
+                    queue: counter.getcounterSellSaved + 1,
+                  )
+          : null;
+
       final transaction = currentState.transaction_sell!.copyWith(
         statusTransaction: event.statusTransaction,
+        invoice: invoice,
       );
+
       final bloc = event.context.read<DataUserRepositoryCache>();
       await transaction.pushDataTransaction(
         isSell: currentState.isSell,
         dataRepo: bloc,
       );
+      if (currentState.revisionInvoice != null) {
+        deleteDataTransaction(
+          currentState.revisionInvoice!,
+          transaction.getitemsOrdered,
+        );
+      }
 
       final dataCounter = repoCache.dataCounter;
 
@@ -323,12 +349,19 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       );
 
       dataCounter[counterIndex] = dataCounter[counterIndex].copyWith(
-        counterSell: currentState.isSell
-            ? dataCounter[counterIndex].getcounterSell + 1
+        counterSellSaved: saved
+            ? dataCounter[counterIndex].getcounterSellSaved + 1
             : null,
-        counterBuy: currentState.isSell
-            ? null
-            : dataCounter[counterIndex].getcounterBuy + 1,
+        counterSell: saved
+            ? currentState.isSell
+                  ? dataCounter[counterIndex].getcounterSell + 1
+                  : null
+            : null,
+        counterBuy: saved
+            ? currentState.isSell
+                  ? null
+                  : dataCounter[counterIndex].getcounterBuy + 1
+            : null,
       );
 
       await FirebaseFirestore.instance

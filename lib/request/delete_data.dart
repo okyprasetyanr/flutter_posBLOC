@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
 
 Future<void> deleteDataPartner(String id) async {
   await FirebaseFirestore.instance.collection('partners').doc(id).delete();
@@ -24,8 +25,31 @@ Future<void> deleteDataUser(String id) async {
   await FirebaseFirestore.instance.collection('users').doc(id).delete();
 }
 
-Future<void> deleteDataTransaction(String id) async {
+Future<void> deleteDataTransaction(
+  String id,
+  List<ModelItemOrdered> itemOrdered,
+) async {
   debugPrint("Log DeleteData: Operator: $id");
+
+  for (final item in itemOrdered) {
+    for (final condiment in item.getCondiment) {
+      await FirebaseFirestore.instance
+          .collection('transaction_sell')
+          .doc(id)
+          .collection('items_ordered')
+          .doc(condiment.getidOrdered)
+          .collection('condiment')
+          .doc(condiment.getidOrdered)
+          .delete();
+    }
+    await FirebaseFirestore.instance
+        .collection('transaction_sell')
+        .doc(id)
+        .collection('items_ordered')
+        .doc(item.getidOrdered)
+        .delete();
+  }
+
   await FirebaseFirestore.instance
       .collection('transaction_sell')
       .doc(id)

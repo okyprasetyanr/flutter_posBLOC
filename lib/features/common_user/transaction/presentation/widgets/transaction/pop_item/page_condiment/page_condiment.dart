@@ -81,15 +81,19 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                   stateCondiment.$2 == null) {
                                 return Spacer();
                               }
-
+                              debugPrint(
+                                "Log UIPageCondiment: ${stateCondiment.$2}",
+                              );
                               double qtyitem = stateCondiment.$2!.isNotEmpty
-                                  ? stateCondiment.$2!
-                                        .firstWhere(
-                                          (element) =>
-                                              state[index].getidItem ==
-                                              element.getidItem,
-                                        )
-                                        .getqtyItem
+                                  ? stateCondiment.$2
+                                            ?.firstWhere(
+                                              (element) =>
+                                                  state[index].getidItem ==
+                                                  element.getidItem,
+                                              orElse: null,
+                                            )
+                                            .getqtyItem ??
+                                        0
                                   : 0;
 
                               return Column(
@@ -232,55 +236,6 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                   ),
                                 ],
                               );
-
-                              // Material(
-                              //   elevation: 4,
-                              //   borderRadius: BorderRadius.circular(15),
-                              //   child: InkWell(
-                              //     borderRadius: BorderRadius.circular(15),
-                              // onTap: () {
-                              //   ModelItemOrdered selectedItemCondiment =
-                              //       ModelItemOrdered(
-                              //         priceItemCustom: state[index].getpriceItem,
-                              //         subTotal: state[index].getpriceItem,
-                              //         idBranch: state[index].getidBranch,
-                              //         nameItem: state[index].getnameItem,
-                              //         idItem: state[index].getidItem,
-                              //         idOrdered: stateCondiment.$1!,
-                              //         qtyItem: qtyitem + 1,
-                              //         priceItem: state[index].getpriceItem,
-                              //         discountItem: 0,
-                              //         idCategoryItem:
-                              //             state[index].getidCategoryiItem,
-                              //         idCondiment: stateCondiment.$3!,
-                              //         note: "",
-                              //         urlImage: "",
-                              //         condiment: [],
-                              //       );
-                              //   context.read<SellBloc>().add(
-                              //     SellSelectedCondiment(
-                              //       selectedCondiment: selectedItemCondiment,
-                              //     ),
-                              //   );
-                              // },
-                              //     child: Padding(
-                              //       padding: const EdgeInsets.all(10),
-                              //       child: Row(
-                              //         children: [
-                              //           Text(
-                              //             state[index].getnameItem,
-                              //             style: lv05TextStyle,
-                              //           ),
-                              //           const Spacer(),
-                              //           Text(
-                              //             "${formatQty(qtyitem)}x",
-                              //             style: lv05TextStyleRed,
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // );
                             },
                           ),
                     );

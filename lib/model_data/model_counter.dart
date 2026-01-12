@@ -3,28 +3,36 @@ import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/function.dart';
 
 class ModelCounter {
-  final int _counterSell, _counterBuy, _counterIncome, _counterExpense;
+  final int _counterSell,
+      _counterSellSaved,
+      _counterBuy,
+      _counterIncome,
+      _counterExpense;
   final String _idBranch;
 
   ModelCounter({
+    required int counterSellSaved,
     required int counterSell,
     required int counterBuy,
     required int counterIncome,
     required int counterExpense,
     required String idBranch,
   }) : _counterSell = counterSell,
+       _counterSellSaved = counterSell,
        _counterBuy = counterBuy,
        _counterIncome = counterIncome,
        _counterExpense = counterExpense,
        _idBranch = idBranch;
 
   ModelCounter copyWith({
+    int? counterSellSaved,
     int? counterSell,
     int? counterBuy,
     int? counterIncome,
     int? counterExpense,
     String? idBranch,
   }) => ModelCounter(
+    counterSellSaved: counterSellSaved ?? this._counterSellSaved,
     idBranch: idBranch ?? this._idBranch,
     counterSell: counterSell ?? this._counterSell,
     counterBuy: counterBuy ?? this._counterBuy,
@@ -33,6 +41,7 @@ class ModelCounter {
   );
 
   int get getcounterSell => _counterSell;
+  int get getcounterSellSaved => _counterSellSaved;
   int get getcounterBuy => _counterBuy;
   int get getcounterIncome => _counterIncome;
   int get getcounterExpense => _counterExpense;
