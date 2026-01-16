@@ -338,13 +338,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             getMap: (data) {
               itemsOrdered.add(
                 fromMapItemOrdered(
-                  data,
-                  [],
-                  true,
-                  data[FieldDataItemOrdered.id_ordered.name.replaceAll(
-                    " ",
-                    "_",
-                  )],
+                  itemBatch: [],
+                  items: data,
+                  condiment: [],
+                  isCondiment: true,
+                  id_ordered:
+                      data[FieldDataItemOrdered.id_ordered.name.replaceAll(
+                        " ",
+                        "_",
+                      )],
                 ),
               );
             },
@@ -360,13 +362,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             getMap: (data) {
               itemCondiment.add(
                 fromMapItemOrdered(
-                  data,
-                  [],
-                  true,
-                  data[FieldDataItemOrdered.id_ordered.name.replaceAll(
-                    " ",
-                    "_",
-                  )],
+                  itemBatch: [],
+                  items: data,
+                  condiment: [],
+                  isCondiment: true,
+                  id_ordered:
+                      data[FieldDataItemOrdered.id_ordered.name.replaceAll(
+                        " ",
+                        "_",
+                      )],
                 ),
               );
             },
@@ -396,13 +400,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             getMap: (data) {
               itemsOrdered.add(
                 fromMapItemOrdered(
-                  data,
-                  [],
-                  true,
-                  data[FieldDataItemOrdered.id_ordered.name.replaceAll(
-                    " ",
-                    "_",
-                  )],
+                  itemBatch: [],
+                  items: data,
+                  condiment: [],
+                  isCondiment: true,
+                  id_ordered:
+                      data[FieldDataItemOrdered.id_ordered.name.replaceAll(
+                        " ",
+                        "_",
+                      )],
                 ),
               );
             },

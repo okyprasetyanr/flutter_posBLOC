@@ -294,7 +294,6 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                                     context,
                                     "Transaksi Disimpan!",
                                   );
-                                  Navigator.pop(context);
                                 },
                               )
                             : const SizedBox.shrink();

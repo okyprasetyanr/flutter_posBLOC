@@ -84,7 +84,6 @@ Future<List<ModelTransaction>> getDataListTransaction(
   for (final map in data.docs) {
     final dataTransaction = map.data() as Map<String, dynamic>;
 
-    // ===== items_ordered =====
     final itemsSnapshot = await firestore
         .collection(collection)
         .doc(map.id)
@@ -94,6 +93,23 @@ Future<List<ModelTransaction>> getDataListTransaction(
     final List<ModelItemOrdered> itemsOrdered = [];
 
     for (final itemDoc in itemsSnapshot.docs) {
+      final itemBatchSnapshot = await firestore
+          .collection(collection)
+          .doc(map.id)
+          .collection('items_ordered')
+          .doc(itemDoc.id)
+          .collection('items_ordered_batch')
+          .get();
+
+      final itemOrderedBatch = itemBatchSnapshot.docs
+          .map(
+            (itemOrderedBatchDoc) => fromMapItemOrderedBatch(
+              orderedBatch: itemOrderedBatchDoc.data(),
+              id_ordered: itemOrderedBatchDoc.id,
+            ),
+          )
+          .toList();
+
       final condimentSnapshot = await firestore
           .collection(collection)
           .doc(map.id)
@@ -105,20 +121,26 @@ Future<List<ModelTransaction>> getDataListTransaction(
       final condiments = condimentSnapshot.docs
           .map(
             (condimentDoc) => fromMapItemOrdered(
-              condimentDoc.data(),
-              [],
-              true,
-              condimentDoc.id,
+              itemBatch: [],
+              items: condimentDoc.data(),
+              condiment: [],
+              isCondiment: true,
+              id_ordered: condimentDoc.id,
             ),
           )
           .toList();
 
       itemsOrdered.add(
-        fromMapItemOrdered(itemDoc.data(), condiments, false, itemDoc.id),
+        fromMapItemOrdered(
+          itemBatch: itemOrderedBatch,
+          items: itemDoc.data(),
+          condiment: condiments,
+          isCondiment: false,
+          id_ordered: itemDoc.id,
+        ),
       );
     }
 
-    // ===== data_split =====
     final splitSnapshot = await firestore
         .collection(collection)
         .doc(map.id)
@@ -129,7 +151,6 @@ Future<List<ModelTransaction>> getDataListTransaction(
         .map((splitDoc) => fromMapSplit(splitDoc.data(), invoice: map.id))
         .toList();
 
-    // ===== transaction =====
     result.add(
       fromMapTransaction(dataTransaction, itemsOrdered, splitData, map.id),
     );

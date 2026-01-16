@@ -305,8 +305,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Emitter<PaymentState> emit,
   ) async {
     final currentState = state;
+    final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
     if (currentState is PaymentLoaded) {
-      final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
       final counter = repoCache.dataCounter.firstWhere(
         (element) =>
             element.getidBranch == currentState.transaction_sell!.getidBranch,
@@ -317,12 +317,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
                   (element) =>
                       element.getinvoice == currentState.revisionInvoice,
                 )
-                ? null
-                : generateInvoice(
+                ? generateInvoice(
                     idOP: repoCache.dataAccount!.getNameUser,
                     branchId: currentState.transaction_sell?.getidBranch,
                     queue: counter.getcounterSellSaved + 1,
                   )
+                : null
           : null;
 
       final transaction = currentState.transaction_sell!.copyWith(
@@ -386,5 +386,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       );
     }
     repoCache.notifyChanged();
+    if (saved) {
+      Navigator.pop(event.context);
+    }
   }
 }

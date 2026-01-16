@@ -55,6 +55,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     onTap: () {
                       ModelItemOrdered selectedItem = ModelItemOrdered(
+                        itemOrderedBatch: [],
                         priceItemFinal: item.getpriceItem,
                         subTotal: item.getpriceItem,
                         idBranch: item.getidBranch,

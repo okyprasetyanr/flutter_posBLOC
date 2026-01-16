@@ -10,8 +10,10 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/request/delete_data.dart';
@@ -56,6 +58,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         .where((element) => element.getStatusItem == StatusData.Aktif)
         .toList();
     listItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
+
     List<ModelCategory> listCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...repoCache.getCategory(idBranch),
@@ -75,8 +78,23 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     ModelCategory selectedIdCategory =
         currentState.selectedCategory ?? listCategory.first;
+
+    List<ModelItemBatch> dataItemBatch = [];
+    repoCache
+        .getBatch(idBranch)
+        .forEach(
+          (element) => element.getitems_batch.forEach(
+            (element) => dataItemBatch.add(element),
+          ),
+        );
+
+    final fifoMap = buildFifoBatchMap(dataItemBatch);
+
+    applyFifoPriceToItem(listItem: listItem, fifoMap: fifoMap);
+
     emit(
       currentState.copyWith(
+        dataItemBatch: dataItemBatch,
         dataTransactionSaved: dataTransactionSaved,
         dataPartner: partner,
         filteredItem: currentState.isSell
@@ -146,6 +164,45 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         list;
       }
       return list;
+    }
+  }
+
+  Map<String, List<ModelItemBatch>> buildFifoBatchMap(
+    List<ModelItemBatch> dataItemBatch,
+  ) {
+    final Map<String, List<ModelItemBatch>> fifoMap = {};
+
+    for (final batch in dataItemBatch) {
+      final availableQty = batch.getqtyItem_in - batch.getqtyItem_out;
+      if (availableQty <= 0) continue;
+
+      fifoMap.putIfAbsent(batch.getidItem, () => []);
+      fifoMap[batch.getidItem]!.add(batch);
+    }
+
+    fifoMap.forEach((_, batches) {
+      batches.sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
+    });
+
+    return fifoMap;
+  }
+
+  void applyFifoPriceToItem({
+    required List<ModelItem> listItem,
+    required Map<String, List<ModelItemBatch>> fifoMap,
+  }) {
+    for (int i = 0; i < listItem.length; i++) {
+      final item = listItem[i];
+      final fifoBatches = fifoMap[item.getidItem];
+
+      if (fifoBatches == null || fifoBatches.isEmpty) continue;
+
+      final oldestBatch = fifoBatches.first;
+
+      listItem[i] = item.copyWith(priceItem: oldestBatch.getpriceItemFinal);
+      debugPrint(
+        "Log TransactionBloc ApplyFifotoItem: price: ${oldestBatch.getpriceItemFinal}, invoice_Batch: ${oldestBatch.getinvoice}",
+      );
     }
   }
 
@@ -306,71 +363,186 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     TransactionAdjustItem event,
     Emitter<TransactionState> emit,
   ) {
-    final currentState = state;
-    if (currentState is TransactionLoaded &&
-        currentState.selectedItem != null) {
-      final selectedItem = currentState.selectedItem!.copyWith();
-      double qty = selectedItem.getqtyItem;
-      int discount = selectedItem.getdiscountItem;
-      double price = event.customprice == 0
-          ? selectedItem.getpriceItem
-          : selectedItem.getpriceItemFinal;
-      DateTime? expiredDate = selectedItem.getexpiredDate;
+    final currentState = state as TransactionLoaded;
 
-      if (event.expiredDate != null) {
-        expiredDate = parseDate(date: event.expiredDate!);
-        debugPrint("Log TransactionBloc: ExpiredDate value: $expiredDate}");
-      }
+    final item = currentState.selectedItem!;
+    final fifoActive = UserSession.getStatusFifo();
+    final isSell = currentState.isSell;
 
-      if (event.mode != null) {
-        if (event.mode!) {
-          if (!UserSession.getStatusFifo()) {
-            qty++;
-          } else if (qty <
-                  currentState.dataItem!
-                      .firstWhere(
-                        (element) =>
-                            element.getidItem == selectedItem.getidItem,
-                      )
-                      .getqtyItem &&
-              currentState.isSell) {
-            qty++;
-          } else if (!currentState.isSell) {
-            qty++;
-          }
+    List<ModelItemOrderedBatch> batches = List.from(item.getitemOrderedBatch);
+
+    double price = event.customprice != null && event.customprice != 0
+        ? event.customprice!
+        : batches.isNotEmpty
+        ? batches.last.getprice_item
+        : item.getpriceItem;
+
+    debugPrint("Log TransactionBloc: Adjustitem SelectedItem:Batch: $batches");
+
+    int discount = event.discount ?? item.getdiscountItem;
+
+    DateTime? expiredDate = item.getexpiredDate;
+    if (event.expiredDate != null) {
+      expiredDate = parseDate(date: event.expiredDate!);
+    }
+
+    if (event.mode != null) {
+      if (event.mode!) {
+        if (!fifoActive || !isSell) {
+          batches.add(
+            ModelItemOrderedBatch(
+              id_ordered: 'NON_FIFO',
+              id_item: item.getidItem,
+              invoice: item.getinvoice ?? '',
+              qty_item: 1,
+              price_item: price,
+            ),
+          );
         } else {
-          if (qty > 0) {
-            qty--;
-          }
+          _allocateFIFO(
+            usedBatches: batches,
+            stockBatches: currentState.dataItemBatch!,
+            idItem: item.getidItem,
+            invoice: item.getinvoice ?? '',
+            qtyNeed: 1,
+          );
+        }
+      } else {
+        if (batches.isNotEmpty) {
+          _releaseFIFO(usedBatches: batches, qtyRelease: 1);
         }
       }
-      debugPrint("Log TransactionBloc: AdjustItem value: ${event.note}");
-      if (event.customprice != null && event.customprice != 0) {
-        debugPrint("Log TransactionBloc: test Nominal");
-        price = event.customprice!;
-      }
-      if (event.discount != null) {
-        discount = event.discount!;
-        debugPrint("Log TransactionBloc: Diskon value: $discount");
-      }
-      if (event.qty != null) {
-        qty = event.qty!;
-      }
+    }
 
-      double subTotal = price * qty - (price * qty * discount / 100);
-      emit(
-        currentState.copyWith(
-          selectedItem: selectedItem.copyWith(
-            expiredDate: expiredDate,
-            qtyItem: qty,
-            subTotal: subTotal,
-            priceItemFinal: price,
-            dicountItem: discount,
-            note: event.note,
-          ),
+    //custom QTY
+    if (event.qty != null) {
+      final diff = event.qty! - _totalQty(batches).toInt();
+      if (diff > 0) {
+        _allocateFIFO(
+          usedBatches: batches,
+          stockBatches: currentState.dataItemBatch!,
+          idItem: item.getidItem,
+          invoice: item.getinvoice ?? '',
+          qtyNeed: diff,
+        );
+      } else if (diff < 0) {
+        _releaseFIFO(usedBatches: batches, qtyRelease: diff.abs());
+      }
+    }
+
+    final qtyFinal = _totalQty(batches);
+
+    final subTotal = _calculateSubTotalFromBatch(batches, discount);
+
+    emit(
+      currentState.copyWith(
+        selectedItem: item.copyWith(
+          qtyItem: qtyFinal,
+          priceItemFinal: batches.isNotEmpty
+              ? batches.last.getprice_item
+              : item.getpriceItem,
+          dicountItem: discount,
+          expiredDate: expiredDate,
+          subTotal: subTotal,
+          itemOrderedBatch: batches,
+          note: event.note,
+        ),
+      ),
+    );
+  }
+
+  double _totalQty(List<ModelItemOrderedBatch> batches) {
+    return batches.fold(0.0, (sum, e) => sum + e.getqty_item);
+  }
+
+  double _allocateFIFO({
+    required List<ModelItemOrderedBatch> usedBatches,
+    required List<ModelItemBatch> stockBatches,
+    required String idItem,
+    required String invoice,
+    required double qtyNeed,
+  }) {
+    double need = qtyNeed;
+
+    final fifo =
+        stockBatches
+            .where(
+              (e) =>
+                  e.getidItem == idItem && e.getqtyItem_in > e.getqtyItem_out,
+            )
+            .toList()
+          ..sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
+
+    for (final batch in fifo) {
+      if (need <= 0) break;
+
+      // qty yang sudah dipakai DI TRANSAKSI INI
+      final usedQtyInOrder = usedBatches
+          .where((e) => e.getid_Ordered == batch.getidOrdered)
+          .fold(0.0, (s, e) => s + e.getqty_item);
+
+      // stok REAL batch
+      final available =
+          batch.getqtyItem_in - batch.getqtyItem_out - usedQtyInOrder;
+
+      if (available <= 0) continue;
+
+      final take = available >= need ? need : available;
+
+      usedBatches.add(
+        ModelItemOrderedBatch(
+          id_ordered: batch.getidOrdered,
+          id_item: idItem,
+          invoice: invoice,
+          qty_item: take,
+          price_item: batch.getpriceItemFinal,
         ),
       );
+      need -= take;
+      return batch.getpriceItemFinal;
     }
+    return 0;
+  }
+
+  void _releaseFIFO({
+    required List<ModelItemOrderedBatch> usedBatches,
+    required double qtyRelease,
+  }) {
+    double release = qtyRelease;
+
+    for (int i = usedBatches.length - 1; i >= 0; i--) {
+      if (release <= 0) break;
+
+      final batch = usedBatches[i];
+
+      if (batch.getqty_item <= release) {
+        release -= batch.getqty_item.toInt();
+        usedBatches.removeAt(i);
+      } else {
+        usedBatches[i] = ModelItemOrderedBatch(
+          id_ordered: batch.getid_Ordered,
+          id_item: batch.getid_Item,
+          invoice: batch.getinvoice,
+          qty_item: batch.getqty_item - release,
+          price_item: batch.getprice_item,
+        );
+        release = 0;
+      }
+    }
+  }
+
+  double _calculateSubTotalFromBatch(
+    List<ModelItemOrderedBatch> batches,
+    int discount,
+  ) {
+    final gross = batches.fold<double>(
+      0.0,
+      (sum, element) => sum + (element.getqty_item * element.getprice_item),
+    );
+
+    if (discount <= 0) return gross;
+
+    return gross - (gross * discount / 100);
   }
 
   FutureOr<void> _onDeleteItemOrdered(

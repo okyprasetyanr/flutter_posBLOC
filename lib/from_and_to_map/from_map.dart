@@ -11,6 +11,7 @@ import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -205,13 +206,28 @@ ModelItemBatch fromMapItembatch(Map<String, dynamic> data, String id) {
   );
 }
 
-ModelItemOrdered fromMapItemOrdered(
-  Map<String, dynamic> items,
-  List<ModelItemOrdered> condiment,
-  bool isCondiment,
-  String id_ordered,
-) {
+ModelItemOrderedBatch fromMapItemOrderedBatch({
+  required Map<String, dynamic> orderedBatch,
+  required String id_ordered,
+}) {
+  return ModelItemOrderedBatch(
+    id_ordered: id_ordered,
+    id_item: orderedBatch[FieldDataItemOrderedBatch.id_item.name],
+    invoice: orderedBatch[FieldDataItemOrderedBatch.invoice.name],
+    qty_item: orderedBatch[FieldDataItemOrderedBatch.qty_item.name],
+    price_item: orderedBatch[FieldDataItemOrderedBatch.price_item.name],
+  );
+}
+
+ModelItemOrdered fromMapItemOrdered({
+  required Map<String, dynamic> items,
+  required List<ModelItemOrdered> condiment,
+  required List<ModelItemOrderedBatch> itemBatch,
+  required bool isCondiment,
+  required String id_ordered,
+}) {
   return ModelItemOrdered(
+    itemOrderedBatch: itemBatch,
     priceItemFinal: double.tryParse(
       items[FieldDataItemOrdered.price_item_final.name].toString(),
     )!,

@@ -7,6 +7,7 @@ import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
+import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -82,6 +83,17 @@ Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
     FieldDataItemOrdered.discount_item.name: _itemsOrdered.getdiscountItem,
     FieldDataItemOrdered.id_category_item.name: _itemsOrdered.getidCategoryItem,
     FieldDataItemOrdered.note.name: _itemsOrdered.getNote,
+  };
+}
+
+Map<String, dynamic> convertToMapItemOrderedBatch(
+  ModelItemOrderedBatch _itemsOrderedBatch,
+) {
+  return {
+    FieldDataItemOrderedBatch.id_item.name: _itemsOrderedBatch.getid_Item,
+    FieldDataItemOrderedBatch.invoice.name: _itemsOrderedBatch.getinvoice,
+    FieldDataItemOrderedBatch.price_item.name: _itemsOrderedBatch.getprice_item,
+    FieldDataItemOrderedBatch.qty_item.name: _itemsOrderedBatch.getqty_item,
   };
 }
 

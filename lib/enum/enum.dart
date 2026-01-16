@@ -131,6 +131,14 @@ enum FieldDataItemBatch {
   price_item_final,
 }
 
+enum FieldDataItemOrderedBatch {
+  id_ordered,
+  id_item,
+  invoice,
+  qty_item,
+  price_item,
+}
+
 enum FieldDataBatch { uid_owner, id_branch, date_buy }
 
 enum FieldDataCounter {

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 
 class ModelItemOrdered extends Equatable {
   final String _nameItem,
@@ -10,6 +11,7 @@ class ModelItemOrdered extends Equatable {
   final String? _invoice;
   final int _discountItem;
   final double _qtyItem, _priceItem, _subTotal, _priceItemFinal;
+  final List<ModelItemOrderedBatch> _itemOrderedBatch;
   final List<ModelItemOrdered> _condiment;
 
   final DateTime? _dateBuy, _expiredDate;
@@ -29,6 +31,7 @@ class ModelItemOrdered extends Equatable {
     required int discountItem,
     required String idCategoryItem,
     required String note,
+    required List<ModelItemOrderedBatch> itemOrderedBatch,
     required List<ModelItemOrdered> condiment,
   }) : _nameItem = nameItem,
        _idItem = idItem,
@@ -44,7 +47,8 @@ class ModelItemOrdered extends Equatable {
        _priceItemFinal = priceItemFinal,
        _dateBuy = dateBuy,
        _expiredDate = expiredDate,
-       _invoice = invoice;
+       _invoice = invoice,
+       _itemOrderedBatch = itemOrderedBatch;
 
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
@@ -58,6 +62,7 @@ class ModelItemOrdered extends Equatable {
   String get getidCategoryItem => _idCategoryItem;
   String get getNote => _note;
   List<ModelItemOrdered> get getCondiment => _condiment;
+  List<ModelItemOrderedBatch> get getitemOrderedBatch => _itemOrderedBatch;
   DateTime? get getdateBuy => _dateBuy;
   DateTime? get getexpiredDate => _expiredDate;
   String? get getinvoice => _invoice;
@@ -78,8 +83,10 @@ class ModelItemOrdered extends Equatable {
     String? note,
     double? subTotal,
     List<ModelItemOrdered>? condiment,
+    List<ModelItemOrderedBatch>? itemOrderedBatch,
   }) {
     return ModelItemOrdered(
+      itemOrderedBatch: itemOrderedBatch ?? _itemOrderedBatch,
       invoice: invoice,
       dateBuy: dateBuy,
       expiredDate: expiredDate ?? _expiredDate,
@@ -115,5 +122,6 @@ class ModelItemOrdered extends Equatable {
     _idCategoryItem,
     _note,
     _condiment,
+    _itemOrderedBatch,
   ];
 }
