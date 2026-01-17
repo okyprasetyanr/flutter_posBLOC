@@ -9,10 +9,12 @@ import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/features/hive_setup/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
+import 'package:hive/hive.dart';
 
 class DataUserRepositoryCache {
   List<ModelItem> dataItem = [];
@@ -28,7 +30,6 @@ class DataUserRepositoryCache {
   List<ModelCounter> dataCounter = [];
   ModelUser? dataAccount;
   ModelCompany? dataCompany;
-
   final DataUserRepository repo;
 
   DataUserRepositoryCache(this.repo);
@@ -229,5 +230,9 @@ class DataUserRepositoryCache {
     return dataTransExpense
         .where((element) => element.getidBranch == idBranch)
         .toList();
+  }
+
+  Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
+    return await Hive.openBox<TransactionSavedHive>('saved_transaction');
   }
 }

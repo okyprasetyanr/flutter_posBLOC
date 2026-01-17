@@ -43,6 +43,28 @@ Map<String, dynamic> convertToMapUser(ModelUser user, String? uidUser) {
   };
 }
 
+Map<String, dynamic> convertToMapTransactionSaveHive(
+  ModelTransaction transaction,
+) {
+  return {
+    ...convertToMapTransaction(transaction),
+
+    "items_ordered": transaction.getitemsOrdered.map((item) {
+      return {
+        ...convertToMapItemOrdered(item, saved: true),
+
+        "condiment": item.getCondiment
+            .map((condiment) => convertToMapItemOrdered(condiment, saved: true))
+            .toList(),
+      };
+    }).toList(),
+
+    "data_split": transaction.getdataSplit
+        .map((split) => convertToMapSplit(split))
+        .toList(),
+  };
+}
+
 Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   return {
     FieldDataTransaction.id_branch.name: transaction.getidBranch,
@@ -70,8 +92,11 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   };
 }
 
-Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
-  return {
+Map<String, dynamic> convertToMapItemOrdered(
+  ModelItemOrdered _itemsOrdered, {
+  bool saved = false,
+}) {
+  final data = {
     FieldDataItemOrdered.invoice.name: _itemsOrdered.getinvoice,
     FieldDataItemOrdered.sub_total.name: _itemsOrdered.getsubTotal,
     FieldDataItemOrdered.name_item.name: _itemsOrdered.getnameItem,
@@ -84,6 +109,10 @@ Map<String, dynamic> convertToMapItemOrdered(ModelItemOrdered _itemsOrdered) {
     FieldDataItemOrdered.id_category_item.name: _itemsOrdered.getidCategoryItem,
     FieldDataItemOrdered.note.name: _itemsOrdered.getNote,
   };
+  if (saved) {
+    data[FieldDataItemOrdered.id_ordered.name] = _itemsOrdered.getidOrdered;
+  }
+  return data;
 }
 
 Map<String, dynamic> convertToMapItemOrderedBatch(

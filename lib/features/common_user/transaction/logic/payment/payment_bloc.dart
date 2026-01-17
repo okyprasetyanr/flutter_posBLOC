@@ -10,11 +10,13 @@ import 'package:flutter_pos/features/common_user/transaction/logic/payment/payme
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/hive_setup/model_transaction_save.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
@@ -244,7 +246,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     debugPrint("Log PaymentBloc: isSell: ${sellState.isSell}");
     emit(
       PaymentLoaded(
-        revisionInvoice: dataRevisiOrSaved?.getinvoice,
+        revisionInvoice: dataRevisiOrSaved?.getinvoice ?? "",
         isSell: sellState.isSell,
         itemOrdered: itemOrdered,
         transaction_sell: ModelTransaction(
@@ -304,6 +306,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     PaymentProcess event,
     Emitter<PaymentState> emit,
   ) async {
+    final sellState = event.context.read<TransactionBloc>();
     final currentState = state;
     final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
     if (currentState is PaymentLoaded) {
@@ -312,17 +315,21 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             element.getidBranch == currentState.transaction_sell!.getidBranch,
       );
 
+      debugPrint(
+        "Log PaymentBloc: onPaymentProcess: ${currentState.revisionInvoice}",
+      );
+
       final invoice = saved
-          ? repoCache.dataTransSell.any(
+          ? (sellState.state as TransactionLoaded).dataTransactionSaved.any(
                   (element) =>
                       element.getinvoice == currentState.revisionInvoice,
                 )
-                ? generateInvoice(
+                ? currentState.revisionInvoice
+                : generateInvoice(
                     idOP: repoCache.dataAccount!.getNameUser,
                     branchId: currentState.transaction_sell?.getidBranch,
                     queue: counter.getcounterSellSaved + 1,
                   )
-                : null
           : null;
 
       final transaction = currentState.transaction_sell!.copyWith(
@@ -330,18 +337,44 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         invoice: invoice,
       );
 
-      final bloc = event.context.read<DataUserRepositoryCache>();
-      await transaction.pushDataTransaction(
-        isSell: currentState.isSell,
-        dataRepo: bloc,
-      );
-      if (currentState.revisionInvoice != null) {
-        deleteDataTransaction(
-          currentState.revisionInvoice!,
-          transaction.getitemsOrdered,
-        );
-      }
+      if (saved) {
+        final box = await repoCache.getHiveSavedTransaction();
+        final existing = box.get(invoice);
 
+        final newData = convertToMapTransactionSaveHive(transaction);
+
+        if (existing != null) {
+          await box.put(
+            invoice,
+            TransactionSavedHive(
+              invoice: existing.invoice,
+              datatransactionSaved: newData,
+              createdAt: existing.createdAt,
+            ),
+          );
+        } else {
+          await box.put(
+            invoice,
+            TransactionSavedHive(
+              invoice: invoice!,
+              datatransactionSaved: newData,
+              createdAt: DateTime.now(),
+            ),
+          );
+        }
+      } else {
+        final bloc = event.context.read<DataUserRepositoryCache>();
+        await transaction.pushDataTransaction(
+          isSell: currentState.isSell,
+          dataRepo: bloc,
+        );
+        if (currentState.revisionInvoice != null) {
+          deleteDataTransaction(
+            currentState.revisionInvoice!,
+            transaction.getitemsOrdered,
+          );
+        }
+      }
       final dataCounter = repoCache.dataCounter;
 
       final counterIndex = dataCounter.indexWhere(
@@ -375,7 +408,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           }, SetOptions(merge: true));
     }
 
-    final sellState = event.context.read<TransactionBloc>();
     if (sellState.state is TransactionLoaded) {
       sellState.add(TransactionResetOrderedItem());
       sellState.add(TransactionResetSelectedItem());

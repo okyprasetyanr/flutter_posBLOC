@@ -28,7 +28,7 @@ class PaymentLoaded extends PaymentState with EquatableMixin {
     bool? isSell,
   }) {
     return PaymentLoaded(
-      revisionInvoice: revisionInvoice,
+      revisionInvoice: revisionInvoice ?? this.revisionInvoice,
       isSell: isSell ?? this.isSell,
       itemOrdered: itemOrdered ?? itemOrdered,
       transaction_sell: transaction_sell,

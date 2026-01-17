@@ -224,7 +224,7 @@ ModelItemOrdered fromMapItemOrdered({
   required List<ModelItemOrdered> condiment,
   required List<ModelItemOrderedBatch> itemBatch,
   required bool isCondiment,
-  required String id_ordered,
+  required String? id_ordered,
 }) {
   return ModelItemOrdered(
     itemOrderedBatch: itemBatch,
@@ -237,7 +237,7 @@ ModelItemOrdered fromMapItemOrdered({
     nameItem: items[FieldDataItemOrdered.name_item.name],
     idItem: items[FieldDataItemOrdered.id_item.name],
     idBranch: items[FieldDataItemOrdered.id_branch.name],
-    idOrdered: id_ordered,
+    idOrdered: id_ordered ?? items[FieldDataItemOrdered.id_ordered.name],
     qtyItem: double.tryParse(
       items[FieldDataItemOrdered.qty_item.name].toString(),
     )!,

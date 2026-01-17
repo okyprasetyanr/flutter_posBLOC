@@ -7,6 +7,7 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -15,8 +16,8 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:flutter_pos/request/delete_data.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repoCache;
@@ -68,13 +69,70 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ? repoCache.getCustomer(idBranch)
         : repoCache.getSupplier(idBranch);
 
-    List<ModelTransaction> dataTransactionSaved = repoCache
-        .getTransactionSell(idBranch)
-        .where(
-          (element) =>
-              element.getstatusTransaction == ListStatusTransaction.Tersimpan,
-        )
+    final hiveTransactionSaved = (await repoCache.getHiveSavedTransaction())
+        .values
         .toList();
+
+    debugPrint(
+      "Log transactionBloc: Hive Data: ${hiveTransactionSaved.toString()}",
+    );
+
+    List<ModelTransaction> dataTransactionSaved = [];
+    hiveTransactionSaved.forEach((element) {
+      final rawItems = element.datatransactionSaved['items_ordered'] as List?;
+
+      final List<ModelItemOrdered> itemOrdered =
+          rawItems?.map((e) {
+            final mapItem = Map<String, dynamic>.from(e as Map);
+
+            final List<ModelItemOrdered> condiment =
+                (mapItem['condiment'] as List?)
+                    ?.map(
+                      (c) => fromMapItemOrdered(
+                        items: Map<String, dynamic>.from(c as Map),
+                        condiment: [],
+                        itemBatch: [],
+                        isCondiment: true,
+                        id_ordered: null,
+                      ),
+                    )
+                    .toList() ??
+                [];
+
+            return fromMapItemOrdered(
+              items: mapItem,
+              condiment: condiment,
+              itemBatch: [],
+              isCondiment: false,
+              id_ordered: null,
+            );
+          }).toList() ??
+          [];
+
+      final List<dynamic>? rawSplitData =
+          element.datatransactionSaved['data_split'] as List?;
+
+      List<ModelSplit> dataSplit =
+          rawSplitData?.map((mapSplit) {
+            return fromMapSplit(
+              Map<String, dynamic>.from(mapSplit as Map),
+              invoice: element.invoice,
+            );
+          }).toList() ??
+          [];
+
+      final transaction = fromMapTransaction(
+        element.datatransactionSaved,
+        itemOrdered,
+        dataSplit,
+        element.invoice,
+      );
+      final transactionWithItems = transaction.copyWith(
+        itemsOrdered: itemOrdered,
+      );
+
+      dataTransactionSaved.add(transactionWithItems);
+    });
 
     ModelCategory selectedIdCategory =
         currentState.selectedCategory ?? listCategory.first;
@@ -632,17 +690,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      final dataTransactionSell = repoCache.dataTransSell;
-      await deleteDataTransaction(
-        event.invoice,
-        dataTransactionSell
-            .firstWhere((element) => element.getinvoice == event.invoice)
-            .getitemsOrdered,
-      );
+      (await repoCache.getHiveSavedTransaction()).delete(event.invoice);
 
-      dataTransactionSell.removeWhere(
-        (element) => element.getinvoice == event.invoice,
-      );
       add(TransactionGetData());
     }
   }

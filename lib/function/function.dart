@@ -70,10 +70,15 @@ Future<void> checkAndroidVersion() async {
   debugPrint('Brand: ${androidInfo.brand}');
 }
 
-String generateInvoice({required String idOP, String? branchId, int? queue}) {
+String generateInvoice({
+  required String idOP,
+  String? branchId,
+  int? queue,
+  bool? saved,
+}) {
   ;
   final branch = branchId!.substring(0, 4);
-  final uuid = Uuid().v4().substring(0, 4);
+  final uuid = saved != null ? "Saved" : Uuid().v4().substring(0, 4);
   final operator = idOP.substring(0, 4);
   debugPrint("Log Function: GenerateInvoice: $operator");
   return "$operator-$branch-$queue-$uuid";
