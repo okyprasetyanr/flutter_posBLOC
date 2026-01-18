@@ -64,6 +64,7 @@ class TransactionLoadTransaction extends TransactionEvent {
 }
 
 class TransactionAdjustItem extends TransactionEvent {
+  ModelItemOrdered? selectedItem;
   bool? mode;
   double? qty;
   int? discount;
@@ -72,6 +73,7 @@ class TransactionAdjustItem extends TransactionEvent {
   String? expiredDate;
 
   TransactionAdjustItem({
+    this.selectedItem,
     this.expiredDate,
     this.mode,
     this.qty,

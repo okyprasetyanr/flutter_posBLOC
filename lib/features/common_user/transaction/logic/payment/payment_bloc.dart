@@ -17,7 +17,6 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/features/hive_setup/model_transaction_save.dart';
-import 'package:flutter_pos/request/delete_data.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   DataUserRepositoryCache repoCache;
@@ -330,7 +329,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
                     branchId: currentState.transaction_sell?.getidBranch,
                     queue: counter.getcounterSellSaved + 1,
                   )
-          : null;
+          : currentState.transaction_sell!.getinvoice;
 
       final transaction = currentState.transaction_sell!.copyWith(
         statusTransaction: event.statusTransaction,
@@ -368,12 +367,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           isSell: currentState.isSell,
           dataRepo: bloc,
         );
-        if (currentState.revisionInvoice != null) {
-          deleteDataTransaction(
-            currentState.revisionInvoice!,
-            transaction.getitemsOrdered,
-          );
-        }
       }
       final dataCounter = repoCache.dataCounter;
 

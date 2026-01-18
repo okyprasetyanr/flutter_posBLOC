@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -28,10 +29,6 @@ class _UITransactionPopUpNoteAndSubTotalState
   @override
   Widget build(BuildContext context) {
     return BlocListener<TransactionBloc, TransactionState>(
-      listenWhen: (previous, current) =>
-          previous is TransactionLoaded &&
-          current is TransactionLoaded &&
-          previous.selectedItem != current.selectedItem,
       listener: (context, state) {
         if (state is TransactionLoaded) {
           noteController.text = state.selectedItem?.getNote ?? "";
@@ -43,24 +40,9 @@ class _UITransactionPopUpNoteAndSubTotalState
       child: Row(
         children: [
           Flexible(
-            child: TextField(
-              style: lv05TextStyle,
-              decoration: InputDecoration(
-                labelText: "Catatan",
-                labelStyle: lv05TextStyle,
-                hintText: "Catatan...",
-                hintStyle: lv05TextStyle,
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 5,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
+            child: customTextField(
               controller: noteController,
+              text: "Catatan",
               onChanged: (value) => context.read<TransactionBloc>().add(
                 TransactionAdjustItem(note: value),
               ),

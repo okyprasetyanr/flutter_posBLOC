@@ -19,7 +19,6 @@ class UITransactionGridViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String idOrdered = Uuid().v1();
     return BlocSelector<
       TransactionBloc,
       TransactionState,
@@ -54,6 +53,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                   InkWell(
                     borderRadius: BorderRadius.circular(15),
                     onTap: () {
+                      final idOrdered = Uuid().v4();
                       ModelItemOrdered selectedItem = ModelItemOrdered(
                         itemOrderedBatch: [],
                         priceItemFinal: item.getpriceItem,
@@ -62,12 +62,16 @@ class UITransactionGridViewItem extends StatelessWidget {
                         nameItem: item.getnameItem,
                         idItem: item.getidItem,
                         idOrdered: idOrdered,
-                        qtyItem: 1,
+                        qtyItem: 0,
                         priceItem: item.getpriceItem,
                         discountItem: 0,
                         idCategoryItem: item.getidCategoryiItem,
                         note: "",
                         condiment: [],
+                      );
+
+                      debugPrint(
+                        "Log UITransaction: idOrdered Item: $idOrdered",
                       );
 
                       if (UserSession.getStatusFifo() &&

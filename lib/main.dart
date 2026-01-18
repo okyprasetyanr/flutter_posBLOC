@@ -52,6 +52,7 @@ void main() async {
       frequency: Duration(minutes: 15),
     );
   }
+
   runApp(
     MultiBlocProvider(
       providers: [
