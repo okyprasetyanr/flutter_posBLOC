@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -28,18 +29,22 @@ class _UITransactionPopUpNoteAndSubTotalState
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TransactionBloc, TransactionState>(
-      listener: (context, state) {
-        if (state is TransactionLoaded) {
-          noteController.text = state.selectedItem?.getNote ?? "";
-          subTotalController.text = formatPriceRp(
-            state.selectedItem?.getsubTotal ?? 0,
-          );
-        }
-      },
-      child: Row(
-        children: [
-          Flexible(
+    return Row(
+      children: [
+        Flexible(
+          child: BlocListener<TransactionBloc, TransactionState>(
+            listenWhen: (previous, current) =>
+                previous is TransactionLoaded &&
+                current is TransactionLoaded &&
+                previous.selectedItem != current.selectedItem,
+            listener: (context, state) {
+              if (state is TransactionLoaded) {
+                noteController.text = state.selectedItem?.getNote ?? "";
+                subTotalController.text = formatPriceRp(
+                  state.selectedItem?.getsubTotal ?? 0,
+                );
+              }
+            },
             child: customTextField(
               controller: noteController,
               text: "Catatan",
@@ -48,34 +53,25 @@ class _UITransactionPopUpNoteAndSubTotalState
               ),
             ),
           ),
+        ),
 
-          const SizedBox(width: 20),
-          Flexible(
-            child: TextField(
-              style: lv05TextStyleDisable,
-              enabled: false,
-              controller: subTotalController,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 5,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                label: Text(
-                  "Sub Total:",
-                  style: lv05TextStyle,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+        const SizedBox(width: 20),
+        Flexible(
+          child: Column(
+            children: [
+              Text("Sub Total", style: lv05TextStyle),
+              BlocSelector<TransactionBloc, TransactionState, double>(
+                selector: (state) => (state is TransactionLoaded)
+                    ? state.selectedItem?.getsubTotal ?? 0
+                    : 0,
+                builder: (context, state) {
+                  return CustomText(text: formatPriceRp(state));
+                },
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
