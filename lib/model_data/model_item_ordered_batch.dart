@@ -25,6 +25,22 @@ class ModelItemOrderedBatch extends Equatable {
   double get getqty_item => _qty_item;
   double get getprice_item => _price_item;
 
+  ModelItemOrderedBatch copyWith({
+    String? id_ordered,
+    String? id_item,
+    String? invoice,
+    double? qty_item,
+    double? price_item,
+  }) {
+    return ModelItemOrderedBatch(
+      id_ordered: id_ordered ?? this._id_ordered,
+      id_item: id_item ?? this._id_item,
+      invoice: invoice ?? this._invoice,
+      qty_item: qty_item ?? this._qty_item,
+      price_item: price_item ?? this._price_item,
+    );
+  }
+
   @override
   List<Object?> get props => [
     _id_ordered,
