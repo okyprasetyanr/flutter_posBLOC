@@ -315,7 +315,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       debugPrint("Log TransactionBloc: _onResetSelectedItem: masuk");
-      emit(currentState.copyWith(selectedItem: null, editSelectedItem: false));
+      emit(
+        currentState.copyWith(
+          selectedItem: null,
+          editSelectedItem: false,
+          customPrice: 0,
+        ),
+      );
     }
   }
 
@@ -457,6 +463,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     emit(
       currentState.copyWith(
+        customPrice: resultFifo.price,
         selectedItem: item.copyWith(
           qtyItem: resultFifo.qty,
           priceItemFinal: resultFifo.price,
@@ -485,7 +492,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     debugPrint(
       "Log TransactionBloc: check bool fifoLogic(): isSell: $isSell, fifoActive: $fifoActive",
     );
-    if (customprice != null && customprice != 0) {
+    final customPriceState = customprice == null
+        ? (state as TransactionLoaded).customPrice != 0
+              ? (state as TransactionLoaded).customPrice
+              : item.getpriceItemFinal
+        : customprice;
+
+    if (customPriceState != 0) {
       if (isFifo) {
         for (int i = 0; i < batches.length; i++) {
           final b = batches[i];
@@ -494,7 +507,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             id_item: b.getid_Item,
             invoice: b.getinvoice,
             qty_item: b.getqty_item,
-            price_item: customprice,
+            price_item: customPriceState,
           );
         }
       } else {
@@ -502,7 +515,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           batches[0] = batches[0].copyWith(price_item: customprice);
         }
       }
-    } else if (customprice == null || customprice == 0) {
+    } else if (customPriceState == 0) {
       if (isFifo) {
         final qtyNow = _totalQty(batches);
         batches.clear();
@@ -516,13 +529,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         );
       } else {
         if (batches.isNotEmpty) {
-          batches[0] = batches[0].copyWith(
-            price_item: item.getpriceItemFinal < 10
-                ? item.getpriceItem
-                : item.getpriceItemFinal,
-          );
+          batches[0] = batches[0].copyWith(price_item: item.getpriceItem);
           debugPrint(
-            "Log TransactionBloc: customPrice == Null: ${item.getpriceItemFinal}",
+            "Log TransactionBloc: customPrice == Null: ${item.getpriceItem}",
           );
         }
       }
@@ -627,8 +636,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required String idItem,
     required String invoice,
     required double qtyNeed,
-    double? price,
+    double price = 0,
   }) {
+    final customPriceState = (state as TransactionLoaded).customPrice;
     double need = qtyNeed;
 
     final fifo =
@@ -660,15 +670,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           id_item: idItem,
           invoice: invoice,
           qty_item: take,
-          price_item: price != null
-              ? price != 0
-                    ? price
-                    : batch.getpriceItemFinal
+          price_item: price != 0
+              ? price
+              : customPriceState != 0
+              ? customPriceState
               : batch.getpriceItemFinal,
         ),
       );
       debugPrint(
-        "Log TransactionBloc: allocateFIFO price:${price != 0 ? price : batch.getpriceItemFinal}",
+        "Log TransactionBloc: allocateFIFO price:${price != 0
+            ? price
+            : customPriceState != 0
+            ? customPriceState
+            : batch.getpriceItem}",
       );
       need -= take;
     }
