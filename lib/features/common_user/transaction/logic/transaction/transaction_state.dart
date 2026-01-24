@@ -28,7 +28,7 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   final ModelItemOrdered? selectedItem;
   final ModelPartner? selectedPartner;
   final bool editSelectedItem;
-  final List<ModelItemOrdered>? itemOrdered;
+  final List<ModelItemOrdered> itemOrdered;
   final List<ModelPartner>? dataPartner;
   final List<ModelItemBatch>? dataItemBatch;
 

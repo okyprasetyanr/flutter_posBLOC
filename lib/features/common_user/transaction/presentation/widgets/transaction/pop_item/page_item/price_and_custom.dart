@@ -150,7 +150,9 @@ class _UITransactionPopUpPriceAndCustomState
                                       );
                                       context.read<TransactionBloc>().add(
                                         TransactionAdjustItem(
-                                          customprice: double.tryParse(value),
+                                          customprice: value.isNotEmpty
+                                              ? double.tryParse(value)
+                                              : 0,
                                         ),
                                       );
                                     },

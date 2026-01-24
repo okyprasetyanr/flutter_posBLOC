@@ -412,7 +412,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       List<ModelItemOrdered> itemPesanan = List<ModelItemOrdered>.from(
-        currentState.itemOrdered ?? const [],
+        currentState.itemOrdered,
       );
       final selected = currentState.selectedItem;
 
@@ -517,6 +517,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       }
     } else if (customPriceState == 0) {
       if (isFifo) {
+        debugPrint(
+          "Log TransactionBloc: customPrice == 0: ${customPriceState}",
+        );
         final qtyNow = _totalQty(batches);
         batches.clear();
         _allocateFIFO(
@@ -530,9 +533,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       } else {
         if (batches.isNotEmpty) {
           batches[0] = batches[0].copyWith(price_item: item.getpriceItem);
-          debugPrint(
-            "Log TransactionBloc: customPrice == Null: ${item.getpriceItem}",
-          );
         }
       }
     }
@@ -636,7 +636,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required String idItem,
     required String invoice,
     required double qtyNeed,
-    double price = 0,
+    double? price,
   }) {
     final customPriceState = (state as TransactionLoaded).customPrice;
     double need = qtyNeed;
@@ -657,8 +657,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           .where((e) => e.getid_Ordered == batch.getidOrdered)
           .fold(0.0, (s, e) => s + e.getqty_item);
 
+      // ====== INI TAMBAHAN ======
+      final globalUsed = _getGlobalUsedQty(idItem);
+      // =========================
+
       final available =
-          batch.getqtyItem_in - batch.getqtyItem_out - usedQtyInOrder;
+          batch.getqtyItem_in -
+          batch.getqtyItem_out -
+          usedQtyInOrder -
+          globalUsed;
 
       if (available <= 0) continue;
 
@@ -670,20 +677,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           id_item: idItem,
           invoice: invoice,
           qty_item: take,
-          price_item: price != 0
+          price_item: price != null && price != 0
               ? price
-              : customPriceState != 0
+              : customPriceState != 0 && price == null
               ? customPriceState
               : batch.getpriceItemFinal,
         ),
       );
-      debugPrint(
-        "Log TransactionBloc: allocateFIFO price:${price != 0
-            ? price
-            : customPriceState != 0
-            ? customPriceState
-            : batch.getpriceItem}",
-      );
+
       need -= take;
     }
   }
@@ -692,6 +693,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required List<ModelItemOrderedBatch> usedBatches,
     required double qtyRelease,
   }) {
+    // ===== GUARD =====
+    final totalQty = _totalQty(usedBatches);
+    if (totalQty <= 1) return;
+    // =================
+
     double release = qtyRelease;
 
     for (int i = usedBatches.length - 1; i >= 0; i--) {
@@ -729,6 +735,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     return gross - (gross * discount / 100);
   }
 
+  double _getGlobalUsedQty(String idItem) {
+    final currentState = state as TransactionLoaded;
+
+    return currentState.itemOrdered
+        .where((e) => e.getidItem == idItem)
+        .expand((e) => e.getitemOrderedBatch)
+        .fold(0.0, (sum, b) => sum + b.getqty_item);
+  }
+
   FutureOr<void> _onDeleteItemOrdered(
     TransactionDeleteItemOrdered event,
     Emitter<TransactionState> emit,
@@ -736,7 +751,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       List<ModelItemOrdered> listItemOrdered = List.from(
-        currentState.itemOrdered!,
+        currentState.itemOrdered,
       );
       listItemOrdered.removeWhere(
         (element) =>

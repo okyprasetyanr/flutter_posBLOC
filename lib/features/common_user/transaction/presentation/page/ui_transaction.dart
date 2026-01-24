@@ -243,8 +243,9 @@ class _UITransactionState extends State<UITransaction> {
           children: [
             BlocSelector<TransactionBloc, TransactionState, (int, double)>(
               selector: (state) {
-                if (state is TransactionLoaded && state.itemOrdered != null) {
-                  final itemOrdered = state.itemOrdered!;
+                if (state is TransactionLoaded &&
+                    state.itemOrdered.isNotEmpty) {
+                  final itemOrdered = state.itemOrdered;
                   int itemcount = 0;
                   double subTotal = 0;
                   for (int i = 0; i < itemOrdered.length; i++) {

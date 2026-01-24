@@ -185,9 +185,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     );
     final formattedDate = parseDate(date: DateTime.now());
 
-    List<ModelItemOrdered> itemOrdered = await List.from(
-      sellState.itemOrdered ?? const [],
-    );
+    List<ModelItemOrdered> itemOrdered = await List.from(sellState.itemOrdered);
     if (!sellState.isSell) {
       itemOrdered = itemOrdered
           .map((item) => item.copyWith(dateBuy: formattedDate))

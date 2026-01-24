@@ -88,6 +88,20 @@ class UITransactionGridViewItem extends StatelessWidget {
                           edit: false,
                         ),
                       );
+                      final bloc = context.read<TransactionBloc>();
+                      final available =
+                          checkQTY(
+                            (bloc.state as TransactionLoaded).itemOrdered,
+                            (bloc.state as TransactionLoaded).dataItem!,
+                          ).entries.any((e) {
+                            return e.value.ordered <= e.value.stock;
+                          });
+                      if (available) {
+                        return customSnackBar(
+                          context,
+                          "FIFO: Stok sudah mencapai batas",
+                        );
+                      }
 
                       customBottomSheet(
                         context: context,

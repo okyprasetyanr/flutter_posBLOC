@@ -29,7 +29,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
           child: BlocSelector<TransactionBloc, TransactionState, List<ModelItemOrdered>>(
             selector: (state) {
               if (state is TransactionLoaded) {
-                return state.itemOrdered ?? const [];
+                return state.itemOrdered;
               }
               return const [];
             },
@@ -344,33 +344,18 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   final bloc = context.read<TransactionBloc>();
                   if (bloc.state is TransactionLoaded) {
                     final itemOrdered =
-                        (bloc.state as TransactionLoaded).itemOrdered!;
+                        (bloc.state as TransactionLoaded).itemOrdered;
                     final listItem =
                         (bloc.state as TransactionLoaded).dataItem!;
                     if (itemOrdered.isEmpty) {
                       return customSnackBar(context, "Belum ada Pesanan!");
                     } else if (UserSession.getStatusFifo() &&
                         (bloc.state as TransactionLoaded).isSell) {
-                      Map<String, double> dataItem = {};
-                      itemOrdered.forEach((element) {
-                        dataItem.containsKey(element.getidItem)
-                            ? dataItem[element.getidItem] =
-                                  dataItem[element.getidItem]! +
-                                  element.getqtyItem
-                            : dataItem[element.getidItem] = element.getqtyItem;
-                      });
-
-                      final isQtyNotEnough = dataItem.entries.any((entry) {
-                        final key = entry.key;
-                        final value = entry.value;
-
-                        final item = listItem.firstWhere(
-                          (element) => element.getidItem == key,
-                        );
-
-                        return item.getqtyItem < value;
-                      });
-                      if (isQtyNotEnough) {
+                      final available = checkQTY(itemOrdered, listItem).entries
+                          .any((e) {
+                            return e.value.ordered > e.value.stock;
+                          });
+                      if (available) {
                         return customSnackBar(
                           context,
                           "FIFO: Ada Item yang melebihi batas jumlah Stok!",

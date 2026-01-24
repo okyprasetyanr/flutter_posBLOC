@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -129,4 +131,28 @@ DateTime dateNowYMDBLOC({bool? statusEnd}) {
   return end
       ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
       : DateTime(now.year, now.month, now.day, 00, 00, 00, 000);
+}
+
+Map<String, ({double stock, double ordered})> checkQTY(
+  List<ModelItemOrdered> itemOrdered,
+  List<ModelItem> listItem,
+) {
+  Map<String, double> dataItem = {};
+
+  for (final item in itemOrdered) {
+    dataItem[item.getidItem] =
+        (dataItem[item.getidItem] ?? 0) + item.getqtyItem;
+  }
+
+  Map<String, ({double stock, double ordered})> result = {};
+
+  for (final entry in dataItem.entries) {
+    final item = listItem.firstWhere(
+      (element) => element.getidItem == entry.key,
+    );
+
+    result[entry.key] = (stock: item.getqtyItem, ordered: entry.value);
+  }
+
+  return result;
 }
