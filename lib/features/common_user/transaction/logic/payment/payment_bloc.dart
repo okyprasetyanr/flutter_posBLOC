@@ -334,11 +334,22 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         invoice: invoice,
       );
 
-      if (saved) {
-        final box = await repoCache.getHiveSavedTransaction();
-        final existing = box.get(invoice);
+      final box = await repoCache.getHiveSavedTransaction();
+      debugPrint(
+        "Log PaymentBlog: OnPaymentProcess check saved Invoice: $invoice, InvoiceSaved: ${currentState.revisionInvoice}",
+      );
 
-        final newData = convertToMapTransactionSaveHive(transaction);
+      if (saved) {
+        final existing = box.get(invoice);
+        final cleanedItems = transaction.getitemsOrdered.map((e) {
+          return e.copyWith(itemOrderedBatch: []);
+        }).toList();
+
+        final newTransaction = transaction.copyWith(
+          itemsOrdered: cleanedItems,
+          statusTransaction: transaction.getstatusTransaction,
+        );
+        final newData = convertToMapTransactionSaveHive(newTransaction);
 
         if (existing != null) {
           await box.put(
@@ -361,11 +372,17 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         }
       } else {
         final bloc = event.context.read<DataUserRepositoryCache>();
+        if (currentState.revisionInvoice != null) {
+          if (box.get(currentState.revisionInvoice!) != null) {
+            await box.delete(currentState.revisionInvoice);
+          }
+        }
         await transaction.pushDataTransaction(
           isSell: currentState.isSell,
           dataRepo: bloc,
         );
       }
+
       final dataCounter = repoCache.dataCounter;
 
       final counterIndex = dataCounter.indexWhere(

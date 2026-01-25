@@ -657,9 +657,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           .where((e) => e.getid_Ordered == batch.getidOrdered)
           .fold(0.0, (s, e) => s + e.getqty_item);
 
-      // ====== INI TAMBAHAN ======
       final globalUsed = _getGlobalUsedQty(idItem);
-      // =========================
 
       final available =
           batch.getqtyItem_in -
@@ -808,13 +806,26 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
+      final itemOrdered = event.currentTransaction.getitemsOrdered;
+      List<ModelItemOrdered> itemOrderedFinal = [];
+      for (int i = 0; i < itemOrdered.length; i++) {
+        ModelItemOrdered item = itemOrdered[i];
+        final resultFifo = fifoLogic(item: item, qty: item.getqtyItem);
+        item = item.copyWith(
+          qtyItem: resultFifo.qty,
+          priceItemFinal: resultFifo.price,
+          subTotal: resultFifo.subTotal,
+          itemOrderedBatch: resultFifo.batch,
+        );
+        itemOrderedFinal.add(item);
+      }
       add(
         TransactionAddOrderedItem(
           orderedItem: event.currentTransaction.getitemsOrdered,
         ),
       );
       debugPrint(
-        "Log TransactionBloc: LoadedTransaction: ${event.currentTransaction}",
+        "Log TransactionBloc: LoadedTransaction: ${event.currentTransaction.getitemsOrdered.any((element) => element.getitemOrderedBatch.isEmpty)}",
       );
       emit(
         currentState.copyWith(
