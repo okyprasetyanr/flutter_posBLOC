@@ -223,7 +223,7 @@ class ModelTransaction extends Equatable {
         if (remove) {
           pushDataBatch(dataRepo);
         } else {
-          await commitStockFromOrderedBatch(dataBatch: dataRepo.dataBatch);
+          await commitStockFromOrderedBatch(dataRepo: dataRepo);
         }
       }
     }
@@ -328,7 +328,7 @@ class ModelTransaction extends Equatable {
   }
 
   Future<void> commitStockFromOrderedBatch({
-    required List<ModelBatch> dataBatch,
+    required DataUserRepositoryCache dataRepo,
   }) async {
     final firestore = FirebaseFirestore.instance;
     final batchWrite = firestore.batch();
@@ -341,26 +341,33 @@ class ModelTransaction extends Equatable {
       "Log ModelTransaction: commitStockFromOrderedBatch: $allOrderedBatch",
     );
 
-    final dataItemBatch = dataBatch.expand((b) => b.getitems_batch).toList();
+    final dataItemBatch = dataRepo.dataBatch
+        .expand((b) => b.getitems_batch)
+        .toList();
 
     for (final orderedBatch in allOrderedBatch) {
-      final batch = dataItemBatch.firstWhere(
+      final index = dataItemBatch.indexWhere(
         (x) =>
             x.getidOrdered == orderedBatch.getid_Ordered &&
             x.getidItem == orderedBatch.getid_Item,
       );
 
-      final updated = batch.copyWith(
-        qtyItem_out: batch.getqtyItem_out + orderedBatch.getqty_item,
-      );
+      if (index != -1) {
+        final updated = dataItemBatch[index].copyWith(
+          qtyItem_out:
+              dataItemBatch[index].getqtyItem_out + orderedBatch.getqty_item,
+        );
 
-      final docRef = firestore
-          .collection("batch")
-          .doc(updated.getinvoice)
-          .collection("items_batch")
-          .doc(updated.getidOrdered);
+        dataItemBatch[index] = updated;
 
-      batchWrite.update(docRef, {'qty_item_out': updated.getqtyItem_out});
+        final docRef = firestore
+            .collection("batch")
+            .doc(updated.getinvoice)
+            .collection("items_batch")
+            .doc(updated.getidOrdered);
+
+        batchWrite.update(docRef, {'qty_item_out': updated.getqtyItem_out});
+      }
     }
 
     await batchWrite.commit();

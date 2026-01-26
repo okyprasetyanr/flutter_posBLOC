@@ -394,15 +394,19 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             ? dataCounter[counterIndex].getcounterSellSaved + 1
             : null,
         counterSell: saved
-            ? currentState.isSell
-                  ? dataCounter[counterIndex].getcounterSell + 1
-                  : null
+            ? null
+            : currentState.isSell
+            ? dataCounter[counterIndex].getcounterSell + 1
             : null,
         counterBuy: saved
-            ? currentState.isSell
-                  ? null
-                  : dataCounter[counterIndex].getcounterBuy + 1
-            : null,
+            ? null
+            : currentState.isSell
+            ? null
+            : dataCounter[counterIndex].getcounterBuy + 1,
+      );
+
+      debugPrint(
+        "Log PaymentProcess: check Counter: dataCounter: $dataCounter, saved: $saved",
       );
 
       await FirebaseFirestore.instance

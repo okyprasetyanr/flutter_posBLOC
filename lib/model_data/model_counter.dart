@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/function.dart';
 
-class ModelCounter {
+class ModelCounter extends Equatable {
   final int _counterSell,
       _counterSellSaved,
       _counterBuy,
@@ -18,7 +19,7 @@ class ModelCounter {
     required int counterExpense,
     required String idBranch,
   }) : _counterSell = counterSell,
-       _counterSellSaved = counterSell,
+       _counterSellSaved = counterSellSaved,
        _counterBuy = counterBuy,
        _counterIncome = counterIncome,
        _counterExpense = counterExpense,
@@ -59,4 +60,13 @@ class ModelCounter {
     writeBatch.set(datacounterRef, convertToMapCounter(dataCounter));
     await writeBatch.commit();
   }
+
+  @override
+  List<Object?> get props => [
+    _counterSellSaved,
+    _counterSell,
+    _counterBuy,
+    _counterIncome,
+    _counterExpense,
+  ];
 }
