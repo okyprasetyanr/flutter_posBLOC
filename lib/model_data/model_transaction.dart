@@ -34,6 +34,30 @@ class ModelTransaction extends Equatable {
   final List<ModelSplit> _dataSplit;
   final List<ModelItemOrdered> _itemsOrdered;
 
+  factory ModelTransaction.empty() => ModelTransaction(
+    idBranch: "",
+    itemsOrdered: [],
+    dataSplit: [],
+    date: DateTime.now(),
+    note: "",
+    invoice: "",
+    namePartner: "",
+    idPartner: "",
+    nameOperator: "",
+    idOperator: "",
+    paymentMethod: "",
+    discount: 0,
+    ppn: 0,
+    totalItem: 0,
+    charge: 0,
+    subTotal: 0,
+    billPaid: 0,
+    totalCharge: 0,
+    totalPpn: 0,
+    totalDiscount: 0,
+    total: 0,
+  );
+
   ModelTransaction({
     required String idBranch,
     ListStatusTransaction? statusTransaction,
@@ -337,36 +361,49 @@ class ModelTransaction extends Equatable {
         .expand((e) => e.getitemOrderedBatch)
         .toList();
 
-    debugPrint(
-      "Log ModelTransaction: commitStockFromOrderedBatch: $allOrderedBatch",
-    );
-
-    final dataItemBatch = dataRepo.dataBatch
-        .expand((b) => b.getitems_batch)
-        .toList();
-
     for (final orderedBatch in allOrderedBatch) {
-      final index = dataItemBatch.indexWhere(
-        (x) =>
-            x.getidOrdered == orderedBatch.getid_Ordered &&
-            x.getidItem == orderedBatch.getid_Item,
+      final batchIndex = dataRepo.dataBatch.indexWhere(
+        (b) => b.getitems_batch.any(
+          (x) =>
+              x.getidOrdered == orderedBatch.getid_Ordered &&
+              x.getidItem == orderedBatch.getid_Item,
+        ),
       );
 
-      if (index != -1) {
-        final updated = dataItemBatch[index].copyWith(
-          qtyItem_out:
-              dataItemBatch[index].getqtyItem_out + orderedBatch.getqty_item,
-        );
+      if (batchIndex != -1) {
+        final itemIndex = dataRepo.dataBatch[batchIndex].getitems_batch
+            .indexWhere(
+              (x) =>
+                  x.getidOrdered == orderedBatch.getid_Ordered &&
+                  x.getidItem == orderedBatch.getid_Item,
+            );
 
-        dataItemBatch[index] = updated;
+        if (itemIndex != -1) {
+          final old = dataRepo.dataBatch[batchIndex].getitems_batch[itemIndex];
 
-        final docRef = firestore
-            .collection("batch")
-            .doc(updated.getinvoice)
-            .collection("items_batch")
-            .doc(updated.getidOrdered);
+          final updated = old.copyWith(
+            qtyItem_out: old.getqtyItem_out + orderedBatch.getqty_item,
+          );
 
-        batchWrite.update(docRef, {'qty_item_out': updated.getqtyItem_out});
+          final newItems = List<ModelItemBatch>.from(
+            dataRepo.dataBatch[batchIndex].getitems_batch,
+          );
+          newItems[itemIndex] = updated;
+
+          final newBatch = dataRepo.dataBatch[batchIndex].copyWith(
+            items_batch: newItems,
+          );
+
+          dataRepo.dataBatch[batchIndex] = newBatch;
+
+          final docRef = firestore
+              .collection("batch")
+              .doc(updated.getinvoice)
+              .collection("items_batch")
+              .doc(updated.getidOrdered);
+
+          batchWrite.update(docRef, {'qty_item_out': updated.getqtyItem_out});
+        }
       }
     }
 

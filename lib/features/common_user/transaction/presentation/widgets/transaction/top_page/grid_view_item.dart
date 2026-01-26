@@ -93,9 +93,10 @@ class UITransactionGridViewItem extends StatelessWidget {
                           checkQTY(
                             (bloc.state as TransactionLoaded).itemOrdered,
                             (bloc.state as TransactionLoaded).dataItem!,
-                          ).entries.any((e) {
-                            return e.value.ordered <= e.value.stock;
-                          });
+                          ).entries.any(
+                            (element) =>
+                                element.value.ordered >= element.value.stock,
+                          );
                       if (available) {
                         return customSnackBar(
                           context,
