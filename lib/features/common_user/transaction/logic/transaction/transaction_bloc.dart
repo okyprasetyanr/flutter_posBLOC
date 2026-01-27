@@ -491,22 +491,23 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     bool? mode,
     double? qty,
     int? discount,
+    List<ModelItemOrdered>? simulatedItemOrdered,
   }) {
     final isSell = (state as TransactionLoaded).isSell;
     List<ModelItemOrderedBatch> batches = List.from(item.getitemOrderedBatch);
     final fifoActive = UserSession.getStatusFifo();
     final isFifo = fifoActive && isSell;
     final batch = (state as TransactionLoaded).dataItemBatch!;
-    debugPrint(
-      "Log TransactionBloc: check bool fifoLogic(): isSell: $isSell, fifoActive: $fifoActive",
-    );
+
     final customPriceState = customprice == null
         ? (state as TransactionLoaded).customPrice != 0
               ? (state as TransactionLoaded).customPrice
               : item.getpriceItemFinal
         : customprice;
 
-    if (customPriceState != 0) {
+    final checkCustomPrice = customPriceState != item.getpriceItem;
+
+    if (customPriceState != 0 && checkCustomPrice) {
       if (isFifo) {
         for (int i = 0; i < batches.length; i++) {
           final b = batches[i];
@@ -528,6 +529,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         final qtyNow = _totalQty(batches);
         batches.clear();
         _allocateFIFO(
+          currentListContext: simulatedItemOrdered,
           id_ordered: item.getidOrdered,
           usedBatches: batches,
           stockBatches: batch,
@@ -547,6 +549,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       if (mode) {
         if (isFifo) {
           _allocateFIFO(
+            price: checkCustomPrice ? customPriceState : 0,
+            currentListContext: simulatedItemOrdered,
             id_ordered: item.getidOrdered,
             usedBatches: batches,
             stockBatches: batch,
@@ -554,7 +558,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             invoice: item.getinvoice ?? '',
             qtyNeed: 1,
           );
-          debugPrint("Log TransactionBloc: fifoLogic: checkFLow ${mode}");
+          debugPrint(
+            "Log TransactionBloc: fifoLogic: price ${item.getpriceItem != item.getpriceItemFinal ? customPriceState : 0}",
+          );
         } else {
           if (batches.isEmpty) {
             batches.add(
@@ -587,6 +593,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         final diff = qty - _totalQty(batches).toInt();
         if (diff > 0) {
           _allocateFIFO(
+            price: checkCustomPrice ? customPriceState : 0,
+            currentListContext: simulatedItemOrdered,
             id_ordered: item.getidOrdered,
             usedBatches: batches,
             stockBatches: batch,
@@ -648,6 +656,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required double qtyNeed,
     required String id_ordered,
     double? price,
+    List<ModelItemOrdered>? currentListContext,
   }) {
     final customPriceState = (state as TransactionLoaded).customPrice;
     double need = qtyNeed;
@@ -675,6 +684,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         idItem,
         id_ordered,
         batch.getidOrdered,
+        currentListContext: currentListContext,
       );
 
       final available =
@@ -701,6 +711,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ),
       );
 
+      debugPrint(
+        "Log TransactionBloc: AllocateFIFO: price: ${price != null && price != 0
+            ? price
+            : customPriceState != 0 && price == null
+            ? customPriceState
+            : batch.getpriceItemFinal}",
+      );
       need -= take;
     }
   }
@@ -752,10 +769,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   double _getGlobalUsedQty(
     String idItem,
     String idOrdered,
-    String stockBatchId,
-  ) {
+    String stockBatchId, {
+    List<ModelItemOrdered>? currentListContext, // Parameter Baru
+  }) {
     final currentState = state as TransactionLoaded;
-    return currentState.itemOrdered
+
+    // LOGIC FIX: Gunakan context jika ada, jika null pakai state yang sekarang
+    final sourceList = currentListContext ?? currentState.itemOrdered;
+
+    return sourceList
         .where((e) => e.getidItem == idItem)
         .where((b) => b.getidOrdered != idOrdered)
         .expand((e) => e.getitemOrderedBatch)
@@ -833,7 +855,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       List<ModelItemOrdered> itemOrderedFinal = [];
       for (int i = 0; i < itemOrdered.length; i++) {
         ModelItemOrdered item = itemOrdered[i];
-        final resultFifo = fifoLogic(item: item, qty: item.getqtyItem);
+        final resultFifo = fifoLogic(
+          customprice: item.getpriceItemFinal,
+          item: item,
+          qty: item.getqtyItem,
+          simulatedItemOrdered: itemOrderedFinal,
+        );
+
+        debugPrint(
+          "Log TransactionBloc: LoadedTransaction: ${item.getpriceItemFinal}, priceFinal: ${resultFifo.price}",
+        );
         item = item.copyWith(
           qtyItem: resultFifo.qty,
           priceItemFinal: resultFifo.price,
@@ -843,14 +874,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         itemOrderedFinal.add(item);
       }
       add(TransactionAddOrderedItem(orderedItem: itemOrderedFinal));
-
-      for (final item in itemOrderedFinal) {
-        for (final batch in item.getitemOrderedBatch) {
-          debugPrint(
-            "Log TransactionBloc: LoadedTransaction: ${batch.getqty_item}",
-          );
-        }
-      }
 
       emit(
         currentState.copyWith(
