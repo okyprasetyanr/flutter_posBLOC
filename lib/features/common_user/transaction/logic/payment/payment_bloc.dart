@@ -422,7 +422,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
     if (sellState.state is TransactionLoaded) {
       sellState.add(TransactionResetOrderedItem());
-      sellState.add(TransactionResetSelectedItem());
       sellState.add(
         TransactionGetData(
           idBranch: (sellState.state as TransactionLoaded).idBranch,

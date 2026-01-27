@@ -154,8 +154,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     applyFifoPriceToItem(listItem: listItem, fifoMap: fifoMap);
 
+    final isSell = !UserSession.getStatusFifo() ? true : currentState.isSell;
+    debugPrint("Log TransactionBloc: GetData: isSell: ${isSell}");
     emit(
       currentState.copyWith(
+        isSell: isSell,
         selectedTransaction: ModelTransaction.empty(),
         dataItemBatch: dataItemBatch,
         dataTransactionSaved: dataTransactionSaved,
@@ -579,8 +582,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
 
     //custom QTY
-    if (isFifo) {
-      if (qty != null) {
+    if (qty != null) {
+      if (isFifo) {
         final diff = qty - _totalQty(batches).toInt();
         if (diff > 0) {
           _allocateFIFO(
@@ -604,7 +607,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
               id_ordered: 'NON_FIFO',
               id_item: item.getidItem,
               invoice: item.getinvoice ?? '',
-              qty_item: 1,
+              qty_item: item.getqtyItem,
             ),
           );
         } else {
@@ -643,7 +646,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required String idItem,
     required String invoice,
     required double qtyNeed,
-    required String id_ordered, // ID Item Order yang sedang diedit
+    required String id_ordered,
     double? price,
   }) {
     final customPriceState = (state as TransactionLoaded).customPrice;
@@ -661,7 +664,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     for (final batch in fifo) {
       if (need <= 0) break;
 
-      // Hitung berapa yang SUDAH diambil oleh item yang sedang diedit ini dari batch ini
       final usedQtyInOrder = usedBatches
           .where((e) => e.getid_Ordered == batch.getidOrdered)
           .fold(
@@ -669,20 +671,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             (previousValue, element) => previousValue + element.getqty_item,
           );
 
-      // PERBAIKAN DI SINI:
-      // Kirim ID Batch (batch.getidOrdered) agar kita hanya menghitung
-      // berapa banyak batch INI telah dipakai oleh item order LAIN.
       final globalUsed = _getGlobalUsedQty(
         idItem,
         id_ordered,
-        batch.getidOrdered, // Pass stock batch ID
+        batch.getidOrdered,
       );
 
       final available =
           batch.getqtyItem_in -
           batch.getqtyItem_out -
           usedQtyInOrder -
-          globalUsed; // Sekarang pengurangannya sudah akurat per batch
+          globalUsed;
 
       if (available <= 0) continue;
 
@@ -752,19 +751,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   double _getGlobalUsedQty(
     String idItem,
-    String idOrdered, // ID transaksi item yang sedang diedit (untuk di-exclude)
-    String stockBatchId, // TAMBAHAN: ID dari Batch Gudang yang sedang dicek
+    String idOrdered,
+    String stockBatchId,
   ) {
     final currentState = state as TransactionLoaded;
-
     return currentState.itemOrdered
         .where((e) => e.getidItem == idItem)
-        .where(
-          (b) => b.getidOrdered != idOrdered,
-        ) // Jangan hitung item yang sedang kita edit sekarang
+        .where((b) => b.getidOrdered != idOrdered)
         .expand((e) => e.getitemOrderedBatch)
-        // PERBAIKAN DI SINI:
-        // Hanya hitung qty jika batch yang dipakai sesuai dengan stockBatchId yang sedang di-looping
         .where((batch) => batch.getid_Ordered == stockBatchId)
         .fold(0.0, (sum, b) => sum + b.getqty_item);
   }
@@ -792,10 +786,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     Emitter<TransactionState> emit,
   ) {
     final currentState = state;
+    add(TransactionResetSelectedItem());
     if (currentState is TransactionLoaded) {
       debugPrint("Log TransactionBloc: ResetOrderedItem");
       emit(
         currentState.copyWith(
+          selectedTransaction: ModelTransaction.empty(),
           selectedItem: null,
           editSelectedItem: false,
           itemOrdered: [],
@@ -810,10 +806,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      add(TransactionResetSelectedItem());
+      // add(TransactionResetSelectedItem());
       add(TransactionResetOrderedItem());
       final newStatus = currentState.isSell;
-      emit(currentState.copyWith(sell: !newStatus));
+      emit(currentState.copyWith(isSell: !newStatus));
     }
   }
 
@@ -847,9 +843,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         itemOrderedFinal.add(item);
       }
       add(TransactionAddOrderedItem(orderedItem: itemOrderedFinal));
-      debugPrint(
-        "Log TransactionBloc: LoadedTransaction: ${event.currentTransaction.getitemsOrdered.any((element) => element.getitemOrderedBatch.isEmpty)}",
-      );
+
+      for (final item in itemOrderedFinal) {
+        for (final batch in item.getitemOrderedBatch) {
+          debugPrint(
+            "Log TransactionBloc: LoadedTransaction: ${batch.getqty_item}",
+          );
+        }
+      }
+
       emit(
         currentState.copyWith(
           selectedTransaction: event.currentTransaction,

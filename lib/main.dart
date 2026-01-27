@@ -92,9 +92,12 @@ void callbackDispatcher() {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await Hive.initFlutter();
+    Hive.registerAdapter(TransactionSavedHiveAdapter());
+
     await Hive.openBox('firestoreQueue');
     await Hive.openBox<TransactionSavedHive>('saved_transaction');
     await FirestoreWorker.processQueueHive();
+
     debugPrint('Log Main: FirestoreWorker masuk');
     return Future.value(true);
   });

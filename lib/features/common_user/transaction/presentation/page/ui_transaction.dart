@@ -68,7 +68,6 @@ class _UITransactionState extends State<UITransaction> {
         if (!didPop) {
           Navigator.pop(context);
           context.read<TransactionBloc>().add(TransactionResetOrderedItem());
-          context.read<TransactionBloc>().add(TransactionResetSelectedItem());
         }
       },
       child: LayoutTopBottom(
@@ -162,7 +161,7 @@ class _UITransactionState extends State<UITransaction> {
                             if (state is TransactionLoaded) {
                               return state.isSell;
                             }
-                            return false;
+                            return true;
                           },
                           builder: (context, state) {
                             return WidgetAnimatePage(
