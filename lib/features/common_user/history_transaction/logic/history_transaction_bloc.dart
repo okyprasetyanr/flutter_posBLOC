@@ -11,6 +11,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/request/delete_data.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 
 class HistoryTransactionBloc
@@ -108,16 +109,22 @@ class HistoryTransactionBloc
       );
 
       final itemOrdered = dataTransaction[indexdataTrans].getitemsOrdered;
-      final dateNow = parseDate(date: DateTime.now(), minute: false);
-      for (int i = 0; i < itemOrdered.length; i++) {
-        for (final item in event.dateExpired) {
-          if (itemOrdered[i].getidOrdered == item['id_ordered']) {
-            itemOrdered[i] = itemOrdered[i].copyWith(
-              dateBuy: dateNow,
-              expiredDate: parseDate(date: item['expired_date']),
-            );
-          }
-        }
+      // final dateNow = parseDate(date: DateTime.now(), minute: false);
+      // for (int i = 0; i < itemOrdered.length; i++) {
+      //   for (final item in event.dateExpired) {
+      //     if (itemOrdered[i].getidOrdered == item['id_ordered']) {
+      //       itemOrdered[i] = itemOrdered[i].copyWith(
+      //         dateBuy: dateNow,
+      //         expiredDate: parseDate(date: item['expired_date']),
+      //       );
+      //     }
+      //   }
+      // }
+      if (!currentState.isSell) {
+        await deleteDataBatch(invoice);
+        repoCache.dataBatch.removeWhere(
+          (element) => element.getinvoice == invoice,
+        );
       }
 
       dataTransaction[indexdataTrans] = dataTransaction[indexdataTrans]
@@ -127,14 +134,10 @@ class HistoryTransactionBloc
             itemsOrdered: itemOrdered,
           );
 
-      debugPrint(
-        "Log HistoryTransaction: hapusData: $dateNow ${dataTransaction[indexdataTrans]}",
-      );
-      final bloc = event.context.read<DataUserRepositoryCache>();
       await dataTransaction[indexdataTrans].pushDataTransaction(
         statusRemove: true,
         isSell: currentState.isSell,
-        dataRepo: bloc,
+        dataRepo: repoCache,
       );
 
       add(HistoryTransactionGetData());

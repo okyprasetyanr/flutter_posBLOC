@@ -16,7 +16,6 @@ import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/date_picker.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
-import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
@@ -367,38 +366,38 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
     );
   }
 
-  Future<void> _expiredConfirm(
+  Future<void> confirmCancel(
     List<ModelItemOrdered> getitemsOrdered, {
     bool? revisi,
   }) async {
-    List<Map<String, dynamic>> dataExpiredItem = [];
+    // List<Map<String, dynamic>> dataExpiredItem = [];
     showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Konfirmasi", style: lv2TextStyle),
-        content: Column(
-          children: [
-            Text("Tanggal Kadaluarsa apabila tersedia:", style: lv05TextStyle),
-            ...getitemsOrdered.map((item) {
-              dataExpiredItem.add({'id_ordered': item.getidOrdered});
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("${item.getnameItem}:", style: lv05TextStyle),
-                  WidgetCustomDate(
-                    onSelected: (day, month, year) {
-                      final index = dataExpiredItem.indexWhere(
-                        (element) => element['id_ordered'] == item.getidOrdered,
-                      );
-                      final date = "$year-$month-$day";
-                      dataExpiredItem[index]['expired_date'] = date;
-                    },
-                  ),
-                ],
-              );
-            }),
-          ],
-        ),
+        // content: Column(
+        //   children: [
+        //     Text("Tanggal Kadaluarsa apabila tersedia:", style: lv05TextStyle),
+        //     ...getitemsOrdered.map((item) {
+        //       dataExpiredItem.add({'id_ordered': item.getidOrdered});
+        //       return Column(
+        //         mainAxisSize: MainAxisSize.min,
+        //         children: [
+        //           Text("${item.getnameItem}:", style: lv05TextStyle),
+        //           WidgetCustomDate(
+        //             onSelected: (day, month, year) {
+        //               final index = dataExpiredItem.indexWhere(
+        //                 (element) => element['id_ordered'] == item.getidOrdered,
+        //               );
+        //               final date = "$year-$month-$day";
+        //               dataExpiredItem[index]['expired_date'] = date;
+        //             },
+        //           ),
+        //         ],
+        //       );
+        //     }),
+        //   ],
+        // ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -407,7 +406,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
           TextButton(
             onPressed: () {
               context.read<HistoryTransactionBloc>().add(
-                HistoryTransactionCancelData(dataExpiredItem, context: context),
+                HistoryTransactionCancelData(),
               );
               if (revisi != null) {
                 context.read<HistoryTransactionBloc>().add(
@@ -416,7 +415,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
               }
               Navigator.pop(context, true);
             },
-            child: Text("Hapus", style: lv1TextStyle),
+            child: Text("Batalkan", style: lv1TextStyle),
           ),
         ],
       ),
@@ -532,13 +531,26 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                         ? transaction.getstatusTransaction ==
                                   ListStatusTransaction.Batal
                               ? customSnackBar(context, "Sudah diBatalkan!")
-                              : _expiredConfirm(transaction.getitemsOrdered)
+                              : confirmCancel(transaction.getitemsOrdered)
                         : UserSession.fifo
-                        ? customSnackBar(
-                            context,
-                            "FIFO: Aktif, tidak dapat membatalkan Pembelian",
-                          )
-                        : _expiredConfirm(state.$1!.getitemsOrdered);
+                        ? context
+                                  .read<DataUserRepositoryCache>()
+                                  .dataBatch
+                                  .where(
+                                    (batch) =>
+                                        batch.getinvoice ==
+                                        state.$1!.getinvoice,
+                                  )
+                                  .expand((batch) => batch.getitems_batch)
+                                  .every(
+                                    (element) => element.getqtyItem_out == 0,
+                                  )
+                              ? confirmCancel(transaction.getitemsOrdered)
+                              : customSnackBar(
+                                  context,
+                                  "FIFO: Aktif, Stok Batch sudah terpakai, tidak dapat membatalkan!",
+                                )
+                        : confirmCancel(state.$1!.getitemsOrdered);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.all(8),
@@ -586,7 +598,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                 TextButton(
                                   onPressed: () async {
                                     Navigator.pop(context, true);
-                                    await _expiredConfirm(
+                                    await confirmCancel(
                                       revisi: true,
                                       state.$1!.getitemsOrdered,
                                     );

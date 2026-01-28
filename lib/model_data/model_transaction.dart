@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -241,11 +242,15 @@ class ModelTransaction extends Equatable {
     final remove = statusRemove ?? false;
 
     if (!isSell) {
-      pushDataBatch(dataRepo);
+      await pushDataBatch(dataRepo);
     } else {
       if (UserSession.getStatusFifo()) {
         if (remove) {
-          pushDataBatch(dataRepo);
+          revertFIFOStock(
+            itemsOrdered: getitemsOrdered,
+            dataBatch: dataRepo.dataBatch,
+          );
+          await updateExistingBatch(dataRepo, _invoice);
         } else {
           await commitStockFromOrderedBatch(dataRepo: dataRepo);
         }

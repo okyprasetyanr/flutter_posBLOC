@@ -30,11 +30,7 @@ class HistoryTransactionRevisionData extends HistoryTransactionEvent {
   HistoryTransactionRevisionData({required this.context});
 }
 
-class HistoryTransactionCancelData extends HistoryTransactionEvent {
-  final BuildContext context;
-  final List<Map<String, dynamic>> dateExpired;
-  HistoryTransactionCancelData(this.dateExpired, {required this.context});
-}
+class HistoryTransactionCancelData extends HistoryTransactionEvent {}
 
 class HistoryTransactionResetSelectedData extends HistoryTransactionEvent {}
 

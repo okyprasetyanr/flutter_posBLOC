@@ -25,6 +25,11 @@ Future<void> deleteDataUser(String id) async {
   await FirebaseFirestore.instance.collection('users').doc(id).delete();
 }
 
+Future<void> deleteDataBatch(String id) async {
+  debugPrint("Log DeleteData: Operator: $id");
+  await FirebaseFirestore.instance.collection('batch').doc(id).delete();
+}
+
 Future<void> deleteDataTransaction(
   String id,
   List<ModelItemOrdered> itemOrdered,
