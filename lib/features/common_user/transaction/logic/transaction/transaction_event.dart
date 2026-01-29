@@ -68,7 +68,8 @@ class TransactionAdjustItem extends TransactionEvent {
   bool? mode;
   double? qty;
   int? discount;
-  double? customprice;
+  double? customPrice;
+  double? secondCustomPrice;
   String? note;
   String? expiredDate;
 
@@ -78,7 +79,8 @@ class TransactionAdjustItem extends TransactionEvent {
     this.mode,
     this.qty,
     this.discount,
-    this.customprice,
+    this.customPrice,
+    this.secondCustomPrice,
     this.note,
   });
 }

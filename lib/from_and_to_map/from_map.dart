@@ -186,6 +186,7 @@ ModelBatch fromMapBatch(
 
 ModelItemBatch fromMapItembatch(Map<String, dynamic> data, String id) {
   return ModelItemBatch(
+    priceitemBuy: data[FieldDataItemBatch.price_item.name],
     invoice: data[FieldDataItemBatch.invoice.name],
     nameItem: data[FieldDataItemBatch.name_item.name],
     idBranch: data[FieldDataItemBatch.id_branch.name],
@@ -216,6 +217,7 @@ ModelItemOrderedBatch fromMapItemOrderedBatch({
     invoice: orderedBatch[FieldDataItemOrderedBatch.invoice.name],
     qty_item: orderedBatch[FieldDataItemOrderedBatch.qty_item.name],
     price_item: orderedBatch[FieldDataItemOrderedBatch.price_item.name],
+    price_itemBuy: orderedBatch[FieldDataItemOrderedBatch.price_itemBuy.name],
   );
 }
 

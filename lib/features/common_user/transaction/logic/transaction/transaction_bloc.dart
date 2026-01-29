@@ -460,9 +460,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
 
     final resultFifo = fifoLogic(
+      secondCustomPrice: event.secondCustomPrice,
       state: currentState,
       item: item,
-      customprice: event.customprice,
+      customPrice: event.customPrice,
       mode: event.mode,
       qty: event.qty,
       discount: discount,
@@ -474,6 +475,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       currentState.copyWith(
         customPrice: resultFifo.price,
         selectedItem: item.copyWith(
+          priceItemBuy: resultFifo.priceBuy,
           qtyItem: resultFifo.qty,
           priceItemFinal: resultFifo.price,
           dicountItem: discount,
@@ -558,7 +560,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ModelItemOrdered item = itemOrdered[i];
         final resultFifo = fifoLogic(
           state: currentState,
-          customprice: item.getpriceItemFinal,
+          customPrice: item.getpriceItemFinal,
           item: item,
           qty: item.getqtyItem,
           simulatedItemOrdered: itemOrderedFinal,

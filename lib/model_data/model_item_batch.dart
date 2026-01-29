@@ -15,9 +15,11 @@ class ModelItemBatch extends Equatable {
       _priceItem,
       _subTotal,
       _priceItemFinal,
-      _qtyItem_out;
+      _qtyItem_out,
+      _priceitemBuy;
 
   ModelItemBatch({
+    required double priceitemBuy,
     required String invoice,
     required String nameItem,
     required String idBranch,
@@ -47,7 +49,8 @@ class ModelItemBatch extends Equatable {
        _priceItem = priceItem,
        _subTotal = subTotal,
        _priceItemFinal = priceItemFinal,
-       _invoice = invoice;
+       _invoice = invoice,
+       _priceitemBuy = priceitemBuy;
 
   String get getinvoice => _invoice;
   String get getnameItem => _nameItem;
@@ -64,6 +67,7 @@ class ModelItemBatch extends Equatable {
   double get getpriceItem => _priceItem;
   double get getsubTotal => _subTotal;
   double get getpriceItemFinal => _priceItemFinal;
+  double get getpriceItemBuy => _priceitemBuy;
 
   ModelItemBatch copyWith({
     String? invoice,
@@ -79,10 +83,12 @@ class ModelItemBatch extends Equatable {
     double? qtyItem_in,
     double? qtyItem_out,
     double? priceItem,
+    double? priceItemBuy,
     double? subTotal,
     double? priceItemFinal,
   }) {
     return ModelItemBatch(
+      priceitemBuy: priceItemBuy ?? _priceitemBuy,
       qtyItem_out: qtyItem_out ?? _qtyItem_out,
       invoice: invoice ?? this._invoice,
       nameItem: nameItem ?? this._nameItem,
@@ -116,6 +122,7 @@ class ModelItemBatch extends Equatable {
     _qtyItem_out,
     _qtyItem_in,
     _priceItem,
+    _priceitemBuy,
     _subTotal,
     _priceItemFinal,
   ];

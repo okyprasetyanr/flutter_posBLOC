@@ -11,88 +11,81 @@ import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 
 ModelFIFOLogic fifoLogic({
   required TransactionLoaded state,
-  double? customprice,
+  double? customPrice, // SELL → harga jual, BUY → harga beli
   required ModelItemOrdered item,
   bool? mode,
   double? qty,
   int? discount,
   List<ModelItemOrdered>? simulatedItemOrdered,
+  double? secondCustomPrice, // BUY → harga jual default item
 }) {
   final isSell = state.isSell;
   List<ModelItemOrderedBatch> batches = List.from(item.getitemOrderedBatch);
   final fifoActive = UserSession.getStatusFifo();
   final isFifo = fifoActive && isSell;
-  final batch = state.dataItemBatch!;
+  final stockBatches = state.dataItemBatch!;
 
-  final customPriceState = customprice == null
-      ? state.customPrice != 0
-            ? state.customPrice
-            : item.getpriceItemFinal
-      : customprice;
+  // === PRICE SOURCE ===
+  final double? sellOverride = isSell ? customPrice : secondCustomPrice;
+  final double? buyOverride = !isSell ? customPrice : null;
 
-  final checkCustomPrice = customPriceState != item.getpriceItem;
+  final double defaultSell = item.getpriceItemFinal;
+  final bool hasSellOverride = sellOverride != null && sellOverride != 0;
 
-  if (customPriceState != 0 && checkCustomPrice) {
-    if (isFifo) {
-      for (int i = 0; i < batches.length; i++) {
-        final b = batches[i];
-        batches[i] = ModelItemOrderedBatch(
-          id_ordered: b.getid_Ordered,
-          id_item: b.getid_Item,
-          invoice: b.getinvoice,
-          qty_item: b.getqty_item,
-          price_item: customPriceState,
-        );
-      }
-    } else {
-      if (batches.isNotEmpty) {
-        batches[0] = batches[0].copyWith(price_item: customprice);
-      }
-    }
-  } else if (customPriceState == 0) {
-    if (isFifo) {
-      final qtyNow = _totalQty(batches);
-      batches.clear();
-      _allocateFIFO(
-        state: state,
-        currentListContext: simulatedItemOrdered,
-        id_ordered: item.getidOrdered,
-        usedBatches: batches,
-        stockBatches: batch,
-        idItem: item.getidItem,
-        invoice: item.getinvoice ?? '',
-        qtyNeed: qtyNow,
-        price: 0,
+  // === UPDATE EXISTING BATCH PRICE (NO FIFO) ===
+  if (!isFifo && batches.isNotEmpty) {
+    batches[0] = batches[0].copyWith(
+      price_item: hasSellOverride ? sellOverride : defaultSell,
+      price_itemBuy: buyOverride ?? batches[0].getprice_itemBuy,
+    );
+  }
+
+  // === RESET FIFO WHEN PRICE CLEARED ===
+  if (isFifo && sellOverride == 0) {
+    final qtyNow = _totalQty(batches);
+    batches.clear();
+    _allocateFIFO(
+      state: state,
+      currentListContext: simulatedItemOrdered,
+      id_ordered: item.getidOrdered,
+      usedBatches: batches,
+      stockBatches: stockBatches,
+      idItem: item.getidItem,
+      invoice: item.getinvoice ?? '',
+      qtyNeed: qtyNow,
+      sellPrice: null,
+      buyPrice: null,
+    );
+  } else {
+    if (batches.isNotEmpty) {
+      batches[0] = batches[0].copyWith(
+        price_item: item.getpriceItem,
+        price_itemBuy: batches[0].getprice_itemBuy,
       );
-    } else {
-      if (batches.isNotEmpty) {
-        batches[0] = batches[0].copyWith(price_item: item.getpriceItem);
-      }
     }
   }
 
+  // === ADD / REMOVE QTY ===
   if (mode != null) {
     if (mode) {
       if (isFifo) {
         _allocateFIFO(
           state: state,
-          price: checkCustomPrice ? customPriceState : 0,
+          sellPrice: hasSellOverride ? sellOverride : null,
+          buyPrice: null,
           currentListContext: simulatedItemOrdered,
           id_ordered: item.getidOrdered,
           usedBatches: batches,
-          stockBatches: batch,
+          stockBatches: stockBatches,
           idItem: item.getidItem,
           invoice: item.getinvoice ?? '',
           qtyNeed: 1,
-        );
-        debugPrint(
-          "Log TransactionBloc: fifoLogic: price ${item.getpriceItem != item.getpriceItemFinal ? customPriceState : 0}",
         );
       } else {
         if (batches.isEmpty) {
           batches.add(
             ModelItemOrderedBatch(
-              price_item: item.getpriceItem,
+              price_item: defaultSell,
               id_ordered: 'NON_FIFO',
               id_item: item.getidItem,
               invoice: item.getinvoice ?? '',
@@ -104,28 +97,27 @@ ModelFIFOLogic fifoLogic({
             qty_item: batches[0].getqty_item + 1,
           );
         }
-        debugPrint("Log TransactionBloc: Buy Add");
       }
     } else {
-      debugPrint("Log TransactionBloc: fifoLogic: checkFLow ${mode}");
       if (batches.isNotEmpty) {
         _releaseFIFO(usedBatches: batches, qtyRelease: 1);
       }
     }
   }
 
-  //custom QTY
+  // === CUSTOM QTY ===
   if (qty != null) {
     if (isFifo) {
       final diff = qty - _totalQty(batches).toInt();
       if (diff > 0) {
         _allocateFIFO(
           state: state,
-          price: checkCustomPrice ? customPriceState : 0,
+          sellPrice: hasSellOverride ? sellOverride : null,
+          buyPrice: null,
           currentListContext: simulatedItemOrdered,
           id_ordered: item.getidOrdered,
           usedBatches: batches,
-          stockBatches: batch,
+          stockBatches: stockBatches,
           idItem: item.getidItem,
           invoice: item.getinvoice ?? '',
           qtyNeed: diff,
@@ -154,19 +146,20 @@ ModelFIFOLogic fifoLogic({
 
   final qtyFinal = _totalQty(batches);
 
-  final price = batches.isNotEmpty
+  final double sellPrice = batches.isNotEmpty
       ? batches.first.getprice_item
-      : item.getpriceItemFinal;
+      : defaultSell;
 
-  debugPrint("Log TransactionBloc: FifoLogic: qty: $qtyFinal, price: $price");
+  final double buyPriceFinal = buyOverride ?? batches.first.getprice_itemBuy;
 
   final subTotal = isSell
       ? _calculateSubTotalFromBatch(batches, discount ?? 0)
-      : price * qtyFinal;
+      : sellPrice * qtyFinal;
 
   return ModelFIFOLogic(
+    priceBuy: buyPriceFinal,
     qty: qtyFinal,
-    price: price,
+    price: sellPrice,
     batch: batches,
     subTotal: subTotal,
   );
@@ -184,10 +177,10 @@ void _allocateFIFO({
   required String invoice,
   required double qtyNeed,
   required String id_ordered,
-  double? price,
+  double? sellPrice,
+  double? buyPrice,
   List<ModelItemOrdered>? currentListContext,
 }) {
-  final customPriceState = state.customPrice;
   double need = qtyNeed;
 
   final fifo =
@@ -232,21 +225,11 @@ void _allocateFIFO({
         id_item: idItem,
         invoice: invoice,
         qty_item: take,
-        price_item: price != null && price != 0
-            ? price
-            : customPriceState != 0 && price == null
-            ? customPriceState
-            : batch.getpriceItemFinal,
+        price_item: sellPrice ?? batch.getpriceItemFinal,
+        price_itemBuy: buyPrice ?? batch.getpriceItemBuy,
       ),
     );
 
-    debugPrint(
-      "Log TransactionBloc: AllocateFIFO: price: ${price != null && price != 0
-          ? price
-          : customPriceState != 0 && price == null
-          ? customPriceState
-          : batch.getpriceItemFinal}",
-    );
     need -= take;
   }
 }

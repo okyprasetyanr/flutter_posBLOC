@@ -189,6 +189,7 @@ class ModelTransaction extends Equatable {
       debugPrint("Log ModelTransaction: ${itemordered}");
       convertToItemBatch.add(
         ModelItemBatch(
+          priceitemBuy: itemordered.getpriceItemBuy,
           qtyItem_out: 0,
           invoice: _invoice,
           nameItem: itemordered.getnameItem,
@@ -240,120 +241,124 @@ class ModelTransaction extends Equatable {
     required DataUserRepositoryCache dataRepo,
   }) async {
     final remove = statusRemove ?? false;
-
-    if (!isSell) {
-      await pushDataBatch(dataRepo);
-    } else {
-      if (UserSession.getStatusFifo()) {
-        if (remove) {
-          revertFIFOStock(
-            itemsOrdered: getitemsOrdered,
-            dataBatch: dataRepo.dataBatch,
-          );
-          await updateExistingBatch(dataRepo, _invoice);
-        } else {
-          await commitStockFromOrderedBatch(dataRepo: dataRepo);
-        }
-      }
-    }
-
-    final dataTransaction = isSell
-        ? dataRepo.dataTransSell
-        : dataRepo.dataTransBuy;
-
-    final transaction = ModelTransaction(
-      statusTransaction: _statusTransaction,
-      idBranch: _idBranch,
-      date: _date,
-      note: _note,
-      invoice: _invoice,
-      namePartner: _namePartner,
-      idPartner: _idPartner,
-      nameOperator: _nameOperator,
-      idOperator: _idOperator,
-      paymentMethod: _paymentMethod,
-      discount: _discount,
-      ppn: _ppn,
-      totalItem: _totalItem,
-      charge: _charge,
-      subTotal: _subTotal,
-      billPaid: _billPaid,
-      totalCharge: _totalCharge,
-      totalPpn: _totalPpn,
-      totalDiscount: _totalDiscount,
-      total: _total,
-      itemsOrdered: [],
-      dataSplit: [],
-    );
-
-    final index = dataTransaction.indexWhere(
-      (element) => element.getinvoice == _invoice,
-    );
-
-    index != -1
-        ? dataTransaction[index] = dataTransaction[index].copyWith(
-            itemsOrdered: _itemsOrdered,
-            dataSplit: _dataSplit,
-            statusTransaction: _statusTransaction,
-          )
-        : dataTransaction.add(
-            transaction.copyWith(
-              itemsOrdered: _itemsOrdered,
-              dataSplit: _dataSplit,
-              statusTransaction: _statusTransaction,
-            ),
-          );
-
-    debugPrint("Log ModelTransaction: Cek Transaksi: $dataTransaction");
-
     final transRef = FirebaseFirestore.instance
         .collection(isSell ? "transaction_sell" : "transaction_buy")
         .doc(_invoice);
-    final writeBatch = FirebaseFirestore.instance.batch();
-    writeBatch.set(transRef, convertToMapTransaction(transaction));
 
-    final itemsRef = transRef.collection("items_ordered");
+    if (remove) {
+      if (UserSession.getStatusFifo() && isSell) {
+        revertFIFOStock(
+          itemsOrdered: getitemsOrdered,
+          dataBatch: dataRepo.dataBatch,
+        );
+        await updateExistingBatch(dataRepo, _invoice);
+      }
+      transRef.set({
+        'status_transaction': _statusTransaction!.name,
+      }, SetOptions(merge: true));
+    } else {
+      if (!isSell) {
+        await pushDataBatch(dataRepo);
+      } else {
+        if (UserSession.getStatusFifo()) {
+          await commitStockFromOrderedBatch(dataRepo: dataRepo);
+        }
+      }
 
-    for (final itemOrdered in _itemsOrdered) {
-      final itemIdOrdered = itemsRef.doc(itemOrdered.getidOrdered);
-      final condimentRef = itemIdOrdered.collection("condiment");
-      final itemOrderedBatchRef = itemIdOrdered.collection(
-        "item_ordered_batch",
+      final dataTransaction = isSell
+          ? dataRepo.dataTransSell
+          : dataRepo.dataTransBuy;
+
+      final transaction = ModelTransaction(
+        statusTransaction: _statusTransaction,
+        idBranch: _idBranch,
+        date: _date,
+        note: _note,
+        invoice: _invoice,
+        namePartner: _namePartner,
+        idPartner: _idPartner,
+        nameOperator: _nameOperator,
+        idOperator: _idOperator,
+        paymentMethod: _paymentMethod,
+        discount: _discount,
+        ppn: _ppn,
+        totalItem: _totalItem,
+        charge: _charge,
+        subTotal: _subTotal,
+        billPaid: _billPaid,
+        totalCharge: _totalCharge,
+        totalPpn: _totalPpn,
+        totalDiscount: _totalDiscount,
+        total: _total,
+        itemsOrdered: [],
+        dataSplit: [],
       );
-      for (final itemBatch in itemOrdered.getitemOrderedBatch) {
-        debugPrint(
-          "Log ModelTransaction: PushData: Check ItemOrderedBatch: ${itemBatch.getid_Ordered}",
-        );
-        final itemIdOrderedBatch = itemOrderedBatchRef.doc(
-          itemBatch.getid_Ordered,
-        );
 
-        writeBatch.set(
-          itemIdOrderedBatch,
-          convertToMapItemOrderedBatch(itemBatch),
+      final index = dataTransaction.indexWhere(
+        (element) => element.getinvoice == _invoice,
+      );
+
+      index != -1
+          ? dataTransaction[index] = dataTransaction[index].copyWith(
+              itemsOrdered: _itemsOrdered,
+              dataSplit: _dataSplit,
+              statusTransaction: _statusTransaction,
+            )
+          : dataTransaction.add(
+              transaction.copyWith(
+                itemsOrdered: _itemsOrdered,
+                dataSplit: _dataSplit,
+                statusTransaction: _statusTransaction,
+              ),
+            );
+
+      debugPrint("Log ModelTransaction: Cek Transaksi: $dataTransaction");
+
+      final writeBatch = FirebaseFirestore.instance.batch();
+      writeBatch.set(transRef, convertToMapTransaction(transaction));
+
+      final itemsRef = transRef.collection("items_ordered");
+
+      for (final itemOrdered in _itemsOrdered) {
+        final itemIdOrdered = itemsRef.doc(itemOrdered.getidOrdered);
+        final condimentRef = itemIdOrdered.collection("condiment");
+        final itemOrderedBatchRef = itemIdOrdered.collection(
+          "item_ordered_batch",
         );
+        for (final itemBatch in itemOrdered.getitemOrderedBatch) {
+          debugPrint(
+            "Log ModelTransaction: PushData: Check ItemOrderedBatch: ${itemBatch.getid_Ordered}",
+          );
+          final itemIdOrderedBatch = itemOrderedBatchRef.doc(
+            itemBatch.getid_Ordered,
+          );
+
+          writeBatch.set(
+            itemIdOrderedBatch,
+            convertToMapItemOrderedBatch(itemBatch),
+          );
+        }
+
+        for (final condimentOrdered in itemOrdered.getCondiment) {
+          final condimentIdOrdered = condimentRef.doc(
+            condimentOrdered.getidOrdered,
+          );
+          writeBatch.set(
+            condimentIdOrdered,
+            convertToMapItemOrdered(condimentOrdered),
+          );
+        }
+        writeBatch.set(itemIdOrdered, convertToMapItemOrdered(itemOrdered));
       }
 
-      for (final condimentOrdered in itemOrdered.getCondiment) {
-        final condimentIdOrdered = condimentRef.doc(
-          condimentOrdered.getidOrdered,
-        );
-        writeBatch.set(
-          condimentIdOrdered,
-          convertToMapItemOrdered(condimentOrdered),
-        );
+      final splitRef = transRef.collection("data_split");
+      int inc = 0;
+      for (final split in _dataSplit) {
+        final idInc = splitRef.doc("${inc++}");
+        writeBatch.set(idInc, convertToMapSplit(split));
       }
-      writeBatch.set(itemIdOrdered, convertToMapItemOrdered(itemOrdered));
+      await writeBatch.commit();
     }
-
-    final splitRef = transRef.collection("data_split");
-    int inc = 0;
-    for (final split in _dataSplit) {
-      final idInc = splitRef.doc("${inc++}");
-      writeBatch.set(idInc, convertToMapSplit(split));
-    }
-
-    await writeBatch.commit();
   }
 
   Future<void> commitStockFromOrderedBatch({

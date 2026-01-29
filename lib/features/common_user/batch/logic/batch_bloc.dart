@@ -64,6 +64,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
       }
 
       final detailItemBatch = ModelItemBatch(
+        priceitemBuy: 0,
         invoice: "",
         nameItem: ItemById.last.getnameItem,
         idBranch: ItemById.last.getidBranch,

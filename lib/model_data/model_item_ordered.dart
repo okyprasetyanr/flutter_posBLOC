@@ -10,7 +10,7 @@ class ModelItemOrdered extends Equatable {
       _note;
   final String? _invoice;
   final int _discountItem;
-  final double _qtyItem, _priceItem, _subTotal, _priceItemFinal;
+  final double _qtyItem, _priceItem, _subTotal, _priceItemFinal, _priceItemBuy;
   final List<ModelItemOrderedBatch> _itemOrderedBatch;
   final List<ModelItemOrdered> _condiment;
 
@@ -28,6 +28,7 @@ class ModelItemOrdered extends Equatable {
     required String idOrdered,
     required double qtyItem,
     required double priceItem,
+    double priceItemBuy = 0,
     required int discountItem,
     required String idCategoryItem,
     required String note,
@@ -40,6 +41,7 @@ class ModelItemOrdered extends Equatable {
        _idOrdered = idOrdered,
        _qtyItem = qtyItem,
        _priceItem = priceItem,
+       _priceItemBuy = priceItemBuy,
        _discountItem = discountItem,
        _idCategoryItem = idCategoryItem,
        _note = note,
@@ -66,6 +68,7 @@ class ModelItemOrdered extends Equatable {
   DateTime? get getdateBuy => _dateBuy;
   DateTime? get getexpiredDate => _expiredDate;
   String? get getinvoice => _invoice;
+  double get getpriceItemBuy => _priceItemBuy;
 
   ModelItemOrdered copyWith({
     String? invoice,
@@ -77,6 +80,7 @@ class ModelItemOrdered extends Equatable {
     String? idOrdered,
     double? qtyItem,
     double? priceItem,
+    double? priceItemBuy,
     double? priceItemFinal,
     int? dicountItem,
     String? idCategoryItem,
@@ -86,6 +90,7 @@ class ModelItemOrdered extends Equatable {
     List<ModelItemOrderedBatch>? itemOrderedBatch,
   }) {
     return ModelItemOrdered(
+      priceItemBuy: priceItemBuy ?? _priceItemBuy,
       itemOrderedBatch: itemOrderedBatch ?? _itemOrderedBatch,
       invoice: invoice,
       dateBuy: dateBuy,
@@ -118,6 +123,7 @@ class ModelItemOrdered extends Equatable {
     _idOrdered,
     _qtyItem,
     _priceItem,
+    _priceItemBuy,
     _discountItem,
     _idCategoryItem,
     _note,

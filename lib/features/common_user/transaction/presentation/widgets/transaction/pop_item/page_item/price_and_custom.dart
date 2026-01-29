@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UITransactionPopUpPriceAndCustom extends StatefulWidget {
-  const UITransactionPopUpPriceAndCustom({super.key});
+  final bool isSell;
+  final String labelPrice;
+  final Function({required double? value}) onChange;
+  const UITransactionPopUpPriceAndCustom({
+    super.key,
+    required this.isSell,
+    required this.labelPrice,
+    required this.onChange,
+  });
 
   @override
   State<UITransactionPopUpPriceAndCustom> createState() =>
@@ -31,9 +38,7 @@ class _UITransactionPopUpPriceAndCustomState
     super.initState();
     editprice.addListener(() {
       if (!editprice.value) {
-        context.read<TransactionBloc>().add(
-          TransactionAdjustItem(customprice: 0),
-        );
+        widget.onChange(value: 0);
         priceController.clear();
       }
     });
@@ -51,7 +56,7 @@ class _UITransactionPopUpPriceAndCustomState
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Harga: ", style: lv05TextStyle),
+          Text(widget.labelPrice, style: lv05TextStyle),
           Column(
             children: [
               SizedBox(
@@ -148,12 +153,10 @@ class _UITransactionPopUpPriceAndCustomState
                                       debugPrint(
                                         "Log UISell: cek BlocSelector Harga",
                                       );
-                                      context.read<TransactionBloc>().add(
-                                        TransactionAdjustItem(
-                                          customprice: value.isNotEmpty
-                                              ? double.tryParse(value)
-                                              : 0,
-                                        ),
+                                      widget.onChange(
+                                        value: value.isNotEmpty
+                                            ? double.tryParse(value)
+                                            : 0,
                                       );
                                     },
                                   ),

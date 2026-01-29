@@ -21,28 +21,47 @@ class TransactionPopUpPageItem extends StatelessWidget {
         const SizedBox(height: 10),
         UITransactionPopUpNoteAndSubTotal(),
         const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(flex: 4, child: UITransactionPopUpPriceAndCustom()),
-            const SizedBox(width: 5),
-            Expanded(
-              flex: 6,
-              child: BlocSelector<TransactionBloc, TransactionState, bool>(
-                selector: (state) {
-                  if (state is TransactionLoaded) {
-                    return state.isSell;
-                  }
-                  return true;
-                },
-                builder: (context, state) {
-                  return state
+        BlocSelector<TransactionBloc, TransactionState, bool>(
+          selector: (state) {
+            if (state is TransactionLoaded) {
+              return state.isSell;
+            }
+            return true;
+          },
+          builder: (context, state) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: UITransactionPopUpPriceAndCustom(
+                    onChange: ({required value}) => context
+                        .read<TransactionBloc>()
+                        .add(TransactionAdjustItem(customPrice: value)),
+                    isSell: state,
+                    labelPrice: "Harga Jual:",
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: state
                       ? const UITransactionPopUpDiscountAndCustom()
                       : SizedBox(
-                          height: 50,
+                          height: 200,
                           child: Column(
                             children: [
+                              UITransactionPopUpPriceAndCustom(
+                                onChange: ({required value}) =>
+                                    context.read<TransactionBloc>().add(
+                                      TransactionAdjustItem(
+                                        secondCustomPrice: value,
+                                      ),
+                                    ),
+                                isSell: state,
+                                labelPrice: "Harga Beli:",
+                              ),
+
+                              SizedBox(height: 10),
                               Text("Tanggal Kadaluarsa:", style: lv05TextStyle),
                               SizedBox(height: 10),
                               Expanded(
@@ -61,11 +80,11 @@ class TransactionPopUpPageItem extends StatelessWidget {
                               ),
                             ],
                           ),
-                        );
-                },
-              ),
-            ),
-          ],
+                        ),
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 60),
       ],

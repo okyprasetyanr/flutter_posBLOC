@@ -121,7 +121,13 @@ class HistoryTransactionBloc
       //   }
       // }
       if (!currentState.isSell) {
-        await deleteDataBatch(invoice);
+        await deleteDataBatch(
+          invoice: invoice,
+          itemBatch: repoCache.dataBatch
+              .where((element) => element.getinvoice == invoice)
+              .expand((element) => element.getitems_batch)
+              .toList(),
+        );
         repoCache.dataBatch.removeWhere(
           (element) => element.getinvoice == invoice,
         );
