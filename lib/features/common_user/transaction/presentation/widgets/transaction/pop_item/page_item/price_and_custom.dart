@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UITransactionPopUpPriceAndCustom extends StatefulWidget {
@@ -78,20 +79,28 @@ class _UITransactionPopUpPriceAndCustomState
                     editprice.value = !editprice.value;
                   },
                   label:
-                      BlocSelector<TransactionBloc, TransactionState, double>(
+                      BlocSelector<
+                        TransactionBloc,
+                        TransactionState,
+                        (ModelItemOrdered?, bool)
+                      >(
                         selector: (state) {
                           if (state is TransactionLoaded &&
                               state.selectedItem != null) {
-                            return state.selectedItem!.getpriceItemFinal;
+                            return (state.selectedItem, state.isSell);
                           }
-                          return 0;
+                          return (null, true);
                         },
                         builder: (context, state) {
                           debugPrint(
                             "Log UISell: BlocSelector Harga value: $state",
                           );
                           return Text(
-                            formatPriceRp(state),
+                            formatPriceRp(
+                              state.$2
+                                  ? state.$1?.getpriceItemFinal ?? 0
+                                  : state.$1?.getpriceItemBuy ?? 0,
+                            ),
                             style: lv05TextStyle,
                           );
                         },
