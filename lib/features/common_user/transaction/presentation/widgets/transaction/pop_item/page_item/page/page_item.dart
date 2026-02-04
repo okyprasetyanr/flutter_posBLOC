@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -11,7 +12,13 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 
 class TransactionPopUpPageItem extends StatelessWidget {
-  const TransactionPopUpPageItem({super.key});
+  final TextEditingController controller;
+  final TextEditingController secondController;
+  const TransactionPopUpPageItem({
+    super.key,
+    required this.controller,
+    required this.secondController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +45,8 @@ class TransactionPopUpPageItem extends StatelessWidget {
                     onChange: ({required value}) => context
                         .read<TransactionBloc>()
                         .add(TransactionAdjustItem(customPrice: value)),
-                    isSell: state,
-                    labelPrice: "Harga Jual:",
+                    controller: state ? controller : secondController,
+                    labelPrice: LabelPricePopUpItem.Harga_Jual,
                   ),
                 ),
                 const SizedBox(width: 5),
@@ -57,8 +64,10 @@ class TransactionPopUpPageItem extends StatelessWidget {
                                         secondCustomPrice: value,
                                       ),
                                     ),
-                                isSell: state,
-                                labelPrice: "Harga Beli:",
+                                controller: state
+                                    ? secondController
+                                    : controller,
+                                labelPrice: LabelPricePopUpItem.Harga_Beli,
                               ),
 
                               SizedBox(height: 10),

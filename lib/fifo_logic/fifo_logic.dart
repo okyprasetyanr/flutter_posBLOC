@@ -17,7 +17,7 @@ ModelFIFOLogic fifoLogic({
   double? qty,
   int? discount,
   List<ModelItemOrdered>? simulatedItemOrdered,
-  double? secondCustomPrice,
+  // double? secondCustomPrice,
 }) {
   final isSell = state.isSell;
   List<ModelItemOrderedBatch> batches = List.from(item.getitemOrderedBatch);
@@ -33,8 +33,7 @@ ModelFIFOLogic fifoLogic({
 
   final checkCustomPrice = customPriceState != item.getpriceItem;
 
-  if ((customPriceState != 0 && checkCustomPrice) ||
-      secondCustomPrice != null && secondCustomPrice != 0) {
+  if ((customPriceState != 0 && checkCustomPrice)) {
     if (isFifo) {
       for (int i = 0; i < batches.length; i++) {
         final b = batches[i];
@@ -44,21 +43,13 @@ ModelFIFOLogic fifoLogic({
           id_item: b.getid_Item,
           invoice: b.getinvoice,
           qty_item: b.getqty_item,
-          price_item: isSell
-              ? customPriceState
-              : secondCustomPrice != null && secondCustomPrice != 0
-              ? secondCustomPrice
-              : b.getprice_item,
+          price_item: isSell ? customPriceState : b.getprice_item,
         );
       }
     } else {
       if (batches.isNotEmpty) {
         batches[0] = batches[0].copyWith(
-          price_item: isSell
-              ? customPrice
-              : secondCustomPrice != null && secondCustomPrice != 0
-              ? secondCustomPrice
-              : batches[0].getprice_item,
+          price_item: isSell ? customPrice : batches[0].getprice_item,
           price_itemBuy: isSell ? batches[0].getprice_item : customPrice,
         );
       }
@@ -175,12 +166,8 @@ ModelFIFOLogic fifoLogic({
       ? batches.first.getprice_item
       : item.getpriceItemFinal;
 
-  double secondPrice = item.getpriceItemFinal;
-  if (secondCustomPrice != null) {
-    secondPrice = secondCustomPrice;
-  }
   debugPrint(
-    "Log TransactionBloc: FifoLogic: qty: $qtyFinal, price: $price, secondPrice: $secondPrice",
+    "Log TransactionBloc: FifoLogic: qty: $qtyFinal, price: $price, secondPrice: ",
   );
 
   final subTotal = isSell
@@ -188,9 +175,9 @@ ModelFIFOLogic fifoLogic({
       : price * qtyFinal;
 
   return ModelFIFOLogic(
-    priceBuy: isSell ? secondPrice : price,
+    priceBuy: 0,
     qty: qtyFinal,
-    price: isSell ? price : secondPrice,
+    price: price,
     batch: batches,
     subTotal: subTotal,
   );

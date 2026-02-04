@@ -293,3 +293,5 @@ enum Permission {
 }
 
 enum ResetPasswordStatus { idle, loading, success, failure }
+
+enum LabelPricePopUpItem { Harga_Jual, Harga_Beli }

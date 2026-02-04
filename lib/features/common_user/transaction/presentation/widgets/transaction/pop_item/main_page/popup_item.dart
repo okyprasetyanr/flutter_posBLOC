@@ -18,6 +18,8 @@ class UITransactionPopUpItem extends StatefulWidget {
 
 class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
   PageController pageController = PageController();
+  final priceController = TextEditingController();
+  final secondPriceController = TextEditingController();
   ModelItemOrdered? dataselected;
   ValueNotifier<bool> currentPage = ValueNotifier(true);
 
@@ -52,7 +54,10 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                 PageView(
                   controller: pageController,
                   children: [
-                    TransactionPopUpPageItem(),
+                    TransactionPopUpPageItem(
+                      controller: priceController,
+                      secondController: secondPriceController,
+                    ),
                     UITransactionPopUpPageCondiment(),
                   ],
                 ),

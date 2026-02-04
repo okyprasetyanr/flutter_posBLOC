@@ -1,52 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-class UITransactionPopUpPriceAndCustom extends StatefulWidget {
-  final bool isSell;
-  final String labelPrice;
+class UITransactionPopUpPriceAndCustom extends StatelessWidget {
+  final TextEditingController controller;
+  final LabelPricePopUpItem labelPrice;
   final Function({required double? value}) onChange;
   const UITransactionPopUpPriceAndCustom({
     super.key,
-    required this.isSell,
+    required this.controller,
     required this.labelPrice,
     required this.onChange,
   });
 
   @override
-  State<UITransactionPopUpPriceAndCustom> createState() =>
-      _UITransactionPopUpPriceAndCustomState();
-}
-
-class _UITransactionPopUpPriceAndCustomState
-    extends State<UITransactionPopUpPriceAndCustom> {
-  final priceController = TextEditingController();
-  final editprice = ValueNotifier(false);
-
-  @override
-  void dispose() {
-    priceController.dispose();
-    editprice.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    final editprice = ValueNotifier(false);
     editprice.addListener(() {
       if (!editprice.value) {
-        widget.onChange(value: 0);
-        priceController.clear();
+        onChange(value: 0);
+        controller.clear();
       }
     });
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -57,7 +38,7 @@ class _UITransactionPopUpPriceAndCustomState
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.labelPrice, style: lv05TextStyle),
+          Text(labelPrice.name.replaceAll("_", " "), style: lv05TextStyle),
           Column(
             children: [
               SizedBox(
@@ -99,6 +80,8 @@ class _UITransactionPopUpPriceAndCustomState
                             formatPriceRp(
                               state.$2
                                   ? state.$1?.getpriceItemFinal ?? 0
+                                  : labelPrice == LabelPricePopUpItem.Harga_Jual
+                                  ? state.$1?.getpriceItemFinal ?? 0
                                   : state.$1?.getpriceItemBuy ?? 0,
                             ),
                             style: lv05TextStyle,
@@ -133,7 +116,7 @@ class _UITransactionPopUpPriceAndCustomState
                                   listener: (context, state) {
                                     if (state is TransactionLoaded &&
                                         state.selectedItem == null) {
-                                      priceController.clear();
+                                      controller.clear();
                                     }
                                   },
                                   child: TextField(
@@ -156,13 +139,13 @@ class _UITransactionPopUpPriceAndCustomState
                                       hintStyle: lv05TextStyle,
                                     ),
                                     textAlign: TextAlign.right,
-                                    controller: priceController,
+                                    controller: controller,
                                     keyboardType: TextInputType.number,
                                     onChanged: (value) {
                                       debugPrint(
                                         "Log UISell: cek BlocSelector Harga",
                                       );
-                                      widget.onChange(
+                                      onChange(
                                         value: value.isNotEmpty
                                             ? double.tryParse(value)
                                             : 0,

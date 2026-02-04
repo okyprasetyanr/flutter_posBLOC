@@ -460,7 +460,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
 
     final resultFifo = fifoLogic(
-      secondCustomPrice: event.secondCustomPrice,
+      // secondCustomPrice: event.secondCustomPrice,
       state: currentState,
       item: item,
       customPrice: event.customPrice,
@@ -469,7 +469,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       discount: discount,
     );
 
-    debugPrint("Log TransactionLoaded: adjustItem: price: ${resultFifo.price}");
+    debugPrint(
+      "Log TransactionLoaded: adjustItem: price: ${resultFifo.price} , price Buy: ${resultFifo.priceBuy}",
+    );
 
     emit(
       currentState.copyWith(
