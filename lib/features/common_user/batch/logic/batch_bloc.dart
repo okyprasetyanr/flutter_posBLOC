@@ -64,7 +64,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
       }
 
       final detailItemBatch = ModelItemBatch(
-        priceitemBuy: 0,
+        priceitemBuy: ItemById.last.getpriceItemBuy,
         invoice: "",
         nameItem: ItemById.last.getnameItem,
         idBranch: ItemById.last.getidBranch,
@@ -77,9 +77,9 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
         discountItem: 0,
         qtyItem_in: qtyIn,
         qtyItem_out: qtyOut,
-        priceItem: 0,
+        priceItem: ItemById.last.getpriceItem,
         subTotal: 0,
-        priceItemFinal: 0,
+        priceItemFinal: ItemById.last.getpriceItemFinal,
       );
       emit(
         currentState.copyWith(

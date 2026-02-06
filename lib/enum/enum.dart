@@ -27,6 +27,7 @@ enum FieldDataItem {
   uid_owner,
   name_item,
   price_item,
+  price_item_buy,
   id_category,
   status_condiment,
   url_image,

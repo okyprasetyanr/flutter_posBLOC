@@ -50,6 +50,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       context.read<InventoryBloc>().add(
                         InventorySelectedItem(
                           selectedItem: ModelItem(
+                            priceItemBuy: item.getpriceItemBuy,
                             qtyItem: item.getqtyItem,
                             nameItem: item.getnameItem,
                             idItem: item.getidItem,

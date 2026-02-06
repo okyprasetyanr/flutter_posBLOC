@@ -30,10 +30,10 @@ class UITransactionGridViewItem extends StatelessWidget {
         }
         return ([], false);
       },
-      builder: (context, items) {
+      builder: (context, state) {
         return GridView.builder(
           padding: const EdgeInsets.all(10),
-          itemCount: items.$1.length,
+          itemCount: state.$1.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             mainAxisExtent: 110,
@@ -42,7 +42,7 @@ class UITransactionGridViewItem extends StatelessWidget {
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
-            final item = items.$1[index];
+            final item = state.$1[index];
             return Material(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
@@ -76,7 +76,7 @@ class UITransactionGridViewItem extends StatelessWidget {
 
                       if (UserSession.getStatusFifo() &&
                           item.getqtyItem == 0 &&
-                          items.$2) {
+                          state.$2) {
                         return customSnackBar(
                           context,
                           "Mode FIFO: Qty 0 tidak dapat dipilih!",
@@ -132,7 +132,11 @@ class UITransactionGridViewItem extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              formatPriceRp(item.getpriceItem),
+                              formatPriceRp(
+                                state.$2
+                                    ? item.getpriceItem
+                                    : item.getpriceItemBuy,
+                              ),
                               style: lv05textStylePrice,
                               textAlign: TextAlign.left,
                             ),

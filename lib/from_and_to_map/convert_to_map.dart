@@ -151,6 +151,7 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
     FieldDataItem.uid_owner.name: UserSession.getUidOwner(),
     FieldDataItem.name_item.name: item.getnameItem,
     FieldDataItem.price_item.name: item.getpriceItem,
+    FieldDataItem.price_item_buy.name: item.getpriceItemBuy,
     FieldDataItem.id_category.name: item.getidCategoryiItem,
     FieldDataItem.status_condiment.name: item.getstatusCondiment.name,
     FieldDataItem.url_image.name: item.geturlImage,

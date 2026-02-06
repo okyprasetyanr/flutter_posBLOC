@@ -473,7 +473,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     emit(
       currentState.copyWith(
-        customPrice: resultFifo.price,
+        customPrice: currentState.isSell
+            ? resultFifo.price
+            : resultFifo.priceBuy,
         selectedItem: item.copyWith(
           priceItemBuy: resultFifo.priceBuy,
           qtyItem: resultFifo.qty,
@@ -534,7 +536,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       // add(TransactionResetSelectedItem());
       add(TransactionResetOrderedItem());
       final newStatus = currentState.isSell;
-      emit(currentState.copyWith(isSell: !newStatus));
+      emit(currentState.copyWith(isSell: !newStatus, customPrice: 0));
     }
   }
 

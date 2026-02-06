@@ -11,7 +11,18 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 
 class TransactionPopUpPageItem extends StatelessWidget {
-  const TransactionPopUpPageItem({super.key});
+  final TextEditingController sellPrice;
+  final TextEditingController buyPrice;
+  final ValueNotifier<bool> editSell;
+  final ValueNotifier<bool> editBuy;
+
+  const TransactionPopUpPageItem({
+    super.key,
+    required this.sellPrice,
+    required this.buyPrice,
+    required this.editSell,
+    required this.editBuy,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +46,18 @@ class TransactionPopUpPageItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: UITransactionPopUpPriceAndCustom(
-                    onChange: ({required value}) => context
-                        .read<TransactionBloc>()
-                        .add(TransactionAdjustItem(customPrice: value)),
                     isSell: state,
                     labelPrice: "Harga Jual:",
+                    controller: sellPrice,
+                    editPrice: editSell,
+                    onChange: ({required value}) {
+                      context.read<TransactionBloc>().add(
+                        TransactionAdjustItem(
+                          customPrice: state ? value : null,
+                          secondCustomPrice: state ? null : value,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 5),
@@ -51,14 +69,15 @@ class TransactionPopUpPageItem extends StatelessWidget {
                           child: Column(
                             children: [
                               UITransactionPopUpPriceAndCustom(
-                                onChange: ({required value}) =>
-                                    context.read<TransactionBloc>().add(
-                                      TransactionAdjustItem(
-                                        secondCustomPrice: value,
-                                      ),
-                                    ),
-                                isSell: state,
+                                isSell: false,
                                 labelPrice: "Harga Beli:",
+                                controller: buyPrice,
+                                editPrice: editBuy,
+                                onChange: ({required value}) {
+                                  context.read<TransactionBloc>().add(
+                                    TransactionAdjustItem(customPrice: value),
+                                  );
+                                },
                               ),
 
                               SizedBox(height: 10),

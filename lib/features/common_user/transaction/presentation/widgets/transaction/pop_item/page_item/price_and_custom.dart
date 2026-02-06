@@ -6,44 +6,20 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-class UITransactionPopUpPriceAndCustom extends StatefulWidget {
+class UITransactionPopUpPriceAndCustom extends StatelessWidget {
   final bool isSell;
   final String labelPrice;
+  final TextEditingController controller;
+  final ValueNotifier<bool> editPrice;
   final Function({required double? value}) onChange;
   const UITransactionPopUpPriceAndCustom({
     super.key,
+    required this.editPrice,
     required this.isSell,
     required this.labelPrice,
     required this.onChange,
+    required this.controller,
   });
-
-  @override
-  State<UITransactionPopUpPriceAndCustom> createState() =>
-      _UITransactionPopUpPriceAndCustomState();
-}
-
-class _UITransactionPopUpPriceAndCustomState
-    extends State<UITransactionPopUpPriceAndCustom> {
-  final priceController = TextEditingController();
-  final editprice = ValueNotifier(false);
-
-  @override
-  void dispose() {
-    priceController.dispose();
-    editprice.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    editprice.addListener(() {
-      if (!editprice.value) {
-        widget.onChange(value: 0);
-        priceController.clear();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +33,7 @@ class _UITransactionPopUpPriceAndCustomState
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.labelPrice, style: lv05TextStyle),
+          Text(labelPrice, style: lv05TextStyle),
           Column(
             children: [
               SizedBox(
@@ -76,7 +52,7 @@ class _UITransactionPopUpPriceAndCustomState
                   iconAlignment: IconAlignment.end,
                   icon: Icon(Icons.edit),
                   onPressed: () {
-                    editprice.value = !editprice.value;
+                    editPrice.value = !editPrice.value;
                   },
                   label:
                       BlocSelector<
@@ -113,7 +89,7 @@ class _UITransactionPopUpPriceAndCustomState
                 child: Stack(
                   children: [
                     ValueListenableBuilder<bool>(
-                      valueListenable: editprice,
+                      valueListenable: editPrice,
                       builder: (context, valueEditPrie, child) {
                         return AnimatedPositioned(
                           bottom: 0,
@@ -133,7 +109,7 @@ class _UITransactionPopUpPriceAndCustomState
                                   listener: (context, state) {
                                     if (state is TransactionLoaded &&
                                         state.selectedItem == null) {
-                                      priceController.clear();
+                                      controller.clear();
                                     }
                                   },
                                   child: TextField(
@@ -156,13 +132,13 @@ class _UITransactionPopUpPriceAndCustomState
                                       hintStyle: lv05TextStyle,
                                     ),
                                     textAlign: TextAlign.right,
-                                    controller: priceController,
+                                    controller: controller,
                                     keyboardType: TextInputType.number,
                                     onChanged: (value) {
                                       debugPrint(
                                         "Log UISell: cek BlocSelector Harga",
                                       );
-                                      widget.onChange(
+                                      onChange(
                                         value: value.isNotEmpty
                                             ? double.tryParse(value)
                                             : 0,

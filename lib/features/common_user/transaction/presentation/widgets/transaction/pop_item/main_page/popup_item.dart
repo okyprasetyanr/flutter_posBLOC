@@ -6,7 +6,6 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_condiment/page_condiment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/page/page_item.dart';
-import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 
 class UITransactionPopUpItem extends StatefulWidget {
@@ -17,15 +16,20 @@ class UITransactionPopUpItem extends StatefulWidget {
 }
 
 class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
-  PageController pageController = PageController();
-  ModelItemOrdered? dataselected;
-  ValueNotifier<bool> currentPage = ValueNotifier(true);
+  final PageController pageController = PageController();
+
+  final sellPrice = TextEditingController();
+  final buyPrice = TextEditingController();
+
+  final editSell = ValueNotifier(false);
+  final editBuy = ValueNotifier(false);
+
+  final currentPage = ValueNotifier(true);
 
   void _gotoPage(bool page) {
-    int goto = page ? 0 : 1;
     if (pageController.hasClients) {
       pageController.animateToPage(
-        goto,
+        page ? 0 : 1,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -35,6 +39,10 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
 
   @override
   void dispose() {
+    sellPrice.dispose();
+    buyPrice.dispose();
+    editSell.dispose();
+    editBuy.dispose();
     currentPage.dispose();
     pageController.dispose();
     super.dispose();
@@ -52,7 +60,12 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                 PageView(
                   controller: pageController,
                   children: [
-                    TransactionPopUpPageItem(),
+                    TransactionPopUpPageItem(
+                      sellPrice: sellPrice,
+                      buyPrice: buyPrice,
+                      editSell: editSell,
+                      editBuy: editBuy,
+                    ),
                     UITransactionPopUpPageCondiment(),
                   ],
                 ),
