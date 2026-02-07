@@ -469,7 +469,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       discount: discount,
     );
 
-    debugPrint("Log TransactionLoaded: adjustItem: price: ${resultFifo.price}");
+    debugPrint(
+      "Log TransactionLoaded: adjustItem: price: ${resultFifo.subTotal}",
+    );
 
     emit(
       currentState.copyWith(

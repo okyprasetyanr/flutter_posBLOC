@@ -27,13 +27,23 @@ ModelFIFOLogic fifoLogic({
 
   final customPriceSell = isSell
       ? customPrice == null
-            ? item.getpriceItemFinal
+            ? batches.isNotEmpty
+                  ? batches.last.getprice_item
+                  : item.getpriceItemFinal
             : customPrice
       : secondCustomPrice == null
-      ? item.getpriceItemFinal
+      ? batches.isNotEmpty
+            ? batches.last.getprice_item
+            : item.getpriceItemFinal
       : secondCustomPrice;
 
-  double customPriceBuy = customPrice == null ? 0 : customPrice;
+  double customPriceBuy = isSell
+      ? item.getpriceItemBuy
+      : customPrice == null
+      ? batches.isNotEmpty
+            ? batches.last.getprice_itemBuy
+            : item.getpriceItemBuy
+      : customPrice;
 
   // final customPriceState = customPrice == null
   //     ? state.customPrice != 0
@@ -43,8 +53,36 @@ ModelFIFOLogic fifoLogic({
 
   final checkCustomPrice = customPriceSell != item.getpriceItem;
 
-  if ((customPriceSell != 0 && checkCustomPrice) ||
-      secondCustomPrice != null && secondCustomPrice != 0) {
+  debugPrint(
+    "Log FifoLogic: customPriceBuy: $customPriceBuy, customPriceSell: $customPriceSell batch_priceSell: ${batches.isNotEmpty ? batches.last.getprice_item : 0}",
+  );
+  debugPrint(
+    "Log FifoLogic: customPrice: $customPrice, secondCustomPrice: $secondCustomPrice checkCustomPrice: $checkCustomPrice",
+  );
+
+  final bool hasCustom1 =
+      customPrice != null && customPrice != 0 && checkCustomPrice;
+
+  final bool hasCustom2 = secondCustomPrice != null && secondCustomPrice != 0;
+
+  final bool c1_notNull = customPrice != null;
+  final bool c1_notZero = (customPrice ?? 0) != 0;
+  final bool c1_check = checkCustomPrice == true;
+
+  final bool c2_notNull = secondCustomPrice != null;
+  final bool c2_notZero = (secondCustomPrice ?? 0) != 0;
+
+  debugPrint("""
+[CHECK]
+c1_notNull: $c1_notNull
+c1_notZero: $c1_notZero
+c1_check: $c1_check
+
+c2_notNull: $c2_notNull
+c2_notZero: $c2_notZero
+""");
+
+  if ((c1_notNull && c1_notZero && c1_check) || (c2_notNull && c2_notZero)) {
     if (isFifo) {
       for (int i = 0; i < batches.length; i++) {
         final b = batches[i];
@@ -57,11 +95,15 @@ ModelFIFOLogic fifoLogic({
           price_item: isSell ? customPriceSell : b.getprice_item,
         );
       }
+
+      debugPrint("Log FifoLogic: loop: priceSellBatch: ");
     } else {
       if (batches.isNotEmpty) {
         batches[0] = batches[0].copyWith(
           price_item: isSell ? customPrice : batches[0].getprice_item,
-          price_itemBuy: 0,
+          price_itemBuy: customPriceBuy == 0
+              ? batches[0].getprice_item
+              : customPriceBuy,
         );
       }
     }
@@ -85,7 +127,7 @@ ModelFIFOLogic fifoLogic({
       if (batches.isNotEmpty) {
         batches[0] = batches[0].copyWith(
           price_item: item.getpriceItem,
-          price_itemBuy: 0,
+          price_itemBuy: item.getpriceItemBuy,
         );
       }
     }
@@ -113,7 +155,7 @@ ModelFIFOLogic fifoLogic({
         if (batches.isEmpty) {
           batches.add(
             ModelItemOrderedBatch(
-              price_itemBuy: 0,
+              price_itemBuy: item.getpriceItemBuy,
               price_item: item.getpriceItem,
               id_ordered: 'NON_FIFO',
               id_item: item.getidItem,
@@ -167,7 +209,9 @@ ModelFIFOLogic fifoLogic({
             id_item: item.getidItem,
             invoice: item.getinvoice ?? '',
             qty_item: item.getqtyItem,
-            price_itemBuy: 0,
+            price_itemBuy: batches.isNotEmpty
+                ? batches.first.getprice_itemBuy
+                : item.getpriceItemBuy,
           ),
         );
       } else {
@@ -190,12 +234,14 @@ ModelFIFOLogic fifoLogic({
       ? _calculateSubTotalFromBatch(batches, discount ?? 0)
       : priceBuy * qtyFinal;
 
+  debugPrint("Log FifoLogic: subTotal: $priceBuy * $qtyFinal = $subTotal");
+
   return ModelFIFOLogic(
     priceBuy: priceBuy,
     qty: qtyFinal,
     price: priceSell,
     batch: batches,
-    subTotal: subTotal,
+    subTotal: subTotal.roundToDouble(),
   );
 }
 
@@ -215,7 +261,7 @@ void _allocateFIFO({
   double? priceBuy,
   List<ModelItemOrdered>? currentListContext,
 }) {
-  final customPriceState = state.customPrice;
+  // final customPriceState = state.customPrice;
   double need = qtyNeed;
 
   final fifo =
@@ -270,11 +316,7 @@ void _allocateFIFO({
     );
 
     debugPrint(
-      "Log TransactionBloc: AllocateFIFO: price: ${priceSell != null && priceSell != 0
-          ? priceSell
-          : customPriceState != 0 && priceSell == null
-          ? customPriceState
-          : batch.getpriceItemFinal}",
+      "Log FifoLogic: AllocateFIFO: ${usedBatches.last.getprice_item}/$priceSell",
     );
     need -= take;
   }
