@@ -51,38 +51,17 @@ ModelFIFOLogic fifoLogic({
   //           : item.getpriceItemFinal
   //     : customPrice;
 
-  final checkCustomPrice = customPriceSell != item.getpriceItem;
+  final checkCustomPrice = isSell ? customPriceSell != item.getpriceItem : true;
 
   debugPrint(
-    "Log FifoLogic: customPriceBuy: $customPriceBuy, customPriceSell: $customPriceSell batch_priceSell: ${batches.isNotEmpty ? batches.last.getprice_item : 0}",
+    "Log FifoLogic: customPriceBuy: $customPriceBuy, customPriceSell: $customPriceSell",
   );
   debugPrint(
-    "Log FifoLogic: customPrice: $customPrice, secondCustomPrice: $secondCustomPrice checkCustomPrice: $checkCustomPrice",
+    "Log FifoLogic: batch_priceBuy: ${batches.isNotEmpty ? batches.last.getprice_itemBuy : 0}, batch_priceSell: ${batches.isNotEmpty ? batches.last.getprice_item : 0}",
   );
 
-  final bool hasCustom1 =
-      customPrice != null && customPrice != 0 && checkCustomPrice;
-
-  final bool hasCustom2 = secondCustomPrice != null && secondCustomPrice != 0;
-
-  final bool c1_notNull = customPrice != null;
-  final bool c1_notZero = (customPrice ?? 0) != 0;
-  final bool c1_check = checkCustomPrice == true;
-
-  final bool c2_notNull = secondCustomPrice != null;
-  final bool c2_notZero = (secondCustomPrice ?? 0) != 0;
-
-  debugPrint("""
-[CHECK]
-c1_notNull: $c1_notNull
-c1_notZero: $c1_notZero
-c1_check: $c1_check
-
-c2_notNull: $c2_notNull
-c2_notZero: $c2_notZero
-""");
-
-  if ((c1_notNull && c1_notZero && c1_check) || (c2_notNull && c2_notZero)) {
+  if ((customPrice != 0 && checkCustomPrice) ||
+      (secondCustomPrice != null && secondCustomPrice != 0)) {
     if (isFifo) {
       for (int i = 0; i < batches.length; i++) {
         final b = batches[i];
@@ -92,17 +71,17 @@ c2_notZero: $c2_notZero
           id_item: b.getid_Item,
           invoice: b.getinvoice,
           qty_item: b.getqty_item,
-          price_item: isSell ? customPriceSell : b.getprice_item,
+          price_item: customPriceSell,
         );
       }
-
-      debugPrint("Log FifoLogic: loop: priceSellBatch: ");
     } else {
       if (batches.isNotEmpty) {
         batches[0] = batches[0].copyWith(
-          price_item: isSell ? customPrice : batches[0].getprice_item,
-          price_itemBuy: customPriceBuy == 0
+          price_item: customPriceSell == 0
               ? batches[0].getprice_item
+              : customPriceSell,
+          price_itemBuy: customPriceBuy == 0
+              ? batches[0].getprice_itemBuy
               : customPriceBuy,
         );
       }
@@ -346,6 +325,7 @@ void _releaseFIFO({
         invoice: batch.getinvoice,
         qty_item: batch.getqty_item - release,
         price_item: batch.getprice_item,
+        price_itemBuy: batch.getprice_itemBuy,
       );
       release = 0;
     }

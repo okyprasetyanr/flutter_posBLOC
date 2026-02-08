@@ -421,11 +421,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       ModelItemOrdered item;
-
       if (event.edit) {
         item = event.selectedItem;
       } else {
-        debugPrint("Log TransactionBloc: SelectedItem: check flow");
         final resultFifo = await fifoLogic(
           state: currentState,
           item: event.selectedItem,
@@ -438,6 +436,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         );
       }
 
+      debugPrint(
+        "Log TransactionBloc: SelectedItem: ${item.getitemOrderedBatch}",
+      );
       emit(
         currentState.copyWith(selectedItem: item, editSelectedItem: event.edit),
       );

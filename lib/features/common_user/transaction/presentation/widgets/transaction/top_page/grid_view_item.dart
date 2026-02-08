@@ -5,8 +5,6 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/main_page/popup_item.dart';
-import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
@@ -103,18 +101,6 @@ class UITransactionGridViewItem extends StatelessWidget {
                           "FIFO: Stok sudah mencapai batas",
                         );
                       }
-
-                      customBottomSheet(
-                        context: context,
-                        resetItemForm: () {
-                          context.read<TransactionBloc>().add(
-                            TransactionResetSelectedItem(),
-                          );
-                        },
-                        content: (scrollController) {
-                          return UITransactionPopUpItem();
-                        },
-                      );
                     },
                     child: Padding(
                       padding: const EdgeInsetsGeometry.all(3),
