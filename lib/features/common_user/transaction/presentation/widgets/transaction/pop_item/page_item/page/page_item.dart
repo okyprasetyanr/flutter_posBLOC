@@ -46,7 +46,7 @@ class TransactionPopUpPageItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: UITransactionPopUpPriceAndCustom(
-                    isSell: state,
+                    forSell: true,
                     labelPrice: "Harga Jual:",
                     controller: sellPrice,
                     editPrice: editSell,
@@ -54,7 +54,7 @@ class TransactionPopUpPageItem extends StatelessWidget {
                       context.read<TransactionBloc>().add(
                         TransactionAdjustItem(
                           customPrice: state ? value : null,
-                          secondCustomPrice: state ? null : value,
+                          secondCustomPrice: state ? null : value ?? 0,
                         ),
                       );
                     },
@@ -69,7 +69,7 @@ class TransactionPopUpPageItem extends StatelessWidget {
                           child: Column(
                             children: [
                               UITransactionPopUpPriceAndCustom(
-                                isSell: false,
+                                forSell: false,
                                 labelPrice: "Harga Beli:",
                                 controller: buyPrice,
                                 editPrice: editBuy,

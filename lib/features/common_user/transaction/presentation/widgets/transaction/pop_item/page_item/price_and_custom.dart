@@ -7,7 +7,7 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UITransactionPopUpPriceAndCustom extends StatelessWidget {
-  final bool isSell;
+  final bool forSell;
   final String labelPrice;
   final TextEditingController controller;
   final ValueNotifier<bool> editPrice;
@@ -15,7 +15,7 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
   const UITransactionPopUpPriceAndCustom({
     super.key,
     required this.editPrice,
-    required this.isSell,
+    required this.forSell,
     required this.labelPrice,
     required this.onChange,
     required this.controller,
@@ -58,14 +58,14 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                       BlocSelector<
                         TransactionBloc,
                         TransactionState,
-                        (ModelItemOrdered?, bool)
+                        ModelItemOrdered?
                       >(
                         selector: (state) {
                           if (state is TransactionLoaded &&
                               state.selectedItem != null) {
-                            return (state.selectedItem, state.isSell);
+                            return state.selectedItem;
                           }
-                          return (null, true);
+                          return null;
                         },
                         builder: (context, state) {
                           debugPrint(
@@ -73,9 +73,9 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                           );
                           return Text(
                             formatPriceRp(
-                              state.$2
-                                  ? state.$1?.getpriceItemFinal ?? 0
-                                  : state.$1?.getpriceItemBuy ?? 0,
+                              forSell
+                                  ? state?.getpriceItemFinal ?? 0
+                                  : state?.getpriceItemBuy ?? 0,
                             ),
                             style: lv05TextStyle,
                           );
