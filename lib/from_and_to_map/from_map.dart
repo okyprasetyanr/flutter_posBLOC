@@ -18,7 +18,6 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/get_data.dart';
-import 'package:hive/hive.dart';
 
 ModelTransactionFinancial fromMapTransFinancial(
   Map<String, dynamic> data,
@@ -164,7 +163,6 @@ ModelCounter fromMapCounter(
   DocumentSnapshot? dataList,
 }) {
   return ModelCounter(
-    counterSellSaved: Hive.box('saved_transaction').keys.length,
     idBranch: id,
     counterSell: data?[FieldDataCounter.counter_sell.name] ?? 0,
     counterBuy: data?[FieldDataCounter.counter_buy.name] ?? 0,
