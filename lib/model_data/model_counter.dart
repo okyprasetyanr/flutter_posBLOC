@@ -12,7 +12,7 @@ class ModelCounter extends Equatable {
   final String _idBranch;
 
   ModelCounter({
-    required int counterSellSaved,
+    int counterSellSaved = 0,
     required int counterSell,
     required int counterBuy,
     required int counterIncome,

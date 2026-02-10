@@ -9,6 +9,23 @@ SyncData
 Profile
 Force Push(List data not pushed)
 
-terakhir Garap:
-    Cek Split Pembayra, soalnya ada tambahan Invoice,
-    Cek NestedLoop diBackup
+Fitur Adjustment In (Penambah Stok)
+Input: Item, Qty Tambah, Harga Modal (wajib untuk FIFO), dan Alasan.
+
+Efek: Membuat Batch Baru atau menambah saldo di batch tertentu.
+
+Output: Stok bertambah, Nilai Aset di Neraca naik.
+
+Fitur Adjustment Out (Pengurang Stok)
+Input: Item, Pilih Batch, Qty Kurang, dan Alasan (Rusak/Hilang/dll).
+
+Efek: Mengurangi saldo pada batch yang dipilih.
+
+Output: Stok berkurang, muncul Beban/Kerugian di Laporan Laba Rugi.
+
+Data History (Audit Log)
+Catat user_id (siapa yang eksekusi).
+
+Catat timestamp (kapan kejadiannya).
+
+Catat old_qty dan new_qty agar terlihat perubahannya secara transparan.

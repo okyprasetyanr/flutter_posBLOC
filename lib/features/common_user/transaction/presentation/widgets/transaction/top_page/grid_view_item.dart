@@ -53,6 +53,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                     onTap: () {
                       final idOrdered = Uuid().v4();
                       ModelItemOrdered selectedItem = ModelItemOrdered(
+                        priceItemBuy: item.getpriceItemBuy,
                         itemOrderedBatch: [],
                         priceItemFinal: item.getpriceItem,
                         subTotal: item.getpriceItem,

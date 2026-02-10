@@ -148,6 +148,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             (element) => dataItemBatch.add(element),
           ),
         );
+    dataItemBatch.sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
 
     final fifoMap = buildFifoBatchMap(dataItemBatch);
 
@@ -262,11 +263,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       if (fifoBatches == null || fifoBatches.isEmpty) continue;
 
-      final oldestBatch = fifoBatches.first;
-
-      listItem[i] = item.copyWith(priceItem: oldestBatch.getpriceItemFinal);
-      debugPrint(
-        "Log TransactionBloc ApplyFifotoItem: price: ${oldestBatch.getpriceItemFinal}, invoice_Batch: ${oldestBatch.getinvoice}",
+      listItem[i] = item.copyWith(
+        priceItem: fifoBatches.first.getpriceItemFinal,
+        priceItemBuy: fifoBatches.last.getpriceItemBuy,
       );
     }
   }
@@ -436,9 +435,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         );
       }
 
-      debugPrint(
-        "Log TransactionBloc: SelectedItem: ${item.getitemOrderedBatch}",
-      );
+      debugPrint("Log TransactionBloc: SelectedItem: ${item.getpriceItemBuy}");
       emit(
         currentState.copyWith(selectedItem: item, editSelectedItem: event.edit),
       );

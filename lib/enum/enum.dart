@@ -110,6 +110,7 @@ enum FieldDataItemOrdered {
   discount_item,
   price_item,
   price_item_final,
+  price_item_buy,
   sub_total,
   id_category_item,
   note,

@@ -137,6 +137,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataItem.status_condiment.name),
       TextCellValue(FieldDataItem.status_item.name),
       TextCellValue(FieldDataItem.date.name),
+      TextCellValue(FieldDataItem.price_item_buy.name),
     ]);
 
     for (final item in repo.dataItem) {

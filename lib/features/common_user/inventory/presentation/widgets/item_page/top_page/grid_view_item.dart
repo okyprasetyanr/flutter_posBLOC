@@ -82,13 +82,20 @@ class UIInventoryGridViewItem extends StatelessWidget {
 
                               final data = snapshot.data!.data();
 
-                              return data!['imageUrl'] != null
-                                  ? Image.network(
-                                      data['imageUrl'],
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    )
+                              return data != null
+                                  ? data['imageUrl'] != null
+                                        ? Image.network(
+                                            data['imageUrl'],
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            "assets/logo.png",
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
                                   : Image.asset(
                                       "assets/logo.png",
                                       width: 50,
