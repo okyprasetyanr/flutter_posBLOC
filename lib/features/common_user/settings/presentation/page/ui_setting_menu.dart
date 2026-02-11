@@ -166,7 +166,6 @@ class _UISettingsState extends State<UISettings> {
                     label: Text("Logout", style: lv05TextStyleWhite),
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
-                      await Future.delayed(const Duration(milliseconds: 300));
                       navUpDownTransition(context, '/login', true);
                     },
                   ),

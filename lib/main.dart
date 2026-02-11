@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
@@ -219,30 +220,33 @@ class _MainAppState extends State<ScreenLogin> {
                             children: [
                               Column(
                                 children: [
-                                  const SizedBox(height: 220),
+                                  const SizedBox(height: 150),
                                   Text(
                                     AppPropertyText.AppName,
                                     style: titleTextStyle,
                                   ),
                                   const SizedBox(height: 10),
                                   Material(
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(100),
+                                      Radius.circular(14),
                                     ),
                                     elevation: 2,
                                     shadowColor: Colors.black,
                                     child: TextField(
                                       controller: emailcontroller,
                                       decoration: InputDecoration(
-                                        labelText: 'Username:',
-                                        labelStyle: labelTextStyle,
-                                        hintText: 'Username...',
-                                        hintStyle: hintTextStyle,
                                         border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(100),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
                                           ),
                                         ),
+                                        labelText: "Email Pengguna",
+                                        labelStyle: lv1TextStyle,
+                                        hintText: "Email Pengguna...",
+                                        hintStyle: lv1TextStyle,
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.always,
                                       ),
                                     ),
                                   ),
@@ -253,8 +257,9 @@ class _MainAppState extends State<ScreenLogin> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Material(
+                                        color: Colors.white,
                                         borderRadius: BorderRadius.all(
-                                          Radius.circular(100),
+                                          Radius.circular(14),
                                         ),
                                         elevation: 2,
                                         shadowColor: Colors.black,
@@ -266,14 +271,17 @@ class _MainAppState extends State<ScreenLogin> {
                                                 obscureText:
                                                     _obscurePassword.value,
                                                 decoration: InputDecoration(
-                                                  labelText: 'Password:',
-                                                  labelStyle: labelTextStyle,
-                                                  hintText: 'Password...',
-                                                  hintStyle: hintTextStyle,
+                                                  labelText: 'Kata Sandi:',
+                                                  labelStyle: lv1TextStyle,
+                                                  hintText: 'Kata Sandi...',
+                                                  hintStyle: lv1TextStyle,
+                                                  floatingLabelBehavior:
+                                                      FloatingLabelBehavior
+                                                          .always,
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.all(
-                                                          Radius.circular(100),
+                                                          Radius.circular(14),
                                                         ),
                                                   ),
                                                   suffixIcon: IconButton(
@@ -296,66 +304,57 @@ class _MainAppState extends State<ScreenLogin> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 20),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppPropertyColor.primary,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 30,
-                                        vertical: 10,
-                                      ),
-                                      shadowColor: Colors.black,
-                                      elevation: 10,
-                                    ),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (_) {
-                                          return Center(
-                                            child: customSpinKit(
-                                              color: Colors.white,
-                                              size: 30,
-                                            ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      customButton(
+                                        backgroundColor:
+                                            AppPropertyColor.primary,
+                                        child: Text(
+                                          "Masuk",
+                                          style: lv2TextStyleWhite,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (_) {
+                                              return Center(
+                                                child: customSpinKit(
+                                                  color: Colors.white,
+                                                  size: 30,
+                                                ),
+                                              );
+                                            },
+                                          );
+                                          authenticatorAccount(
+                                            email: "demo@gmail.com",
+                                            // emailcontroller.text,
+                                            password: "123456",
+                                            // passcontroller.text,
+                                            context: context,
+                                            signup: false,
                                           );
                                         },
-                                      );
-                                      authenticatorAccount(
-                                        email: "demo@gmail.com",
-                                        // emailcontroller.text,
-                                        password: "123456",
-                                        // passcontroller.text,
-                                        context: context,
-                                        signup: false,
-                                      );
-                                    },
-                                    child: Text(
-                                      'Login',
-                                      style: buttonTextStyle,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppPropertyColor.primary,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 30,
-                                        vertical: 10,
                                       ),
-                                      shadowColor: Colors.black,
-                                      elevation: 10,
-                                    ),
-                                    onPressed: () {
-                                      navUpDownTransition(
-                                        context,
-                                        '/sign-up',
-                                        false,
-                                      );
-                                    },
-                                    child: Text(
-                                      'Sign-Up',
-                                      style: buttonTextStyle,
-                                    ),
+                                      SizedBox(width: 10),
+                                      customButton(
+                                        backgroundColor:
+                                            AppPropertyColor.primary,
+                                        child: Text(
+                                          "Daftar",
+                                          style: lv2TextStyleWhite,
+                                        ),
+                                        onPressed: () {
+                                          navUpDownTransition(
+                                            context,
+                                            '/sign-up',
+                                            false,
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

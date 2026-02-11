@@ -197,6 +197,12 @@ final lv2TextStyle = GoogleFonts.poppins(
   fontSize: 16,
 );
 
+final lv2TextStyleWhite = GoogleFonts.poppins(
+  color: Colors.white,
+  fontWeight: FontWeight.w500,
+  fontSize: 16,
+);
+
 final lv2textStylePrice = GoogleFonts.poppins(
   color: AppPropertyColor.primary,
   fontWeight: FontWeight.w900,
