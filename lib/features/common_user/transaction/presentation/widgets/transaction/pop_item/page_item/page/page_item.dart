@@ -4,11 +4,10 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/discount_and_custom.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/expired_date.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/name_and_qty.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/note_and_subtotal.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/price_and_custom.dart';
-import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
-import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 
 class TransactionPopUpPageItem extends StatelessWidget {
   final TextEditingController sellPrice;
@@ -33,6 +32,12 @@ class TransactionPopUpPageItem extends StatelessWidget {
         UITransactionPopUpNoteAndSubTotal(),
         const SizedBox(height: 10),
         BlocSelector<TransactionBloc, TransactionState, bool>(
+          selector: (state) => state is TransactionLoaded ? state.isSell : true,
+          builder: (context, state) =>
+              state ? SizedBox.shrink() : UITransactionPopUpExpiredDate(),
+        ),
+        const SizedBox(height: 10),
+        BlocSelector<TransactionBloc, TransactionState, bool>(
           selector: (state) {
             if (state is TransactionLoaded) {
               return state.isSell;
@@ -45,6 +50,7 @@ class TransactionPopUpPageItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
+                  flex: state ? 3 : 1,
                   child: UITransactionPopUpPriceAndCustom(
                     forSell: true,
                     labelPrice: "Harga Jual:",
@@ -62,6 +68,7 @@ class TransactionPopUpPageItem extends StatelessWidget {
                 ),
                 const SizedBox(width: 5),
                 Expanded(
+                  flex: state ? 4 : 1,
                   child: state
                       ? const UITransactionPopUpDiscountAndCustom()
                       : SizedBox(
@@ -78,24 +85,6 @@ class TransactionPopUpPageItem extends StatelessWidget {
                                     TransactionAdjustItem(customPrice: value),
                                   );
                                 },
-                              ),
-
-                              SizedBox(height: 10),
-                              Text("Tanggal Kadaluarsa:", style: lv05TextStyle),
-                              SizedBox(height: 10),
-                              Expanded(
-                                child: WidgetCustomDate(
-                                  onSelected: (day, month, year) {
-                                    debugPrint(
-                                      "Log UITransaction: CustomDate: $year-$month-$day",
-                                    );
-                                    context.read<TransactionBloc>().add(
-                                      TransactionAdjustItem(
-                                        expiredDate: "$year-$month-$day",
-                                      ),
-                                    );
-                                  },
-                                ),
                               ),
                             ],
                           ),

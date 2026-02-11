@@ -154,7 +154,7 @@ class _UITransactionState extends State<UITransaction> {
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
-                    width: 120,
+                    width: 125,
                     padding: const EdgeInsets.only(top: 5, bottom: 5),
                     height: 40,
                     child:

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
@@ -36,8 +38,8 @@ class _NavigationGestureState extends State<NavigationGesture> {
             margin: EdgeInsets.only(top: 5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(15),
-                bottomRight: Radius.circular(15),
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10),
               ),
               color: Colors.white,
               boxShadow: [
@@ -54,16 +56,18 @@ class _NavigationGestureState extends State<NavigationGesture> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Material(
-                    elevation: 4,
-                    borderRadius: BorderRadius.circular(10),
-                    child: ListTile(
-                      onTap: widget.close,
-                      leading: Icon(Icons.keyboard_backspace_rounded),
-                      title: Text("Tutup", style: lv2TextStyle),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: customButtonIcon(
+                    left: true,
+                    icon: Icon(
+                      Icons.keyboard_backspace_rounded,
+                      color: Colors.white,
                     ),
+                    label: Text("Tutup", style: lv1TextStyleWhiteBold),
+                    backgroundColor: AppPropertyColor.primary,
+                    onPressed: widget.close,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -71,6 +75,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: [
+                      Text("Daftar Menu", style: lv2TextStyle),
                       const SizedBox(height: 10),
                       for (var menu in widget.attContent)
                         _navContent(
@@ -93,9 +98,10 @@ class _NavigationGestureState extends State<NavigationGesture> {
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       width: double.infinity,
-      color: Colors.transparent,
+      color: Colors.white,
       child: Material(
-        elevation: 1,
+        color: AppPropertyColor.primary,
+        elevation: 2,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap: () {
@@ -107,9 +113,24 @@ class _NavigationGestureState extends State<NavigationGesture> {
             }
           },
           borderRadius: BorderRadius.circular(10),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Text(text, style: lv2TextStyle),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(text, style: lv1TextStyleWhite),
+              ),
+              Spacer(),
+              if (widget.currentPage == id)
+                Container(
+                  margin: EdgeInsets.only(right: 10),
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+            ],
           ),
         ),
       ),

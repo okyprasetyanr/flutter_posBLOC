@@ -101,6 +101,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                 Text("Kas", style: titleTextStyle),
               ],
             ),
+            Spacer(),
             BlocSelector<TransFinancialBloc, TransFinancialState, bool>(
               selector: (state) {
                 if (state is TransFinancialLoaded) {
@@ -114,7 +115,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                     TransFinancialStatusFinancial(),
                   ),
                   child: AnimatedContainer(
-                    width: 150,
+                    width: 145,
                     height: 30,
                     duration: Duration(microseconds: 500),
                     child: WidgetAnimatePage(
@@ -213,22 +214,59 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
   }
 
   Widget layoutBottom() {
+    final nullKas = "Belum memilih Kas";
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "Kas: ${context.select<TransFinancialBloc, String>((value) {
-                final bloc = value.state;
-                if (bloc is TransFinancialLoaded) {
-                  return bloc.selectedFinancial?.getnameFinancial ?? "Belum memilih Kas";
-                }
-                return "Belum memilih Kas";
-              })}",
-              style: lv1TextStyle,
+            Row(
+              children: [
+                Text('Kas:', style: lv1TextStyleBold),
+                BlocSelector<TransFinancialBloc, TransFinancialState, String>(
+                  selector: (state) => state is TransFinancialLoaded
+                      ? state.selectedFinancial?.getnameFinancial ?? nullKas
+                      : nullKas,
+                  builder: (context, state) {
+                    final isKas = state != nullKas;
+                    return Container(
+                      margin: EdgeInsets.only(left: isKas ? 10 : 0),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isKas ? AppPropertyColor.primary : null,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        state,
+                        style: isKas ? lv1TextStyleWhite : lv1TextStyle,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
+
+            // RichText(
+            //   text: TextSpan(
+            //     children: [
+            //       TextSpan(
+            //         text:
+            //             "${context.select<TransFinancialBloc, String>((value) {
+            //               final bloc = value.state;
+            //               if (bloc is TransFinancialLoaded) {
+            //                 return bloc.selectedFinancial?.getnameFinancial ?? nullKas;
+            //               }
+            //               return nullKas;
+            //             })}",
+            //         style: lv1TextStyleBold,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             customButtonIconReset(
               onPressed: () {
                 context.read<TransFinancialBloc>().add(

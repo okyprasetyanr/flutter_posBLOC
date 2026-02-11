@@ -179,6 +179,12 @@ final lv1TextStyleWhite = GoogleFonts.poppins(
   fontSize: 12,
 );
 
+final lv1TextStyleWhiteBold = GoogleFonts.poppins(
+  color: Colors.white,
+  fontWeight: FontWeight.w600,
+  fontSize: 12,
+);
+
 final lv0TextStyle = GoogleFonts.poppins(
   color: Colors.black,
   fontWeight: FontWeight.w300,

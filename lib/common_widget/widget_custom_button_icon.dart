@@ -5,6 +5,7 @@ Widget customButtonIcon({
   Widget? label,
   Color? backgroundColor,
   Icon? icon,
+  bool left = false,
 }) {
   return Padding(
     padding: EdgeInsets.only(left: 5, right: 0, bottom: 5, top: 0),
@@ -12,15 +13,12 @@ Widget customButtonIcon({
       onPressed: onPressed,
       label: label ?? const SizedBox.shrink(),
       icon: icon,
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(backgroundColor),
-        minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-        padding: WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        ),
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        minimumSize: Size(0, 0),
+        alignment: left ? Alignment.centerLeft : Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
   );

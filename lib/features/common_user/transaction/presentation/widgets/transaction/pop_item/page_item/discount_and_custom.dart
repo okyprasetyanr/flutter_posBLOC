@@ -39,57 +39,61 @@ class _UITransactionPopUpDiscountAndCustomState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Diskon:", style: lv05TextStyle),
-          BlocSelector<TransactionBloc, TransactionState, int?>(
-            selector: (state) {
-              if (state is TransactionLoaded && state.selectedItem != null) {
-                return state.selectedItem!.getdiscountItem;
-              }
-              return null;
-            },
-            builder: (context, state) {
-              if (state == null) {
-                return SizedBox.shrink();
-              }
-              final diskonList = [10, 25, 50];
-              return Wrap(
-                spacing: 5,
-                runSpacing: 5,
-                children: diskonList.map((diskon) {
-                  final isSelected = state == diskon;
-                  return ElevatedButton.icon(
-                    onPressed: () {
-                      if (customDiscountController.text.isNotEmpty) {
-                        customDiscountController.clear();
-                      }
+          Center(
+            child: BlocSelector<TransactionBloc, TransactionState, int?>(
+              selector: (state) {
+                if (state is TransactionLoaded && state.selectedItem != null) {
+                  return state.selectedItem!.getdiscountItem;
+                }
+                return null;
+              },
+              builder: (context, state) {
+                if (state == null) {
+                  return SizedBox.shrink();
+                }
+                final diskonList = [10, 25, 50];
+                return Wrap(
+                  spacing: 5,
+                  runSpacing: 5,
+                  children: diskonList.map((diskon) {
+                    final isSelected = state == diskon;
+                    return ElevatedButton.icon(
+                      onPressed: () {
+                        if (customDiscountController.text.isNotEmpty) {
+                          customDiscountController.clear();
+                        }
 
-                      context.read<TransactionBloc>().add(
-                        TransactionAdjustItem(discount: diskon),
-                      );
-                    },
-                    icon: Icon(Icons.check_rounded, size: lv1IconSize),
-                    label: Text(
-                      "$diskon%",
-                      style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
-                    ),
-                    style: ButtonStyle(
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        context.read<TransactionBloc>().add(
+                          TransactionAdjustItem(discount: diskon),
+                        );
+                      },
+                      icon: Icon(Icons.check_rounded, size: lv1IconSize),
+                      label: Text(
+                        "$diskon%",
+                        style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
+                      ),
+                      style: ButtonStyle(
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                        padding: const WidgetStatePropertyAll(
+                          EdgeInsets.all(7),
+                        ),
+                        backgroundColor: WidgetStatePropertyAll(
+                          isSelected ? AppPropertyColor.primary : Colors.white,
+                        ),
+                        iconColor: WidgetStatePropertyAll(
+                          isSelected ? Colors.white : Colors.black,
                         ),
                       ),
-                      minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                      padding: const WidgetStatePropertyAll(EdgeInsets.all(7)),
-                      backgroundColor: WidgetStatePropertyAll(
-                        isSelected ? AppPropertyColor.primary : Colors.white,
-                      ),
-                      iconColor: WidgetStatePropertyAll(
-                        isSelected ? Colors.white : Colors.black,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            },
+                    );
+                  }).toList(),
+                );
+              },
+            ),
           ),
           const SizedBox(height: 5),
           SizedBox(
