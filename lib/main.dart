@@ -234,6 +234,7 @@ class _MainAppState extends State<ScreenLogin> {
                                     elevation: 2,
                                     shadowColor: Colors.black,
                                     child: TextField(
+                                      style: lv1TextStyle,
                                       controller: emailcontroller,
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(
@@ -267,6 +268,7 @@ class _MainAppState extends State<ScreenLogin> {
                                           valueListenable: _obscurePassword,
                                           builder: (context, value, child) =>
                                               TextField(
+                                                style: lv1TextStyle,
                                                 controller: passcontroller,
                                                 obscureText:
                                                     _obscurePassword.value,

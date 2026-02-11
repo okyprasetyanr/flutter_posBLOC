@@ -154,6 +154,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
       children: [
         Expanded(
           child: ListView(
+            shrinkWrap: true,
             children: [
               listTileText(
                 () {
