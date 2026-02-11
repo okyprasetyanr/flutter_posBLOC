@@ -151,7 +151,6 @@ class _UIInventoryState extends State<UIInventory> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ElevatedButton.icon(
@@ -179,14 +178,14 @@ class _UIInventoryState extends State<UIInventory> {
                 ),
               ),
             ),
-
+            Spacer(),
             GestureDetector(
               onTap: () {
                 _gotoPage(!currentPage.value);
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
-                width: 150,
+                width: 110,
                 padding: const EdgeInsets.only(top: 5, bottom: 5),
                 height: 40,
                 child: ValueListenableBuilder(
@@ -194,7 +193,7 @@ class _UIInventoryState extends State<UIInventory> {
                   builder: (context, value, child) {
                     return WidgetAnimatePage(
                       change: value,
-                      text1: "Inventory",
+                      text1: "Inventori",
                       text2: "Kategori",
                     );
                   },

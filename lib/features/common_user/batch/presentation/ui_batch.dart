@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_state.dart';
@@ -66,8 +67,8 @@ class _UiBatchState extends State<UiBatch> {
               label: Text("Menu", style: lv05TextStyleWhite),
               onPressed: () => isOpen.value = !isOpen.value,
             ),
-            const SizedBox(width: 10),
-            Text("Stok", style: titleTextStyle),
+            Spacer(),
+            Text("Stok/Batch", style: titleTextStyle),
           ],
         ),
         Row(
@@ -105,6 +106,7 @@ class _UiBatchState extends State<UiBatch> {
             ),
           ],
         ),
+        SizedBox(height: 10),
         Expanded(
           child:
               BlocSelector<
@@ -139,49 +141,57 @@ class _UiBatchState extends State<UiBatch> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 4,
-                                mainAxisExtent: 110,
+                                mainAxisExtent: 95,
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                                 childAspectRatio: 1,
                               ),
                           itemBuilder: (context, index) {
                             final data = state.$1[index];
-                            return InkWell(
-                              borderRadius: BorderRadius.circular(8),
-                              onTap: () {
-                                context.read<BatchBloc>().add(
-                                  BatchSelectedIdItem(
-                                    selectedIdItem: state.$1[index].getidItem,
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(3),
-                                child: Column(
-                                  children: [
-                                    Image.asset("assets/logo.png", height: 50),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      data.getnameItem,
-                                      style: lv05TextStyle,
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
+                            return Material(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              elevation: 4,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () {
+                                  context.read<BatchBloc>().add(
+                                    BatchSelectedIdItem(
+                                      selectedIdItem: state.$1[index].getidItem,
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 5,
-                                        ),
-                                        child: Text(
-                                          formatQtyOrPrice(data.getqtyItem),
-                                          style: lv0TextStyleRED,
-                                          textAlign: TextAlign.left,
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3),
+                                  child: Column(
+                                    children: [
+                                      Image.asset(
+                                        "assets/logo.png",
+                                        height: 50,
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        data.getnameItem,
+                                        style: lv05TextStyle,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 5,
+                                          ),
+                                          child: Text(
+                                            formatQtyOrPrice(data.getqtyItem),
+                                            style: lv0TextStyleRED,
+                                            textAlign: TextAlign.left,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
@@ -191,32 +201,76 @@ class _UiBatchState extends State<UiBatch> {
                           itemCount: itemById.length,
                           itemBuilder: (context, index) {
                             final item = itemById[index];
-                            return Column(
-                              children: [
-                                Text("Nota: ${item.getinvoice}"),
-                                rowContent(
-                                  "Stock Masuk",
-                                  formatQtyOrPrice(item.getqtyItem_in),
+                            return Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Material(
+                                borderRadius: BorderRadius.circular(10),
+                                elevation: 4,
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: AppPropertyColor.primary,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                      ),
+                                      width: double.infinity,
+                                      child: Text(
+                                        "Nota: ${item.getinvoice}",
+                                        style: lv1TextStyleWhite,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        children: [
+                                          rowContent(
+                                            "Tanggal",
+                                            formatDate(date: item.getdateBuy),
+                                          ),
+                                          rowContent(
+                                            "Stock Masuk",
+                                            formatQtyOrPrice(
+                                              item.getqtyItem_in,
+                                            ),
+                                          ),
+                                          rowContent(
+                                            "Stock Keluar",
+                                            formatQtyOrPrice(
+                                              item.getqtyItem_out,
+                                            ),
+                                          ),
+                                          rowContent(
+                                            "Stock Sisa",
+                                            formatQtyOrPrice(
+                                              item.getqtyItem_in -
+                                                  item.getqtyItem_out,
+                                            ),
+                                          ),
+                                          rowContent(
+                                            "Harga Jual",
+                                            formatPriceRp(
+                                              item.getpriceItemFinal,
+                                            ),
+                                          ),
+                                          rowContent(
+                                            "Harga Beli",
+                                            formatPriceRp(item.getpriceItemBuy),
+                                          ),
+                                          rowContent(
+                                            "Kadaluarsa",
+                                            item.getexpiredDate?.toString() ??
+                                                "-",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                rowContent(
-                                  "Stock Keluar",
-                                  formatQtyOrPrice(item.getqtyItem_out),
-                                ),
-                                rowContent(
-                                  "Stock Sisa",
-                                  formatQtyOrPrice(
-                                    item.getqtyItem_in - item.getqtyItem_out,
-                                  ),
-                                ),
-                                rowContent(
-                                  "Tanggal",
-                                  formatDate(date: item.getdateBuy),
-                                ),
-                                rowContent(
-                                  "Kadaluarsa",
-                                  item.getexpiredDate?.toString() ?? "-",
-                                ),
-                              ],
+                              ),
                             );
                           },
                         );
@@ -228,55 +282,93 @@ class _UiBatchState extends State<UiBatch> {
   }
 
   Widget layoutBottom() {
-    return BlocSelector<BatchBloc, BatchState, ModelItemBatch?>(
-      selector: (state) {
-        if (state is BatchLoaded) {
-          return state.detailSelectedItem;
-        }
-        return null;
-      },
-      builder: (context, state) {
-        return state == null
-            ? Center(
-                child: Text(
-                  "Pilih item untuk menampilkan Rangkuman!",
-                  style: lv05TextStyle,
-                ),
-              )
-            : Column(
-                children: [
-                  Image.asset("assets/logo.png", height: 100),
-                  rowContent("Nama Item", state.getnameItem),
-                  rowContent(
-                    "Stock Masuk",
-                    formatQtyOrPrice(state.getqtyItem_in),
-                  ),
-                  rowContent(
-                    "Stock Keluar",
-                    formatQtyOrPrice(state.getqtyItem_out),
-                  ),
-                  rowContent(
-                    "Stock Sisa",
-                    formatQtyOrPrice(
-                      state.getqtyItem_in - state.getqtyItem_out,
+    return Padding(
+      padding: EdgeInsets.only(left: 15, right: 15),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 0),
+              color: Colors.black,
+              blurRadius: 3,
+              spreadRadius: 1,
+              blurStyle: BlurStyle.outer,
+            ),
+          ],
+        ),
+        child: BlocSelector<BatchBloc, BatchState, ModelItemBatch?>(
+          selector: (state) {
+            if (state is BatchLoaded) {
+              return state.detailSelectedItem;
+            }
+            return null;
+          },
+          builder: (context, state) {
+            return state == null
+                ? Center(
+                    child: Text(
+                      "Pilih item untuk menampilkan Rangkuman!",
+                      style: lv05TextStyle,
                     ),
-                  ),
-                  rowContent(
-                    "Batch Terbaru",
-                    formatDate(date: state.getdateBuy),
-                  ),
-                  customButtonIcon(
-                    backgroundColor: AppPropertyColor.primary,
-                    icon: Icon(Icons.close_rounded, color: Colors.white),
-                    label: Text("Tutup", style: lv05TextStyleWhite),
-                    onPressed: () {
-                      context.read<BatchBloc>().add(BatchReset());
-                      _initData();
-                    },
-                  ),
-                ],
-              );
-      },
+                  )
+                : ListView(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Image.asset("assets/logo.png", height: 80),
+                          ),
+                          customButton(
+                            backgroundColor: AppPropertyColor.primary,
+                            child: Icon(
+                              Icons.close_rounded,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              context.read<BatchBloc>().add(BatchReset());
+                              _initData();
+                            },
+                          ),
+                        ],
+                      ),
+                      rowContent("Nama Item", state.getnameItem),
+                      rowContent(
+                        "Stock Masuk",
+                        formatQtyOrPrice(state.getqtyItem_in),
+                      ),
+                      rowContent(
+                        "Stock Keluar",
+                        formatQtyOrPrice(state.getqtyItem_out),
+                      ),
+                      rowContent(
+                        "Stock Sisa",
+                        formatQtyOrPrice(
+                          state.getqtyItem_in - state.getqtyItem_out,
+                        ),
+                      ),
+                      rowContent(
+                        "Batch Terbaru",
+                        formatDate(date: state.getdateBuy),
+                      ),
+                      rowContent(
+                        "Harga Jual Terkini",
+                        formatPriceRp(state.getpriceItemFinal),
+                      ),
+                      rowContent(
+                        "Harga Beli Terkini",
+                        formatPriceRp(state.getpriceItemFinal),
+                      ),
+                    ],
+                  );
+          },
+        ),
+      ),
     );
   }
 
@@ -291,7 +383,7 @@ class _UiBatchState extends State<UiBatch> {
       {
         "id": "batch",
         "toContext": '/batch',
-        "text_menu": "Batch",
+        "text_menu": "Stok/Batch",
         "onTap": () {},
       },
     ];
