@@ -80,6 +80,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       "Log transactionBloc: Hive Data: ${hiveTransactionSaved.toString()}",
     );
 
+    final counter = repoCache.dataCounter;
+    final index = counter.indexWhere(
+      (element) => element.getidBranch == idBranch,
+    );
+    counter[index] = counter[index].copyWith(
+      counterSellSaved: hiveTransactionSaved.length,
+    );
+
     List<ModelTransaction> dataTransactionSaved = [];
     hiveTransactionSaved.forEach((element) {
       final rawItems = element.datatransactionSaved['items_ordered'] as List?;

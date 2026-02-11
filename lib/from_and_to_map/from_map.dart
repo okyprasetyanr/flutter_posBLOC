@@ -186,7 +186,7 @@ ModelBatch fromMapBatch(
 
 ModelItemBatch fromMapItembatch(Map<String, dynamic> data, String id) {
   return ModelItemBatch(
-    priceitemBuy: data[FieldDataItemBatch.price_itemBuy.name],
+    priceitemBuy: data[FieldDataItemBatch.price_item_buy.name],
     invoice: data[FieldDataItemBatch.invoice.name],
     nameItem: data[FieldDataItemBatch.name_item.name],
     idBranch: data[FieldDataItemBatch.id_branch.name],

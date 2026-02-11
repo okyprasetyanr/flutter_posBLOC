@@ -129,9 +129,9 @@ enum FieldDataItemBatch {
   qty_item_in,
   qty_item_out,
   price_item,
-  price_itemBuy,
   sub_total,
   price_item_final,
+  price_item_buy,
 }
 
 enum FieldDataItemOrderedBatch {

@@ -194,6 +194,7 @@ Map<String, dynamic> convertToMapItemBatch(
     FieldDataItemBatch.price_item.name: itemBatch.getpriceItem,
     FieldDataItemBatch.sub_total.name: itemBatch.getsubTotal,
     FieldDataItemBatch.price_item_final.name: itemBatch.getpriceItemFinal,
+    FieldDataItemBatch.price_item_buy.name: itemBatch.getpriceItemBuy,
   };
 }
 
