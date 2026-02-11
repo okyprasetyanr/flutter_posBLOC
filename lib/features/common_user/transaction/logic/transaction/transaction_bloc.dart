@@ -80,6 +80,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       "Log transactionBloc: Hive Data: ${hiveTransactionSaved.toString()}",
     );
 
+    final counter = repoCache.dataCounter;
+    final index = counter.indexWhere(
+      (element) => element.getidBranch == idBranch,
+    );
+    counter[index] = counter[index].copyWith(
+      counterSellSaved: hiveTransactionSaved.length,
+    );
+
     List<ModelTransaction> dataTransactionSaved = [];
     hiveTransactionSaved.forEach((element) {
       final rawItems = element.datatransactionSaved['items_ordered'] as List?;
@@ -148,6 +156,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             (element) => dataItemBatch.add(element),
           ),
         );
+    dataItemBatch.sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
 
     final fifoMap = buildFifoBatchMap(dataItemBatch);
 
@@ -262,11 +271,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       if (fifoBatches == null || fifoBatches.isEmpty) continue;
 
-      final oldestBatch = fifoBatches.first;
-
-      listItem[i] = item.copyWith(priceItem: oldestBatch.getpriceItemFinal);
-      debugPrint(
-        "Log TransactionBloc ApplyFifotoItem: price: ${oldestBatch.getpriceItemFinal}, invoice_Batch: ${oldestBatch.getinvoice}",
+      listItem[i] = item.copyWith(
+        priceItem: fifoBatches.first.getpriceItemFinal,
+        priceItemBuy: fifoBatches.last.getpriceItemBuy,
       );
     }
   }
@@ -421,11 +428,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       ModelItemOrdered item;
-
       if (event.edit) {
         item = event.selectedItem;
       } else {
-        debugPrint("Log TransactionBloc: SelectedItem: check flow");
         final resultFifo = await fifoLogic(
           state: currentState,
           item: event.selectedItem,
@@ -438,6 +443,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         );
       }
 
+      debugPrint("Log TransactionBloc: SelectedItem: ${item.getpriceItemBuy}");
       emit(
         currentState.copyWith(selectedItem: item, editSelectedItem: event.edit),
       );
@@ -475,7 +481,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     emit(
       currentState.copyWith(
-        customPrice: resultFifo.price,
+        customPrice: currentState.isSell
+            ? resultFifo.price
+            : resultFifo.priceBuy,
         selectedItem: item.copyWith(
           priceItemBuy: resultFifo.priceBuy,
           qtyItem: resultFifo.qty,
@@ -536,7 +544,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       // add(TransactionResetSelectedItem());
       add(TransactionResetOrderedItem());
       final newStatus = currentState.isSell;
-      emit(currentState.copyWith(isSell: !newStatus));
+      emit(currentState.copyWith(isSell: !newStatus, customPrice: 0));
     }
   }
 

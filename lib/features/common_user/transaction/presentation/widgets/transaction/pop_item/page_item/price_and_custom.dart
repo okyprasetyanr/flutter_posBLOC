@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -8,26 +7,22 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UITransactionPopUpPriceAndCustom extends StatelessWidget {
+  final bool forSell;
+  final String labelPrice;
   final TextEditingController controller;
-  final LabelPricePopUpItem labelPrice;
+  final ValueNotifier<bool> editPrice;
   final Function({required double? value}) onChange;
   const UITransactionPopUpPriceAndCustom({
     super.key,
-    required this.controller,
+    required this.editPrice,
+    required this.forSell,
     required this.labelPrice,
     required this.onChange,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    final editprice = ValueNotifier(false);
-    editprice.addListener(() {
-      if (!editprice.value) {
-        onChange(value: 0);
-        controller.clear();
-      }
-    });
-
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -38,7 +33,7 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(labelPrice.name.replaceAll("_", " "), style: lv05TextStyle),
+          Text(labelPrice, style: lv05TextStyle),
           Column(
             children: [
               SizedBox(
@@ -57,20 +52,20 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                   iconAlignment: IconAlignment.end,
                   icon: Icon(Icons.edit),
                   onPressed: () {
-                    editprice.value = !editprice.value;
+                    editPrice.value = !editPrice.value;
                   },
                   label:
                       BlocSelector<
                         TransactionBloc,
                         TransactionState,
-                        (ModelItemOrdered?, bool)
+                        ModelItemOrdered?
                       >(
                         selector: (state) {
                           if (state is TransactionLoaded &&
                               state.selectedItem != null) {
-                            return (state.selectedItem, state.isSell);
+                            return state.selectedItem;
                           }
-                          return (null, true);
+                          return null;
                         },
                         builder: (context, state) {
                           debugPrint(
@@ -78,11 +73,9 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                           );
                           return Text(
                             formatPriceRp(
-                              state.$2
-                                  ? state.$1?.getpriceItemFinal ?? 0
-                                  : labelPrice == LabelPricePopUpItem.Harga_Jual
-                                  ? state.$1?.getpriceItemFinal ?? 0
-                                  : state.$1?.getpriceItemBuy ?? 0,
+                              forSell
+                                  ? state?.getpriceItemFinal ?? 0
+                                  : state?.getpriceItemBuy ?? 0,
                             ),
                             style: lv05TextStyle,
                           );
@@ -96,7 +89,7 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                 child: Stack(
                   children: [
                     ValueListenableBuilder<bool>(
-                      valueListenable: editprice,
+                      valueListenable: editPrice,
                       builder: (context, valueEditPrie, child) {
                         return AnimatedPositioned(
                           bottom: 0,

@@ -5,8 +5,6 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/main_page/popup_item.dart';
-import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
@@ -30,10 +28,10 @@ class UITransactionGridViewItem extends StatelessWidget {
         }
         return ([], false);
       },
-      builder: (context, items) {
+      builder: (context, state) {
         return GridView.builder(
           padding: const EdgeInsets.all(10),
-          itemCount: items.$1.length,
+          itemCount: state.$1.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             mainAxisExtent: 110,
@@ -42,7 +40,7 @@ class UITransactionGridViewItem extends StatelessWidget {
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
-            final item = items.$1[index];
+            final item = state.$1[index];
             return Material(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
@@ -55,6 +53,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                     onTap: () {
                       final idOrdered = Uuid().v4();
                       ModelItemOrdered selectedItem = ModelItemOrdered(
+                        priceItemBuy: item.getpriceItemBuy,
                         itemOrderedBatch: [],
                         priceItemFinal: item.getpriceItem,
                         subTotal: item.getpriceItem,
@@ -76,7 +75,7 @@ class UITransactionGridViewItem extends StatelessWidget {
 
                       if (UserSession.getStatusFifo() &&
                           item.getqtyItem == 0 &&
-                          items.$2) {
+                          state.$2) {
                         return customSnackBar(
                           context,
                           "Mode FIFO: Qty 0 tidak dapat dipilih!",
@@ -103,18 +102,6 @@ class UITransactionGridViewItem extends StatelessWidget {
                           "FIFO: Stok sudah mencapai batas",
                         );
                       }
-
-                      customBottomSheet(
-                        context: context,
-                        resetItemForm: () {
-                          context.read<TransactionBloc>().add(
-                            TransactionResetSelectedItem(),
-                          );
-                        },
-                        content: (scrollController) {
-                          return UITransactionPopUpItem();
-                        },
-                      );
                     },
                     child: Padding(
                       padding: const EdgeInsetsGeometry.all(3),
@@ -132,7 +119,11 @@ class UITransactionGridViewItem extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              formatPriceRp(item.getpriceItem),
+                              formatPriceRp(
+                                state.$2
+                                    ? item.getpriceItem
+                                    : item.getpriceItemBuy,
+                              ),
                               style: lv05textStylePrice,
                               textAlign: TextAlign.left,
                             ),

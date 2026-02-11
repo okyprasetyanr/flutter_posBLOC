@@ -28,7 +28,7 @@ class ModelItemOrdered extends Equatable {
     required String idOrdered,
     required double qtyItem,
     required double priceItem,
-    double priceItemBuy = 0,
+    required double priceItemBuy,
     required int discountItem,
     required String idCategoryItem,
     required String note,

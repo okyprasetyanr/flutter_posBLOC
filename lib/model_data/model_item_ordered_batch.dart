@@ -7,8 +7,10 @@ class ModelItemOrderedBatch extends Equatable {
   final double _qty_item;
   final double _price_item;
   final double _price_itemBuy;
+  final bool _isNegative;
 
   ModelItemOrderedBatch({
+    bool isNegative = false,
     required String id_ordered,
     required String id_item,
     required String invoice,
@@ -20,7 +22,8 @@ class ModelItemOrderedBatch extends Equatable {
        _invoice = invoice,
        _qty_item = qty_item,
        _price_item = price_item,
-       _price_itemBuy = price_itemBuy;
+       _price_itemBuy = price_itemBuy,
+       _isNegative = isNegative;
 
   String get getid_Ordered => _id_ordered;
   String get getid_Item => _id_item;
@@ -28,6 +31,7 @@ class ModelItemOrderedBatch extends Equatable {
   double get getqty_item => _qty_item;
   double get getprice_item => _price_item;
   double get getprice_itemBuy => _price_itemBuy;
+  bool get getisNegative => _isNegative;
 
   ModelItemOrderedBatch copyWith({
     String? id_ordered,
@@ -36,8 +40,10 @@ class ModelItemOrderedBatch extends Equatable {
     double? qty_item,
     double? price_item,
     double? price_itemBuy,
+    bool? isNegative,
   }) {
     return ModelItemOrderedBatch(
+      isNegative: isNegative ?? this._isNegative,
       id_ordered: id_ordered ?? this._id_ordered,
       id_item: id_item ?? this._id_item,
       invoice: invoice ?? this._invoice,
@@ -55,5 +61,6 @@ class ModelItemOrderedBatch extends Equatable {
     _qty_item,
     _price_item,
     _price_itemBuy,
+    _isNegative,
   ];
 }

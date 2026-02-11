@@ -105,6 +105,7 @@ Map<String, dynamic> convertToMapItemOrdered(
     FieldDataItemOrdered.qty_item.name: _itemsOrdered.getqtyItem,
     FieldDataItemOrdered.price_item.name: _itemsOrdered.getpriceItem,
     FieldDataItemOrdered.price_item_final.name: _itemsOrdered.getpriceItemFinal,
+    FieldDataItemOrdered.price_item_buy.name: _itemsOrdered.getpriceItemBuy,
     FieldDataItemOrdered.discount_item.name: _itemsOrdered.getdiscountItem,
     FieldDataItemOrdered.id_category_item.name: _itemsOrdered.getidCategoryItem,
     FieldDataItemOrdered.note.name: _itemsOrdered.getNote,
@@ -123,6 +124,8 @@ Map<String, dynamic> convertToMapItemOrderedBatch(
     FieldDataItemOrderedBatch.invoice.name: _itemsOrderedBatch.getinvoice,
     FieldDataItemOrderedBatch.price_item.name: _itemsOrderedBatch.getprice_item,
     FieldDataItemOrderedBatch.qty_item.name: _itemsOrderedBatch.getqty_item,
+    FieldDataItemOrderedBatch.price_itemBuy.name:
+        _itemsOrderedBatch.getprice_itemBuy,
   };
 }
 
@@ -191,6 +194,7 @@ Map<String, dynamic> convertToMapItemBatch(
     FieldDataItemBatch.price_item.name: itemBatch.getpriceItem,
     FieldDataItemBatch.sub_total.name: itemBatch.getsubTotal,
     FieldDataItemBatch.price_item_final.name: itemBatch.getpriceItemFinal,
+    FieldDataItemBatch.price_item_buy.name: itemBatch.getpriceItemBuy,
   };
 }
 

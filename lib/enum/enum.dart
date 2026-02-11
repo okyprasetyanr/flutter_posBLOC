@@ -27,6 +27,7 @@ enum FieldDataItem {
   uid_owner,
   name_item,
   price_item,
+  price_item_buy,
   id_category,
   status_condiment,
   url_image,
@@ -109,6 +110,7 @@ enum FieldDataItemOrdered {
   discount_item,
   price_item,
   price_item_final,
+  price_item_buy,
   sub_total,
   id_category_item,
   note,
@@ -127,9 +129,9 @@ enum FieldDataItemBatch {
   qty_item_in,
   qty_item_out,
   price_item,
-  price_itemBuy,
   sub_total,
   price_item_final,
+  price_item_buy,
 }
 
 enum FieldDataItemOrderedBatch {

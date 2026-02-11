@@ -50,6 +50,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       context.read<InventoryBloc>().add(
                         InventorySelectedItem(
                           selectedItem: ModelItem(
+                            priceItemBuy: item.getpriceItemBuy,
                             qtyItem: item.getqtyItem,
                             nameItem: item.getnameItem,
                             idItem: item.getidItem,
@@ -81,13 +82,20 @@ class UIInventoryGridViewItem extends StatelessWidget {
 
                               final data = snapshot.data!.data();
 
-                              return data!['imageUrl'] != null
-                                  ? Image.network(
-                                      data['imageUrl'],
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    )
+                              return data != null
+                                  ? data['imageUrl'] != null
+                                        ? Image.network(
+                                            data['imageUrl'],
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            "assets/logo.png",
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
                                   : Image.asset(
                                       "assets/logo.png",
                                       width: 50,

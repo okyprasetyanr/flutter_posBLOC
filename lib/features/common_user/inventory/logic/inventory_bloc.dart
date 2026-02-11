@@ -218,6 +218,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     // }
 
     final item = ModelItem(
+      priceItemBuy: 0,
       qtyItem: 0,
       nameItem: event.name,
       idItem: idUser,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -12,12 +11,17 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 
 class TransactionPopUpPageItem extends StatelessWidget {
-  final TextEditingController controller;
-  final TextEditingController secondController;
+  final TextEditingController sellPrice;
+  final TextEditingController buyPrice;
+  final ValueNotifier<bool> editSell;
+  final ValueNotifier<bool> editBuy;
+
   const TransactionPopUpPageItem({
     super.key,
-    required this.controller,
-    required this.secondController,
+    required this.sellPrice,
+    required this.buyPrice,
+    required this.editSell,
+    required this.editBuy,
   });
 
   @override
@@ -42,11 +46,18 @@ class TransactionPopUpPageItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: UITransactionPopUpPriceAndCustom(
-                    onChange: ({required value}) => context
-                        .read<TransactionBloc>()
-                        .add(TransactionAdjustItem(customPrice: value)),
-                    controller: state ? controller : secondController,
-                    labelPrice: LabelPricePopUpItem.Harga_Jual,
+                    forSell: true,
+                    labelPrice: "Harga Jual:",
+                    controller: sellPrice,
+                    editPrice: editSell,
+                    onChange: ({required value}) {
+                      context.read<TransactionBloc>().add(
+                        TransactionAdjustItem(
+                          customPrice: state ? value : null,
+                          secondCustomPrice: state ? null : value ?? 0,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 5),
@@ -58,16 +69,15 @@ class TransactionPopUpPageItem extends StatelessWidget {
                           child: Column(
                             children: [
                               UITransactionPopUpPriceAndCustom(
-                                onChange: ({required value}) =>
-                                    context.read<TransactionBloc>().add(
-                                      TransactionAdjustItem(
-                                        secondCustomPrice: value,
-                                      ),
-                                    ),
-                                controller: state
-                                    ? secondController
-                                    : controller,
-                                labelPrice: LabelPricePopUpItem.Harga_Beli,
+                                forSell: false,
+                                labelPrice: "Harga Beli:",
+                                controller: buyPrice,
+                                editPrice: editBuy,
+                                onChange: ({required value}) {
+                                  context.read<TransactionBloc>().add(
+                                    TransactionAdjustItem(customPrice: value),
+                                  );
+                                },
                               ),
 
                               SizedBox(height: 10),

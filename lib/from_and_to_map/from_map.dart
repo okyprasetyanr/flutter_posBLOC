@@ -59,6 +59,7 @@ ModelCategory fromMapCategory(Map<String, dynamic> data, String id) {
 ModelItem fromMapItem(Map<String, dynamic> data, String id) {
   debugPrint("Log fromMap: Item: $data");
   return ModelItem(
+    priceItemBuy: 0,
     nameItem: data[FieldDataItem.name_item.name],
     idItem: id,
     priceItem: data[FieldDataItem.price_item.name].toDouble(),
@@ -164,7 +165,6 @@ ModelCounter fromMapCounter(
   return ModelCounter(
     idBranch: id,
     counterSell: data?[FieldDataCounter.counter_sell.name] ?? 0,
-    counterSellSaved: data?[FieldDataCounter.counter_sell_saved.name] ?? 0,
     counterBuy: data?[FieldDataCounter.counter_buy.name] ?? 0,
     counterIncome: data?[FieldDataCounter.counter_income.name] ?? 0,
     counterExpense: data?[FieldDataCounter.counter_expense.name] ?? 0,
@@ -186,7 +186,7 @@ ModelBatch fromMapBatch(
 
 ModelItemBatch fromMapItembatch(Map<String, dynamic> data, String id) {
   return ModelItemBatch(
-    priceitemBuy: data[FieldDataItemBatch.price_item.name],
+    priceitemBuy: data[FieldDataItemBatch.price_item_buy.name],
     invoice: data[FieldDataItemBatch.invoice.name],
     nameItem: data[FieldDataItemBatch.name_item.name],
     idBranch: data[FieldDataItemBatch.id_branch.name],
@@ -230,6 +230,9 @@ ModelItemOrdered fromMapItemOrdered({
 }) {
   return ModelItemOrdered(
     itemOrderedBatch: itemBatch,
+    priceItemBuy: double.tryParse(
+      items[FieldDataItemOrdered.price_item_buy.name].toString(),
+    )!,
     priceItemFinal: double.tryParse(
       items[FieldDataItemOrdered.price_item_final.name].toString(),
     )!,

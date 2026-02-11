@@ -11,7 +11,7 @@ class ModelItem extends Equatable {
       _idBranch,
       _barcode;
   final DateTime _date;
-  final double _priceItem, _qtyItem;
+  final double _priceItem, _qtyItem, _priceItemBuy;
   final StatusData _statusCondiment, _statusItem;
 
   ModelItem({
@@ -19,6 +19,7 @@ class ModelItem extends Equatable {
     required String nameItem,
     required String idItem,
     required double priceItem,
+    required double priceItemBuy,
     required String idCategoryItem,
     required StatusData statusCondiment,
     required String urlImage,
@@ -29,6 +30,7 @@ class ModelItem extends Equatable {
   }) : _nameItem = nameItem,
        _idItem = idItem,
        _priceItem = priceItem,
+       _priceItemBuy = priceItemBuy,
        _idCategoryItem = idCategoryItem,
        _statusCondiment = statusCondiment,
        _urlImage = urlImage,
@@ -38,6 +40,7 @@ class ModelItem extends Equatable {
        _statusItem = statusItem,
        _date = date;
 
+  double get getpriceItemBuy => _priceItemBuy;
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
   double get getpriceItem => _priceItem;
@@ -55,6 +58,7 @@ class ModelItem extends Equatable {
     String? nameItem,
     String? idItem,
     double? priceItem,
+    double? priceItemBuy,
     String? idCategoryItem,
     StatusData? statusCondiment,
     String? urlImage,
@@ -64,17 +68,18 @@ class ModelItem extends Equatable {
     DateTime? date,
   }) {
     return ModelItem(
-      qtyItem: qtyItem ?? this._qtyItem,
-      nameItem: nameItem ?? this._nameItem,
-      idItem: idItem ?? this._idItem,
-      priceItem: priceItem ?? this._priceItem,
-      idCategoryItem: idCategoryItem ?? this._idCategoryItem,
-      statusCondiment: statusCondiment ?? this._statusCondiment,
-      urlImage: urlImage ?? this._urlImage,
-      idBranch: idBranch ?? this._idBranch,
-      barcode: barcode ?? this._barcode,
-      statusItem: statusItem ?? this._statusItem,
-      date: date ?? this._date,
+      priceItemBuy: priceItemBuy ?? _priceItemBuy,
+      qtyItem: qtyItem ?? _qtyItem,
+      nameItem: nameItem ?? _nameItem,
+      idItem: idItem ?? _idItem,
+      priceItem: priceItem ?? _priceItem,
+      idCategoryItem: idCategoryItem ?? _idCategoryItem,
+      statusCondiment: statusCondiment ?? _statusCondiment,
+      urlImage: urlImage ?? _urlImage,
+      idBranch: idBranch ?? _idBranch,
+      barcode: barcode ?? _barcode,
+      statusItem: statusItem ?? _statusItem,
+      date: date ?? _date,
     );
   }
 
@@ -85,6 +90,7 @@ class ModelItem extends Equatable {
         .set(
           convertToMapItem(
             ModelItem(
+              priceItemBuy: _priceItemBuy,
               qtyItem: _qtyItem,
               nameItem: _nameItem,
               idItem: _idItem,

@@ -14,7 +14,6 @@ class TransactionInitial extends TransactionState {}
 class TransactionLoading extends TransactionState {}
 
 class TransactionLoaded extends TransactionState with EquatableMixin {
-  final double customPrice;
   final bool revision;
   final List<ModelTransaction> dataTransactionSaved;
   final ModelTransaction? selectedTransaction;
@@ -33,7 +32,6 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   final List<ModelItemBatch>? dataItemBatch;
 
   TransactionLoaded({
-    this.customPrice = 0,
     this.dataItemBatch = const [],
     this.revision = false,
     this.dataTransactionSaved = const [],
@@ -72,7 +70,6 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
     bool? editSelectedItem,
   }) {
     return TransactionLoaded(
-      customPrice: customPrice ?? this.customPrice,
       dataItemBatch: dataItemBatch ?? this.dataItemBatch,
       revision: revision ?? this.revision,
       selectedTransaction: selectedTransaction ?? this.selectedTransaction,
@@ -94,7 +91,6 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    customPrice,
     dataItemBatch,
     revision,
     selectedTransaction,

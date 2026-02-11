@@ -390,9 +390,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       );
 
       dataCounter[counterIndex] = dataCounter[counterIndex].copyWith(
-        counterSellSaved: saved
-            ? dataCounter[counterIndex].getcounterSellSaved + 1
-            : null,
         counterSell: saved
             ? null
             : currentState.isSell

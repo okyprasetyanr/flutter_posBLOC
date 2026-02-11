@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/main_page/popup_item.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/transaction/t
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/list_view_category.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/saved_cart.dart';
+import 'package:flutter_pos/function/bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -226,6 +228,26 @@ class _UITransactionState extends State<UITransaction> {
               ],
             ),
             Expanded(child: UITransactionGridViewItem()),
+            BlocListener<TransactionBloc, TransactionState>(
+              listenWhen: (prev, curr) =>
+                  prev is TransactionLoaded &&
+                  curr is TransactionLoaded &&
+                  curr.selectedItem != null &&
+                  curr.selectedItem!.getidOrdered !=
+                      prev.selectedItem?.getidOrdered,
+              listener: (context, state) {
+                customBottomSheet(
+                  context: context,
+                  resetItemForm: () {
+                    context.read<TransactionBloc>().add(
+                      TransactionResetSelectedItem(),
+                    );
+                  },
+                  content: (_) => UITransactionPopUpItem(),
+                );
+              },
+              child: const SizedBox.shrink(),
+            ),
           ],
         ),
       ],
