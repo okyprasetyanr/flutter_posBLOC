@@ -30,7 +30,7 @@ class UIMainMenu extends StatefulWidget {
 
 class _UIMainMenuState extends State<UIMainMenu> {
   final currentPage = PageController();
-  final selectedMenu = ValueNotifier<String>("Main");
+  final selectedMenu = ValueNotifier<String>("Dashboard");
   Map<Permission, bool> getPermission = {};
 
   @override
@@ -158,10 +158,10 @@ class _UIMainMenuState extends State<UIMainMenu> {
               listTileText(
                 () {
                   _pageView(0);
-                  selectedMenu.value = "Main";
+                  selectedMenu.value = "Dashboard";
                 },
                 Icons.dashboard_customize_sharp,
-                "Main",
+                "Dashboard",
                 selectedMenu,
               ),
               listTileText(
