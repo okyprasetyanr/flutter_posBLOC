@@ -23,11 +23,12 @@ enum FieldDataUser {
 }
 
 enum FieldDataItem {
+  price_item_by_batch,
   id_item,
   uid_owner,
   name_item,
   price_item,
-  price_item_buy,
+  price_item_buy_by_batch,
   id_category,
   status_condiment,
   url_image,

@@ -59,7 +59,8 @@ ModelCategory fromMapCategory(Map<String, dynamic> data, String id) {
 ModelItem fromMapItem(Map<String, dynamic> data, String id) {
   debugPrint("Log fromMap: Item: $data");
   return ModelItem(
-    priceItemBuy: 0,
+    priceItemByBatch: 0,
+    priceItemBuyByBatch: 0,
     nameItem: data[FieldDataItem.name_item.name],
     idItem: id,
     priceItem: data[FieldDataItem.price_item.name].toDouble(),

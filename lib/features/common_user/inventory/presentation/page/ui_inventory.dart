@@ -362,7 +362,7 @@ class _UIInventoryState extends State<UIInventory> {
                           codeBarcodeController: codeBarcodeController,
                           priceItemController: priceItemController,
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 10),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [

@@ -363,7 +363,7 @@ class _UiBatchState extends State<UiBatch> {
                       ),
                       rowContent(
                         "Harga Beli Terkini",
-                        formatPriceRp(state.getpriceItemFinal),
+                        formatPriceRp(state.getpriceItemBuy),
                       ),
                     ],
                   );

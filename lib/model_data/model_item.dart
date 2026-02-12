@@ -11,7 +11,7 @@ class ModelItem extends Equatable {
       _idBranch,
       _barcode;
   final DateTime _date;
-  final double _priceItem, _qtyItem, _priceItemBuy;
+  final double _priceItem, _qtyItem, _priceItemBuybyBatch, _priceItemByBatch;
   final StatusData _statusCondiment, _statusItem;
 
   ModelItem({
@@ -19,7 +19,8 @@ class ModelItem extends Equatable {
     required String nameItem,
     required String idItem,
     required double priceItem,
-    required double priceItemBuy,
+    required double priceItemByBatch,
+    required double priceItemBuyByBatch,
     required String idCategoryItem,
     required StatusData statusCondiment,
     required String urlImage,
@@ -30,7 +31,8 @@ class ModelItem extends Equatable {
   }) : _nameItem = nameItem,
        _idItem = idItem,
        _priceItem = priceItem,
-       _priceItemBuy = priceItemBuy,
+       _priceItemBuybyBatch = priceItemBuyByBatch,
+       _priceItemByBatch = priceItemByBatch,
        _idCategoryItem = idCategoryItem,
        _statusCondiment = statusCondiment,
        _urlImage = urlImage,
@@ -40,7 +42,8 @@ class ModelItem extends Equatable {
        _statusItem = statusItem,
        _date = date;
 
-  double get getpriceItemBuy => _priceItemBuy;
+  double get getpriceItemBuyByBatch => _priceItemBuybyBatch;
+  double get getpriceItemByBatch => _priceItemByBatch;
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
   double get getpriceItem => _priceItem;
@@ -58,7 +61,8 @@ class ModelItem extends Equatable {
     String? nameItem,
     String? idItem,
     double? priceItem,
-    double? priceItemBuy,
+    double? priceItemBuyByBatch,
+    double? priceItemByBatch,
     String? idCategoryItem,
     StatusData? statusCondiment,
     String? urlImage,
@@ -68,7 +72,8 @@ class ModelItem extends Equatable {
     DateTime? date,
   }) {
     return ModelItem(
-      priceItemBuy: priceItemBuy ?? _priceItemBuy,
+      priceItemByBatch: priceItemByBatch ?? _priceItemByBatch,
+      priceItemBuyByBatch: priceItemBuyByBatch ?? _priceItemBuybyBatch,
       qtyItem: qtyItem ?? _qtyItem,
       nameItem: nameItem ?? _nameItem,
       idItem: idItem ?? _idItem,
@@ -90,7 +95,8 @@ class ModelItem extends Equatable {
         .set(
           convertToMapItem(
             ModelItem(
-              priceItemBuy: _priceItemBuy,
+              priceItemByBatch: _priceItemByBatch,
+              priceItemBuyByBatch: _priceItemBuybyBatch,
               qtyItem: _qtyItem,
               nameItem: _nameItem,
               idItem: _idItem,

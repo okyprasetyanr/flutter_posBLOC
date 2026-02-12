@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_fifo_logic.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
@@ -418,5 +419,57 @@ void revertFIFOStock({
         );
       }
     }
+  }
+}
+
+Map<String, List<ModelItemBatch>> buildFifoBatchMap({
+  required List<ModelItemBatch> dataItemBatch,
+}) {
+  final Map<String, List<ModelItemBatch>> fifoMap = {};
+  final Map<String, List<ModelItemBatch>> allBatchMap = {};
+
+  dataItemBatch.sort((a, b) => b.getdateBuy.compareTo(a.getdateBuy));
+
+  for (final batch in dataItemBatch) {
+    allBatchMap.putIfAbsent(batch.getidItem, () => []);
+    allBatchMap[batch.getidItem]!.add(batch);
+
+    final availableQty = batch.getqtyItem_in - batch.getqtyItem_out;
+    if (availableQty <= 0) continue;
+
+    fifoMap.putIfAbsent(batch.getidItem, () => []);
+    fifoMap[batch.getidItem]!.add(batch);
+  }
+
+  fifoMap.forEach((_, batches) {
+    batches.sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
+  });
+
+  allBatchMap.forEach((idItem, batches) {
+    if (!fifoMap.containsKey(idItem)) {
+      final lastBatch = batches.last;
+      fifoMap[idItem] = [lastBatch];
+    }
+  });
+
+  return fifoMap;
+}
+
+void applyFifoPriceToItem({
+  required List<ModelItem> listItem,
+  required Map<String, List<ModelItemBatch>> fifoMap,
+}) {
+  for (int i = 0; i < listItem.length; i++) {
+    final item = listItem[i];
+    final fifoBatches = fifoMap[item.getidItem];
+    if (fifoBatches == null || fifoBatches.isEmpty) continue;
+    debugPrint(
+      "Log FifoLogic: applyFifoPriceToItem: ${fifoBatches.last.getpriceItemFinal}",
+    );
+
+    listItem[i] = item.copyWith(
+      priceItemByBatch: fifoBatches.last.getpriceItemFinal,
+      priceItemBuyByBatch: fifoBatches.first.getpriceItemBuy,
+    );
   }
 }

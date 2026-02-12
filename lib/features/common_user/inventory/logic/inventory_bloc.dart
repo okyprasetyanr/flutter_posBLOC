@@ -5,11 +5,13 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/service_image.dart.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 import 'package:uuid/uuid.dart';
 
@@ -107,7 +109,9 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         list.sort((a, b) => a.getqtyItem.compareTo(b.getqtyItem));
         break;
     }
-
+    debugPrint(
+      "Log InventoryBloc: filterItem: ${list.isNotEmpty ? list.first.getpriceItemByBatch : "No Data"}",
+    );
     return list;
   }
 
@@ -170,8 +174,21 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     ];
     dataCategory.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
 
+    List<ModelItemBatch> dataItemBatch = [];
+    repoCache
+        .getBatch(idBranch)
+        .forEach(
+          (element) => element.getitems_batch.forEach(
+            (element) => dataItemBatch.add(element),
+          ),
+        );
+
+    final fifoMap = buildFifoBatchMap(dataItemBatch: dataItemBatch);
+
+    applyFifoPriceToItem(listItem: dataItem, fifoMap: fifoMap);
+
     debugPrint(
-      "Log InventoryBloc: filter: filter=$filter ,status=$status ,filter=$filterType ,filter=$filterByCategory",
+      "Log InventoryBloc: priceItemByBatch: ${dataItem.first.getpriceItemByBatch}",
     );
 
     emit(
@@ -218,7 +235,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     // }
 
     final item = ModelItem(
-      priceItemBuy: 0,
+      priceItemByBatch: 0,
+      priceItemBuyByBatch: 0,
       qtyItem: 0,
       nameItem: event.name,
       idItem: idUser,

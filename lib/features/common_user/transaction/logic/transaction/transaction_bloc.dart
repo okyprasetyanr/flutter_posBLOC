@@ -57,11 +57,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     String idBranch =
         event.idBranch ?? currentState.idBranch ?? listBranch.first.getidBranch;
-    final listItem = repoCache
+    final dataItem = repoCache
         .getItem(idBranch)
         .where((element) => element.getStatusItem == StatusData.Aktif)
         .toList();
-    listItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
 
     List<ModelCategory> listCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
@@ -156,14 +155,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             (element) => dataItemBatch.add(element),
           ),
         );
-    dataItemBatch.sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
 
-    final fifoMap = buildFifoBatchMap(dataItemBatch);
+    final fifoMap = buildFifoBatchMap(dataItemBatch: dataItemBatch);
 
-    applyFifoPriceToItem(listItem: listItem, fifoMap: fifoMap);
+    applyFifoPriceToItem(listItem: dataItem, fifoMap: fifoMap);
 
+    dataItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
     final isSell = !UserSession.getStatusFifo() ? true : currentState.isSell;
-    debugPrint("Log TransactionBloc: GetData: isSell: ${isSell}");
+    debugPrint(
+      "Log TransactionBloc: GetData: isSell: ${isSell}, dataItem: ${dataItem.first.getpriceItemBuyByBatch}",
+    );
     emit(
       currentState.copyWith(
         isSell: isSell,
@@ -172,17 +173,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         dataTransactionSaved: dataTransactionSaved,
         dataPartner: partner,
         filteredItem: currentState.isSell
-            ? listItem
+            ? dataItem
                   .where(
                     (element) =>
                         element.getstatusCondiment == StatusData.Nonaktif,
                   )
                   .toList()
-            : listItem,
+            : dataItem,
         selectedIDBranch: idBranch,
         selectedCategory: selectedIdCategory,
         dataBranch: listBranch,
-        dataItem: listItem,
+        dataItem: dataItem,
         dataCategory: listCategory,
       ),
     );
@@ -238,43 +239,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         list;
       }
       return list;
-    }
-  }
-
-  Map<String, List<ModelItemBatch>> buildFifoBatchMap(
-    List<ModelItemBatch> dataItemBatch,
-  ) {
-    final Map<String, List<ModelItemBatch>> fifoMap = {};
-
-    for (final batch in dataItemBatch) {
-      final availableQty = batch.getqtyItem_in - batch.getqtyItem_out;
-      if (availableQty <= 0) continue;
-
-      fifoMap.putIfAbsent(batch.getidItem, () => []);
-      fifoMap[batch.getidItem]!.add(batch);
-    }
-
-    fifoMap.forEach((_, batches) {
-      batches.sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
-    });
-
-    return fifoMap;
-  }
-
-  void applyFifoPriceToItem({
-    required List<ModelItem> listItem,
-    required Map<String, List<ModelItemBatch>> fifoMap,
-  }) {
-    for (int i = 0; i < listItem.length; i++) {
-      final item = listItem[i];
-      final fifoBatches = fifoMap[item.getidItem];
-
-      if (fifoBatches == null || fifoBatches.isEmpty) continue;
-
-      listItem[i] = item.copyWith(
-        priceItem: fifoBatches.first.getpriceItemFinal,
-        priceItemBuy: fifoBatches.last.getpriceItemBuy,
-      );
     }
   }
 
@@ -466,7 +430,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
 
     final resultFifo = fifoLogic(
-      // secondCustomPrice: event.secondCustomPrice,
+      secondCustomPrice: event.secondCustomPrice,
       state: currentState,
       item: item,
       customPrice: event.customPrice,
