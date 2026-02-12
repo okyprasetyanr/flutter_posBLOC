@@ -297,3 +297,15 @@ enum Permission {
 enum ResetPasswordStatus { idle, loading, success, failure }
 
 enum LabelPricePopUpItem { Harga_Jual, Harga_Beli }
+
+enum LabelPaymentMethod { Cash, Debit, QRIS, Split }
+
+extension LabelPaymentMethodX on LabelPaymentMethod {
+  static LabelPaymentMethod? fromString(String value) {
+    try {
+      return LabelPaymentMethod.values.firstWhere((e) => e.name == value);
+    } catch (_) {
+      return null;
+    }
+  }
+}

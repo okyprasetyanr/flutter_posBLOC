@@ -3,13 +3,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
-import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
 class UIPaymentCashPayment extends StatelessWidget {
   final bool split;
@@ -57,139 +58,131 @@ class UIPaymentCashPayment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text('Uang diterima:', style: lv05TextStyle),
-        ),
-        BlocSelector<
-          PaymentBloc,
-          PaymentState,
-          (double?, double?, List<ModelSplit>?)
-        >(
-          selector: (state) {
-            if (state is PaymentLoaded) {
-              return (
-                state.transaction_sell?.gettotal,
-                state.transaction_sell?.getbillPaid,
-                state.transaction_sell?.getdataSplit,
-              );
-            }
-            return (null, null, null);
-          },
-          builder: (context, state) {
-            List<double> quickPayOptions = _generateQuickPayOptions(
-              state.$1 ?? 0,
-            );
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!split) {
-                if (payController.text != formatQtyOrPrice(state.$2 ?? 0)) {
-                  payController.text = formatQtyOrPrice(state.$2 ?? 0);
-                  selectedAmount.value = state.$2 ?? 0;
-                }
-              } else {
-                payController.text = formatQtyOrPrice(
-                  state.$3
-                          ?.firstWhereOrNull(
-                            (element) => element.getpaymentName == "Cash",
-                          )
-                          ?.getpaymentTotal ??
-                      0,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          if (!split) Text('Uang diterima:', style: lv05TextStyle),
+
+          BlocSelector<
+            PaymentBloc,
+            PaymentState,
+            (double?, double?, List<ModelSplit>?)
+          >(
+            selector: (state) {
+              if (state is PaymentLoaded) {
+                return (
+                  state.transaction_sell?.gettotal,
+                  state.transaction_sell?.getbillPaid,
+                  state.transaction_sell?.getdataSplit,
                 );
               }
-            });
-            return !split
-                ? Wrap(
-                    spacing: 5,
-                    children: quickPayOptions.map((amount) {
-                      return ValueListenableBuilder(
-                        valueListenable: selectedAmount,
-                        builder: (context, value, child) {
-                          return ElevatedButton(
-                            onPressed: () {
-                              selectedAmount.value =
-                                  selectedAmount.value == amount ? 0 : amount;
-                              context.read<PaymentBloc>().add(
-                                PaymentAdjust(billPaid: selectedAmount.value),
+              return (null, null, null);
+            },
+            builder: (context, state) {
+              List<double> quickPayOptions = _generateQuickPayOptions(
+                state.$1 ?? 0,
+              );
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!split) {
+                  if (payController.text != formatQtyOrPrice(state.$2 ?? 0)) {
+                    payController.text = formatQtyOrPrice(state.$2 ?? 0);
+                    selectedAmount.value = state.$2 ?? 0;
+                  }
+                } else {
+                  payController.text = formatQtyOrPrice(
+                    state.$3
+                            ?.firstWhereOrNull(
+                              (element) =>
+                                  element.getpaymentName ==
+                                  LabelPaymentMethod.Cash,
+                            )
+                            ?.getpaymentTotal ??
+                        0,
+                  );
+                }
+              });
+              return !split
+                  ? Center(
+                      child: Wrap(
+                        spacing: 5,
+                        children: quickPayOptions.map((amount) {
+                          return ValueListenableBuilder(
+                            valueListenable: selectedAmount,
+                            builder: (context, value, child) {
+                              return ElevatedButton(
+                                onPressed: () {
+                                  selectedAmount.value =
+                                      selectedAmount.value == amount
+                                      ? 0
+                                      : amount;
+                                  context.read<PaymentBloc>().add(
+                                    PaymentAdjust(
+                                      billPaid: selectedAmount.value,
+                                    ),
+                                  );
+                                },
+                                style: ButtonStyle(
+                                  elevation: WidgetStatePropertyAll(4),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    value == amount
+                                        ? AppPropertyColor.primary
+                                        : Colors.white,
+                                  ),
+                                  minimumSize: WidgetStatePropertyAll(
+                                    Size(0, 0),
+                                  ),
+                                  padding: WidgetStatePropertyAll(
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  formatPriceRp(amount),
+                                  style: value == amount
+                                      ? lv05TextStyleWhite
+                                      : lv05TextStyle,
+                                ),
                               );
                             },
-                            style: ButtonStyle(
-                              elevation: WidgetStatePropertyAll(4),
-                              backgroundColor: WidgetStatePropertyAll(
-                                value == amount
-                                    ? AppPropertyColor.primary
-                                    : Colors.white,
-                              ),
-                              minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                              padding: WidgetStatePropertyAll(
-                                const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 8,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              formatPriceRp(amount),
-                              style: value == amount
-                                  ? lv05TextStyleWhite
-                                  : lv05TextStyle,
-                            ),
                           );
-                        },
-                      );
-                    }).toList(),
-                  )
-                : SizedBox.shrink();
-          },
-        ),
-        Row(
-          children: [
-            Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
-            const SizedBox(width: 5),
-            Expanded(
-              child: TextField(
-                textAlign: TextAlign.right,
-                style: lv05TextStyle,
-                keyboardType: TextInputType.number,
-                controller: payController,
-                decoration: InputDecoration(
+                        }).toList(),
+                      ),
+                    )
+                  : SizedBox.shrink();
+            },
+          ),
+          Row(
+            children: [
+              Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
+              const SizedBox(width: 5),
+              Expanded(
+                child: customTextField(
+                  alignEnd: true,
+                  context: context,
+                  controller: payController,
+                  inputType: TextInputType.number,
                   suffixText: ",00",
-                  isDense: true,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 5,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  label: Text("Nominal Bayar", style: lv05TextStyle),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  TextInputFormatter.withFunction((oldValue, newValue) {
-                    if (newValue.text.length > 8) {
-                      customSnackBar(context, "Jumlah melebihi batas");
-                      return oldValue;
-                    }
-                    final value = double.tryParse(newValue.text) ?? 0;
-
+                  text: "Nominal Bayar",
+                  onChanged: (value) {
+                    final finalValue = double.tryParse(value) ?? 0;
                     split
                         ? context.read<PaymentBloc>().add(
-                            PaymentAdjust(billPaidSplitCash: value),
+                            PaymentAdjust(billPaidSplitCash: finalValue),
                           )
                         : context.read<PaymentBloc>().add(
-                            PaymentAdjust(billPaid: value),
+                            PaymentAdjust(billPaid: finalValue),
                           );
-                    return newValue;
-                  }),
-                ],
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

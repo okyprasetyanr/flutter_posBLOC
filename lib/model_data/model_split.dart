@@ -1,27 +1,28 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_pos/enum/enum.dart';
 
 class ModelSplit extends Equatable {
   final String? paymentInvoice;
-  final String _paymentName;
+  final LabelPaymentMethod _paymentName;
   final String? paymentDebitName;
   final double _paymentTotal;
 
   ModelSplit({
     this.paymentInvoice,
     this.paymentDebitName,
-    required String paymentName,
+    required LabelPaymentMethod paymentName,
     required double paymentTotal,
   }) : _paymentName = paymentName,
        _paymentTotal = paymentTotal;
 
   String? get getpaymentInvoice => paymentInvoice;
-  String get getpaymentName => _paymentName;
+  LabelPaymentMethod get getpaymentName => _paymentName;
   String? get getpaymentDebitName => paymentDebitName;
   double get getpaymentTotal => _paymentTotal;
 
   ModelSplit copyWith({
     String? paymentInvoice,
-    String? paymentName,
+    LabelPaymentMethod? paymentName,
     String? paymentDebitName,
     double? paymentTotal,
   }) {

@@ -106,7 +106,9 @@ ModelSplit fromMapSplit(Map<String, dynamic> split, {required String invoice}) {
   return ModelSplit(
     paymentDebitName: split[FieldDataSplit.payment_debit_name.name],
     paymentInvoice: invoice,
-    paymentName: split[FieldDataSplit.payment_name.name],
+    paymentName: LabelPaymentMethodX.fromString(
+      split[FieldDataSplit.payment_name.name],
+    )!,
     paymentTotal: double.tryParse(
       split[FieldDataSplit.payment_total.name].toString(),
     )!,
@@ -276,7 +278,9 @@ ModelTransaction fromMapTransaction(
     idPartner: data[FieldDataTransaction.id_partner.name],
     nameOperator: data[FieldDataTransaction.name_operator.name],
     idOperator: data[FieldDataTransaction.id_operator.name],
-    paymentMethod: data[FieldDataTransaction.payment_method.name],
+    paymentMethod: LabelPaymentMethodX.fromString(
+      data[FieldDataTransaction.payment_method.name],
+    )!,
     discount:
         int.tryParse(data[FieldDataTransaction.discount.name].toString()) ?? 0,
     ppn: int.tryParse(data[FieldDataTransaction.ppn.name].toString()) ?? 0,

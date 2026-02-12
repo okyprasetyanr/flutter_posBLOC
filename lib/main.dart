@@ -229,7 +229,7 @@ class _MainAppState extends State<ScreenLogin> {
                                   Material(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(14),
+                                      Radius.circular(18),
                                     ),
                                     elevation: 2,
                                     shadowColor: Colors.black,
@@ -260,7 +260,7 @@ class _MainAppState extends State<ScreenLogin> {
                                       Material(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.all(
-                                          Radius.circular(14),
+                                          Radius.circular(18),
                                         ),
                                         elevation: 2,
                                         shadowColor: Colors.black,
@@ -340,7 +340,7 @@ class _MainAppState extends State<ScreenLogin> {
                                           );
                                         },
                                       ),
-                                      SizedBox(width: 10),
+                                      const SizedBox(width: 10),
                                       customButton(
                                         backgroundColor:
                                             AppPropertyColor.primary,

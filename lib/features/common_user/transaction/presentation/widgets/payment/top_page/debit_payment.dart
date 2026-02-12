@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
@@ -60,7 +62,8 @@ class UIPaymentDebitPayment extends StatelessWidget {
           payDebitController.text = formatQtyOrPrice(
             state.$2
                     ?.firstWhereOrNull(
-                      (element) => element.getpaymentName == "Debit",
+                      (element) =>
+                          element.getpaymentName == LabelPaymentMethod.Debit,
                     )
                     ?.getpaymentTotal ??
                 0,
@@ -148,69 +151,37 @@ class UIPaymentDebitPayment extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               split
-                  ? SizedBox(
-                      width: 300,
-                      child: Row(
-                        children: [
-                          Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: TextField(
-                              controller: payDebitController,
-                              textAlign: TextAlign.right,
-                              style: lv05TextStyle,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                suffixText: ",00",
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 5,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                label: Text(
-                                  "Nominal Debit",
-                                  style: lv05TextStyle,
-                                ),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.always,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                TextInputFormatter.withFunction((
-                                  oldValue,
-                                  newValue,
-                                ) {
-                                  if (newValue.text.length > 8) {
-                                    customSnackBar(
-                                      context,
-                                      "Jumlah melebihi batas",
-                                    );
-                                    return oldValue;
-                                  }
-                                  final value =
-                                      double.tryParse(newValue.text) ?? 0;
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: customTextField(
+                            alignEnd: true,
+                            context: context,
+                            controller: payDebitController,
+                            inputType: TextInputType.number,
+                            suffixText: ",00",
+                            text: "Nominal Bayar",
+                            onChanged: (value) {
+                              final finalValue = double.tryParse(value) ?? 0;
 
-                                  split
-                                      ? context.read<PaymentBloc>().add(
-                                          PaymentAdjust(
-                                            billPaidSplitDebit: value,
-                                          ),
-                                        )
-                                      : context.read<PaymentBloc>().add(
-                                          PaymentAdjust(billPaid: value),
-                                        );
-                                  return newValue;
-                                }),
-                              ],
-                            ),
+                              split
+                                  ? context.read<PaymentBloc>().add(
+                                      PaymentAdjust(
+                                        billPaidSplitDebit: finalValue,
+                                      ),
+                                    )
+                                  : context.read<PaymentBloc>().add(
+                                      PaymentAdjust(billPaid: finalValue),
+                                    );
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     )
                   : const SizedBox.shrink(),
             ],

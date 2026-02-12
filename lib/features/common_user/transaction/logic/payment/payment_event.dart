@@ -7,7 +7,7 @@ class PaymentAdjust extends PaymentEvent {
   final String? bankName;
   final int? discount;
   final int? ppn;
-  final String? paymentMethod;
+  final LabelPaymentMethod? paymentMethod;
   final int? charge;
   final double? billPaid;
   final double? billPaidSplitCash;

@@ -178,7 +178,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                                 children: [
                                   ...state.map((element) {
                                     return rowContent(
-                                      "${element.getpaymentName}",
+                                      "${element.getpaymentName.name}",
                                       formatPriceRp(element.getpaymentTotal),
                                     );
                                   }),
@@ -324,14 +324,26 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                       textStyle: lv05TextStyleWhite,
                       backgroundColor: AppPropertyColor.primary,
                       function: () {
-                        final billPaid =
+                        final dataTransaction =
                             (context.read<PaymentBloc>().state as PaymentLoaded)
                                 .transaction_sell!;
-                        if (billPaid.getbillPaid == 0 ||
-                            billPaid.getbillPaid < billPaid.gettotal) {
+                        if (dataTransaction.getbillPaid == 0 ||
+                            dataTransaction.getbillPaid <
+                                dataTransaction.gettotal) {
                           return customSnackBar(
                             context,
                             "Nominal Pembayaran tidak Sesuai!",
+                          );
+                        }
+
+                        if (dataTransaction.getpaymentMethod ==
+                                LabelPaymentMethod.Split &&
+                            (dataTransaction.getbillPaid == 0 ||
+                                dataTransaction.getbillPaid !=
+                                    dataTransaction.gettotal)) {
+                          return customSnackBar(
+                            context,
+                            "Nominal Pembayaran tidak Sama!",
                           );
                         }
                         context.read<PaymentBloc>().add(

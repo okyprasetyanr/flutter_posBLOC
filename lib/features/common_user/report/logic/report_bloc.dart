@@ -56,27 +56,29 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     for (final transaction in dataTransaction) {
       final total = transaction.gettotal;
       switch (transaction.getpaymentMethod) {
-        case "Cash":
+        case LabelPaymentMethod.Cash:
           cash += total;
           break;
-        case "Debit":
+        case LabelPaymentMethod.Debit:
           debit += total;
           break;
-        case "Qris":
+        case LabelPaymentMethod.QRIS:
           qris += total;
           break;
-        case "Split":
+        case LabelPaymentMethod.Split:
           for (final split in transaction.getdataSplit) {
             final totalSplit = split.getpaymentTotal;
             switch (split.getpaymentName) {
-              case "Cash":
+              case LabelPaymentMethod.Cash:
                 cash += totalSplit;
                 break;
-              case "Debit":
+              case LabelPaymentMethod.Debit:
                 debit += totalSplit;
                 break;
-              case "Qris":
+              case LabelPaymentMethod.QRIS:
                 qris += totalSplit;
+                break;
+              case LabelPaymentMethod.Split:
                 break;
             }
           }

@@ -19,10 +19,10 @@ class ModelTransaction extends Equatable {
       _namePartner,
       _idPartner,
       _nameOperator,
-      _paymentMethod,
       _note,
       _idBranch,
       _idOperator;
+  final LabelPaymentMethod _paymentMethod;
   final String? _bankName;
   final ListStatusTransaction? _statusTransaction;
   final int _discount, _ppn, _totalItem, _charge;
@@ -46,7 +46,7 @@ class ModelTransaction extends Equatable {
     idPartner: "",
     nameOperator: "",
     idOperator: "",
-    paymentMethod: "",
+    paymentMethod: LabelPaymentMethod.Cash,
     discount: 0,
     ppn: 0,
     totalItem: 0,
@@ -72,7 +72,7 @@ class ModelTransaction extends Equatable {
     required String idPartner,
     required String nameOperator,
     required String idOperator,
-    required String paymentMethod,
+    required LabelPaymentMethod paymentMethod,
     required int discount,
     required int ppn,
     required int totalItem,
@@ -114,7 +114,7 @@ class ModelTransaction extends Equatable {
   String get getidPartner => _idPartner;
   String get getnameOperator => _nameOperator;
   String get getidOperator => _idOperator;
-  String get getpaymentMethod => _paymentMethod;
+  LabelPaymentMethod get getpaymentMethod => _paymentMethod;
   String get getnote => _note;
   String? get getbankName => _bankName;
   int get getdiscount => _discount;
@@ -142,7 +142,7 @@ class ModelTransaction extends Equatable {
     String? idPartner,
     String? nameOperator,
     String? idOperator,
-    String? paymentMethod,
+    LabelPaymentMethod? paymentMethod,
     int? discount,
     int? ppn,
     int? totalItem,

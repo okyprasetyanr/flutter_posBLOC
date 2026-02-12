@@ -43,12 +43,6 @@ ModelFIFOLogic fifoLogic({
             : item.getpriceItemBuy
       : customPrice;
 
-  // final customPriceState = customPrice == null
-  //     ? state.customPrice != 0
-  //           ? state.customPrice
-  //           : item.getpriceItemFinal
-  //     : customPrice;
-
   final checkCustomPrice = isSell ? customPriceSell != item.getpriceItem : true;
 
   debugPrint(

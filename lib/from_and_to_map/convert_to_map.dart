@@ -17,7 +17,7 @@ import 'package:flutter_pos/model_data/model_user.dart';
 Map<String, dynamic> convertToMapSplit(ModelSplit _dataSplit) {
   return {
     FieldDataSplit.payment_debit_name.name: _dataSplit.getpaymentDebitName,
-    FieldDataSplit.payment_name.name: _dataSplit.getpaymentName,
+    FieldDataSplit.payment_name.name: _dataSplit.getpaymentName.name,
     FieldDataSplit.payment_total.name: _dataSplit.getpaymentTotal,
   };
 }
@@ -75,7 +75,7 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
     FieldDataTransaction.total_charge.name: transaction.gettotalCharge,
     FieldDataTransaction.total_discount.name: transaction.gettotalDiscount,
     FieldDataTransaction.total_ppn.name: transaction.gettotalPpn,
-    FieldDataTransaction.payment_method.name: transaction.getpaymentMethod,
+    FieldDataTransaction.payment_method.name: transaction.getpaymentMethod.name,
     FieldDataTransaction.date.name: formatDate(date: transaction.getdate),
     FieldDataTransaction.name_partner.name: transaction.getnamePartner,
     FieldDataTransaction.id_partner.name: transaction.getidPartner,

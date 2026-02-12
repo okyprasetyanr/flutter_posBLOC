@@ -354,7 +354,7 @@ class ExcelBackupService {
         TextCellValue(formatDate(date: item.getdate, minute: false)),
         DoubleCellValue(item.getbillPaid),
         IntCellValue(item.gettotalItem),
-        TextCellValue(item.getpaymentMethod),
+        TextCellValue(item.getpaymentMethod.name),
         TextCellValue(item.getbankName ?? ""),
         DoubleCellValue(item.getsubTotal),
         IntCellValue(item.getdiscount),
@@ -386,7 +386,7 @@ class ExcelBackupService {
     ) {
       sheetHistorySplitPayment.appendRow([
         TextCellValue(element.paymentInvoice!),
-        TextCellValue(element.getpaymentName),
+        TextCellValue(element.getpaymentName.name),
         TextCellValue(element.getpaymentDebitName!),
         DoubleCellValue(element.getpaymentTotal),
       ]);
@@ -497,7 +497,7 @@ class ExcelBackupService {
         TextCellValue(formatDate(date: item.getdate, minute: false)),
         DoubleCellValue(item.getbillPaid),
         IntCellValue(item.gettotalItem),
-        TextCellValue(item.getpaymentMethod),
+        TextCellValue(item.getpaymentMethod.name),
         TextCellValue(item.getbankName ?? ""),
         DoubleCellValue(item.getsubTotal),
         IntCellValue(item.getdiscount),

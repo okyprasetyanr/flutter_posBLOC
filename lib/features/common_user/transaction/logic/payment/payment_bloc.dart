@@ -51,7 +51,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final dataTransaction = currentState.transaction_sell!.copyWith();
       int discount = dataTransaction.getdiscount;
       int ppn = dataTransaction.getppn;
-      String paymentMethod = dataTransaction.getpaymentMethod;
+      LabelPaymentMethod paymentMethod = dataTransaction.getpaymentMethod;
       int charge =
           paymentMethod == event.paymentMethod || event.paymentMethod == null
           ? dataTransaction.getcharge
@@ -89,19 +89,19 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         bankName = event.bankName;
       }
 
-      if (paymentMethod == "Split") {
+      if (paymentMethod == LabelPaymentMethod.Split) {
         final splitPayments = {
-          "Cash": event.billPaidSplitCash,
-          "Debit": event.billPaidSplitDebit,
+          LabelPaymentMethod.Cash: event.billPaidSplitCash,
+          LabelPaymentMethod.Debit: event.billPaidSplitDebit,
         };
 
         for (final entry in splitPayments.entries) {
-          final name = entry.key;
+          final paymentType = entry.key;
           final amount = entry.value;
           if (amount == null) continue;
 
           int indexdataSplit = dataSplit.indexWhere(
-            (e) => e.getpaymentName == name,
+            (e) => e.getpaymentName == paymentType,
           );
 
           if (indexdataSplit != -1) {
@@ -109,7 +109,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
               paymentTotal: amount,
             );
           } else {
-            dataSplit.add(ModelSplit(paymentName: name, paymentTotal: amount));
+            dataSplit.add(
+              ModelSplit(paymentName: paymentType, paymentTotal: amount),
+            );
           }
         }
         for (final data in dataSplit) {
@@ -117,7 +119,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         }
         if (event.bankName != null) {
           int indexdataSplit = dataSplit.indexWhere(
-            (e) => e.getpaymentName == "Debit",
+            (e) => e.getpaymentName == LabelPaymentMethod.Debit,
           );
           if (indexdataSplit != -1) {
             dataSplit[indexdataSplit] = dataSplit[indexdataSplit].copyWith(
@@ -126,7 +128,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           } else {
             dataSplit.add(
               ModelSplit(
-                paymentName: "Debit",
+                paymentName: LabelPaymentMethod.Debit,
                 paymentTotal: 0,
                 paymentDebitName: event.bankName ?? "",
               ),
@@ -150,7 +152,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final totalCharge = afterDiscount * (charge / 100);
       total = afterDiscount + totalPpn + totalCharge;
 
-      if (paymentMethod == "Debit" || paymentMethod == "QRIS") {
+      if (paymentMethod == LabelPaymentMethod.Debit ||
+          paymentMethod == LabelPaymentMethod.QRIS) {
         billPaid = total;
       }
 
@@ -252,7 +255,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           dataSplit: [],
           billPaid: 0,
           note: note,
-          paymentMethod: "Cash",
+          paymentMethod: LabelPaymentMethod.Cash,
           date: formattedDate!,
           invoice: invoice,
           namePartner: sellState.selectedPartner?.getname ?? "",

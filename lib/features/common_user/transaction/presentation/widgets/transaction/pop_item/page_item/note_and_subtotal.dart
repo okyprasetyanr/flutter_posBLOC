@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/common_widget/widget_custom_text.dart';
+import 'package:flutter_pos/common_widget/widget_custom_input_decorator.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UITransactionPopUpNoteAndSubTotal extends StatefulWidget {
   const UITransactionPopUpNoteAndSubTotal({super.key});
@@ -57,18 +56,16 @@ class _UITransactionPopUpNoteAndSubTotalState
 
         const SizedBox(width: 20),
         Flexible(
-          child: Column(
-            children: [
-              Text("Sub Total", style: lv05TextStyle),
-              BlocSelector<TransactionBloc, TransactionState, double>(
-                selector: (state) => (state is TransactionLoaded)
-                    ? state.selectedItem?.getsubTotal ?? 0
-                    : 0,
-                builder: (context, state) {
-                  return CustomText(text: formatPriceRp(state));
-                },
-              ),
-            ],
+          child: BlocSelector<TransactionBloc, TransactionState, double>(
+            selector: (state) => (state is TransactionLoaded)
+                ? state.selectedItem?.getsubTotal ?? 0
+                : 0,
+            builder: (context, state) {
+              return customInputDecorator(
+                text: "Sub Total",
+                value: formatPriceRp(state),
+              );
+            },
           ),
         ),
       ],

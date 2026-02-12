@@ -447,7 +447,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                   rowContent("Nomor Faktur", transaction.getinvoice),
                   rowContent("Tanggal", transaction.getdate.toString()),
                   rowContent("Kontak", transaction.getnamePartner),
-                  rowContent("Pembayaran", transaction.getpaymentMethod),
+                  rowContent("Pembayaran", transaction.getpaymentMethod.name),
                   transaction.getbankName != null
                       ? rowContent(
                           "Bank Name",
@@ -575,7 +575,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: Text("Konfirmasi", style: lv2TextStyle),
-                              content: SizedBox.shrink(),
+                              content: const SizedBox.shrink(),
                               // Text.rich(
                               //   TextSpan(
                               //     text: "Revisi ${state.$1!.getinvoice}?",

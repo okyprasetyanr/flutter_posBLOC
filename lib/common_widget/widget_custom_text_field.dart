@@ -14,9 +14,11 @@ Widget customTextField({
   TextInputType? inputType,
   BuildContext? context,
   FormFieldValidator<String>? validator,
+  bool alignEnd = false,
   Function(String value)? onChanged,
 }) {
   return TextFormField(
+    textAlign: alignEnd ? TextAlign.end : TextAlign.start,
     focusNode: (nodes != null && index != null) ? nodes[index] : null,
     textInputAction: (nodes != null && index != null)
         ? index == nodes.length - 1

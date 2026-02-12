@@ -69,6 +69,7 @@ class _UiBatchState extends State<UiBatch> {
             ),
             Spacer(),
             Text("Stok/Batch", style: titleTextStyle),
+            const SizedBox(width: 10),
           ],
         ),
         Row(
@@ -106,7 +107,7 @@ class _UiBatchState extends State<UiBatch> {
             ),
           ],
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Expanded(
           child:
               BlocSelector<
