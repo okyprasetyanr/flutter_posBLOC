@@ -61,7 +61,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                           controller: scrollController,
                           children: [
                             Text(
-                              LabelPaymentMethod.Cash.name,
+                              "Pembayaran ${LabelPaymentMethod.Cash.name}",
                               style: lv1TextStyleBold,
                             ),
                             const SizedBox(width: 10),
@@ -72,7 +72,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                             ),
                             const SizedBox(height: 25),
                             Text(
-                              LabelPaymentMethod.Debit.name,
+                              "Pembayaran ${LabelPaymentMethod.Debit.name}",
                               style: lv1TextStyleBold,
                             ),
                             const SizedBox(width: 10),

@@ -44,7 +44,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                Text("Quantity:", style: lv05TextStyle),
+                Text("Jumlah:", style: lv05TextStyle),
                 BlocSelector<TransactionBloc, TransactionState, double?>(
                   selector: (state) {
                     if (state is TransactionLoaded) {

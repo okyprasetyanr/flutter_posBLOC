@@ -332,7 +332,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                       ),
                                       Expanded(
                                         child: Text(
-                                          "${dataTransaction.getpaymentMethod}",
+                                          "${dataTransaction.getpaymentMethod.name}",
                                           style: lv05TextStyle,
                                           textAlign: TextAlign.center,
                                         ),
@@ -459,9 +459,54 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                   rowContent("Status", transaction.getstatusTransaction!.name),
                   ...transaction.getitemsOrdered.map((item) {
                     return Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.only(left: 10, right: 10),
                       child: Column(
                         children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  "Nama",
+                                  style: lv05TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "Dis.",
+                                  style: lv05TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "Jumlah",
+                                  style: lv05TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 1,
+                                height: 15,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  "Total Harga",
+                                  style: lv05TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
