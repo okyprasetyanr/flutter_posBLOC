@@ -6,16 +6,17 @@ Widget customButton({
   Widget? child,
 }) {
   return Padding(
-    padding: EdgeInsets.only(left: 5, right: 5, bottom: 5, top: 0),
+    padding: const EdgeInsets.symmetric(horizontal: 5),
     child: ElevatedButton(
       onPressed: onPressed,
       child: child,
       style: ButtonStyle(
-        elevation: WidgetStatePropertyAll(4),
+        visualDensity: const VisualDensity(horizontal: -2.0, vertical: -2.0),
+        elevation: const WidgetStatePropertyAll(4),
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
-        minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-        padding: WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

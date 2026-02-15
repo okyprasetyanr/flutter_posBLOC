@@ -77,7 +77,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         type: currentState.isCustomer
             ? PartnerType.customer
             : PartnerType.supplier,
-        date: parseDate(date: DateTime.now())!,
+        date: parseDate(date: DateTime.now()),
       );
 
       await partner.pushDataPartner();

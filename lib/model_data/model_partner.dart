@@ -89,6 +89,19 @@ class ModelPartner extends Equatable {
     );
   }
 
+  factory ModelPartner.empty() {
+    return ModelPartner(
+      idBranch: "",
+      id: "",
+      name: "",
+      phone: "",
+      email: "",
+      balance: 0,
+      type: PartnerType.customer,
+      date: DateTime(2010, 10, 12),
+    );
+  }
+
   @override
   List<Object?> get props => [
     _id,

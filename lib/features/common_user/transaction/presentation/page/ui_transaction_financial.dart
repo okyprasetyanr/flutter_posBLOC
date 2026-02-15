@@ -188,7 +188,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                               nameFinancial: selectedData.getnameFinancial,
                               idBranch: selectedData.getidBranch,
                               invoice: "",
-                              date: parseDate(date: DateTime.now())!,
+                              date: parseDate(date: DateTime.now()),
                               note: "",
                               amount: 0,
                             );

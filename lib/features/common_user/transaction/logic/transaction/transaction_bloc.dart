@@ -185,6 +185,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         dataBranch: listBranch,
         dataItem: dataItem,
         dataCategory: listCategory,
+        selectedPartner: ModelPartner.empty(),
       ),
     );
   }
@@ -494,6 +495,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           selectedItem: null,
           editSelectedItem: false,
           itemOrdered: [],
+          selectedPartner: ModelPartner.empty(),
         ),
       );
     }
@@ -555,6 +557,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       emit(
         currentState.copyWith(
+          selectedPartner:
+              repoCache.dataPartner.any(
+                (element) =>
+                    element.getid == event.currentTransaction.getidPartner,
+              )
+              ? repoCache.dataPartner.firstWhere(
+                  (element) =>
+                      element.getid == event.currentTransaction.getidPartner,
+                )
+              : ModelPartner.empty(),
           selectedTransaction: event.currentTransaction,
           revision: event.revision ?? false,
         ),

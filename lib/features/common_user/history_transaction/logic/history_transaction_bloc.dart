@@ -262,7 +262,7 @@ class HistoryTransactionBloc
 
       if (search.isNotEmpty) {
         final invoice = element.getinvoice.toLowerCase();
-        final partner = element.getnamePartner.toLowerCase();
+        final partner = element.getnamePartner!.toLowerCase();
         final note = element.getnote.toLowerCase();
 
         final match =

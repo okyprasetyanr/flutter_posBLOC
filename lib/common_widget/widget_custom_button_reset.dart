@@ -7,7 +7,7 @@ Widget customButtonIconReset({VoidCallback? onPressed}) {
   return ElevatedButton.icon(
     onPressed: onPressed,
     style: ElevatedButton.styleFrom(
-      iconColor: Colors.white,
+      iconColor: AppPropertyColor.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),

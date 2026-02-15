@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
@@ -29,17 +30,31 @@ class UIPaymentDiscount extends StatelessWidget {
         }
         return Row(
           children: [
-            SizedBox(width: 100, child: Text("Diskon", style: lv1TextStyle)),
-            Text(":", style: lv1TextStyle),
+            SizedBox(width: 100, child: Text("Diskon", style: lv05TextStyle)),
+            Spacer(),
+            Text(":", style: lv05TextStyle),
             Spacer(),
             Row(
               children: [
                 Wrap(
                   spacing: 5,
-                  runSpacing: 5,
                   children: [10, 25, 50].map((discount) {
                     final isSelected = state.getdiscount == discount;
-                    return ElevatedButton.icon(
+                    return customButtonIcon(
+                      backgroundColor: isSelected
+                          ? AppPropertyColor.primary
+                          : AppPropertyColor.white,
+                      icon: Icon(
+                        Icons.check_rounded,
+                        size: lv05IconSize,
+                        color: isSelected
+                            ? AppPropertyColor.white
+                            : AppPropertyColor.black,
+                      ),
+                      label: Text(
+                        "$discount%",
+                        style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
+                      ),
                       onPressed: () {
                         if (customDiscountController.text.isNotEmpty) {
                           customDiscountController.clear();
@@ -49,28 +64,6 @@ class UIPaymentDiscount extends StatelessWidget {
                           PaymentAdjust(discount: discountValue),
                         );
                       },
-                      icon: Icon(Icons.check_rounded, size: lv1IconSize),
-                      label: Text(
-                        "$discount%",
-                        style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
-                      ),
-                      style: ButtonStyle(
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                        padding: const WidgetStatePropertyAll(
-                          EdgeInsets.all(7),
-                        ),
-                        backgroundColor: WidgetStatePropertyAll(
-                          isSelected ? AppPropertyColor.primary : Colors.white,
-                        ),
-                        iconColor: WidgetStatePropertyAll(
-                          isSelected ? Colors.white : Colors.black,
-                        ),
-                      ),
                     );
                   }).toList(),
                 ),

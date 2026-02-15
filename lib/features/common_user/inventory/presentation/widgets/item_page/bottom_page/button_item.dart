@@ -45,7 +45,7 @@ class UIInventoryButtonItem extends StatelessWidget {
               }
             },
             label: Text("Hapus", style: lv0TextStyleRED),
-            icon: Icon(Icons.delete, color: AppPropertyColor.delete),
+            icon: Icon(Icons.delete, color: AppPropertyColor.deleteOrClose),
             backgroundColor: Colors.white,
           ),
         ),

@@ -251,7 +251,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       idBranch: currentState.idBranch!,
       barcode: event.codeBarcode,
       statusItem: StatusData.Aktif,
-      date: parseDate(date: DateTime.now())!,
+      date: parseDate(date: DateTime.now()),
     );
 
     await item.pushDataItem();

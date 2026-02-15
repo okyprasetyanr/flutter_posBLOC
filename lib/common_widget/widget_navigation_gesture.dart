@@ -41,7 +41,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
                 topRight: Radius.circular(10),
                 bottomRight: Radius.circular(10),
               ),
-              color: Colors.white,
+              color: AppPropertyColor.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.4),
@@ -63,7 +63,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
                     left: true,
                     icon: Icon(
                       Icons.keyboard_backspace_rounded,
-                      color: Colors.white,
+                      color: AppPropertyColor.white,
                     ),
                     label: Text("Tutup", style: lv1TextStyleWhiteBold),
                     backgroundColor: AppPropertyColor.primary,
@@ -98,7 +98,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       width: double.infinity,
-      color: Colors.white,
+      color: AppPropertyColor.white,
       child: Material(
         color: AppPropertyColor.primary,
         elevation: 2,
@@ -126,7 +126,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
                   width: 10,
                   height: 10,
                   decoration: const BoxDecoration(
-                    color: Colors.white,
+                    color: AppPropertyColor.white,
                     shape: BoxShape.circle,
                   ),
                 ),

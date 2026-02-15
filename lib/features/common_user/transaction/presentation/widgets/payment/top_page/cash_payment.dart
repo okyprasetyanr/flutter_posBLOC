@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
@@ -111,7 +112,16 @@ class UIPaymentCashPayment extends StatelessWidget {
                           return ValueListenableBuilder(
                             valueListenable: selectedAmount,
                             builder: (context, value, child) {
-                              return ElevatedButton(
+                              return customButton(
+                                backgroundColor: value == amount
+                                    ? AppPropertyColor.primary
+                                    : AppPropertyColor.white,
+                                child: Text(
+                                  formatPriceRp(amount),
+                                  style: value == amount
+                                      ? lv05TextStyleWhite
+                                      : lv05TextStyle,
+                                ),
                                 onPressed: () {
                                   selectedAmount.value =
                                       selectedAmount.value == amount
@@ -123,29 +133,6 @@ class UIPaymentCashPayment extends StatelessWidget {
                                     ),
                                   );
                                 },
-                                style: ButtonStyle(
-                                  elevation: WidgetStatePropertyAll(4),
-                                  backgroundColor: WidgetStatePropertyAll(
-                                    value == amount
-                                        ? AppPropertyColor.primary
-                                        : Colors.white,
-                                  ),
-                                  minimumSize: WidgetStatePropertyAll(
-                                    Size(0, 0),
-                                  ),
-                                  padding: WidgetStatePropertyAll(
-                                    const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 8,
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  formatPriceRp(amount),
-                                  style: value == amount
-                                      ? lv05TextStyleWhite
-                                      : lv05TextStyle,
-                                ),
                               );
                             },
                           );

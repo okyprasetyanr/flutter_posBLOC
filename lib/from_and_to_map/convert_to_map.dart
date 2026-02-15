@@ -69,7 +69,7 @@ Map<String, dynamic> convertToMapTransaction(ModelTransaction transaction) {
   return {
     FieldDataTransaction.id_branch.name: transaction.getidBranch,
     FieldDataTransaction.uid_owner.name: UserSession.getUidOwner(),
-    FieldDataTransaction.bank_name.name: transaction.getbankName ?? "",
+    FieldDataTransaction.bank_name.name: transaction.getbankName,
     FieldDataTransaction.bill_paid.name: transaction.getbillPaid,
     FieldDataTransaction.note.name: transaction.getnote,
     FieldDataTransaction.total_charge.name: transaction.gettotalCharge,

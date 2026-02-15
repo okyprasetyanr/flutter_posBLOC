@@ -365,10 +365,10 @@ class ExcelBackupService {
         DoubleCellValue(item.gettotalCharge),
         DoubleCellValue(item.gettotal),
         TextCellValue(item.getstatusTransaction!.name),
-        TextCellValue(item.getnamePartner),
-        TextCellValue(item.getidPartner),
-        TextCellValue(item.getnameOperator),
-        TextCellValue(item.getidOperator),
+        TextCellValue(item.getnamePartner ?? ""),
+        TextCellValue(item.getidPartner ?? ""),
+        TextCellValue(item.getnameOperator ?? ""),
+        TextCellValue(item.getidOperator ?? ""),
       ]);
     }
     sheetWidthStyle(FieldDataTransaction.values, sheetHistorySell);
@@ -508,10 +508,10 @@ class ExcelBackupService {
         DoubleCellValue(item.gettotalCharge),
         DoubleCellValue(item.gettotal),
         TextCellValue(item.getstatusTransaction!.name),
-        TextCellValue(item.getnamePartner),
-        TextCellValue(item.getidPartner),
-        TextCellValue(item.getnameOperator),
-        TextCellValue(item.getidOperator),
+        TextCellValue(item.getnamePartner ?? ""),
+        TextCellValue(item.getidPartner ?? ""),
+        TextCellValue(item.getnameOperator ?? ""),
+        TextCellValue(item.getidOperator ?? ""),
       ]);
     }
     sheetWidthStyle(FieldDataTransaction.values, sheetHistoryBuy);

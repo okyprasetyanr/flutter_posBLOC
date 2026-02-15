@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -38,22 +41,10 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
             children: [
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ButtonStyle(
-                    minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                    padding: const WidgetStatePropertyAll(EdgeInsets.all(7)),
-                    backgroundColor: WidgetStatePropertyAll(Colors.white),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  iconAlignment: IconAlignment.end,
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    editPrice.value = !editPrice.value;
-                  },
+                child: customButtonIcon(
+                  rightIcon: true,
+                  backgroundColor: AppPropertyColor.white,
+                  icon: const Icon(Icons.edit, color: AppPropertyColor.black),
                   label:
                       BlocSelector<
                         TransactionBloc,
@@ -81,6 +72,9 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                           );
                         },
                       ),
+                  onPressed: () {
+                    editPrice.value = !editPrice.value;
+                  },
                 ),
               ),
               SizedBox(
@@ -112,28 +106,12 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                                       controller.clear();
                                     }
                                   },
-                                  child: TextField(
-                                    style: lv05TextStyle,
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                            horizontal: 5,
-                                          ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.always,
-                                      labelText: "Ubah Harga:",
-                                      labelStyle: lv05TextStyle,
-                                      hintText: "Rp...",
-                                      hintStyle: lv05TextStyle,
-                                    ),
-                                    textAlign: TextAlign.right,
+                                  child: customTextField(
+                                    context: context,
+                                    hint: false,
+                                    alignEnd: true,
+                                    inputType: TextInputType.number,
                                     controller: controller,
-                                    keyboardType: TextInputType.number,
                                     onChanged: (value) {
                                       debugPrint(
                                         "Log UISell: cek BlocSelector Harga",
@@ -144,6 +122,8 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                                             : 0,
                                       );
                                     },
+                                    text: "Ubah Harga:",
+                                    suffixText: ",00",
                                   ),
                                 ),
                           ),

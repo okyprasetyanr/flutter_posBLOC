@@ -24,7 +24,9 @@ Future<void> customDatePicker(
               foregroundColor: WidgetStatePropertyAll(AppPropertyColor.primary),
             ),
             cancelButtonStyle: const ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll(AppPropertyColor.delete),
+              foregroundColor: WidgetStatePropertyAll(
+                AppPropertyColor.deleteOrClose,
+              ),
             ),
             headerHelpStyle: const TextStyle(
               fontFamily: 'Poppins',
@@ -33,7 +35,7 @@ Future<void> customDatePicker(
             dayStyle: const TextStyle(
               fontFamily: 'Poppins',
               fontSize: 16,
-              color: Colors.white,
+              color: AppPropertyColor.white,
             ),
             yearStyle: const TextStyle(
               fontFamily: 'Poppins',
@@ -44,9 +46,9 @@ Future<void> customDatePicker(
           dialogTheme: DialogThemeData(backgroundColor: Colors.black),
           colorScheme: ColorScheme.light(
             primary: AppPropertyColor.primary,
-            onPrimary: Colors.white,
+            onPrimary: AppPropertyColor.white,
             onSurface: Colors.black,
-            surface: Colors.white,
+            surface: AppPropertyColor.white,
           ),
         ),
         child: child!,

@@ -160,7 +160,7 @@ class _MainAppState extends State<ScreenLogin> {
   Widget _login() {
     print(Firebase.app().options.projectId);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppPropertyColor.white,
       body: Stack(
         children: [
           ValueListenableBuilder(
@@ -227,7 +227,7 @@ class _MainAppState extends State<ScreenLogin> {
                                   ),
                                   const SizedBox(height: 10),
                                   Material(
-                                    color: Colors.white,
+                                    color: AppPropertyColor.white,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(18),
                                     ),
@@ -258,7 +258,7 @@ class _MainAppState extends State<ScreenLogin> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Material(
-                                        color: Colors.white,
+                                        color: AppPropertyColor.white,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(18),
                                         ),
@@ -324,7 +324,7 @@ class _MainAppState extends State<ScreenLogin> {
                                             builder: (_) {
                                               return Center(
                                                 child: customSpinKit(
-                                                  color: Colors.white,
+                                                  color: AppPropertyColor.white,
                                                   size: 30,
                                                 ),
                                               );

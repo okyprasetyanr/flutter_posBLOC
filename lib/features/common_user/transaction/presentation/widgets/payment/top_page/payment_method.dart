@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
@@ -48,7 +49,21 @@ class UIPaymentPaymentMethod extends StatelessWidget {
               final index = entry.key;
               final paymentMethod = entry.value;
               final isSelected = state.getpaymentMethod == paymentMethod;
-              return ElevatedButton.icon(
+              return customButtonIcon(
+                backgroundColor: isSelected
+                    ? AppPropertyColor.primary
+                    : AppPropertyColor.white,
+                icon: Icon(
+                  Icons.payment_outlined,
+                  size: lv1IconSize,
+                  color: isSelected
+                      ? AppPropertyColor.white
+                      : AppPropertyColor.black,
+                ),
+                label: Text(
+                  "${paymentMethod.name}",
+                  style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
+                ),
                 onPressed: () {
                   if (index == 3) {
                     context.read<PaymentBloc>().add(PaymentResetSplit());
@@ -91,26 +106,6 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                   );
                   gotoPage(index);
                 },
-                icon: Icon(Icons.payment_outlined, size: lv1IconSize),
-                label: Text(
-                  "${paymentMethod.name}",
-                  style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
-                ),
-                style: ButtonStyle(
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                  padding: const WidgetStatePropertyAll(EdgeInsets.all(7)),
-                  backgroundColor: WidgetStatePropertyAll(
-                    isSelected ? AppPropertyColor.primary : Colors.white,
-                  ),
-                  iconColor: WidgetStatePropertyAll(
-                    isSelected ? Colors.white : Colors.black,
-                  ),
-                ),
               );
             }).toList(),
           );

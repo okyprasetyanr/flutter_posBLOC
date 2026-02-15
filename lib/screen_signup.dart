@@ -82,7 +82,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppPropertyColor.white,
       body: SafeArea(
         top: true,
         bottom: true,
@@ -303,7 +303,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
           backgroundColor: AppPropertyColor.primary,
           icon: Icon(
             Icons.check_rounded,
-            color: Colors.white,
+            color: AppPropertyColor.white,
             size: lv05IconSize,
           ),
           label: Text("Daftar", style: lv05TextStyleWhite),
@@ -316,7 +316,10 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 barrierDismissible: false,
                 builder: (_) {
                   return Center(
-                    child: customSpinKit(color: Colors.white, size: 30),
+                    child: customSpinKit(
+                      color: AppPropertyColor.white,
+                      size: 30,
+                    ),
                   );
                 },
               );

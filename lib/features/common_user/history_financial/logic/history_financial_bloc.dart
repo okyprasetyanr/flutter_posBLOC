@@ -182,20 +182,17 @@ class HistoryFinancialBloc
 
       if (!dateValid) return false;
 
-      if (filter != ListStatusTransactionFinancial.All) {
+      if (filter != ListStatusTransaction.All) {
         final statusTarget = status == filter;
         if (!statusTarget) return false;
       }
 
       if (search.isNotEmpty) {
         final invoice = element.getinvoice.toLowerCase();
-        final name = element.getnameFinancial.toLowerCase();
         final note = element.getnote.toLowerCase();
 
         final match =
-            name.contains(lowerSearch) ||
-            invoice.contains(lowerSearch) ||
-            note.contains(lowerSearch);
+            invoice.contains(lowerSearch) || note.contains(lowerSearch);
 
         if (!match) return false;
       }

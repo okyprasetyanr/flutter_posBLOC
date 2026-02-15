@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
@@ -372,7 +374,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
   Future<void> refreshIndicator() async {
     return;
   }
-
+ 
   Widget _buttonIcon({
     String? text,
     Icon? icon,
@@ -382,7 +384,9 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
   }) {
     return SizedBox(
       width: 80,
-      child: ElevatedButton.icon(
+      child: 
+      customButtonIcon(backgroundColor: )
+      ElevatedButton.icon(
         style: ButtonStyle(
           elevation: WidgetStatePropertyAll(4),
           backgroundColor: WidgetStatePropertyAll(backgroundColor),

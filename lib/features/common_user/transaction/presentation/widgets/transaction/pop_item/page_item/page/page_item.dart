@@ -71,23 +71,16 @@ class TransactionPopUpPageItem extends StatelessWidget {
                   flex: state ? 4 : 1,
                   child: state
                       ? const UITransactionPopUpDiscountAndCustom()
-                      : SizedBox(
-                          height: 200,
-                          child: Column(
-                            children: [
-                              UITransactionPopUpPriceAndCustom(
-                                forSell: false,
-                                labelPrice: "Harga Beli:",
-                                controller: buyPrice,
-                                editPrice: editBuy,
-                                onChange: ({required value}) {
-                                  context.read<TransactionBloc>().add(
-                                    TransactionAdjustItem(customPrice: value),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                      : UITransactionPopUpPriceAndCustom(
+                          forSell: false,
+                          labelPrice: "Harga Beli:",
+                          controller: buyPrice,
+                          editPrice: editBuy,
+                          onChange: ({required value}) {
+                            context.read<TransactionBloc>().add(
+                              TransactionAdjustItem(customPrice: value),
+                            );
+                          },
                         ),
                 ),
               ],

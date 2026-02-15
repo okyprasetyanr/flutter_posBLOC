@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
@@ -122,15 +123,9 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 return (dateNowYMDBLOC(), dateNowYMDBLOC(), "Hari ini");
               },
               builder: (context, state) {
-                return ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    minimumSize: Size(0, 0),
-                    padding: EdgeInsets.all(8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+                return customButton(
+                  backgroundColor: AppPropertyColor.white,
+                  child: Text(state.$3, style: lv05TextStyle),
                   onPressed: () async {
                     DateTime? pickedDateStart, pickedDateEnd;
                     await customDatePicker(
@@ -157,19 +152,16 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                       ),
                     );
                   },
-                  label: Text(state.$3, style: lv05TextStyle),
                 );
               },
             ),
 
             const SizedBox(width: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(0, 0),
-                padding: EdgeInsets.all(8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+            customButton(
+              backgroundColor: AppPropertyColor.white,
+              child: const Icon(
+                Icons.refresh_rounded,
+                color: AppPropertyColor.black,
               ),
               onPressed: () {
                 searchController.clear();
@@ -177,11 +169,10 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 bloc.add(HistoryFinancialResetSelectedData());
                 _initData();
               },
-              child: Icon(Icons.refresh_rounded),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -201,9 +192,8 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 filters: listStatusTransaction
                     .where(
                       (element) =>
-                          element == ListStatusTransaction.All &&
-                          element == ListStatusTransaction.Sukses &&
-                          element == ListStatusTransaction.Batal,
+                          element != ListStatusTransaction.Tersimpan &&
+                          element != ListStatusTransaction.Revisi,
                     )
                     .toList(),
                 text: "Pilih Filter",
@@ -265,6 +255,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                           vertical: 6,
                         ),
                         child: Card(
+                          color: AppPropertyColor.white,
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -352,93 +343,108 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
   }
 
   Widget layoutBottom() {
-    return BlocSelector<
-      HistoryFinancialBloc,
-      HistoryFinancialState,
-      (ModelTransactionFinancial?, bool)
-    >(
-      selector: (state) {
-        if (state is HistoryFinancialLoaded) {
-          return (state.selectedData, state.isIncome);
-        }
-        return (null, true);
-      },
-      builder: (context, state) {
-        if (state.$1 == null) {
-          return Text("Pilih Data Kas", style: lv05TextStyle);
-        }
-        final transaction = state.$1!;
-        return Column(
-          children: [
-            Expanded(
-              child: ListView(
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.only(top: 5, left: 5, right: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 3,
+            blurStyle: BlurStyle.outer,
+            color: Colors.black.withValues(alpha: 0.5),
+          ),
+        ],
+      ),
+      child:
+          BlocSelector<
+            HistoryFinancialBloc,
+            HistoryFinancialState,
+            (ModelTransactionFinancial?, bool)
+          >(
+            selector: (state) {
+              if (state is HistoryFinancialLoaded) {
+                return (state.selectedData, state.isIncome);
+              }
+              return (null, true);
+            },
+            builder: (context, state) {
+              if (state.$1 == null) {
+                return Center(
+                  child: Text(
+                    "Pilih Data Kas",
+                    style: lv05TextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+              final transaction = state.$1!;
+              return Column(
                 children: [
-                  rowContent("Nomor Faktur", transaction.getinvoice),
-                  rowContent("Tanggal", transaction.getdate.toString()),
-                  rowContent("Status", transaction.getstatusTransaction!.name),
-                  rowContent("Total", formatPriceRp(transaction.getamount)),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    transaction.getstatusTransaction ==
-                            ListStatusTransaction.Batal
-                        ? customSnackBar(context, "Sudah diBatalkan!")
-                        : context.read<HistoryFinancialBloc>().add(
-                            HistoryFinancialCancelData(),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        rowContent("Nomor Faktur", transaction.getinvoice),
+                        rowContent("Tanggal", transaction.getdate.toString()),
+                        rowContent(
+                          "Status",
+                          transaction.getstatusTransaction!.name,
+                        ),
+                        rowContent(
+                          "Total",
+                          formatPriceRp(transaction.getamount),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      customButton(
+                        backgroundColor: AppPropertyColor.white,
+                        child: Icon(
+                          Icons.delete_forever_rounded,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          transaction.getstatusTransaction ==
+                                  ListStatusTransaction.Batal
+                              ? customSnackBar(context, "Sudah diBatalkan!")
+                              : context.read<HistoryFinancialBloc>().add(
+                                  HistoryFinancialCancelData(),
+                                );
+                        },
+                      ),
+                      const SizedBox(width: 10),
+                      customButton(
+                        backgroundColor: AppPropertyColor.white,
+                        child: const Icon(
+                          Icons.print_rounded,
+                          color: AppPropertyColor.primary,
+                        ),
+                        onPressed: () {},
+                      ),
+                      const SizedBox(width: 10),
+                      customButton(
+                        backgroundColor: AppPropertyColor.primary,
+                        child: Icon(
+                          Icons.close_rounded,
+                          color: AppPropertyColor.white,
+                        ),
+                        onPressed: () {
+                          context.read<HistoryFinancialBloc>().add(
+                            HistoryFinancialResetSelectedData(),
                           );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                        },
+                      ),
+                    ],
                   ),
-                  child: Icon(Icons.delete_forever_rounded, color: Colors.red),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.print_rounded,
-                    color: AppPropertyColor.primary,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<HistoryFinancialBloc>().add(
-                      HistoryFinancialResetSelectedData(),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    backgroundColor: AppPropertyColor.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Icon(Icons.close_rounded, color: Colors.white),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+                ],
+              );
+            },
+          ),
     );
   }
 

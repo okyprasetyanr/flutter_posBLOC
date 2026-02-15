@@ -397,6 +397,7 @@ class _UIOperatorState extends State<UIOperator> {
                       },
                     ),
                   ),
+                  const SizedBox(height: 5),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

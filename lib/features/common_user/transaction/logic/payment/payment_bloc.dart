@@ -222,8 +222,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       (element) => element.getidBranch == sellState.idBranch,
     );
 
+    final dataOperator = repoCache.dataAccount!;
+
     final invoice = generateInvoice(
-      idOP: repoCache.dataAccount!.getNameUser,
+      idOP: dataOperator.getNameUser,
       branchId: sellState.idBranch,
       queue: sellState.isSell
           ? counter.getcounterSell + 1
@@ -256,12 +258,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           billPaid: 0,
           note: note,
           paymentMethod: LabelPaymentMethod.Cash,
-          date: formattedDate!,
+          date: formattedDate,
           invoice: invoice,
-          namePartner: sellState.selectedPartner?.getname ?? "",
-          idPartner: sellState.selectedPartner?.getid ?? "",
-          nameOperator: "",
-          idOperator: "",
+          namePartner: sellState.selectedPartner?.getname,
+          idPartner: sellState.selectedPartner?.getid,
+          nameOperator: dataOperator.getNameUser,
+          idOperator: dataOperator.getIdUser,
           discount: discount,
           ppn: ppn,
           totalItem: itemTotal,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -16,100 +17,118 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: AppPropertyColor.primary,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child:
-                BlocSelector<
-                  TransactionBloc,
-                  TransactionState,
-                  ModelItemOrdered?
-                >(
-                  selector: (state) {
-                    if (state is TransactionLoaded) {
-                      return state.selectedItem;
-                    }
-                    return null;
-                  },
-                  builder: (context, state) {
-                    return Text(state?.getnameItem ?? "", style: lv05TextStyle);
-                  },
-                ),
-          ),
-          Expanded(
-            child: Column(
+            child: Row(
               children: [
-                Text("Jumlah:", style: lv05TextStyle),
-                BlocSelector<TransactionBloc, TransactionState, double?>(
-                  selector: (state) {
-                    if (state is TransactionLoaded) {
-                      return state.selectedItem?.getqtyItem;
-                    }
-                    return null;
-                  },
-                  builder: (context, state) {
-                    if (state == null) {
-                      return SizedBox.shrink();
-                    }
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          style: ButtonStyle(
-                            minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                            padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.grey),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            context.read<TransactionBloc>().add(
-                              TransactionAdjustItem(mode: false),
-                            );
-                          },
-                          icon: Icon(Icons.remove, size: lv2IconSize),
-                        ),
-                        SizedBox(
-                          width: 18,
-                          child: Text(
-                            formatQtyOrPrice(state),
-                            style: lv1TextStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        IconButton(
-                          style: ButtonStyle(
-                            minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                            padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.grey),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            context.read<TransactionBloc>().add(
-                              TransactionAdjustItem(mode: true),
-                            );
-                          },
-                          icon: Icon(Icons.add, size: lv2IconSize),
-                        ),
-                      ],
-                    );
-                  },
+                Image.asset("assets/logo.png", height: 50),
+                const SizedBox(width: 10),
+                Expanded(
+                  child:
+                      BlocSelector<
+                        TransactionBloc,
+                        TransactionState,
+                        ModelItemOrdered?
+                      >(
+                        selector: (state) {
+                          if (state is TransactionLoaded) {
+                            return state.selectedItem;
+                          }
+                          return null;
+                        },
+                        builder: (context, state) {
+                          return Text(
+                            state?.getnameItem ?? "",
+                            style: lv1TextStyleWhiteBold,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        },
+                      ),
                 ),
               ],
             ),
+          ),
+          Column(
+            children: [
+              Text("Jumlah:", style: lv1TextStyleWhite),
+              BlocSelector<TransactionBloc, TransactionState, double?>(
+                selector: (state) {
+                  if (state is TransactionLoaded) {
+                    return state.selectedItem?.getqtyItem;
+                  }
+                  return null;
+                },
+                builder: (context, state) {
+                  if (state == null) {
+                    return SizedBox.shrink();
+                  }
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        style: ButtonStyle(
+                          minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                          padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              side: BorderSide(width: 1, color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          context.read<TransactionBloc>().add(
+                            TransactionAdjustItem(mode: false),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.remove,
+                          size: lv2IconSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 18,
+                        child: Text(
+                          formatQtyOrPrice(state),
+                          style: lv1TextStyleWhiteBold,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      IconButton(
+                        style: ButtonStyle(
+                          minimumSize: WidgetStatePropertyAll(Size(0, 0)),
+                          padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              side: BorderSide(width: 1, color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          context.read<TransactionBloc>().add(
+                            TransactionAdjustItem(mode: true),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.add,
+                          size: lv2IconSize,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 Widget customListGradient<T>({
@@ -48,7 +49,10 @@ Widget customListGradient<T>({
                         color: Colors.redAccent,
                         child: Align(
                           alignment: Alignment.centerRight,
-                          child: Icon(Icons.delete, color: Colors.white),
+                          child: Icon(
+                            Icons.delete,
+                            color: AppPropertyColor.white,
+                          ),
                         ),
                       ),
                       confirmDismiss: (direction) async {

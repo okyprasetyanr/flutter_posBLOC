@@ -15,13 +15,9 @@ enum PaymentMethod { Cash, Debit, QRIS, Split }
 
 class ModelTransaction extends Equatable {
   final DateTime _date;
-  final String _invoice,
-      _namePartner,
-      _idPartner,
-      _nameOperator,
-      _note,
-      _idBranch,
-      _idOperator;
+  final String _invoice, _note, _idBranch;
+  final String? _namePartner, _idPartner, _nameOperator, _idOperator;
+
   final LabelPaymentMethod _paymentMethod;
   final String? _bankName;
   final ListStatusTransaction? _statusTransaction;
@@ -42,10 +38,10 @@ class ModelTransaction extends Equatable {
     date: DateTime.now(),
     note: "",
     invoice: "",
-    namePartner: "",
-    idPartner: "",
-    nameOperator: "",
-    idOperator: "",
+    namePartner: null,
+    idPartner: null,
+    nameOperator: null,
+    idOperator: null,
     paymentMethod: LabelPaymentMethod.Cash,
     discount: 0,
     ppn: 0,
@@ -68,10 +64,10 @@ class ModelTransaction extends Equatable {
     String? bankName,
     required String note,
     required String invoice,
-    required String namePartner,
-    required String idPartner,
-    required String nameOperator,
-    required String idOperator,
+    String? namePartner,
+    String? idPartner,
+    String? nameOperator,
+    String? idOperator,
     required LabelPaymentMethod paymentMethod,
     required int discount,
     required int ppn,
@@ -110,10 +106,10 @@ class ModelTransaction extends Equatable {
   String get getidBranch => _idBranch;
   DateTime get getdate => _date;
   String get getinvoice => _invoice;
-  String get getnamePartner => _namePartner;
-  String get getidPartner => _idPartner;
-  String get getnameOperator => _nameOperator;
-  String get getidOperator => _idOperator;
+  String? get getnamePartner => _namePartner;
+  String? get getidPartner => _idPartner;
+  String? get getnameOperator => _nameOperator;
+  String? get getidOperator => _idOperator;
   LabelPaymentMethod get getpaymentMethod => _paymentMethod;
   String get getnote => _note;
   String? get getbankName => _bankName;

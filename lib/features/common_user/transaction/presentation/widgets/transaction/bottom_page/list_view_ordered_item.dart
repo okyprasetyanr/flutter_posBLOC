@@ -231,9 +231,12 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         return ListTile(
                                           leading: CircleAvatar(
+                                            backgroundColor:
+                                                AppPropertyColor.primary,
                                             child: Icon(
                                               Icons.person,
                                               size: lv2IconSize,
+                                              color: AppPropertyColor.white,
                                             ),
                                           ),
                                           title: Text(
@@ -259,36 +262,31 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                 ),
                           ),
 
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: ElevatedButton.icon(
-                              onPressed: () async {
-                                context.read<PartnerBloc>().add(
-                                  PartnerStatusPartner(
-                                    isCustomer:
-                                        (context.read<TransactionBloc>().state
-                                                as TransactionLoaded)
-                                            .isSell,
-                                  ),
-                                );
-                                await navUpDownTransition(
-                                  context,
-                                  '/partner',
-                                  false,
-                                );
-                              },
-                              icon: const Icon(Icons.add),
-                              label: Text(
-                                "Tambah Kontak Baru",
-                                style: lv05TextStyle,
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(48),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
+                          customButtonIcon(
+                            backgroundColor: AppPropertyColor.primary,
+                            icon: const Icon(
+                              Icons.add,
+                              color: AppPropertyColor.white,
                             ),
+                            label: Text(
+                              "Tambah Kontak Baru",
+                              style: lv05TextStyleWhite,
+                            ),
+                            onPressed: () async {
+                              context.read<PartnerBloc>().add(
+                                PartnerStatusPartner(
+                                  isCustomer:
+                                      (context.read<TransactionBloc>().state
+                                              as TransactionLoaded)
+                                          .isSell,
+                                ),
+                              );
+                              await navUpDownTransition(
+                                context,
+                                '/partner',
+                                false,
+                              );
+                            },
                           ),
                         ],
                       );
@@ -299,9 +297,14 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   context.select<TransactionBloc, String>(
                     (value) => value.state is TransactionLoaded
                         ? (value.state as TransactionLoaded)
-                                  .selectedPartner
-                                  ?.getname ??
-                              "Kontak"
+                                      .selectedPartner
+                                      ?.getid ==
+                                  ""
+                              ? "Kontak"
+                              : (value.state as TransactionLoaded)
+                                        .selectedPartner
+                                        ?.getname ??
+                                    "Kontak"
                         : "Kontak",
                   ),
                   style: lv1TextStyleWhite,

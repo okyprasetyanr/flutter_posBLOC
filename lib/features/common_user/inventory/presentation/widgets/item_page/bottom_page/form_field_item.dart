@@ -72,7 +72,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 100,
+                  width: 80,
                   child: customButton(
                     backgroundColor: AppPropertyColor.primary,
                     child: Icon(
@@ -109,7 +109,6 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 2),
             customTextField(
               context: context,
               index: 1,
@@ -131,7 +130,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             Row(
               children: [
                 Expanded(

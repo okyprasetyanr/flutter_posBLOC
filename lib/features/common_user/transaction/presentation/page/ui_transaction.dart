@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/main_page/popup_item.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
@@ -88,50 +90,25 @@ class _UITransactionState extends State<UITransaction> {
           children: [
             Row(
               children: [
-                ElevatedButton.icon(
+                customButtonIcon(
+                  backgroundColor: AppPropertyColor.primary,
+                  icon: const Icon(
+                    Icons.menu_rounded,
+                    color: AppPropertyColor.white,
+                    size: lv2IconSize,
+                  ),
+                  label: Text("Menu", style: lv05TextStyleWhite),
                   onPressed: () {
                     isOpen.value = !isOpen.value;
                   },
-                  label: Text("Menu", style: lv05TextStyleWhite),
-                  icon: Icon(
-                    Icons.menu_rounded,
-                    color: Colors.white,
-                    size: lv2IconSize,
-                  ),
-                  style: ButtonStyle(
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
-                    padding: const WidgetStatePropertyAll(
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    ),
-                    backgroundColor: WidgetStatePropertyAll(
-                      AppPropertyColor.primary,
-                    ),
-                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 1,
-                  child: TextField(
-                    style: lv05TextStyle,
+                  child: customTextField(
+                    moreRadius: true,
                     controller: searchController,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      hintText: "Cari...",
-                      hintStyle: lv05TextStyle,
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 10,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
+                    text: "Cari...",
                     onChanged: (value) => context.read<TransactionBloc>().add(
                       TransactionSearchItem(text: value),
                     ),
@@ -218,10 +195,7 @@ class _UITransactionState extends State<UITransaction> {
                   },
                   builder: (context, state) {
                     return state
-                        ? const SizedBox(
-                            width: 50,
-                            child: UITransactionSavedCart(),
-                          )
+                        ? const UITransactionSavedCart()
                         : SizedBox.shrink();
                   },
                 ),
@@ -303,7 +277,7 @@ class _UITransactionState extends State<UITransaction> {
                           width: 80,
                           child: Text(
                             "${formatPriceRp(state.$2)}",
-                            style: lv05TextStyleRedPrice,
+                            style: lv05textStylePrice,
                             textAlign: TextAlign.start,
                           ),
                         ),

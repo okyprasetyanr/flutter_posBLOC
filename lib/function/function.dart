@@ -39,6 +39,10 @@ String formatQtyOrPrice(double qty) {
   return format.format(qty);
 }
 
+String formatDisc(int disc) {
+  return "(-$disc%)";
+}
+
 class UserSession {
   static DataUserRepositoryCache? repo;
   static String uid_owner = "";
@@ -92,25 +96,11 @@ String formatDate({required DateTime date, bool? minute}) {
   return DateFormat(pattern).format(date);
 }
 
-DateTime? parseDate({dynamic date, bool minute = true}) {
-  if (date == null) return null;
-
+DateTime parseDate({dynamic date, bool minute = true}) {
   if (date is DateTime) return date;
 
-  if (date is String) {
-    try {
-      final pattern = minute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyyy';
-      return DateFormat(pattern).parse(date);
-    } catch (_) {
-      try {
-        return DateTime.parse(date);
-      } catch (_) {
-        return null;
-      }
-    }
-  }
-
-  return null;
+  final pattern = minute ? 'dd-MM-yyyy HH:mm:ss' : 'dd-MM-yyyy';
+  return DateFormat(pattern).parse(date);
 }
 
 DateTime dateYMDEndBLOC(DateTime? dateTime) {

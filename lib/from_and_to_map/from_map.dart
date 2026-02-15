@@ -31,8 +31,8 @@ ModelTransactionFinancial fromMapTransFinancial(
     nameFinancial: data[FieldDataTransFinancial.name_financial.name],
     idBranch: data[FieldDataTransFinancial.id_branch.name],
     invoice: id,
-    date: parseDate(date: data[FieldDataTransFinancial.date.name])!,
-    note: data[FieldDataTransFinancial.date.name],
+    date: parseDate(date: data[FieldDataTransFinancial.date.name]),
+    note: data[FieldDataTransFinancial.note.name],
     amount: data[FieldDataTransFinancial.amount.name].toDouble(),
   );
 }
@@ -73,7 +73,7 @@ ModelItem fromMapItem(Map<String, dynamic> data, String id) {
     idBranch: data[FieldDataItem.id_branch.name],
     barcode: data[FieldDataItem.barcode.name],
     statusItem: StatusDataX.fromString(data[FieldDataItem.status_item.name]),
-    date: parseDate(date: data[FieldDataItem.date.name]) ?? DateTime.now(),
+    date: parseDate(date: data[FieldDataItem.date.name]),
   );
 }
 
@@ -90,7 +90,7 @@ ModelPartner fromMapPartner(Map<String, dynamic> data, String id) {
       (element) => element.name == data[FieldDataPartner.type.name],
       orElse: () => PartnerType.customer,
     ),
-    date: parseDate(date: data[FieldDataPartner.date.name])!,
+    date: parseDate(date: data[FieldDataPartner.date.name]),
   );
 }
 
@@ -156,7 +156,7 @@ ModelCompany fromMapCompany(
     created: parseDate(
       date: data[FieldDataCompany.created_company.name],
       minute: false,
-    )!,
+    ),
   );
 }
 
@@ -182,7 +182,7 @@ ModelBatch fromMapBatch(
   return ModelBatch(
     invoice: id,
     idBranch: data[FieldDataBatch.id_branch.name],
-    date_buy: parseDate(date: data[FieldDataBatch.date_buy.name])!,
+    date_buy: parseDate(date: data[FieldDataBatch.date_buy.name]),
     items_batch: dataList ?? [],
   );
 }
@@ -197,7 +197,7 @@ ModelItemBatch fromMapItembatch(Map<String, dynamic> data, String id) {
     idOrdered: id,
     idCategoryItem: data[FieldDataItemBatch.id_category_item.name],
     note: data[FieldDataItemBatch.note.name],
-    date_buy: parseDate(date: data[FieldDataItemBatch.date_buy.name])!,
+    date_buy: parseDate(date: data[FieldDataItemBatch.date_buy.name]),
     expiredDate: data[FieldDataItemBatch.expired_date.name] != null
         ? parseDate(date: data[FieldDataItemBatch.expired_date.name])
         : null,
@@ -261,6 +261,14 @@ ModelItemOrdered fromMapItemOrdered({
   );
 }
 
+String? validateDataNullOrEmpty(String? data) {
+  return data != null
+      ? data.isEmpty
+            ? null
+            : data
+      : null;
+}
+
 ModelTransaction fromMapTransaction(
   Map<String, dynamic> data,
   List<ModelItemOrdered> itemsOrdered,
@@ -272,13 +280,21 @@ ModelTransaction fromMapTransaction(
     bankName: data[FieldDataTransaction.bank_name.name],
     itemsOrdered: itemsOrdered,
     dataSplit: splitData,
-    date: parseDate(date: data[FieldDataTransaction.date.name])!,
+    date: parseDate(date: data[FieldDataTransaction.date.name]),
     note: data[FieldDataTransaction.note.name],
     invoice: id,
-    namePartner: data[FieldDataTransaction.name_partner.name],
-    idPartner: data[FieldDataTransaction.id_partner.name],
-    nameOperator: data[FieldDataTransaction.name_operator.name],
-    idOperator: data[FieldDataTransaction.id_operator.name],
+    namePartner: validateDataNullOrEmpty(
+      data[FieldDataTransaction.name_partner.name],
+    ),
+    idPartner: validateDataNullOrEmpty(
+      data[FieldDataTransaction.id_partner.name],
+    ),
+    nameOperator: validateDataNullOrEmpty(
+      data[FieldDataTransaction.name_operator.name],
+    ),
+    idOperator: validateDataNullOrEmpty(
+      data[FieldDataTransaction.id_operator.name],
+    ),
     paymentMethod: LabelPaymentMethodX.fromString(
       data[FieldDataTransaction.payment_method.name],
     )!,

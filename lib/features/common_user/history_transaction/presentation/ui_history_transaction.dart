@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/common_widget/widget_custom_row_list_item.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
@@ -131,15 +133,9 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                 return (dateNowYMDBLOC(), dateNowYMDBLOC(), "Hari ini");
               },
               builder: (context, state) {
-                return ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    minimumSize: Size(0, 0),
-                    padding: EdgeInsets.all(8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+                return customButton(
+                  backgroundColor: AppPropertyColor.white,
+                  child: Text(state.$3, style: lv05TextStyle),
                   onPressed: () async {
                     DateTime? pickedDateStart, pickedDateEnd;
                     await customDatePicker(
@@ -166,31 +162,24 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                       ),
                     );
                   },
-                  label: Text(state.$3, style: lv05TextStyle),
                 );
               },
             ),
 
             const SizedBox(width: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(0, 0),
-                padding: EdgeInsets.all(8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+            customButton(
+              child: Icon(Icons.refresh_rounded, color: AppPropertyColor.black),
+              backgroundColor: AppPropertyColor.white,
               onPressed: () {
-                searchController.clear();
                 final bloc = context.read<HistoryTransactionBloc>();
                 bloc.add(HistoryTransactionResetSelectedData());
+                searchController.clear();
                 _initData();
               },
-              child: Icon(Icons.refresh_rounded),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -217,6 +206,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                   context.read<HistoryTransactionBloc>().add(
                     HistoryTransactionSelectedFilter(filter: selectedEnum),
                   );
+                  searchController.clear();
                 },
               ),
             ),
@@ -273,6 +263,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                           vertical: 6,
                         ),
                         child: Card(
+                          color: AppPropertyColor.white,
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -332,19 +323,17 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                       ),
                                       Expanded(
                                         child: Text(
-                                          "${dataTransaction.getpaymentMethod.name}",
-                                          style: lv05TextStyle,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
                                           "${formatPriceRp(dataTransaction.gettotal)}",
                                           style: lv1TextStylePrimaryPrice,
                                           textAlign: TextAlign.end,
                                         ),
                                       ),
                                     ],
+                                  ),
+                                  Text(
+                                    "Tipe: ${dataTransaction.getpaymentMethod.name}",
+                                    style: lv05TextStyle,
+                                    textAlign: TextAlign.center,
                                   ),
                                   Text(
                                     "Catatan: ${dataTransaction.getnote}",
@@ -423,293 +412,264 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   }
 
   Widget layoutBottom() {
-    return BlocSelector<
-      HistoryTransactionBloc,
-      HistoryTransactionState,
-      (ModelTransaction?, bool)
-    >(
-      selector: (state) {
-        if (state is HistoryTransactionLoaded) {
-          return (state.selectedData, state.isSell);
-        }
-        return (null, true);
-      },
-      builder: (context, state) {
-        if (state.$1 == null) {
-          return Text("Pilih Data transaksi", style: lv05TextStyle);
-        }
-        final transaction = state.$1!;
-        return Column(
-          children: [
-            Expanded(
-              child: ListView(
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.only(top: 5, left: 5, right: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 3,
+            blurStyle: BlurStyle.outer,
+            color: Colors.black.withValues(alpha: 0.5),
+          ),
+        ],
+      ),
+      child:
+          BlocSelector<
+            HistoryTransactionBloc,
+            HistoryTransactionState,
+            (ModelTransaction?, bool)
+          >(
+            selector: (state) {
+              if (state is HistoryTransactionLoaded) {
+                return (state.selectedData, state.isSell);
+              }
+              return (null, true);
+            },
+            builder: (context, state) {
+              if (state.$1 == null) {
+                return Center(
+                  child: Text(
+                    "Pilih Data transaksi",
+                    style: lv05TextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+              final transaction = state.$1!;
+              return Column(
                 children: [
-                  rowContent("Nomor Faktur", transaction.getinvoice),
-                  rowContent("Tanggal", transaction.getdate.toString()),
-                  rowContent("Kontak", transaction.getnamePartner),
-                  rowContent("Pembayaran", transaction.getpaymentMethod.name),
-                  transaction.getbankName != null
-                      ? rowContent(
-                          "Bank Name",
-                          transaction.getbankName.toString(),
-                        )
-                      : const SizedBox.shrink(),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        rowContent("Nomor Faktur", transaction.getinvoice),
+                        rowContent("Tanggal", transaction.getdate.toString()),
+                        transaction.getnamePartner != null
+                            ? rowContent("Kontak", transaction.getnamePartner!)
+                            : const SizedBox.shrink(),
+                        rowContent(
+                          "Pembayaran",
+                          transaction.getpaymentMethod.name,
+                        ),
+                        transaction.getbankName != null
+                            ? rowContent(
+                                "Bank Name",
+                                transaction.getbankName.toString(),
+                              )
+                            : const SizedBox.shrink(),
 
-                  rowContent("Operator", transaction.getnameOperator),
-                  rowContent("Status", transaction.getstatusTransaction!.name),
-                  ...transaction.getitemsOrdered.map((item) {
-                    return Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        children: [
-                          Row(
+                        rowContent("Operator", transaction.getnameOperator!),
+                        rowContent(
+                          "Status",
+                          transaction.getstatusTransaction!.name,
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          child: Column(
                             children: [
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  "Nama",
-                                  style: lv05TextStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Dis.",
-                                  style: lv05TextStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "Jumlah",
-                                  style: lv05TextStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 1,
-                                height: 15,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  "Total Harga",
-                                  style: lv05TextStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                              customRowListItem(label: true),
+                              ...transaction.getitemsOrdered.map((item) {
+                                return Column(
+                                  children: [
+                                    customRowListItem(
+                                      name: item.getnameItem,
+                                      disc: formatDisc(item.getdiscountItem),
+                                      quantity: formatQtyOrPrice(
+                                        item.getqtyItem,
+                                      ),
+                                      total: formatPriceRp(item.getsubTotal),
+                                    ),
+                                    ...item.getCondiment.map((condiment) {
+                                      return customRowListItem(
+                                        condiment: true,
+                                        name: condiment.getnameItem,
+                                        disc: formatDisc(
+                                          condiment.getdiscountItem,
+                                        ),
+                                        quantity: formatQtyOrPrice(
+                                          condiment.getqtyItem,
+                                        ),
+                                        total: formatPriceRp(
+                                          condiment.getsubTotal,
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                );
+                              }),
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
-                                style: lv05TextStyle,
-                              ),
-                              Text(
-                                "${formatPriceRp(item.getsubTotal)}",
-                                style: lv05TextStyle,
-                              ),
-                            ],
-                          ),
-                          Text("Condiemnt", style: lv05TextStyle),
-                          ...item.getCondiment.map((e) {
-                            return Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${formatQtyOrPrice(item.getqtyItem)}x ${item.getnameItem} (-${item.getdiscountItem}%)",
-                                    style: lv05TextStyle,
-                                  ),
-                                  Text(
-                                    "${formatPriceRp(item.getsubTotal)}",
-                                    style: lv05TextStyle,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }),
-                        ],
+                        ),
+                        const SizedBox(height: 10),
+                        rowContent(
+                          "Sub Total",
+                          formatPriceRp(transaction.getsubTotal),
+                        ),
+                        rowContent(
+                          "Total Item",
+                          transaction.getitemsOrdered.length.toString(),
+                        ),
+                        rowContent(
+                          "Diskon (${transaction.getdiscount}%)",
+                          formatPriceRp(transaction.gettotalDiscount),
+                        ),
+                        rowContent(
+                          "PPN (${transaction.getppn}%)",
+                          formatPriceRp(transaction.gettotalPpn),
+                        ),
+                        rowContent(
+                          "Charge (${transaction.getcharge}%)",
+                          formatPriceRp(transaction.gettotalCharge),
+                        ),
+                        rowContent(
+                          "Total",
+                          formatPriceRp(transaction.gettotal),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      customButton(
+                        backgroundColor: AppPropertyColor.white,
+                        child: const Icon(
+                          Icons.delete_forever_rounded,
+                          color: AppPropertyColor.deleteOrClose,
+                        ),
+                        onPressed: () {
+                          state.$2
+                              ? transaction.getstatusTransaction ==
+                                        ListStatusTransaction.Batal
+                                    ? customSnackBar(
+                                        context,
+                                        "Sudah diBatalkan!",
+                                      )
+                                    : confirmCancel(transaction.getitemsOrdered)
+                              : UserSession.fifo
+                              ? context
+                                        .read<DataUserRepositoryCache>()
+                                        .dataBatch
+                                        .where(
+                                          (batch) =>
+                                              batch.getinvoice ==
+                                              state.$1!.getinvoice,
+                                        )
+                                        .expand((batch) => batch.getitems_batch)
+                                        .every(
+                                          (element) =>
+                                              element.getqtyItem_out == 0,
+                                        )
+                                    ? confirmCancel(transaction.getitemsOrdered)
+                                    : customSnackBar(
+                                        context,
+                                        "FIFO: Aktif, Stok Batch sudah terpakai, tidak dapat membatalkan!",
+                                      )
+                              : confirmCancel(state.$1!.getitemsOrdered);
+                        },
                       ),
-                    );
-                  }),
-                  rowContent(
-                    "Sub Total",
-                    formatPriceRp(transaction.getsubTotal),
-                  ),
-                  rowContent(
-                    "Total Item",
-                    transaction.getitemsOrdered.length.toString(),
-                  ),
-                  rowContent(
-                    "Diskon (${transaction.getdiscount}%)",
-                    formatPriceRp(transaction.gettotalDiscount),
-                  ),
-                  rowContent(
-                    "Diskon (${transaction.getppn}%)",
-                    formatPriceRp(transaction.gettotalPpn),
-                  ),
-                  rowContent(
-                    "Diskon (${transaction.getcharge}%)",
-                    formatPriceRp(transaction.gettotalCharge),
-                  ),
-                  rowContent("Total", formatPriceRp(transaction.gettotal)),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    state.$2
-                        ? transaction.getstatusTransaction ==
+                      const SizedBox(width: 10),
+                      customButton(
+                        backgroundColor: AppPropertyColor.white,
+                        child: const Icon(
+                          Icons.edit_rounded,
+                          color: AppPropertyColor.black,
+                        ),
+                        onPressed: () {
+                          state.$1!.getstatusTransaction ==
                                   ListStatusTransaction.Batal
-                              ? customSnackBar(context, "Sudah diBatalkan!")
-                              : confirmCancel(transaction.getitemsOrdered)
-                        : UserSession.fifo
-                        ? context
-                                  .read<DataUserRepositoryCache>()
-                                  .dataBatch
-                                  .where(
-                                    (batch) =>
-                                        batch.getinvoice ==
-                                        state.$1!.getinvoice,
-                                  )
-                                  .expand((batch) => batch.getitems_batch)
-                                  .every(
-                                    (element) => element.getqtyItem_out == 0,
-                                  )
-                              ? confirmCancel(transaction.getitemsOrdered)
-                              : customSnackBar(
+                              ? customSnackBar(
                                   context,
-                                  "FIFO: Aktif, Stok Batch sudah terpakai, tidak dapat membatalkan!",
+                                  "Transaksi sudah dibantalkan!",
                                 )
-                        : confirmCancel(state.$1!.getitemsOrdered);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Icon(Icons.delete_forever_rounded, color: Colors.red),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    state.$1!.getstatusTransaction ==
-                            ListStatusTransaction.Batal
-                        ? customSnackBar(
-                            context,
-                            "Transaksi sudah dibantalkan!",
-                          )
-                        : showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text("Konfirmasi", style: lv2TextStyle),
-                              content: const SizedBox.shrink(),
-                              // Text.rich(
-                              //   TextSpan(
-                              //     text: "Revisi ${state.$1!.getinvoice}?",
-                              //     style: lv1TextStyle,
-                              //     children: [
-                              //       TextSpan(
-                              //         text:
-                              //             "\nKonfirmasi Revisi berarti membatalkan Transaksi ini dan memulai Revisi.",
-                              //         style: lv05TextStyle,
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
-                                  child: Text("Batal", style: lv1TextStyle),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    Navigator.pop(context, true);
-                                    await confirmCancel(
-                                      revisi: true,
-                                      state.$1!.getitemsOrdered,
-                                    );
-                                  },
-                                  child: Text("Hapus", style: lv1TextStyle),
-                                ),
-                              ],
-                            ),
+                              : showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text(
+                                      "Konfirmasi",
+                                      style: lv2TextStyle,
+                                    ),
+                                    content: const SizedBox.shrink(),
+
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, false),
+                                        child: Text(
+                                          "Batal",
+                                          style: lv1TextStyle,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context, true);
+                                          await confirmCancel(
+                                            revisi: true,
+                                            state.$1!.getitemsOrdered,
+                                          );
+                                        },
+                                        child: Text(
+                                          "Hapus",
+                                          style: lv1TextStyle,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                        },
+                      ),
+                      const SizedBox(width: 10),
+                      customButton(
+                        backgroundColor: AppPropertyColor.white,
+                        child: const Icon(
+                          Icons.print_rounded,
+                          color: AppPropertyColor.black,
+                        ),
+                        onPressed: () async {
+                          final printer = context.read<ServicePrinter>();
+                          final isAvailable =
+                              await printer.getSavedMac() != null;
+                          if (isAvailable) {
+                            await printer.printTest();
+                          } else {
+                            customSnackBar(context, "Printer tidak tersambung");
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 10),
+                      customButton(
+                        backgroundColor: AppPropertyColor.primary,
+                        child: const Icon(
+                          Icons.close_rounded,
+                          color: AppPropertyColor.white,
+                        ),
+                        onPressed: () {
+                          context.read<HistoryTransactionBloc>().add(
+                            HistoryTransactionResetSelectedData(),
                           );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                        },
+                      ),
+                    ],
                   ),
-                  child: Icon(Icons.edit_rounded, color: Colors.black),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () async {
-                    final printer = context.read<ServicePrinter>();
-                    final isAvailable = await printer.getSavedMac() != null;
-                    if (isAvailable) {
-                      await printer.printTest();
-                    } else {
-                      customSnackBar(context, "Printer tidak tersambung");
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.print_rounded,
-                    color: AppPropertyColor.primary,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<HistoryTransactionBloc>().add(
-                      HistoryTransactionResetSelectedData(),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(8),
-                    elevation: 2,
-                    backgroundColor: AppPropertyColor.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Icon(Icons.close_rounded, color: Colors.white),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+                ],
+              );
+            },
+          ),
     );
   }
 }

@@ -92,7 +92,7 @@ final lv05TextStyleItalic = GoogleFonts.poppins(
   fontStyle: FontStyle.italic,
   color: Colors.black,
   fontWeight: FontWeight.w300,
-  fontSize: 10,
+  fontSize: 9,
 );
 
 final lv05TextStyleRed = GoogleFonts.poppins(

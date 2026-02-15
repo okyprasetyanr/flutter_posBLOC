@@ -241,7 +241,10 @@ class _UiFinancialState extends State<UiFinancial> {
           alignment: Alignment.centerRight,
           child: customButtonIcon(
             backgroundColor: AppPropertyColor.primary,
-            icon: Icon(Icons.check_rounded, color: Colors.white),
+            icon: const Icon(
+              Icons.check_rounded,
+              color: AppPropertyColor.white,
+            ),
             label: Text(
               context.select<FinancialBloc, String>((value) {
                 final state = value.state;

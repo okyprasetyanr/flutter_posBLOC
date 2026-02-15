@@ -63,7 +63,10 @@ class _UiBatchState extends State<UiBatch> {
           children: [
             customButtonIcon(
               backgroundColor: AppPropertyColor.primary,
-              icon: Icon(Icons.menu_rounded, color: Colors.white),
+              icon: const Icon(
+                Icons.menu_rounded,
+                color: AppPropertyColor.white,
+              ),
               label: Text("Menu", style: lv05TextStyleWhite),
               onPressed: () => isOpen.value = !isOpen.value,
             ),
@@ -150,7 +153,7 @@ class _UiBatchState extends State<UiBatch> {
                           itemBuilder: (context, index) {
                             final data = state.$1[index];
                             return Material(
-                              color: Colors.white,
+                              color: AppPropertyColor.white,
                               borderRadius: BorderRadius.circular(15),
                               elevation: 4,
                               child: InkWell(
@@ -283,92 +286,91 @@ class _UiBatchState extends State<UiBatch> {
   }
 
   Widget layoutBottom() {
-    return Padding(
-      padding: EdgeInsets.only(left: 15, right: 15),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
+    return Container(
+      margin: EdgeInsets.only(left: 5, right: 5),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 0),
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 3,
+            spreadRadius: 1,
+            blurStyle: BlurStyle.outer,
           ),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 0),
-              color: Colors.black,
-              blurRadius: 3,
-              spreadRadius: 1,
-              blurStyle: BlurStyle.outer,
-            ),
-          ],
-        ),
-        child: BlocSelector<BatchBloc, BatchState, ModelItemBatch?>(
-          selector: (state) {
-            if (state is BatchLoaded) {
-              return state.detailSelectedItem;
-            }
-            return null;
-          },
-          builder: (context, state) {
-            return state == null
-                ? Center(
-                    child: Text(
-                      "Pilih item untuk menampilkan Rangkuman!",
-                      style: lv05TextStyle,
-                    ),
-                  )
-                : ListView(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Image.asset("assets/logo.png", height: 80),
-                          ),
-                          customButton(
-                            backgroundColor: AppPropertyColor.primary,
-                            child: Icon(
-                              Icons.close_rounded,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              context.read<BatchBloc>().add(BatchReset());
-                              _initData();
-                            },
-                          ),
-                        ],
-                      ),
-                      rowContent("Nama Item", state.getnameItem),
-                      rowContent(
-                        "Stock Masuk",
-                        formatQtyOrPrice(state.getqtyItem_in),
-                      ),
-                      rowContent(
-                        "Stock Keluar",
-                        formatQtyOrPrice(state.getqtyItem_out),
-                      ),
-                      rowContent(
-                        "Stock Sisa",
-                        formatQtyOrPrice(
-                          state.getqtyItem_in - state.getqtyItem_out,
+        ],
+      ),
+      child: BlocSelector<BatchBloc, BatchState, ModelItemBatch?>(
+        selector: (state) {
+          if (state is BatchLoaded) {
+            return state.detailSelectedItem;
+          }
+          return null;
+        },
+        builder: (context, state) {
+          return state == null
+              ? Center(
+                  child: Text(
+                    "Pilih item untuk menampilkan Rangkuman!",
+                    style: lv05TextStyle,
+                  ),
+                )
+              : ListView(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Image.asset("assets/logo.png", height: 80),
                         ),
+                        customButton(
+                          backgroundColor: AppPropertyColor.primary,
+                          child: const Icon(
+                            Icons.close_rounded,
+                            color: AppPropertyColor.white,
+                          ),
+                          onPressed: () {
+                            context.read<BatchBloc>().add(BatchReset());
+                            _initData();
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    rowContent("Nama Item", state.getnameItem),
+                    rowContent(
+                      "Stock Masuk",
+                      formatQtyOrPrice(state.getqtyItem_in),
+                    ),
+                    rowContent(
+                      "Stock Keluar",
+                      formatQtyOrPrice(state.getqtyItem_out),
+                    ),
+                    rowContent(
+                      "Stock Sisa",
+                      formatQtyOrPrice(
+                        state.getqtyItem_in - state.getqtyItem_out,
                       ),
-                      rowContent(
-                        "Batch Terbaru",
-                        formatDate(date: state.getdateBuy),
-                      ),
-                      rowContent(
-                        "Harga Jual Terkini",
-                        formatPriceRp(state.getpriceItemFinal),
-                      ),
-                      rowContent(
-                        "Harga Beli Terkini",
-                        formatPriceRp(state.getpriceItemBuy),
-                      ),
-                    ],
-                  );
-          },
-        ),
+                    ),
+                    rowContent(
+                      "Batch Terbaru",
+                      formatDate(date: state.getdateBuy),
+                    ),
+                    rowContent(
+                      "Harga Jual Terkini",
+                      formatPriceRp(state.getpriceItemFinal),
+                    ),
+                    rowContent(
+                      "Harga Beli Terkini",
+                      formatPriceRp(state.getpriceItemBuy),
+                    ),
+                  ],
+                );
+        },
       ),
     );
   }

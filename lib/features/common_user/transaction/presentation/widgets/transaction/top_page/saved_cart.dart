@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -18,14 +19,12 @@ class UITransactionSavedCart extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        ElevatedButton(
-          style: ButtonStyle(
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-            padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
-            backgroundColor: WidgetStatePropertyAll(AppPropertyColor.primary),
+        customButton(
+          backgroundColor: AppPropertyColor.primary,
+          child: const Icon(
+            Icons.shopping_bag_rounded,
+            size: lv2IconSize,
+            color: Colors.white,
           ),
           onPressed: () {
             customBottomSheet(
@@ -137,15 +136,11 @@ class UITransactionSavedCart extends StatelessWidget {
               },
             );
           },
-          child: Icon(
-            Icons.shopping_bag_rounded,
-            size: lv2IconSize,
-            color: Colors.white,
-          ),
         ),
+
         Positioned(
-          right: 10,
-          top: 8,
+          right: 15,
+          top: 3,
           child: Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -57,101 +58,140 @@ class _UITransactionPopUpDiscountAndCustomState
                   runSpacing: 5,
                   children: diskonList.map((diskon) {
                     final isSelected = state == diskon;
-                    return ElevatedButton.icon(
-                      onPressed: () {
-                        if (customDiscountController.text.isNotEmpty) {
-                          customDiscountController.clear();
-                        }
-
-                        context.read<TransactionBloc>().add(
-                          TransactionAdjustItem(discount: diskon),
-                        );
-                      },
-                      icon: Icon(Icons.check_rounded, size: lv1IconSize),
+                    return customButtonIcon(
+                      padding: false,
+                      backgroundColor: isSelected
+                          ? AppPropertyColor.primary
+                          : AppPropertyColor.white,
+                      icon: const Icon(
+                        Icons.check_rounded,
+                        size: lv1IconSize,
+                        color: AppPropertyColor.black,
+                      ),
                       label: Text(
                         "$diskon%",
                         style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
                       ),
-                      style: ButtonStyle(
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                        padding: const WidgetStatePropertyAll(
-                          EdgeInsets.all(7),
-                        ),
-                        backgroundColor: WidgetStatePropertyAll(
-                          isSelected ? AppPropertyColor.primary : Colors.white,
-                        ),
-                        iconColor: WidgetStatePropertyAll(
-                          isSelected ? Colors.white : Colors.black,
-                        ),
-                      ),
+                      onPressed: () {
+                        if (customDiscountController.text.isNotEmpty) {
+                          customDiscountController.clear();
+                        }
+                        final finaldisc = isSelected ? 0 : diskon;
+                        context.read<TransactionBloc>().add(
+                          TransactionAdjustItem(discount: finaldisc),
+                        );
+                      },
                     );
                   }).toList(),
                 );
               },
             ),
           ),
-          const SizedBox(height: 5),
-          SizedBox(
-            child: BlocListener<TransactionBloc, TransactionState>(
-              listenWhen: (previous, current) =>
-                  previous is TransactionLoaded &&
-                  current is TransactionLoaded &&
-                  previous.selectedItem?.getdiscountItem !=
-                      current.selectedItem?.getdiscountItem,
-              listener: (context, state) {
-                if (state is TransactionLoaded) {
-                  if (state.selectedItem == null) {
-                    customDiscountController.clear();
-                  } else {
-                    customDiscountController.text =
-                        "${state.selectedItem!.getdiscountItem}";
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              BlocSelector<TransactionBloc, TransactionState, int?>(
+                selector: (state) {
+                  if (state is TransactionLoaded &&
+                      state.selectedItem != null) {
+                    return state.selectedItem!.getdiscountItem;
                   }
-                }
-              },
-              child: TextField(
-                controller: customDiscountController,
-                textAlign: TextAlign.right,
-                keyboardType: TextInputType.number,
-                style: lv05TextStyle,
-                decoration: InputDecoration(
-                  isDense: true,
-                  contentPadding: EdgeInsets.all(10),
-                  suffixText: "%",
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  labelText: "Ubah Diskon",
-                  labelStyle: lv05TextStyle,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  TextInputFormatter.withFunction((oldValue, newValue) {
-                    final customDiscount = newValue.text;
-                    final intValue =
-                        int.tryParse(
-                          customDiscount.isEmpty ? "0" : customDiscount,
-                        ) ??
-                        0;
-                    if (intValue > 100) {
-                      customSnackBar(context, "Jumlah melebihi 100%");
-                      return oldValue;
-                    }
-                    context.read<TransactionBloc>().add(
-                      TransactionAdjustItem(
-                        discount: customDiscount.isEmpty ? 0 : intValue,
-                      ),
-                    );
-                    return newValue;
-                  }),
-                ],
+                  return null;
+                },
+                builder: (context, state) {
+                  if (state == null) {
+                    return SizedBox.shrink();
+                  }
+                  final isSelected = state == 100;
+                  return customButtonIcon(
+                    backgroundColor: isSelected
+                        ? AppPropertyColor.primary
+                        : AppPropertyColor.white,
+                    icon: const Icon(
+                      Icons.check_rounded,
+                      size: lv1IconSize,
+                      color: AppPropertyColor.black,
+                    ),
+                    label: Text(
+                      "Gratis",
+                      style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
+                    ),
+                    onPressed: () {
+                      if (customDiscountController.text.isNotEmpty) {
+                        customDiscountController.clear();
+                      }
+                      final finaldisc = isSelected ? 0 : 100;
+                      context.read<TransactionBloc>().add(
+                        TransactionAdjustItem(discount: finaldisc),
+                      );
+                    },
+                  );
+                },
               ),
-            ),
+              BlocListener<TransactionBloc, TransactionState>(
+                listenWhen: (previous, current) =>
+                    previous is TransactionLoaded &&
+                    current is TransactionLoaded &&
+                    previous.selectedItem?.getdiscountItem !=
+                        current.selectedItem?.getdiscountItem,
+                listener: (context, state) {
+                  if (state is TransactionLoaded) {
+                    if (state.selectedItem == null ||
+                        (state.selectedItem != null &&
+                            state.selectedItem!.getdiscountItem == 0)) {
+                      customDiscountController.clear();
+                    } else {
+                      customDiscountController.text =
+                          "${state.selectedItem!.getdiscountItem}";
+                    }
+                  }
+                },
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(
+                    width: 75,
+                    child: TextField(
+                      controller: customDiscountController,
+                      textAlign: TextAlign.right,
+                      keyboardType: TextInputType.number,
+                      style: lv05TextStyle,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.all(10),
+                        suffixText: "%",
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        labelText: "Ubah Diskon",
+                        labelStyle: lv05TextStyle,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          final customDiscount = newValue.text;
+                          final intValue =
+                              int.tryParse(
+                                customDiscount.isEmpty ? "0" : customDiscount,
+                              ) ??
+                              0;
+                          if (intValue > 100) {
+                            customSnackBar(context, "Jumlah melebihi 100%");
+                            return oldValue;
+                          }
+                          context.read<TransactionBloc>().add(
+                            TransactionAdjustItem(
+                              discount: customDiscount.isEmpty ? 0 : intValue,
+                            ),
+                          );
+                          return newValue;
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

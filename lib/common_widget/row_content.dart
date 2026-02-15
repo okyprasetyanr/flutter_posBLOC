@@ -7,11 +7,7 @@ Widget rowContent(String text, String value, {double? width}) {
     children: [
       SizedBox(
         width: width ?? 120,
-        child: Text(
-          text,
-          style: lv05TextStyle,
-          overflow: TextOverflow.ellipsis,
-        ),
+        child: Text(text, style: textStyle, overflow: TextOverflow.ellipsis),
       ),
       Text(":", style: textStyle),
       const Spacer(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -51,7 +52,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 5),
       child: Column(
         children: [
           Expanded(
@@ -102,31 +103,12 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                 },
                                 builder: (context, state) {
                                   return state
-                                      ? ElevatedButton(
-                                          style: ButtonStyle(
-                                            padding:
-                                                const WidgetStatePropertyAll(
-                                                  EdgeInsets.all(10),
-                                                ),
-                                            backgroundColor:
-                                                WidgetStatePropertyAll(
-                                                  const Color.fromARGB(
-                                                    255,
-                                                    255,
-                                                    154,
-                                                    72,
-                                                  ),
-                                                ),
-                                            shape: WidgetStatePropertyAll(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                              ),
-                                            ),
-                                          ),
-                                          child: Icon(
+                                      ? customButton(
+                                          backgroundColor:
+                                              AppPropertyColor.white,
+                                          child: const Icon(
                                             Icons.fastfood_rounded,
-                                            color: Colors.white,
+                                            color: AppPropertyColor.condiment,
                                             size: lv2IconSize,
                                           ),
                                           onPressed: () {
@@ -141,23 +123,11 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                         const SizedBox(width: 10),
                         Expanded(
                           flex: 1,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              padding: const WidgetStatePropertyAll(
-                                EdgeInsets.all(10),
-                              ),
-                              backgroundColor: WidgetStatePropertyAll(
-                                const Color.fromARGB(255, 255, 89, 78),
-                              ),
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                            ),
-                            child: Icon(
+                          child: customButton(
+                            backgroundColor: AppPropertyColor.white,
+                            child: const Icon(
                               Icons.delete_forever_rounded,
-                              color: Colors.white,
+                              color: AppPropertyColor.deleteOrClose,
                               size: lv2IconSize,
                             ),
                             onPressed: () {
@@ -171,23 +141,11 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                         const SizedBox(width: 10),
                         Expanded(
                           flex: 1,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              padding: const WidgetStatePropertyAll(
-                                EdgeInsets.all(10),
-                              ),
-                              backgroundColor: WidgetStatePropertyAll(
-                                Colors.red,
-                              ),
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                            ),
-                            child: Icon(
+                          child: customButton(
+                            backgroundColor: AppPropertyColor.deleteOrClose,
+                            child: const Icon(
                               Icons.close_rounded,
-                              color: Colors.white,
+                              color: AppPropertyColor.white,
                               size: lv2IconSize,
                             ),
                             onPressed: () {
@@ -201,23 +159,11 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                         const SizedBox(width: 10),
                         Expanded(
                           flex: 1,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: const WidgetStatePropertyAll(
-                                AppPropertyColor.primary,
-                              ),
-                              padding: const WidgetStatePropertyAll(
-                                EdgeInsets.all(10),
-                              ),
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                            ),
-                            child: Icon(
+                          child: customButton(
+                            backgroundColor: AppPropertyColor.primary,
+                            child: const Icon(
                               Icons.shopping_cart_outlined,
-                              color: Colors.white,
+                              color: AppPropertyColor.white,
                               size: lv2IconSize,
                             ),
                             onPressed: () {
