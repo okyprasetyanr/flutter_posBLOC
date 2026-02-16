@@ -40,7 +40,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ListView.builder(
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.only(),
                         itemCount: state.length,
                         itemBuilder: (context, index) {
                           final item = state[index];
@@ -50,10 +50,10 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
                                 colors: [
-                                  Colors.transparent,
-                                  Colors.black,
-                                  Colors.black,
-                                  Colors.transparent,
+                                  AppPropertyColor.transparent,
+                                  AppPropertyColor.black,
+                                  AppPropertyColor.black,
+                                  AppPropertyColor.transparent,
                                 ],
                                 stops: [0, 0.02, 0.98, 1],
                               ).createShader(bounds);
@@ -61,7 +61,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                             blendMode: BlendMode.dstIn,
                             child: Material(
                               color: index % 2 == 0
-                                  ? Colors.white
+                                  ? AppPropertyColor.white
                                   : const Color.fromARGB(255, 235, 235, 235),
                               child: InkWell(
                                 onTap: () {
@@ -310,7 +310,10 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   style: lv1TextStyleWhite,
                   overflow: TextOverflow.ellipsis,
                 ),
-                icon: Icon(Icons.contacts_rounded, color: Colors.white),
+                icon: const Icon(
+                  Icons.contacts_rounded,
+                  color: AppPropertyColor.white,
+                ),
                 backgroundColor: AppPropertyColor.primary,
               ),
             ),
@@ -318,13 +321,16 @@ class TransactionListViewOrderedItem extends StatelessWidget {
             Expanded(
               flex: 2,
               child: customButton(
-                backgroundColor: Colors.white,
+                backgroundColor: AppPropertyColor.white,
                 onPressed: () {
                   context.read<TransactionBloc>().add(
                     TransactionResetOrderedItem(),
                   );
                 },
-                child: Icon(Icons.delete, color: Colors.red),
+                child: Icon(
+                  Icons.delete,
+                  color: AppPropertyColor.deleteOrClose,
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -357,7 +363,10 @@ class TransactionListViewOrderedItem extends StatelessWidget {
 
                   navUpDownTransition(context, '/sellpayment', false);
                 },
-                child: Icon(Icons.attach_money_rounded, color: Colors.white),
+                child: Icon(
+                  Icons.attach_money_rounded,
+                  color: AppPropertyColor.white,
+                ),
                 backgroundColor: AppPropertyColor.primary,
               ),
             ),

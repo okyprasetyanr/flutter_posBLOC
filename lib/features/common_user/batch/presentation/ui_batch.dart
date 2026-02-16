@@ -206,7 +206,7 @@ class _UiBatchState extends State<UiBatch> {
                           itemBuilder: (context, index) {
                             final item = itemById[index];
                             return Padding(
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               child: Material(
                                 borderRadius: BorderRadius.circular(10),
                                 elevation: 4,
@@ -228,7 +228,7 @@ class _UiBatchState extends State<UiBatch> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.all(10),
+                                      padding: const EdgeInsets.all(10),
                                       child: Column(
                                         children: [
                                           rowContent(
@@ -288,7 +288,7 @@ class _UiBatchState extends State<UiBatch> {
   Widget layoutBottom() {
     return Container(
       margin: EdgeInsets.only(left: 5, right: 5),
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
@@ -297,7 +297,7 @@ class _UiBatchState extends State<UiBatch> {
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 0),
-            color: Colors.black.withValues(alpha: 0.5),
+            color: AppPropertyColor.black.withValues(alpha: 0.5),
             blurRadius: 3,
             spreadRadius: 1,
             blurStyle: BlurStyle.outer,

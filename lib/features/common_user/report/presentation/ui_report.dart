@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_state.dart';
@@ -33,10 +35,10 @@ class _UIReportState extends State<UIReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppPropertyColor.white,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: BlocSelector<ReportBloc, ReportState, (ModelReport?, bool)>(
             selector: (state) {
               if (state is ReportLoaded) {
@@ -93,14 +95,33 @@ class _UIReportState extends State<UIReport> {
                           return (null, null);
                         },
                         builder: (context, state) {
-                          return ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              minimumSize: Size(0, 0),
-                              padding: EdgeInsets.all(8),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                          return customButtonIcon(
+                            backgroundColor: AppPropertyColor.white,
+                            icon: const Icon(
+                              Icons.date_range_rounded,
+                              color: AppPropertyColor.black,
+                            ),
+                            label: Text(
+                              state.$1 == null ||
+                                      formatDate(
+                                                date: state.$1!,
+                                                minute: false,
+                                              ) ==
+                                              formatDate(
+                                                date: DateTime.now(),
+                                                minute: false,
+                                              ) &&
+                                          formatDate(
+                                                date: state.$2!,
+                                                minute: false,
+                                              ) ==
+                                              formatDate(
+                                                date: DateTime.now(),
+                                                minute: false,
+                                              )
+                                  ? "Hari ini"
+                                  : "${formatDate(date: state.$1!, minute: false)} - ${formatDate(date: state.$2!, minute: false)}",
+                              style: lv05TextStyle,
                             ),
                             onPressed: () async {
                               DateTime? pickedDateStart, pickedDateEnd;
@@ -128,29 +149,6 @@ class _UIReportState extends State<UIReport> {
                                 ),
                               );
                             },
-                            icon: Icon(Icons.date_range_rounded),
-                            label: Text(
-                              state.$1 == null ||
-                                      formatDate(
-                                                date: state.$1!,
-                                                minute: false,
-                                              ) ==
-                                              formatDate(
-                                                date: DateTime.now(),
-                                                minute: false,
-                                              ) &&
-                                          formatDate(
-                                                date: state.$2!,
-                                                minute: false,
-                                              ) ==
-                                              formatDate(
-                                                date: DateTime.now(),
-                                                minute: false,
-                                              )
-                                  ? "Hari ini"
-                                  : "${formatDate(date: state.$1!, minute: false)} - ${formatDate(date: state.$2!, minute: false)}",
-                              style: lv05TextStyle,
-                            ),
                           );
                         },
                       ),

@@ -98,7 +98,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                   child: Text("Pendaftaran", style: titleTextStyle),
                 ),
                 customTextField(
-                  prefix: Icon(Icons.email_rounded, size: lv05IconSize),
+                  prefix: const Icon(Icons.email_rounded, size: lv05IconSize),
                   context: context,
                   controller: emailCompanyController,
                   enable: true,
@@ -115,7 +115,10 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 ),
                 const SizedBox(height: 10),
                 customTextField(
-                  prefix: Icon(Icons.password_rounded, size: lv05IconSize),
+                  prefix: const Icon(
+                    Icons.password_rounded,
+                    size: lv05IconSize,
+                  ),
                   context: context,
                   controller: passwordController,
                   enable: true,
@@ -132,7 +135,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 ),
                 const SizedBox(height: 10),
                 Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
                       customTextField(
@@ -215,7 +218,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                   shape: BoxShape.rectangle,
                                   border: BoxBorder.all(
                                     width: 1,
-                                    color: Colors.black,
+                                    color: AppPropertyColor.black,
                                     style: BorderStyle.solid,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -298,10 +301,10 @@ class _ScreenSignupState extends State<ScreenSignup> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: customButtonIcon(
           backgroundColor: AppPropertyColor.primary,
-          icon: Icon(
+          icon: const Icon(
             Icons.check_rounded,
             color: AppPropertyColor.white,
             size: lv05IconSize,

@@ -168,7 +168,10 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
 
             const SizedBox(width: 10),
             customButton(
-              child: Icon(Icons.refresh_rounded, color: AppPropertyColor.black),
+              child: const Icon(
+                Icons.refresh_rounded,
+                color: AppPropertyColor.black,
+              ),
               backgroundColor: AppPropertyColor.white,
               onPressed: () {
                 final bloc = context.read<HistoryTransactionBloc>();
@@ -414,7 +417,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   Widget layoutBottom() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
-      padding: EdgeInsets.only(top: 5, left: 5, right: 5),
+      padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
@@ -424,7 +427,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
           BoxShadow(
             blurRadius: 3,
             blurStyle: BlurStyle.outer,
-            color: Colors.black.withValues(alpha: 0.5),
+            color: AppPropertyColor.black.withValues(alpha: 0.5),
           ),
         ],
       ),
@@ -479,7 +482,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                         ),
                         const SizedBox(height: 10),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: Column(
                             children: [
                               customRowListItem(label: true),

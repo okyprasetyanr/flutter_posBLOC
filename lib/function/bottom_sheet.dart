@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 
 void customBottomSheet({
   required BuildContext context,
@@ -8,7 +9,7 @@ void customBottomSheet({
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+    backgroundColor: AppPropertyColor.transparent,
     builder: (context) {
       return DraggableScrollableSheet(
         initialChildSize: 0.6,
@@ -18,7 +19,7 @@ void customBottomSheet({
         builder: (context, scrollController) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppPropertyColor.white,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -33,7 +34,7 @@ void customBottomSheet({
                     height: 5,
                     margin: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: AppPropertyColor.grey,
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),

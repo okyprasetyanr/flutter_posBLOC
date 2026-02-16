@@ -16,7 +16,7 @@ class UiSyncData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child:
             BlocSelector<
               SettingsBloc,
@@ -42,14 +42,17 @@ class UiSyncData extends StatelessWidget {
                     Center(child: Text("Sinkron Data", style: titleTextStyle)),
                     customButtonIcon(
                       backgroundColor: AppPropertyColor.primary,
-                      icon: Icon(Icons.publish_rounded, color: Colors.white),
+                      icon: const Icon(
+                        Icons.publish_rounded,
+                        color: AppPropertyColor.white,
+                      ),
                       label: Text("Kirim Data", style: lv05TextStyleWhite),
                       onPressed: () =>
                           context.read<SettingsBloc>().add(SettingPushData()),
                     ),
                     const SizedBox(height: 10),
                     Container(
-                      color: Colors.grey,
+                      color: AppPropertyColor.grey,
                       height: 1,
                       width: double.infinity,
                     ),
@@ -61,8 +64,8 @@ class UiSyncData extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text("Sinkron: ${state.$4}"),
                           customButtonIcon(
-                            backgroundColor: Colors.white,
-                            icon: Icon(
+                            backgroundColor: AppPropertyColor.white,
+                            icon: const Icon(
                               Icons.cancel_rounded,
                               color: AppPropertyColor.deleteOrClose,
                             ),
@@ -99,7 +102,10 @@ class UiSyncData extends StatelessWidget {
                     const SizedBox(height: 10),
                     customButtonIcon(
                       backgroundColor: AppPropertyColor.primary,
-                      icon: Icon(Icons.download_rounded, color: Colors.white),
+                      icon: const Icon(
+                        Icons.download_rounded,
+                        color: AppPropertyColor.white,
+                      ),
                       label: Text("Ambil Data", style: lv05TextStyleWhite),
                       onPressed: () =>
                           context.read<SettingsBloc>().add(SettingGetData()),

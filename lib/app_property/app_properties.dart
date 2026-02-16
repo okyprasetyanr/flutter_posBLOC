@@ -12,7 +12,11 @@ class AppPropertyColor {
   static const Color condiment = const Color.fromARGB(255, 255, 154, 72);
   static const Color white = Color.fromARGB(255, 255, 255, 255);
   static const Color black = Color.fromARGB(255, 0, 0, 0);
-  static const Color grey = Color.fromARGB(255, 226, 226, 226);
+  static const Color blackLight = Color.fromARGB(66, 0, 0, 0);
+  static const Color greyLight = Color.fromARGB(255, 226, 226, 226);
+  static const Color grey = Color.fromARGB(255, 117, 117, 117);
+  static const Color transparent = Color.fromARGB(0, 0, 0, 0);
+  static const Color green = Color.fromARGB(225, 76, 1775, 80);
 }
 
 class AppPropertyText {

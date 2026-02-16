@@ -15,7 +15,7 @@ class UiFeature extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: ListView(
           controller: controller,
           children: [
@@ -46,11 +46,14 @@ class UiFeature extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           color: state
                               ? AppPropertyColor.primary
-                              : Colors.white,
+                              : AppPropertyColor.white,
                           boxShadow: [
                             BoxShadow(
-                              color: (state ? Colors.black : Colors.green)
-                                  .withValues(alpha: 0.4),
+                              color:
+                                  (state
+                                          ? AppPropertyColor.black
+                                          : AppPropertyColor.green)
+                                      .withValues(alpha: 0.4),
                               blurStyle: BlurStyle.outer,
                               blurRadius: 15,
                             ),
@@ -76,7 +79,7 @@ class UiFeature extends StatelessWidget {
                               child: Icon(
                                 Icons.check_circle_outline_rounded,
                                 size: lv2IconSize,
-                                color: Colors.white,
+                                color: AppPropertyColor.white,
                               ),
                             ),
                             AnimatedPositioned(

@@ -23,10 +23,10 @@ Widget customListGradient<T>({
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                Colors.transparent,
-                Colors.black,
-                Colors.black,
-                Colors.transparent,
+                AppPropertyColor.transparent,
+                AppPropertyColor.black,
+                AppPropertyColor.black,
+                AppPropertyColor.transparent,
               ],
               stops: [0, 0.02, 0.98, 1],
             ).createShader(bounds);
@@ -45,8 +45,8 @@ Widget customListGradient<T>({
                       key: Key(getId!(dataIndex)),
                       direction: DismissDirection.endToStart,
                       background: Container(
-                        padding: EdgeInsets.only(right: 10),
-                        color: Colors.redAccent,
+                        padding: const EdgeInsets.only(right: 10),
+                        color: AppPropertyColor.deleteOrClose,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Icon(

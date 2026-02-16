@@ -31,12 +31,12 @@ class CondimentSwitch extends StatelessWidget {
             height: 33,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: state ? AppPropertyColor.primary : Colors.white,
+              color: state ? AppPropertyColor.primary : AppPropertyColor.white,
               boxShadow: [
                 BoxShadow(
-                  color: (state ? Colors.black : Colors.green).withValues(
-                    alpha: 0.4,
-                  ),
+                  color:
+                      (state ? AppPropertyColor.black : AppPropertyColor.green)
+                          .withValues(alpha: 0.4),
                   blurStyle: BlurStyle.outer,
                   blurRadius: 15,
                 ),
@@ -62,7 +62,7 @@ class CondimentSwitch extends StatelessWidget {
                   child: Icon(
                     Icons.check_circle_outline_rounded,
                     size: lv2IconSize,
-                    color: Colors.white,
+                    color: AppPropertyColor.white,
                   ),
                 ),
                 AnimatedPositioned(

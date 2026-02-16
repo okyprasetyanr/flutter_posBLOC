@@ -43,11 +43,11 @@ Future<void> customDatePicker(
               color: AppPropertyColor.primary,
             ),
           ),
-          dialogTheme: DialogThemeData(backgroundColor: Colors.black),
+          dialogTheme: DialogThemeData(backgroundColor: AppPropertyColor.black),
           colorScheme: ColorScheme.light(
             primary: AppPropertyColor.primary,
             onPrimary: AppPropertyColor.white,
-            onSurface: Colors.black,
+            onSurface: AppPropertyColor.black,
             surface: AppPropertyColor.white,
           ),
         ),

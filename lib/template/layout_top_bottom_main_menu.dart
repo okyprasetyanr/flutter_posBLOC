@@ -152,8 +152,11 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
             ],
           ),
           customButtonIcon(
-            backgroundColor: Colors.transparent,
-            icon: Icon(Icons.settings_rounded, color: Colors.white),
+            backgroundColor: AppPropertyColor.transparent,
+            icon: const Icon(
+              Icons.settings_rounded,
+              color: AppPropertyColor.white,
+            ),
             onPressed: () {
               navUpDownTransition(context, '/settings', false);
             },
@@ -177,18 +180,20 @@ class LayoutTopBottomMainMenu extends StatelessWidget {
           valueListenable: selectedMenu,
           builder: (context, value, child) {
             return Container(
-              padding: EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: text == value
-                    ? Colors.white.withValues(alpha: 0.5)
-                    : Colors.transparent,
+                    ? AppPropertyColor.white.withValues(alpha: 0.5)
+                    : AppPropertyColor.transparent,
               ),
               child: Column(
                 children: [
                   Icon(
                     leading,
-                    color: text == value ? Colors.black : Colors.white,
+                    color: text == value
+                        ? AppPropertyColor.black
+                        : AppPropertyColor.white,
                   ),
                   Text(
                     text,

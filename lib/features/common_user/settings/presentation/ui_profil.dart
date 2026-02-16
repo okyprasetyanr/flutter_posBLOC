@@ -27,7 +27,7 @@ class UIProfile extends StatelessWidget {
         .read<DataUserRepositoryCache>()
         .dataCompany!;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: BlocSelector<SettingsBloc, SettingsState, (ModelCompany?, ModelUser?)>(
         selector: (state) {
           if (state is SettingsProfileLoaded) {

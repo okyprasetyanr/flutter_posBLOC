@@ -349,7 +349,7 @@ class _UIOperatorState extends State<UIOperator> {
                                             builder: (_) {
                                               return Center(
                                                 child: customSpinKit(
-                                                  color: Colors.white,
+                                                  color: AppPropertyColor.white,
                                                   size: 30,
                                                 ),
                                               );
@@ -374,9 +374,9 @@ class _UIOperatorState extends State<UIOperator> {
                                       }
                                     },
                                     backgroundColor: AppPropertyColor.primary,
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.lock_reset_rounded,
-                                      color: Colors.white,
+                                      color: AppPropertyColor.white,
                                     ),
                                     label: Text(
                                       "Reset Kata Sandi",
@@ -485,7 +485,10 @@ class _UIOperatorState extends State<UIOperator> {
                 flex: 1,
                 child: customButtonIcon(
                   backgroundColor: AppPropertyColor.primary,
-                  icon: Icon(Icons.check_box_outlined, color: Colors.white),
+                  icon: const Icon(
+                    Icons.check_box_outlined,
+                    color: AppPropertyColor.white,
+                  ),
                   label: Text("Ijin Akses", style: lv05TextStyleWhite),
                   onPressed: () {
                     customBottomSheet(
@@ -549,36 +552,17 @@ class _UIOperatorState extends State<UIOperator> {
           child: Row(
             children: [
               Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 5,
-                    right: 0,
-                    bottom: 5,
-                    top: 0,
+                child: customButtonIcon(
+                  backgroundColor: AppPropertyColor.white,
+                  icon: const Icon(
+                    Icons.restart_alt_rounded,
+                    size: lv2IconSize,
+                    color: AppPropertyColor.black,
                   ),
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      resetForm();
-                    },
-                    label: Text("Bersihkan", style: lv05TextStyle),
-                    icon: Icon(
-                      Icons.restart_alt_rounded,
-                      size: lv2IconSize,
-                      color: Colors.black,
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.white),
-                      minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                      padding: WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
+                  label: Text("Bersihkan", style: lv05TextStyle),
+                  onPressed: () {
+                    resetForm();
+                  },
                 ),
               ),
               const SizedBox(width: 10),
@@ -592,7 +576,10 @@ class _UIOperatorState extends State<UIOperator> {
                   },
                   builder: (context, state) {
                     return customButtonIcon(
-                      icon: Icon(Icons.check_rounded, color: Colors.white),
+                      icon: const Icon(
+                        Icons.check_rounded,
+                        color: AppPropertyColor.white,
+                      ),
                       backgroundColor: AppPropertyColor.primary,
                       label: Text(
                         state ? "Edit" : "Simpan",

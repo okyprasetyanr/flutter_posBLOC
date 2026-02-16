@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
@@ -197,127 +198,25 @@ class _UIPartnerState extends State<UIPartner> {
                             ),
                           );
                         }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          child: ListView.builder(
-                            itemCount: state.length,
-                            itemBuilder: (context, index) {
-                              final partner = state[index];
-                              return ShaderMask(
-                                shaderCallback: (bounds) {
-                                  return LinearGradient(
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black,
-                                      Colors.black,
-                                      Colors.transparent,
-                                    ],
-                                    stops: [0, 0.02, 0.98, 1],
-                                  ).createShader(bounds);
-                                },
-                                blendMode: BlendMode.dstIn,
-                                child: Material(
-                                  color: index % 2 == 0
-                                      ? const Color.fromARGB(255, 235, 235, 235)
-                                      : const Color.fromARGB(
-                                          255,
-                                          221,
-                                          221,
-                                          221,
-                                        ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      context.read<PartnerBloc>().add(
-                                        PartnerSelectedPartner(
-                                          selectedPartner: partner,
-                                        ),
-                                      );
-                                    },
-                                    child: Dismissible(
-                                      key: Key(partner.getid),
-                                      direction: DismissDirection.endToStart,
-                                      background: Container(
-                                        padding: EdgeInsets.only(right: 10),
-                                        color: Colors.redAccent,
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Icon(
-                                            Icons.delete,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      confirmDismiss: (direction) async {
-                                        final result = await showDialog<bool>(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: Text(
-                                              "Konfirmasi",
-                                              style: lv2TextStyle,
-                                            ),
-                                            content: Text(
-                                              "Hapus Kontak ${partner.getname}?",
-                                              style: lv1TextStyle,
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                  context,
-                                                  false,
-                                                ),
-                                                child: Text(
-                                                  "Batal",
-                                                  style: lv1TextStyle,
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  context
-                                                      .read<PartnerBloc>()
-                                                      .add(
-                                                        PartnerDeletePartner(
-                                                          type: partner.gettype,
-                                                          id: partner.getid,
-                                                        ),
-                                                      );
-                                                  Navigator.pop(context, true);
-                                                },
-                                                child: Text(
-                                                  "Hapus",
-                                                  style: lv1TextStyle,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-
-                                        if (result == true) {
-                                          return true;
-                                        }
-
-                                        return false;
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 5,
-                                          right: 5,
-                                          top: 10,
-                                          bottom: 10,
-                                        ),
-
-                                        child: Text(
-                                          "${partner.getname}, ${partner.getphone}",
-                                          style: lv05TextStyle,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                        return customListGradient(
+                          data: state,
+                          deleteData: (deleteData) {
+                            context.read<PartnerBloc>().add(
+                              PartnerDeletePartner(
+                                type: deleteData.gettype,
+                                id: deleteData.getid,
+                              ),
+                            );
+                            Navigator.pop(context, true);
+                          },
+                          getId: (data) => data.getid,
+                          getName: (data) => data.getname,
+                          selectedData: (selectedData) =>
+                              context.read<PartnerBloc>().add(
+                                PartnerSelectedPartner(
+                                  selectedPartner: selectedData,
                                 ),
-                              );
-                            },
-                          ),
+                              ),
                         );
                       },
                     );
@@ -462,7 +361,10 @@ class _UIPartnerState extends State<UIPartner> {
               );
               _resetForm();
             },
-            icon: Icon(Icons.check_rounded, color: Colors.white),
+            icon: const Icon(
+              Icons.check_rounded,
+              color: AppPropertyColor.white,
+            ),
             label: Text(
               context.select<PartnerBloc, String>((value) {
                 final bloc = value.state;

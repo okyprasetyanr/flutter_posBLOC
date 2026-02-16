@@ -45,7 +45,7 @@ class UITransactionGridViewItem extends StatelessWidget {
               "Log UITransactionGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItemByBatch}",
             );
             return Material(
-              color: Colors.white,
+              color: AppPropertyColor.white,
               borderRadius: BorderRadius.circular(15),
               elevation: 4,
               child: Stack(

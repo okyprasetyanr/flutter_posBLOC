@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UIInventoryListViewCategory extends StatelessWidget {
@@ -20,105 +21,21 @@ class UIInventoryListViewCategory extends StatelessWidget {
         if (state == null) {
           return Padding(
             padding: const EdgeInsets.all(10),
-            child: SpinKitThreeBounce(color: Colors.blue, size: lv1IconSize),
+            child: SpinKitThreeBounce(
+              color: AppPropertyColor.primary,
+              size: lv1IconSize,
+            ),
           );
         }
-        final dataCategory = state;
-        return Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: ListView.builder(
-            itemCount: dataCategory.length,
-            itemBuilder: (context, index) {
-              final category = dataCategory[index];
-              return ShaderMask(
-                shaderCallback: (bounds) {
-                  return LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black,
-                      Colors.black,
-                      Colors.transparent,
-                    ],
-                    stops: [0, 0.02, 0.98, 1],
-                  ).createShader(bounds);
-                },
-                blendMode: BlendMode.dstIn,
-                child: Material(
-                  color: index % 2 == 0
-                      ? const Color.fromARGB(255, 235, 235, 235)
-                      : const Color.fromARGB(255, 221, 221, 221),
-                  child: InkWell(
-                    onTap: () {
-                      context.read<InventoryBloc>().add(
-                        InventorySelectedCategory(selectedCategory: category),
-                      );
-                    },
-                    child: Dismissible(
-                      key: Key(category.getidCategory),
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        padding: EdgeInsets.only(right: 10),
-                        color: Colors.redAccent,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.delete, color: Colors.white),
-                        ),
-                      ),
-                      confirmDismiss: (direction) async {
-                        final result = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text("Konfirmasi", style: lv2TextStyle),
-                            content: Text(
-                              "Hapus Kategori ${category.getnameCategory}?",
-                              style: lv1TextStyle,
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                child: Text("Batal", style: lv1TextStyle),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  context.read<InventoryBloc>().add(
-                                    InventoryDeleteCategory(
-                                      id: category.getidCategory,
-                                    ),
-                                  );
-                                  Navigator.pop(context, true);
-                                },
-                                child: Text("Hapus", style: lv1TextStyle),
-                              ),
-                            ],
-                          ),
-                        );
-
-                        if (result == true) {
-                          return true;
-                        }
-
-                        return false;
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 10,
-                          bottom: 10,
-                        ),
-
-                        child: Text(
-                          category.getnameCategory,
-                          style: lv1TextStyle,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
+        return customListGradient(
+          data: state,
+          deleteData: (deleteData) => context.read<InventoryBloc>().add(
+            InventoryDeleteCategory(id: deleteData.getidCategory),
+          ),
+          getId: (data) => data.getidCategory,
+          getName: (data) => data.getnameCategory,
+          selectedData: (selectedData) => context.read<InventoryBloc>().add(
+            InventorySelectedCategory(selectedCategory: selectedData),
           ),
         );
       },

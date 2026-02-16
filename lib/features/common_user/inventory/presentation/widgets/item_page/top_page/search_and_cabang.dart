@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
-import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 
 class UIInventorySearchAndBranchItem extends StatelessWidget {
@@ -24,24 +24,10 @@ class UIInventorySearchAndBranchItem extends StatelessWidget {
         children: [
           Expanded(
             flex: 3,
-            child: TextField(
-              style: lv1TextStyle,
+            child: customTextField(
+              text: "Cari...",
               controller: searchControllerItem,
-              decoration: InputDecoration(
-                isDense: true,
-                labelText: "Cari...",
-                hintText: "...",
-                labelStyle: lv1TextStyle,
-                hintStyle: lv1TextStyle,
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+              moreRadius: true,
               onChanged: (value) {
                 context.read<InventoryBloc>().add(
                   InventorySearchItem(search: value),

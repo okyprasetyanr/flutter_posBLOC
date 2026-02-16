@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 
 class LayoutTopBottom extends StatelessWidget {
   final Widget layoutTop;
@@ -23,7 +24,7 @@ class LayoutTopBottom extends StatelessWidget {
       },
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppPropertyColor.white,
         body: SafeArea(
           top: true,
           bottom: true,
@@ -84,9 +85,9 @@ class LayoutTopBottom extends StatelessWidget {
                                   left: width * 0.56,
                                   bottom: 0,
                                   child: Container(
-                                    width: 1, // biar sepanjang parent
-                                    height: 200, // ketebalan garis
-                                    color: Colors.grey[400],
+                                    width: 1,
+                                    height: 200,
+                                    color: AppPropertyColor.grey,
                                     margin: const EdgeInsets.symmetric(
                                       vertical: 8,
                                     ),

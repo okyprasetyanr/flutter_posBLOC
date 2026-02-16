@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
@@ -72,26 +73,13 @@ class UIPaymentDiscount extends StatelessWidget {
             const SizedBox(width: 5),
             SizedBox(
               width: 50,
-              child: TextField(
+              child: customTextField(
+                hint: false,
                 controller: customDiscountController,
-                textAlign: TextAlign.right,
-                keyboardType: TextInputType.number,
-                style: lv05TextStyle,
-                decoration: InputDecoration(
-                  isDense: true,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
-                  ),
-                  suffixText: "%",
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  labelText: "Diskon",
-                  labelStyle: lv05TextStyle,
-                ),
-                inputFormatters: [
+                inputType: const TextInputType.numberWithOptions(),
+                text: "Dis.",
+                suffixText: "%",
+                inputFormatter: [
                   FilteringTextInputFormatter.digitsOnly,
                   TextInputFormatter.withFunction((oldValue, newValue) {
                     final customDiscount = newValue.text;
@@ -110,6 +98,8 @@ class UIPaymentDiscount extends StatelessWidget {
                     return newValue;
                   }),
                 ],
+                alignEnd: true,
+                context: context,
               ),
             ),
           ],

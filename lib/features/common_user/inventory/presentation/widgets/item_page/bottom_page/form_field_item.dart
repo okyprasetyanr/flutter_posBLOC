@@ -77,7 +77,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                     backgroundColor: AppPropertyColor.primary,
                     child: Icon(
                       Icons.image_search_rounded,
-                      color: Colors.white,
+                      color: AppPropertyColor.white,
                     ),
                     onPressed: () => customBottomSheet(
                       context: context,

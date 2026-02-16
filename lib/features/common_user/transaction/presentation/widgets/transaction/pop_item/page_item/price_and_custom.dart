@@ -29,7 +29,7 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: AppPropertyColor.greyLight,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

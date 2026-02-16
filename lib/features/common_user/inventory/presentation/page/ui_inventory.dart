@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/enum/enum.dart';
@@ -153,30 +154,17 @@ class _UIInventoryState extends State<UIInventory> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton.icon(
+            customButtonIcon(
+              backgroundColor: AppPropertyColor.primary,
+              icon: const Icon(
+                Icons.menu_rounded,
+                color: AppPropertyColor.white,
+                size: lv2IconSize,
+              ),
+              label: Text("Menu", style: lv05TextStyleWhite),
               onPressed: () {
                 isOpen.value = !isOpen.value;
               },
-              label: Text("Menu", style: lv05TextStyleWhite),
-              icon: Icon(
-                Icons.menu_rounded,
-                color: Colors.white,
-                size: lv2IconSize,
-              ),
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
-                padding: const WidgetStatePropertyAll(
-                  EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                ),
-                backgroundColor: WidgetStatePropertyAll(
-                  AppPropertyColor.primary,
-                ),
-              ),
             ),
             Spacer(),
             GestureDetector(
@@ -338,7 +326,6 @@ class _UIInventoryState extends State<UIInventory> {
           ),
         ),
         const SizedBox(height: 5),
-        // ElevatedButton(onPressed: (){}, child: child)
         Expanded(
           child: PageView(
             physics: NeverScrollableScrollPhysics(),

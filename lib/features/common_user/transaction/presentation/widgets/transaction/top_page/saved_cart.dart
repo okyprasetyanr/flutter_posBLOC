@@ -24,7 +24,7 @@ class UITransactionSavedCart extends StatelessWidget {
           child: const Icon(
             Icons.shopping_bag_rounded,
             size: lv2IconSize,
-            color: Colors.white,
+            color: AppPropertyColor.white,
           ),
           onPressed: () {
             customBottomSheet(
@@ -66,11 +66,14 @@ class UITransactionSavedCart extends StatelessWidget {
                             key: Key(state[index].getinvoice),
                             direction: DismissDirection.endToStart,
                             background: Container(
-                              padding: EdgeInsets.only(right: 10),
-                              color: Colors.redAccent,
+                              padding: const EdgeInsets.only(right: 10),
+                              color: AppPropertyColor.deleteOrClose,
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: Icon(Icons.delete, color: Colors.white),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: AppPropertyColor.white,
+                                ),
                               ),
                             ),
                             confirmDismiss: (direction) async {
@@ -144,7 +147,7 @@ class UITransactionSavedCart extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Colors.red,
+              color: AppPropertyColor.deleteOrClose,
               shape: BoxShape.circle,
             ),
             child: Text(
@@ -157,7 +160,7 @@ class UITransactionSavedCart extends StatelessWidget {
                     : "0",
               ),
               style: TextStyle(
-                color: Colors.white,
+                color: AppPropertyColor.white,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),

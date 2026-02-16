@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
@@ -104,24 +105,9 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                     noteController.text = state.transaction_sell?.getnote ?? "";
                   }
                 },
-                child: TextField(
-                  style: lv05TextStyle,
+                child: customTextField(
                   controller: noteController,
-                  decoration: InputDecoration(
-                    labelText: "Catatan",
-                    labelStyle: lv05TextStyle,
-                    hintText: "Catatan...",
-                    hintStyle: lv05TextStyle,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 5,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
+                  text: "Catatan...",
                   onChanged: (value) =>
                       context.read<PaymentBloc>().add(PaymentNote(note: value)),
                 ),
@@ -161,7 +147,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                       textAlign: TextAlign.center,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       child:
                           BlocSelector<
                             PaymentBloc,
@@ -210,7 +196,10 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
               Expanded(
                 flex: 3,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 5,
+                  ),
                   child:
                       BlocSelector<
                         PaymentBloc,
@@ -280,11 +269,10 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                           state is PaymentLoaded ? state.isSell : false,
                       builder: (context, isSell) {
                         return isSell
-                            ? _buttonIcon(
-                                text: "Simpan",
-                                textStyle: lv05TextStyleBold,
-                                backgroundColor: Colors.white,
-                                function: () {
+                            ? customButton(
+                                backgroundColor: AppPropertyColor.white,
+                                child: Text("Simpan", style: lv05TextStyleBold),
+                                onPressed: () {
                                   context.read<PaymentBloc>().add(
                                     PaymentProcess(
                                       statusTransaction:
@@ -302,12 +290,14 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    _buttonIcon(
-                      text: "Batal",
-                      icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
-                      textStyle: lv05TextStyleWhite,
-                      backgroundColor: Colors.red,
-                      function: () {
+                    customButtonIcon(
+                      backgroundColor: AppPropertyColor.deleteOrClose,
+                      icon: const Icon(
+                        Icons.arrow_back_rounded,
+                        color: AppPropertyColor.white,
+                      ),
+                      label: Text("Batal", style: lv05TextStyleBoldWhite),
+                      onPressed: () {
                         Navigator.popUntil(
                           context,
                           ModalRoute.withName('/sell'),
@@ -317,15 +307,14 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    _buttonIcon(
-                      text: "Bayar",
-                      icon: Icon(
-                        Icons.attach_money_rounded,
-                        color: Colors.white,
-                      ),
-                      textStyle: lv05TextStyleWhite,
+                    customButtonIcon(
                       backgroundColor: AppPropertyColor.primary,
-                      function: () {
+                      icon: const Icon(
+                        Icons.attach_money_rounded,
+                        color: AppPropertyColor.white,
+                      ),
+                      label: Text("Bayar", style: lv05TextStyleBoldWhite),
+                      onPressed: () {
                         final dataTransaction =
                             (context.read<PaymentBloc>().state as PaymentLoaded)
                                 .transaction_sell!;
@@ -373,36 +362,6 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
 
   Future<void> refreshIndicator() async {
     return;
-  }
- 
-  Widget _buttonIcon({
-    String? text,
-    Icon? icon,
-    TextStyle? textStyle,
-    Color? backgroundColor,
-    Function()? function,
-  }) {
-    return SizedBox(
-      width: 80,
-      child: 
-      customButtonIcon(backgroundColor: )
-      ElevatedButton.icon(
-        style: ButtonStyle(
-          elevation: WidgetStatePropertyAll(4),
-          backgroundColor: WidgetStatePropertyAll(backgroundColor),
-          minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-          padding: WidgetStatePropertyAll(
-            EdgeInsets.symmetric(vertical: 15, horizontal: 8),
-          ),
-          shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        ),
-        onPressed: function,
-        label: Text(text!, style: textStyle),
-        icon: icon,
-      ),
-    );
   }
 
   Widget _rowContentDetail(String text, String value) {

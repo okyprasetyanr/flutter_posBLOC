@@ -345,7 +345,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
   Widget layoutBottom() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
-      padding: EdgeInsets.only(top: 5, left: 5, right: 5),
+      padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
@@ -355,7 +355,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
           BoxShadow(
             blurRadius: 3,
             blurStyle: BlurStyle.outer,
-            color: Colors.black.withValues(alpha: 0.5),
+            color: AppPropertyColor.black.withValues(alpha: 0.5),
           ),
         ],
       ),
@@ -406,7 +406,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                         backgroundColor: AppPropertyColor.white,
                         child: Icon(
                           Icons.delete_forever_rounded,
-                          color: Colors.red,
+                          color: AppPropertyColor.deleteOrClose,
                         ),
                         onPressed: () {
                           transaction.getstatusTransaction ==

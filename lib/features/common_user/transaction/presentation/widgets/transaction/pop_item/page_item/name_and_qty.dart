@@ -77,7 +77,10 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                           padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
                           shape: WidgetStatePropertyAll(
                             RoundedRectangleBorder(
-                              side: BorderSide(width: 1, color: Colors.white),
+                              side: BorderSide(
+                                width: 1,
+                                color: AppPropertyColor.white,
+                              ),
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
@@ -87,10 +90,10 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                             TransactionAdjustItem(mode: false),
                           );
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.remove,
                           size: lv2IconSize,
-                          color: Colors.white,
+                          color: AppPropertyColor.white,
                         ),
                       ),
                       SizedBox(
@@ -107,21 +110,24 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                           padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
                           shape: WidgetStatePropertyAll(
                             RoundedRectangleBorder(
-                              side: BorderSide(width: 1, color: Colors.white),
+                              side: BorderSide(
+                                width: 1,
+                                color: AppPropertyColor.white,
+                              ),
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                         ),
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.only(),
                         onPressed: () {
                           context.read<TransactionBloc>().add(
                             TransactionAdjustItem(mode: true),
                           );
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.add,
                           size: lv2IconSize,
-                          color: Colors.white,
+                          color: AppPropertyColor.white,
                         ),
                       ),
                     ],

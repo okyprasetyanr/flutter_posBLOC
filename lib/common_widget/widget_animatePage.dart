@@ -23,7 +23,7 @@ class WidgetAnimatePage extends StatelessWidget {
           duration: const Duration(milliseconds: 500),
           child: Row(
             children: [
-              Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
+              const Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
               Text(text1, style: titleTextStyle),
             ],
           ),
@@ -36,7 +36,7 @@ class WidgetAnimatePage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Row(
               children: [
-                Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
+                const Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
                 Text(text2, style: titleTextStyle),
               ],
             ),

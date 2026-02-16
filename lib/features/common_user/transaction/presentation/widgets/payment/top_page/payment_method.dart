@@ -71,7 +71,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                       context: context,
                       resetItemForm: null,
                       content: (scrollController) => Padding(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: ListView(
                           controller: scrollController,
                           children: [

@@ -37,7 +37,7 @@ class UITransactionSuccess extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           width: 100,
           height: 100,
           decoration: BoxDecoration(
@@ -47,12 +47,12 @@ class UITransactionSuccess extends StatelessWidget {
               BoxShadow(
                 blurRadius: 15,
                 blurStyle: BlurStyle.outer,
-                color: Colors.black.withValues(alpha: 0.3),
+                color: AppPropertyColor.black.withValues(alpha: 0.3),
               ),
             ],
           ),
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             width: 80,
             height: 80,
             decoration: BoxDecoration(
@@ -62,7 +62,7 @@ class UITransactionSuccess extends StatelessWidget {
                 BoxShadow(
                   blurRadius: 10,
                   blurStyle: BlurStyle.outer,
-                  color: Colors.black.withValues(alpha: 0.2),
+                  color: AppPropertyColor.black.withValues(alpha: 0.2),
                 ),
               ],
             ),
@@ -104,11 +104,11 @@ class UITransactionSuccess extends StatelessWidget {
 
   Widget layoutBottom() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppPropertyColor.primarylight3,
         border: BoxBorder.all(
-          color: Colors.grey,
+          color: AppPropertyColor.grey,
           style: BorderStyle.solid,
           width: 1,
         ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -181,7 +182,9 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       context: context,
       barrierDismissible: false,
       builder: (_) {
-        return Center(child: customSpinKit(color: Colors.white, size: 30));
+        return Center(
+          child: customSpinKit(color: AppPropertyColor.white, size: 30),
+        );
       },
     );
     final currentState = state as OperatorLoaded;

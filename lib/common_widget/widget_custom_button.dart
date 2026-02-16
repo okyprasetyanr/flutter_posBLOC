@@ -4,6 +4,7 @@ Widget customButton({
   VoidCallback? onPressed,
   Color? backgroundColor,
   Widget? child,
+  bool moreRadius = false,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -19,7 +20,9 @@ Widget customButton({
           EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(moreRadius ? 15 : 10),
+          ),
         ),
       ),
     ),

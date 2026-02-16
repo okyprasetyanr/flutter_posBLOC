@@ -42,12 +42,12 @@ class _UISettingsState extends State<UISettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppPropertyColor.white,
       body: SafeArea(
         top: true,
         bottom: true,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -162,7 +162,10 @@ class _UISettingsState extends State<UISettings> {
                   width: double.infinity,
                   child: customButtonIcon(
                     backgroundColor: AppPropertyColor.primary,
-                    icon: Icon(Icons.logout_rounded, color: Colors.white),
+                    icon: const Icon(
+                      Icons.logout_rounded,
+                      color: AppPropertyColor.white,
+                    ),
                     label: Text("Logout", style: lv05TextStyleWhite),
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();

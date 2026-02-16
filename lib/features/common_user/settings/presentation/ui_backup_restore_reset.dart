@@ -27,7 +27,7 @@ class UiBackupRestore extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
             Align(
@@ -56,7 +56,10 @@ class UiBackupRestore extends StatelessWidget {
                   flex: 3,
                   child: customButtonIcon(
                     backgroundColor: AppPropertyColor.primary,
-                    icon: Icon(Icons.backup_rounded, color: Colors.white),
+                    icon: const Icon(
+                      Icons.backup_rounded,
+                      color: AppPropertyColor.white,
+                    ),
                     label: Text("Cadangkan", style: lv05TextStyleWhite),
                     onPressed: () {
                       final bloc =
@@ -91,7 +94,11 @@ class UiBackupRestore extends StatelessWidget {
               style: lv05TextStyleItalic,
             ),
             const SizedBox(height: 10),
-            Container(height: 1, width: double.infinity, color: Colors.grey),
+            Container(
+              height: 1,
+              width: double.infinity,
+              color: AppPropertyColor.grey,
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -102,8 +109,11 @@ class UiBackupRestore extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: customButtonIcon(
-                    backgroundColor: Colors.white,
-                    icon: Icon(Icons.folder_delete_rounded, color: Colors.red),
+                    backgroundColor: AppPropertyColor.white,
+                    icon: const Icon(
+                      Icons.folder_delete_rounded,
+                      color: AppPropertyColor.deleteOrClose,
+                    ),
                     label: Text("Reset", style: lv05TextStyleRed),
                     onPressed: () {
                       showDialog<bool>(
@@ -141,7 +151,11 @@ class UiBackupRestore extends StatelessWidget {
             ),
 
             const SizedBox(height: 10),
-            Container(height: 1, width: double.infinity, color: Colors.grey),
+            Container(
+              height: 1,
+              width: double.infinity,
+              color: AppPropertyColor.grey,
+            ),
             const SizedBox(height: 10),
             Row(
               children: [
@@ -152,7 +166,10 @@ class UiBackupRestore extends StatelessWidget {
                 Expanded(
                   child: customButtonIcon(
                     backgroundColor: AppPropertyColor.primary,
-                    icon: Icon(Icons.file_copy_rounded, color: Colors.white),
+                    icon: const Icon(
+                      Icons.file_copy_rounded,
+                      color: AppPropertyColor.white,
+                    ),
                     label: Text("Pulihkan File", style: lv05TextStyleWhite),
                     onPressed: () {},
                   ),

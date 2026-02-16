@@ -77,7 +77,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
         top: true,
         bottom: true,
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               Row(
@@ -91,7 +91,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                   ),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: AppPropertyColor.primary,
@@ -99,7 +99,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                           BoxShadow(
                             blurRadius: 8,
                             offset: Offset(0, 4),
-                            color: Colors.black26,
+                            color: AppPropertyColor.blackLight,
                           ),
                         ],
                       ),
@@ -252,18 +252,18 @@ class _UIMainMenuState extends State<UIMainMenu> {
                       Flexible(
                         fit: FlexFit.loose,
                         child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: AppPropertyColor.white,
                             borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(10),
                               bottomRight: Radius.circular(10),
                             ),
                             boxShadow: [
-                              BoxShadow(
+                              const BoxShadow(
                                 blurRadius: 8,
                                 offset: Offset(0, 4),
-                                color: Colors.black26,
+                                color: AppPropertyColor.blackLight,
                               ),
                             ],
                           ),
@@ -301,7 +301,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                         fit: FlexFit.loose,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppPropertyColor.white,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),
                               topRight: Radius.circular(10),
@@ -310,12 +310,12 @@ class _UIMainMenuState extends State<UIMainMenu> {
                               BoxShadow(
                                 blurRadius: 8,
                                 offset: Offset(0, 4),
-                                color: Colors.black26,
+                                color: AppPropertyColor.blackLight,
                               ),
                             ],
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             child: Wrap(
                               children: [
                                 rowContent(
@@ -384,7 +384,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                           ? navUpDownTransition(context, '/batch', false)
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.inventory, color: Colors.black),
+                    const Icon(Icons.inventory, color: AppPropertyColor.black),
                     "Inventori",
                   ),
                   gridViewMenu(
@@ -401,7 +401,10 @@ class _UIMainMenuState extends State<UIMainMenu> {
                             )
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.shopping_cart, color: Colors.black),
+                    const Icon(
+                      Icons.shopping_cart,
+                      color: AppPropertyColor.black,
+                    ),
                     "Transaksi",
                   ),
                   gridViewMenu(
@@ -410,7 +413,10 @@ class _UIMainMenuState extends State<UIMainMenu> {
                           ? navUpDownTransition(context, '/report', false)
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.assignment_outlined, color: Colors.black),
+                    const Icon(
+                      Icons.assignment_outlined,
+                      color: AppPropertyColor.black,
+                    ),
                     "Laporan",
                   ),
                 ],
@@ -431,7 +437,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                           ? navUpDownTransition(context, '/partner', false)
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.inventory, color: Colors.black),
+                    const Icon(Icons.inventory, color: AppPropertyColor.black),
                     "Data Kontak",
                   ),
                   gridViewMenu(
@@ -441,7 +447,10 @@ class _UIMainMenuState extends State<UIMainMenu> {
                           ? navUpDownTransition(context, '/financial', false)
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.shopping_cart, color: Colors.black),
+                    const Icon(
+                      Icons.shopping_cart,
+                      color: AppPropertyColor.black,
+                    ),
                     "Data Alur Kas",
                   ),
                   gridViewMenu(
@@ -450,7 +459,10 @@ class _UIMainMenuState extends State<UIMainMenu> {
                           ? navUpDownTransition(context, '/operator', false)
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.shopping_cart, color: Colors.black),
+                    const Icon(
+                      Icons.shopping_cart,
+                      color: AppPropertyColor.black,
+                    ),
                     "Data Operator",
                   ),
                 ],
@@ -475,7 +487,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                             )
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.inventory, color: Colors.black),
+                    const Icon(Icons.inventory, color: AppPropertyColor.black),
                     "Riwayat Treansaksi",
                   ),
                   gridViewMenu(
@@ -489,7 +501,10 @@ class _UIMainMenuState extends State<UIMainMenu> {
                             )
                           : customSnackBarAccess(context: context);
                     },
-                    Icon(Icons.assignment_outlined, color: Colors.black),
+                    const Icon(
+                      Icons.assignment_outlined,
+                      color: AppPropertyColor.black,
+                    ),
                     "Riwayat Kas",
                   ),
                 ],
@@ -500,12 +515,12 @@ class _UIMainMenuState extends State<UIMainMenu> {
         const SizedBox(height: 10),
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.5),
+                  color: AppPropertyColor.black.withValues(alpha: 0.5),
                   blurStyle: BlurStyle.outer,
                   spreadRadius: 1,
                   blurRadius: 5,
@@ -522,7 +537,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
 
                 borderData: FlBorderData(
                   show: true,
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: AppPropertyColor.greyLight),
                 ),
 
                 titlesData: FlTitlesData(
@@ -574,7 +589,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
 
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
-                    // tooltipBgColor: Colors.black87,
+                    // tooltipBgColor: AppPropertyColor.black87,
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((spot) {
                         return LineTooltipItem(
@@ -591,11 +606,11 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     spots: spots,
                     isCurved: true,
                     barWidth: 3,
-                    color: Colors.blue,
+                    color: AppPropertyColor.primary,
                     dotData: FlDotData(show: true),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Colors.blue.withValues(alpha: 0.15),
+                      color: AppPropertyColor.primary.withValues(alpha: 0.15),
                     ),
                   ),
                 ],
@@ -642,17 +657,22 @@ Widget listTileText(
   ValueNotifier selectedMenu,
 ) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 5),
+    padding: const EdgeInsets.symmetric(vertical: 5),
     child: ValueListenableBuilder(
       valueListenable: selectedMenu,
       builder: (context, value, child) {
         return customButton(
           backgroundColor: text == value
               ? AppPropertyColor.primary
-              : Colors.white,
+              : AppPropertyColor.white,
           child: Column(
             children: [
-              Icon(leading, color: text != value ? Colors.black : Colors.white),
+              Icon(
+                leading,
+                color: text != value
+                    ? AppPropertyColor.black
+                    : AppPropertyColor.white,
+              ),
               Text(
                 text,
                 style: text != value ? lv05TextStyle : lv05TextStyleWhite,
@@ -668,15 +688,9 @@ Widget listTileText(
 }
 
 Widget gridViewMenu(VoidCallback onPressed, Icon? icon, String text) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.white,
-      minimumSize: Size(0, 0),
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    ),
-    onPressed: onPressed,
+  return customButton(
+    moreRadius: true,
+    backgroundColor: AppPropertyColor.white,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -686,5 +700,6 @@ Widget gridViewMenu(VoidCallback onPressed, Icon? icon, String text) {
         Text(text, style: lv05TextStyle, textAlign: TextAlign.center),
       ],
     ),
+    onPressed: onPressed,
   );
 }

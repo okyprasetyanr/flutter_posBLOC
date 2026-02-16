@@ -17,6 +17,7 @@ Widget customTextField({
   BuildContext? context,
   FormFieldValidator<String>? validator,
   bool alignEnd = false,
+  List<TextInputFormatter>? inputFormatter,
   Function(String value)? onChanged,
 }) {
   return TextFormField(
@@ -55,16 +56,18 @@ Widget customTextField({
       prefixIcon: prefix,
     ),
     inputFormatters: suffixText != null
-        ? [
-            FilteringTextInputFormatter.digitsOnly,
-            TextInputFormatter.withFunction((oldValue, newValue) {
-              if (newValue.text.length > 8) {
-                customSnackBar(context!, "Jumlah melebihi batas");
-                return oldValue;
-              }
-              return newValue;
-            }),
-          ]
+        ? suffixText == "%"
+              ? inputFormatter
+              : [
+                  FilteringTextInputFormatter.digitsOnly,
+                  TextInputFormatter.withFunction((oldValue, newValue) {
+                    if (newValue.text.length > 8) {
+                      customSnackBar(context!, "Jumlah melebihi batas");
+                      return oldValue;
+                    }
+                    return newValue;
+                  }),
+                ]
         : null,
     onChanged: (value) {
       onChanged != null ? onChanged(value) : null;

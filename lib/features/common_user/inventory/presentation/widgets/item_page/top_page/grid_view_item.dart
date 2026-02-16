@@ -41,7 +41,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
               "Log UIInventoryGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItemByBatch}",
             );
             return Material(
-              color: Colors.white,
+              color: AppPropertyColor.white,
               borderRadius: BorderRadius.circular(8),
               elevation: 4,
               child: Stack(

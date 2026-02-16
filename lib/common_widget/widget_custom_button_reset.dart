@@ -14,7 +14,7 @@ Widget customButtonIconReset({VoidCallback? onPressed}) {
       minimumSize: const Size(0, 30),
       backgroundColor: AppPropertyColor.primary,
     ),
-    icon: Icon(Icons.restart_alt_rounded, size: lv2IconSize),
+    icon: const Icon(Icons.restart_alt_rounded, size: lv2IconSize),
     label: Text("Bersihkan", style: lv1TextStyleWhite),
   );
 }

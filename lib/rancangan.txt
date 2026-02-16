@@ -29,3 +29,6 @@ Catat user_id (siapa yang eksekusi).
 Catat timestamp (kapan kejadiannya).
 
 Catat old_qty dan new_qty agar terlihat perubahannya secara transparan.
+
+Pengingat BUG:
+ketika load transaksi tersimpan, custom diskon,PPN pake nominal ngasal ga keload, harusnya value ditampilkan dikolom custom 

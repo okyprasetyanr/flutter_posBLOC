@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 Widget customRowListItem({
@@ -25,7 +26,9 @@ Widget customRowListItem({
           SizedBox(
             width: 1,
             height: 15,
-            child: DecoratedBox(decoration: BoxDecoration(color: Colors.grey)),
+            child: const DecoratedBox(
+              decoration: BoxDecoration(color: AppPropertyColor.grey),
+            ),
           ),
           Expanded(
             flex: 3,
@@ -38,12 +41,14 @@ Widget customRowListItem({
           SizedBox(
             width: 1,
             height: 15,
-            child: DecoratedBox(decoration: BoxDecoration(color: Colors.grey)),
+            child: const DecoratedBox(
+              decoration: BoxDecoration(color: AppPropertyColor.grey),
+            ),
           ),
           Expanded(
             flex: 3,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 7),
+              padding: const EdgeInsets.symmetric(horizontal: 7),
               child: Text(
                 quantity,
                 style: condiment ? lv05TextStyleItalic : lv05TextStyle,
@@ -54,7 +59,9 @@ Widget customRowListItem({
           SizedBox(
             width: 1,
             height: 15,
-            child: DecoratedBox(decoration: BoxDecoration(color: Colors.grey)),
+            child: const DecoratedBox(
+              decoration: BoxDecoration(color: AppPropertyColor.grey),
+            ),
           ),
           Expanded(
             flex: 5,
@@ -70,7 +77,9 @@ Widget customRowListItem({
         SizedBox(
           height: 1,
           width: double.infinity,
-          child: DecoratedBox(decoration: BoxDecoration(color: Colors.grey)),
+          child: const DecoratedBox(
+            decoration: BoxDecoration(color: AppPropertyColor.grey),
+          ),
         ),
     ],
   );

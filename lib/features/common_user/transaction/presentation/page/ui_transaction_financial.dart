@@ -72,30 +72,17 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
           children: [
             Row(
               children: [
-                ElevatedButton.icon(
+                customButtonIcon(
+                  backgroundColor: AppPropertyColor.primary,
+                  icon: const Icon(
+                    Icons.menu_rounded,
+                    color: AppPropertyColor.white,
+                    size: lv2IconSize,
+                  ),
+                  label: Text("Menu", style: lv05TextStyleWhite),
                   onPressed: () {
                     isOpen.value = !isOpen.value;
                   },
-                  label: Text("Menu", style: lv05TextStyleWhite),
-                  icon: Icon(
-                    Icons.menu_rounded,
-                    color: Colors.white,
-                    size: lv2IconSize,
-                  ),
-                  style: ButtonStyle(
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
-                    padding: const WidgetStatePropertyAll(
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    ),
-                    backgroundColor: WidgetStatePropertyAll(
-                      AppPropertyColor.primary,
-                    ),
-                  ),
                 ),
                 const SizedBox(width: 10),
                 Text("Kas", style: titleTextStyle),
@@ -232,7 +219,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                     final isKas = state != nullKas;
                     return Container(
                       margin: EdgeInsets.only(left: isKas ? 10 : 0),
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         vertical: 5,
                         horizontal: 10,
                       ),
@@ -333,7 +320,10 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                   _resetForm();
                 },
                 backgroundColor: AppPropertyColor.primary,
-                icon: Icon(Icons.check_rounded, color: Colors.white),
+                icon: const Icon(
+                  Icons.check_rounded,
+                  color: AppPropertyColor.white,
+                ),
                 label: Text("Simpan", style: lv05TextStyleWhite),
               ),
             ),

@@ -44,7 +44,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
               color: AppPropertyColor.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.4),
+                  color: AppPropertyColor.black.withValues(alpha: 0.4),
                   blurRadius: 10,
                   blurStyle: BlurStyle.outer,
                 ),
@@ -61,7 +61,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
                   height: 50,
                   child: customButtonIcon(
                     left: true,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.keyboard_backspace_rounded,
                       color: AppPropertyColor.white,
                     ),
@@ -73,7 +73,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView(
-                    padding: EdgeInsets.zero,
+                    padding: const EdgeInsets.only(),
                     children: [
                       Text("Daftar Menu", style: lv2TextStyle),
                       const SizedBox(height: 10),

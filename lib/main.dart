@@ -189,7 +189,7 @@ class _MainAppState extends State<ScreenLogin> {
                   Container(
                     width: double.infinity,
                     height: double.infinity,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage("assets/bg.png"),
                         fit: BoxFit.cover,
@@ -208,7 +208,7 @@ class _MainAppState extends State<ScreenLogin> {
                           child: Text(
                             "Masuk",
                             style: GoogleFonts.poppins(
-                              color: Colors.black,
+                              color: AppPropertyColor.black,
                               fontWeight: FontWeight.w700,
                               fontSize: 35,
                             ),
@@ -232,7 +232,7 @@ class _MainAppState extends State<ScreenLogin> {
                                       Radius.circular(18),
                                     ),
                                     elevation: 2,
-                                    shadowColor: Colors.black,
+                                    shadowColor: AppPropertyColor.black,
                                     child: TextField(
                                       style: lv1TextStyle,
                                       controller: emailcontroller,
@@ -263,7 +263,7 @@ class _MainAppState extends State<ScreenLogin> {
                                           Radius.circular(18),
                                         ),
                                         elevation: 2,
-                                        shadowColor: Colors.black,
+                                        shadowColor: AppPropertyColor.black,
                                         child: ValueListenableBuilder(
                                           valueListenable: _obscurePassword,
                                           builder: (context, value, child) =>

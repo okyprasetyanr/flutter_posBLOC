@@ -23,7 +23,7 @@ class UiLogoHeaderFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
             Text("Logo,Header & Footer", style: subTitleTextStyleBold),
@@ -59,7 +59,10 @@ class UiLogoHeaderFooter extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             customButtonIcon(
-              icon: Icon(Icons.check_rounded, color: Colors.white),
+              icon: const Icon(
+                Icons.check_rounded,
+                color: AppPropertyColor.white,
+              ),
               label: Text("Simpan", style: lv05TextStyleWhite),
               backgroundColor: AppPropertyColor.primary,
               onPressed: () {

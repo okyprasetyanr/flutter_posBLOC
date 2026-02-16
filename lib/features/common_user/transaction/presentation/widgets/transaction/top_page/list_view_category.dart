@@ -34,10 +34,10 @@ class UITransactionListViewCategory extends StatelessWidget {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                Colors.black,
-                Colors.black,
-                Colors.black,
-                Colors.transparent,
+                AppPropertyColor.black,
+                AppPropertyColor.black,
+                AppPropertyColor.black,
+                AppPropertyColor.transparent,
               ],
               stops: [0, 0.02, 0.98, 1],
             ).createShader(bounds);
@@ -85,7 +85,7 @@ class UITransactionListViewCategory extends StatelessWidget {
                                   stateSelected.getidCategory;
                               final backgroundColor = validasiSelected
                                   ? AppPropertyColor.primary
-                                  : Colors.grey.shade200;
+                                  : AppPropertyColor.grey;
                               final textColor = validasiSelected
                                   ? lv05TextStyleWhite
                                   : lv05TextStyle;

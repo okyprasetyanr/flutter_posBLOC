@@ -22,7 +22,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
         Text("Condiment", style: labelTextStyle),
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             width: double.infinity,
             height: 400,
             decoration: BoxDecoration(
@@ -30,7 +30,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
               ),
-              color: AppPropertyColor.grey,
+              color: AppPropertyColor.greyLight,
             ),
             child: BlocSelector<TransactionBloc, TransactionState, List<ModelItem>>(
               selector: (state) {
@@ -53,7 +53,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                   children: [
                     Expanded(
                       child: GridView.builder(
-                        padding: EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.only(top: 10),
                         shrinkWrap: true,
                         itemCount: state.length,
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -66,7 +66,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return Material(
                             elevation: 2,
-                            color: Colors.white,
+                            color: AppPropertyColor.white,
                             borderRadius: BorderRadius.circular(8),
                             child:
                                 BlocSelector<

@@ -264,10 +264,10 @@ class _UITransactionState extends State<UITransaction> {
               builder: (context, state) {
                 return Material(
                   elevation: 1,
-                  color: Colors.white,
+                  color: AppPropertyColor.white,
                   borderRadius: BorderRadius.circular(8),
                   child: Padding(
-                    padding: EdgeInsetsGeometry.all(5),
+                    padding: const EdgeInsetsGeometry.all(5),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -290,7 +290,7 @@ class _UITransactionState extends State<UITransaction> {
             Text("Pesanan", style: titleTextStyle),
           ],
         ),
-        Divider(color: Colors.grey[400], thickness: 1),
+        Divider(color: AppPropertyColor.grey, thickness: 1),
         Expanded(child: TransactionListViewOrderedItem()),
       ],
     );

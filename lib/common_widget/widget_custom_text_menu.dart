@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 Widget WidgetCustomTextMenu({
@@ -9,9 +10,11 @@ Widget WidgetCustomTextMenu({
     child: InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
+          border: const Border(
+            bottom: const BorderSide(color: AppPropertyColor.grey, width: 1),
+          ),
         ),
         child: Text(text, style: lv05TextStyle),
       ),

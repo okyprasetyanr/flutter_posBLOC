@@ -70,7 +70,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
           );
         }
         return Padding(
-          padding: EdgeInsetsGeometry.all(5),
+          padding: const EdgeInsetsGeometry.all(5),
           child: Column(
             children: [
               Row(
@@ -81,7 +81,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(
                         isDense: true,
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 3,
                         ),
@@ -109,26 +109,13 @@ class UIPaymentDebitPayment extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     flex: 1,
-                    child: TextField(
+                    child: customTextField(
+                      hint: false,
                       controller: chargeController,
-                      textAlign: TextAlign.right,
-                      keyboardType: TextInputType.number,
-                      style: lv05TextStyle,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 8,
-                        ),
-                        suffixText: "%",
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        labelText: "Charge",
-                        labelStyle: lv05TextStyle,
-                      ),
-                      inputFormatters: [
+                      inputType: const TextInputType.numberWithOptions(),
+                      text: "Charge",
+                      suffixText: "%",
+                      inputFormatter: [
                         FilteringTextInputFormatter.digitsOnly,
                         TextInputFormatter.withFunction((oldValue, newValue) {
                           final customPpn = newValue.text;
@@ -147,6 +134,8 @@ class UIPaymentDebitPayment extends StatelessWidget {
                           return newValue;
                         }),
                       ],
+                      alignEnd: true,
+                      context: context,
                     ),
                   ),
                 ],

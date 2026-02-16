@@ -3,31 +3,31 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final labelTextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w500,
   fontSize: 11,
 );
 
 final hintTextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w100,
   fontSize: 10,
 );
 
 final titleTextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w900,
   fontSize: 17,
 );
 
 final subTitleTextStyleBold = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w500,
   fontSize: 15,
 );
 
 final titleTextStyleWhite = GoogleFonts.poppins(
-  color: Colors.white,
+  color: AppPropertyColor.white,
   fontWeight: FontWeight.w600,
   fontSize: 15,
 );
@@ -46,13 +46,13 @@ final transactionSuccessTextStyle = GoogleFonts.poppins(
     Shadow(
       offset: Offset(2, 2),
       blurRadius: 4,
-      color: Colors.black.withValues(alpha: 0.2),
+      color: AppPropertyColor.black.withValues(alpha: 0.2),
     ),
   ],
 );
 
 final transactionSuccessPaidTextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w600,
   fontSize: 12,
   shadows: [
@@ -65,13 +65,13 @@ final transactionSuccessPaidTextStyle = GoogleFonts.poppins(
 );
 
 final buttonTextStyle = GoogleFonts.poppins(
-  color: Colors.white,
+  color: AppPropertyColor.white,
   fontWeight: FontWeight.w600,
   fontSize: 17,
 );
 
 final lv05TextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w300,
   fontSize: 10,
 );
@@ -83,32 +83,38 @@ final lv05TextStyleDisable = GoogleFonts.poppins(
 );
 
 final lv05TextStyleOrderedItem = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w400,
   fontSize: 10,
 );
 
 final lv05TextStyleItalic = GoogleFonts.poppins(
   fontStyle: FontStyle.italic,
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w300,
   fontSize: 9,
 );
 
 final lv05TextStyleRed = GoogleFonts.poppins(
-  color: Colors.red,
+  color: AppPropertyColor.deleteOrClose,
   fontWeight: FontWeight.w300,
   fontSize: 10,
 );
 
 final lv05TextStyleRedPrice = GoogleFonts.poppins(
-  color: Colors.red,
+  color: AppPropertyColor.deleteOrClose,
   fontWeight: FontWeight.w600,
   fontSize: 10,
 );
 
 final lv05TextStyleBold = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
+  fontWeight: FontWeight.w600,
+  fontSize: 10,
+);
+
+final lv05TextStyleBoldWhite = GoogleFonts.poppins(
+  color: AppPropertyColor.white,
   fontWeight: FontWeight.w600,
   fontSize: 10,
 );
@@ -120,15 +126,15 @@ final lv1TextStylePrimaryPrice = GoogleFonts.poppins(
 );
 
 final lv05TextStyleWhite = GoogleFonts.poppins(
-  color: Colors.white,
+  color: AppPropertyColor.white,
   fontWeight: FontWeight.w300,
   fontSize: 10,
 );
 
 final textStyleItemCondiment = GoogleFonts.poppins(
   textStyle: TextStyle(
-    backgroundColor: Colors.grey.shade600,
-    color: Colors.white,
+    backgroundColor: AppPropertyColor.grey,
+    color: AppPropertyColor.white,
     fontWeight: FontWeight.w400,
     fontSize: 10,
   ),
@@ -137,20 +143,20 @@ final textStyleItemCondiment = GoogleFonts.poppins(
 final textStyleItemNormal = GoogleFonts.poppins(
   textStyle: const TextStyle(
     backgroundColor: AppPropertyColor.primary,
-    color: Colors.white,
+    color: AppPropertyColor.white,
     fontWeight: FontWeight.w400,
     fontSize: 10,
   ),
 );
 
 final lv1TextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w300,
   fontSize: 12,
 );
 
 final lv1TextStyleBold = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w500,
   fontSize: 12,
 );
@@ -162,7 +168,7 @@ final lv05textStylePrice = GoogleFonts.poppins(
 );
 
 final lv05textStylePriceCondiment = GoogleFonts.poppins(
-  color: Colors.orange,
+  color: AppPropertyColor.condiment,
   fontWeight: FontWeight.w600,
   fontSize: 10,
 );
@@ -174,19 +180,19 @@ final lv1TextStyleDisable = GoogleFonts.poppins(
 );
 
 final lv1TextStyleWhite = GoogleFonts.poppins(
-  color: Colors.white,
+  color: AppPropertyColor.white,
   fontWeight: FontWeight.w300,
   fontSize: 12,
 );
 
 final lv1TextStyleWhiteBold = GoogleFonts.poppins(
-  color: Colors.white,
+  color: AppPropertyColor.white,
   fontWeight: FontWeight.w600,
   fontSize: 12,
 );
 
 final lv0TextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w300,
   fontSize: 10,
 );
@@ -198,13 +204,13 @@ final lv0TextStyleRED = GoogleFonts.poppins(
 );
 
 final lv2TextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w300,
   fontSize: 16,
 );
 
 final lv2TextStyleWhite = GoogleFonts.poppins(
-  color: Colors.white,
+  color: AppPropertyColor.white,
   fontWeight: FontWeight.w500,
   fontSize: 16,
 );
@@ -216,13 +222,13 @@ final lv2textStylePrice = GoogleFonts.poppins(
 );
 
 final lv3TextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w300,
   fontSize: 16,
 );
 
 final lv4TextStyle = GoogleFonts.poppins(
-  color: Colors.black,
+  color: AppPropertyColor.black,
   fontWeight: FontWeight.w600,
   fontSize: 16,
 );
