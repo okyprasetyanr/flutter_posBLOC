@@ -299,6 +299,32 @@ enum ResetPasswordStatus { idle, loading, success, failure }
 
 enum LabelPricePopUpItem { Harga_Jual, Harga_Beli }
 
+enum PaperWidth { mm58, mm80 }
+
+enum PrintFormatType {
+  sell,
+  buy,
+  income,
+  expense,
+  adjustment_in,
+  adjustment_out,
+}
+
+enum ErrorTypeApp { device_note_found, printer_timeout, printer_failed }
+
+extension ErrorTypeX on ErrorTypeApp {
+  String get message {
+    switch (this) {
+      case ErrorTypeApp.device_note_found:
+        return "Perangkat Printer tidak ditemukan";
+      case ErrorTypeApp.printer_timeout:
+        return "Waktu habis";
+      case ErrorTypeApp.printer_failed:
+        return "Print Gagal!";
+    }
+  }
+}
+
 enum LabelPaymentMethod { Cash, Debit, QRIS, Split }
 
 extension LabelPaymentMethodX on LabelPaymentMethod {

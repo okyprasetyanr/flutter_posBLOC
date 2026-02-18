@@ -13,8 +13,10 @@ class PaymentLoaded extends PaymentState with EquatableMixin {
   final ModelTransaction? transaction_sell;
   final bool isSell;
   final String? revisionInvoice;
+  final String? error;
 
   PaymentLoaded({
+    this.error,
     this.revisionInvoice,
     required this.itemOrdered,
     required this.isSell,
@@ -22,12 +24,14 @@ class PaymentLoaded extends PaymentState with EquatableMixin {
   });
 
   PaymentLoaded copyWith({
+    String? error,
     String? revisionInvoice,
     List<ModelItemOrdered>? itemOrdered,
     ModelTransaction? transaction_sell,
     bool? isSell,
   }) {
     return PaymentLoaded(
+      error: error,
       revisionInvoice: revisionInvoice ?? this.revisionInvoice,
       isSell: isSell ?? this.isSell,
       itemOrdered: itemOrdered ?? itemOrdered,
@@ -37,6 +41,7 @@ class PaymentLoaded extends PaymentState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    error,
     transaction_sell,
     itemOrdered,
     isSell,

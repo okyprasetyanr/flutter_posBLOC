@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,16 @@ class SettingsSelectedSyncData extends SettingsEvent {
   final Map<ListForDatabase, bool> selectedData;
 
   SettingsSelectedSyncData({required this.selectedData});
+}
+
+class SettingsPrintReceipt extends SettingsEvent {
+  final Uint8List bytes;
+  SettingsPrintReceipt(this.bytes);
+}
+
+class SettingsChangePaper extends SettingsEvent {
+  final PaperWidth paper;
+  SettingsChangePaper(this.paper);
 }
 
 class SettingPushData extends SettingsEvent {}

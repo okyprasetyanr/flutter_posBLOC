@@ -94,8 +94,24 @@ class SettingsPrinterScanResult extends SettingsState {
 class SettingsPrinterConnecting extends SettingsState {}
 
 class SettingsPrinterConnected extends SettingsState {
-  final BluetoothDevice device;
-  SettingsPrinterConnected(this.device);
+  final BluetoothDevice? device;
+  final PaperWidth? paper;
+  SettingsPrinterConnected({this.device, this.paper});
+
+  SettingsPrinterConnected copyWith({
+    BluetoothDevice? device,
+    PaperWidth? paper,
+  }) {
+    return SettingsPrinterConnected(
+      device: device ?? this.device,
+      paper: paper ?? this.paper,
+    );
+  }
+}
+
+class SettingsPrinterError extends SettingsState {
+  final ErrorTypeApp error;
+  SettingsPrinterError(this.error);
 }
 
 class SettingsPrinterDisconnected extends SettingsState {}

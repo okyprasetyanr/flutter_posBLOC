@@ -9,7 +9,7 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/service_dart.dart';
+import 'package:flutter_pos/function/printer/service_printer.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -648,7 +648,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                           final isAvailable =
                               await printer.getSavedMac() != null;
                           if (isAvailable) {
-                            await printer.printTest();
+                            // await printer.printTest();
                           } else {
                             customSnackBar(context, "Printer tidak tersambung");
                           }

@@ -6,11 +6,12 @@ import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/hive_setup/transaction_saved_hive_adapter.dart';
 import 'package:flutter_pos/firebase_options.dart';
-import 'package:flutter_pos/function/service_dart.dart';
+import 'package:flutter_pos/function/printer/service_printer.dart';
 import 'package:flutter_pos/features/hive_setup/model_transaction_save.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -69,6 +70,7 @@ void main() async {
         BlocProvider(create: (_) => HistoryFinancialBloc(repo)),
         BlocProvider(create: (_) => OperatorBloc(repo)),
         BlocProvider(create: (_) => DataReportBloc(repo)),
+        BlocProvider(create: (_) => PrinterBloc(ServicePrinter())),
 
         if (!kIsWeb)
           BlocProvider(create: (_) => SettingsBloc(printService!, repo)),

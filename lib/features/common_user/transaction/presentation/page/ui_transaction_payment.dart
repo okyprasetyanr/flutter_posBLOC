@@ -343,6 +343,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                             context: context,
                           ),
                         );
+
                         navUpDownTransition(
                           context,
                           '/selltransactionsuccess',

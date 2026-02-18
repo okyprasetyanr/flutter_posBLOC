@@ -96,7 +96,7 @@ class _UISettingsState extends State<UISettings> {
               WidgetCustomTextMenu(
                 text: "Printer",
                 onTap: () async {
-                  context.read<SettingsBloc>().add(SettingsPrinterInit());
+                  // context.read<SettingsBloc>().add(SettingsPrinterInit());
                   customBottomSheet(
                     context: context,
                     resetItemForm: null,
