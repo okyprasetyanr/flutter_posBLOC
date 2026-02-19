@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
@@ -31,7 +30,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final DataUserRepositoryCache repoCache;
   final ServicePrinter service;
-  StreamSubscription<List<BluetoothDevice>>? _scanSub;
 
   SettingsBloc(this.service, this.repoCache) : super(SettingsInital()) {
     on<SettingsProfile>(_onProfile);
@@ -42,14 +40,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingPushData>(_onPushData);
     on<SettingGetData>(_onGetData);
     on<SettingCancelSync>(_onCancelSync);
-    // on<SettingsStartScanEvent>(_onScan);
-    // on<SettingsSelectPrinterEvent>(_onSelectPrinter);
-    // on<SettingsPrintTestEvent>(_onPrintTest);
-    // on<SettingsDisconnectPrinterEvent>(_onDisconnect);
-    // on<SettingsPrinterInit>(_onPrinterInit);
-    // on<SettingsPrinterAutoConnect>(_onPrinterAutoConnect);
-    // on<SettingsPrintReceipt>(_onPrintReceipt);
-    // on<SettingsChangePaper>(_onPrinterChangePaper);
     on<SettingsLogoHeaderFooterInit>(_onLogoHeaderFooterInit);
     on<SettingsLogoHeaderFooterUpdate>(_onLogoHeaderFooterUpdate);
     on<SettingsBackupRestoreinit>(_onBackupRestoreInit);
@@ -183,101 +173,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final currentState = state as SettingsSyncDataLoaded;
     emit(currentState.copyWith(isCancelled: true));
   }
-
-  // Future<void> _onScan(SettingsStartScanEvent event, Emitter emit) async {
-  //   if (state is SettingsPrinterScanning) return;
-
-  //   emit(SettingsPrinterScanning());
-
-  //   await _scanSub?.cancel();
-  //   _scanSub = null;
-
-  //   await service.startScan();
-
-  //   _scanSub = service.uniqueScanResults.listen((devices) {
-  //     emit(SettingsPrinterScanResult(devices));
-  //   });
-
-  //   await Future.delayed(const Duration(seconds: 14));
-  //   await service.stopScan();
-  //   // await _scanSub?.cancel();
-  //   // _scanSub = null;
-  // }
-
-  // Future<void> _onSelectPrinter(
-  //   SettingsSelectPrinterEvent event,
-  //   Emitter emit,
-  // ) async {
-  //   emit(SettingsPrinterConnecting());
-  //   try {
-  //     await service.connect(event.device);
-  //     emit(SettingsPrinterConnected(device: event.device));
-  //   } catch (e) {
-  //     emit(SettingsPrinterError(ErrorTypeApp.printer_failed));
-  //   }
-  // }
-
-  // Future<void> _onPrintTest(SettingsPrintTestEvent event, Emitter emit) async {
-  //   final current = state as SettingsPrinterConnected;
-
-  //   emit(SettingsPrinterPrinting());
-  //   await service.printTest();
-  //   emit(current);
-  // }
-
-  // Future<void> _onDisconnect(
-  //   SettingsDisconnectPrinterEvent event,
-  //   Emitter emit,
-  // ) async {
-  //   await service.disconnect();
-  //   emit(SettingsPrinterDisconnected());
-  // }
-
-  // FutureOr<void> _onPrinterInit(
-  //   SettingsPrinterInit event,
-  //   Emitter<SettingsState> emit,
-  // ) {
-  //   emit(SettingsPrinterInitial());
-  // }
-
-  // Future<void> _onPrinterAutoConnect(
-  //   SettingsPrinterAutoConnect event,
-  //   Emitter<SettingsState> emit,
-  // ) async {
-  //   final ok = await service.autoConnectSavedPrinter();
-  //   if (!ok) return;
-
-  //   final mac = await service.getSavedMac();
-  //   final paper = await service.getPaper();
-
-  //   emit(
-  //     SettingsPrinterConnected(
-  //       device: BluetoothDevice('Saved', mac!),
-  //       paper: paper,
-  //     ),
-  //   );
-  // }
-
-  // Future<void> _onPrintReceipt(
-  //   SettingsPrintReceipt event,
-  //   Emitter<SettingsState> emit,
-  // ) async {
-  //   final mac = await service.getSavedMac();
-
-  //   if (mac == null) {
-  //     emit(SettingsPrinterError(ErrorTypeApp.device_note_found));
-  //     return;
-  //   }
-
-  //   emit(SettingsPrinterPrinting());
-
-  //   try {
-  //     await service.printReceipt(event.bytes);
-  //     emit(SettingsPrinterConnected(device: BluetoothDevice('Saved', mac)));
-  //   } catch (e) {
-  //     emit(SettingsPrinterError(ErrorTypeApp.printer_failed));
-  //   }
-  // }
 
   FutureOr<void> _onLogoHeaderFooterInit(
     SettingsLogoHeaderFooterInit event,
@@ -608,16 +503,4 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     repoCache.dataTransIncome.clear();
     repoCache.dataTransExpense.clear();
   }
-
-  // Future<void> _onPrinterChangePaper(
-  //   SettingsChangePaper event,
-  //   Emitter emit,
-  // ) async {
-  //   await service.savePaper(event.paper);
-
-  //   if (state is SettingsPrinterConnected) {
-  //     final currentState = state as SettingsPrinterConnected;
-  //     emit(currentState.copyWith(paper: event.paper));
-  //   }
-  // }
 }

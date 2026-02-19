@@ -308,6 +308,7 @@ enum PrintFormatType {
   expense,
   adjustment_in,
   adjustment_out,
+  test_print,
 }
 
 enum ErrorTypeApp { device_note_found, printer_timeout, printer_failed }

@@ -105,8 +105,8 @@ class PrinterView extends StatelessWidget {
                         Icons.print,
                         color: isConnected ? Colors.green : Colors.grey,
                       ),
-                      title: Text(device.name ?? "Unknown Device"),
-                      subtitle: Text(device.address ?? "-"),
+                      title: Text(device.name),
+                      subtitle: Text(device.address),
                       trailing: isConnected
                           ? const Chip(
                               label: Text(
@@ -238,8 +238,10 @@ class PrinterView extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: isConnected
-                  ? () => context.read<PrinterBloc>().add(TestPrint())
-                  : null, // Disable button kalau belum connect
+                  ? () => context.read<PrinterBloc>().add(
+                      PrintData(data: null, type: PrintFormatType.test_print),
+                    )
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
                 foregroundColor: Colors.white,

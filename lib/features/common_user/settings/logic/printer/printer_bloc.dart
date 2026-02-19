@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
+import 'package:flutter_pos/function/printer/format_print.dart';
 import 'package:flutter_pos/function/printer/service_printer.dart';
 import 'printer_event.dart';
 import 'printer_state.dart';
@@ -17,7 +18,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     on<ConnectDevice>(_onConnect);
     on<DisconnectDevice>(_onDisconnect);
     on<ChangePaperSize>(_onChangePaperSize);
-    on<TestPrint>(_onTestPrint);
+    on<PrintData>(_onPrintData);
     on<UpdateScanResults>(
       (event, emit) => emit(state.copyWith(scanResults: event.devices)),
     );
@@ -54,7 +55,9 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     // Auto stop loading UI setelah timeout (sinkron dengan timeout service)
     // Atau listen ke stream isScanning dari service juga bisa
     Future.delayed(const Duration(seconds: 10), () {
-      add(StopScan());
+      if (!isClosed) {
+        add(StopScan());
+      }
     });
   }
 
@@ -98,20 +101,21 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     emit(state.copyWith(paperWidth: event.size));
   }
 
-  Future<void> _onTestPrint(TestPrint event, Emitter<PrinterState> emit) async {
+  Future<void> _onPrintData(PrintData event, Emitter<PrinterState> emit) async {
     if (state.connectState != ConnectState.connected) {
       emit(state.copyWith(errorMessage: "Printer belum terkoneksi!"));
       return;
     }
     try {
-      await _service.printTest(state.paperWidth);
+      await ReceiptBuilder.print(formatType: event.type, data: event.data);
     } catch (e) {
       emit(state.copyWith(errorMessage: "Gagal print: $e"));
     }
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
+    await _service.stopScan();
     _scanSubscription?.cancel();
     _stateSubscription?.cancel();
     return super.close();

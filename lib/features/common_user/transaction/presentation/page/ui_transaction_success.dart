@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
-import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
-import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/printer/format_print.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
@@ -105,12 +104,8 @@ class UITransactionSuccess extends StatelessWidget {
                         icon: const Icon(Icons.print_rounded),
                         label: Text("Print", style: lv05TextStyleWhite),
                         onPressed: () async {
-                          final bytes = await ReceiptBuilder.print(
-                            data: state,
-                            formatType: PrintFormatType.sell,
-                          );
-                          context.read<SettingsBloc>().add(
-                            SettingsPrintReceipt(bytes),
+                          context.read<PrinterBloc>().add(
+                            PrintData(data: state, type: PrintFormatType.sell),
                           );
                         },
                       ),

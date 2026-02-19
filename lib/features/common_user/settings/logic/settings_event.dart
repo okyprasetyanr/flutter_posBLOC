@@ -1,11 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class SettingsEvent {}
 
@@ -24,8 +21,8 @@ class SettingsSelectedSyncData extends SettingsEvent {
 }
 
 class SettingsPrintReceipt extends SettingsEvent {
-  final Uint8List bytes;
-  SettingsPrintReceipt(this.bytes);
+  final ModelTransaction data;
+  SettingsPrintReceipt(this.data);
 }
 
 class SettingsChangePaper extends SettingsEvent {
@@ -38,21 +35,6 @@ class SettingPushData extends SettingsEvent {}
 class SettingGetData extends SettingsEvent {}
 
 class SettingCancelSync extends SettingsEvent {}
-
-class SettingsPrinterInit extends SettingsEvent {}
-
-class SettingsStartScanEvent extends SettingsEvent {}
-
-class SettingsSelectPrinterEvent extends SettingsEvent {
-  final BluetoothDevice device;
-  SettingsSelectPrinterEvent(this.device);
-}
-
-class SettingsPrintTestEvent extends SettingsEvent {}
-
-class SettingsDisconnectPrinterEvent extends SettingsEvent {}
-
-class SettingsPrinterAutoConnect extends SettingsEvent {}
 
 class SettingsLogoHeaderFooterInit extends SettingsEvent {}
 

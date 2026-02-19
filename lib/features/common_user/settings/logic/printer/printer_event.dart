@@ -1,11 +1,7 @@
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter_pos/enum/enum.dart';
 
-abstract class PrinterEvent extends Equatable {
-  PrinterEvent();
-  @override
-  List<Object?> get props => [];
-}
+abstract class PrinterEvent {}
 
 class Equatable {}
 
@@ -27,7 +23,12 @@ class ChangePaperSize extends PrinterEvent {
   ChangePaperSize(this.size);
 }
 
-class TestPrint extends PrinterEvent {}
+class PrintData<T> extends PrinterEvent {
+  final T? data;
+  final PrintFormatType type;
+
+  PrintData({required this.data, required this.type});
+}
 
 // Event internal untuk update state dari Stream listener
 class UpdateScanResults extends PrinterEvent {

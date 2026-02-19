@@ -7,6 +7,7 @@ import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/hive_setup/transaction_saved_hive_adapter.dart';
@@ -70,7 +71,9 @@ void main() async {
         BlocProvider(create: (_) => HistoryFinancialBloc(repo)),
         BlocProvider(create: (_) => OperatorBloc(repo)),
         BlocProvider(create: (_) => DataReportBloc(repo)),
-        BlocProvider(create: (_) => PrinterBloc(ServicePrinter())),
+        BlocProvider(
+          create: (_) => PrinterBloc(ServicePrinter())..add(InitPrinter()),
+        ),
 
         if (!kIsWeb)
           BlocProvider(create: (_) => SettingsBloc(printService!, repo)),
