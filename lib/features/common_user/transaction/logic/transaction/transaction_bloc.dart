@@ -376,7 +376,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         }
       } else {
         if (event.orderedItem != null) {
-          debugPrint("cek ${event.orderedItem!.toList()}");
+          debugPrint("Log TransactionBloc:cek ${event.orderedItem!.toList()}");
           emit(currentState.copyWith(itemOrdered: event.orderedItem));
         } else {
           emit(currentState.copyWith(itemOrdered: [...itemPesanan, selected!]));

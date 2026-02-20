@@ -73,8 +73,8 @@ Future<UserCredential?> authenticatorAccount({
     final repo = context.read<DataUserRepositoryCache>();
     await UserSession.init(repo);
 
-    Navigator.pop(context);
-    navUpDownTransition(context, '/mainmenu', true);
+    // Navigator.pop(context);
+    // navUpDownTransition(context, '/mainmenu', true);
     return userCredential;
   }
   // } on FirebaseAuthException catch (e) {

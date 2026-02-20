@@ -123,7 +123,7 @@ class _UIInventoryState extends State<UIInventory> {
     await context.read<DataUserRepositoryCache>().initBatch();
 
     _initData();
-    debugPrint("UI Inventory: initData");
+    debugPrint("Log UIInventory: initData");
   }
 
   @override

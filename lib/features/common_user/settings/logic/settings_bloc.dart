@@ -11,7 +11,6 @@ import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/function/excel_backup.dart';
 import 'package:flutter_pos/function/excel_restore.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/printer/service_printer.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
@@ -29,9 +28,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final DataUserRepositoryCache repoCache;
-  final ServicePrinter service;
 
-  SettingsBloc(this.service, this.repoCache) : super(SettingsInital()) {
+  SettingsBloc(this.repoCache) : super(SettingsInital()) {
     on<SettingsProfile>(_onProfile);
     on<SettingsFeature>(_onFeature);
     on<SettingsFeatureFIFO>(_onFeatureFiFO);

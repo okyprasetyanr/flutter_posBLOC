@@ -11,7 +11,7 @@ class ExcelRestoreService {
   ExcelRestoreService({required this.file, required this.handlers});
 
   Future<void> restore() async {
-    debugPrint("Restore START");
+    debugPrint("Log ExcelRestore: Restore START");
     final bytes = await file.readAsBytes();
     final excel = Excel.decodeBytes(bytes);
 

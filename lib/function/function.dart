@@ -66,16 +66,6 @@ class UserSession {
   }
 }
 
-Future<void> checkAndroidVersion() async {
-  final deviceInfo = DeviceInfoPlugin();
-  final androidInfo = await deviceInfo.androidInfo;
-  final sdkInt = androidInfo.version.sdkInt;
-
-  debugPrint('Android SDK version: $sdkInt');
-  debugPrint('Device: ${androidInfo.model}');
-  debugPrint('Brand: ${androidInfo.brand}');
-}
-
 String generateInvoice({
   required String idOP,
   String? branchId,

@@ -5,8 +5,6 @@ import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
-import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
-import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';

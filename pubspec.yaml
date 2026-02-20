@@ -33,7 +33,8 @@ dependencies:
   hive: any
   hive_flutter: any
   workmanager: ^0.9.0+3
-  bluetooth_print_plus: any
+  bluetooth_print_plus:
+    path: packages/bluetooth_print_plus
   esc_pos_utils_plus: any
   image: any
   image_picker: ^1.1.0

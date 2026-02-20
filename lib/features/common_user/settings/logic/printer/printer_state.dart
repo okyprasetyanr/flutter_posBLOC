@@ -8,9 +8,11 @@ class PrinterState extends Equatable {
   final ConnectState connectState;
   final PaperWidth paperWidth;
   final String? errorMessage;
+  final bool? isLoading;
   final BluetoothDevice? connectedDevice; // Menyimpan info device yg connect
 
   const PrinterState({
+    this.isLoading,
     this.scanResults = const [],
     this.isScanning = false,
     this.connectState = ConnectState.disconnected,
@@ -22,12 +24,14 @@ class PrinterState extends Equatable {
   PrinterState copyWith({
     List<BluetoothDevice>? scanResults,
     bool? isScanning,
+    bool? isLoading,
     ConnectState? connectState,
     PaperWidth? paperWidth,
     String? errorMessage,
     BluetoothDevice? connectedDevice,
   }) {
     return PrinterState(
+      isLoading: isLoading ?? this.isLoading,
       scanResults: scanResults ?? this.scanResults,
       isScanning: isScanning ?? this.isScanning,
       connectState: connectState ?? this.connectState,
@@ -40,6 +44,7 @@ class PrinterState extends Equatable {
 
   @override
   List<Object?> get props => [
+    isLoading,
     scanResults,
     isScanning,
     connectState,

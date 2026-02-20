@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter_pos/function/printer/format_print.dart';
@@ -26,34 +27,43 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
   }
 
   Future<void> _onInit(InitPrinter event, Emitter<PrinterState> emit) async {
-    // 1. Load Paper Size
-    final savedPaper = await _service.getPaperSize();
+    emit(state.copyWith(isLoading: true));
+    try {
+      final savedPaper = await _service.getPaperSize();
 
-    // 2. Listen ke perubahan status koneksi global
-    _stateSubscription = _service.connectState.listen((s) {
-      add(UpdateConnectionState(s));
-    });
+      await Future.delayed(const Duration(milliseconds: 1500));
 
-    // 3. Coba auto connect
-    await _service.initSavedPrinter();
+      final bool isReady = await BluetoothPrintPlus.isBlueOn;
+      debugPrint("Log PrinterBloc: isReady: $isReady");
+      if (_stateSubscription != null) {
+        await _stateSubscription!.cancel();
+      }
 
-    emit(state.copyWith(paperWidth: savedPaper));
+      if (isReady) {
+        _stateSubscription = _service.connectState.listen((s) {
+          if (!isClosed) add(UpdateConnectionState(s));
+        });
+
+        await Future.delayed(const Duration(milliseconds: 500));
+        await _service.initSavedPrinter();
+      }
+
+      emit(state.copyWith(isLoading: false, paperWidth: savedPaper));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false));
+    }
   }
 
   Future<void> _onStartScan(StartScan event, Emitter<PrinterState> emit) async {
     emit(state.copyWith(isScanning: true, scanResults: []));
 
-    // Mulai scan di service
     await _service.startScan();
 
-    // Listen hasil scan
     _scanSubscription?.cancel();
     _scanSubscription = _service.scanResults.listen((devices) {
       add(UpdateScanResults(devices));
     });
 
-    // Auto stop loading UI setelah timeout (sinkron dengan timeout service)
-    // Atau listen ke stream isScanning dari service juga bisa
     Future.delayed(const Duration(seconds: 10), () {
       if (!isClosed) {
         add(StopScan());
@@ -70,7 +80,6 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     ConnectDevice event,
     Emitter<PrinterState> emit,
   ) async {
-    // Set UI loading connected dulu (optimistic) atau tunggu stream
     emit(state.copyWith(connectedDevice: event.device));
     try {
       await _service.connect(event.device);
@@ -115,9 +124,16 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
 
   @override
   Future<void> close() async {
-    await _service.stopScan();
-    _scanSubscription?.cancel();
-    _stateSubscription?.cancel();
+    try {
+      await _service.stopScan();
+    } catch (_) {}
+
+    try {
+      await _service.disconnect();
+    } catch (_) {}
+    await _scanSubscription?.cancel();
+    await _stateSubscription?.cancel();
+
     return super.close();
   }
 }

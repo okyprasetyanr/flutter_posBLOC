@@ -1,8 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class SettingsEvent {}
 
@@ -18,11 +16,6 @@ class SettingsSelectedSyncData extends SettingsEvent {
   final Map<ListForDatabase, bool> selectedData;
 
   SettingsSelectedSyncData({required this.selectedData});
-}
-
-class SettingsPrintReceipt extends SettingsEvent {
-  final ModelTransaction data;
-  SettingsPrintReceipt(this.data);
 }
 
 class SettingsChangePaper extends SettingsEvent {

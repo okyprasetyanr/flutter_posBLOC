@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -94,8 +95,8 @@ class ServicePrinter {
   /// Cek apakah ada printer tersimpan dan coba konek
   Future<bool> initSavedPrinter() async {
     final mac = await getSavedMac();
+    debugPrint("Log ServicePrinter: savedMac: $mac");
     if (mac != null) {
-      // Mencoba koneksi dummy object
       final device = BluetoothDevice('Saved Printer', mac);
       await BluetoothPrintPlus.connect(device);
       return true;
@@ -158,24 +159,21 @@ class ServicePrinter {
 
   Future<void> _safeWrite(Uint8List bytes) async {
     try {
-      // Gunakan variabel lokal status yang kita pantau tadi
       if (_currentStatus != ConnectState.connected) {
         final mac = await getSavedMac();
-        if (mac != null) {
-          await BluetoothPrintPlus.connect(BluetoothDevice('Reconnect', mac));
-          // Beri jeda 1-2 detik agar socket benar-benar "siap" di sisi Android
-          await Future.delayed(const Duration(seconds: 2));
-        } else {
-          return; // Tidak ada printer, batalkan print
-        }
+        if (mac == null) return;
+
+        await BluetoothPrintPlus.connect(BluetoothDevice('Reconnect', mac));
+
+        // Tunggu sampai benar-benar CONNECTED
+        await BluetoothPrintPlus.connectState.firstWhere(
+          (state) => state == ConnectState.connected,
+        );
       }
 
-      // Cek lagi status setelah reconnect
-      if (_currentStatus == ConnectState.connected) {
-        await BluetoothPrintPlus.write(bytes);
-      }
+      await BluetoothPrintPlus.write(bytes);
     } catch (e) {
-      print("Error printing: $e");
+      debugPrint("Error printing: $e");
     }
   }
 

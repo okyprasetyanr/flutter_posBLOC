@@ -72,11 +72,11 @@ void main() async {
         BlocProvider(create: (_) => OperatorBloc(repo)),
         BlocProvider(create: (_) => DataReportBloc(repo)),
         BlocProvider(
+          lazy: false,
           create: (_) => PrinterBloc(ServicePrinter())..add(InitPrinter()),
         ),
 
-        if (!kIsWeb)
-          BlocProvider(create: (_) => SettingsBloc(printService!, repo)),
+        if (!kIsWeb) BlocProvider(create: (_) => SettingsBloc(repo)),
       ],
       child: RepositoryProvider.value(
         value: repo,
@@ -163,7 +163,6 @@ class _MainAppState extends State<ScreenLogin> {
   }
 
   Widget _login() {
-    print(Firebase.app().options.projectId);
     return Scaffold(
       backgroundColor: AppPropertyColor.white,
       body: Stack(
@@ -322,27 +321,32 @@ class _MainAppState extends State<ScreenLogin> {
                                           "Masuk",
                                           style: lv2TextStyleWhite,
                                         ),
-                                        onPressed: () {
+                                        onPressed: () async {
                                           showDialog(
                                             context: context,
-                                            barrierDismissible: false,
-                                            builder: (_) {
-                                              return Center(
-                                                child: customSpinKit(
-                                                  color: AppPropertyColor.white,
-                                                  size: 30,
-                                                ),
+                                            builder: (context) => Center(
+                                              child: customSpinKit(
+                                                color: AppPropertyColor.white,
+                                                size: 30,
+                                              ),
+                                            ),
+                                          );
+                                          final result =
+                                              await authenticatorAccount(
+                                                email: "demo@gmail.com",
+                                                password: "123456",
+                                                context: context,
+                                                signup: false,
                                               );
-                                            },
-                                          );
-                                          authenticatorAccount(
-                                            email: "demo@gmail.com",
-                                            // emailcontroller.text,
-                                            password: "123456",
-                                            // passcontroller.text,
-                                            context: context,
-                                            signup: false,
-                                          );
+                                          if (result != null) {
+                                            if (mounted) {
+                                              navUpDownTransition(
+                                                context,
+                                                '/mainmenu',
+                                                true,
+                                              );
+                                            }
+                                          }
                                         },
                                       ),
                                       const SizedBox(width: 10),
