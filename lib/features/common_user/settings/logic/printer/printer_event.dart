@@ -3,8 +3,6 @@ import 'package:flutter_pos/enum/enum.dart';
 
 abstract class PrinterEvent {}
 
-class Equatable {}
-
 class InitPrinter extends PrinterEvent {}
 
 class StartScan extends PrinterEvent {}

@@ -29,27 +29,29 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
   Future<void> _onInit(InitPrinter event, Emitter<PrinterState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
+      // 1. Ambil setting kertas dulu (operasinya cepat)
       final savedPaper = await _service.getPaperSize();
 
-      await Future.delayed(const Duration(milliseconds: 1500));
+      // 2. Beri jeda 2 detik agar sistem Bluetooth Android stabil setelah boot
+      await Future.delayed(const Duration(seconds: 2));
 
+      // 3. Cek Bluetooth & Inisialisasi
       final bool isReady = await BluetoothPrintPlus.isBlueOn;
-      debugPrint("Log PrinterBloc: isReady: $isReady");
-      if (_stateSubscription != null) {
-        await _stateSubscription!.cancel();
-      }
 
       if (isReady) {
+        // Pasang listener status koneksi
+        _stateSubscription?.cancel();
         _stateSubscription = _service.connectState.listen((s) {
           if (!isClosed) add(UpdateConnectionState(s));
         });
 
-        await Future.delayed(const Duration(milliseconds: 500));
+        // Panggil auto-connect (Fungsi scan-then-connect yang kita buat tadi)
         await _service.initSavedPrinter();
       }
 
       emit(state.copyWith(isLoading: false, paperWidth: savedPaper));
     } catch (e) {
+      debugPrint("Log PrinterBloc Error: $e");
       emit(state.copyWith(isLoading: false));
     }
   }

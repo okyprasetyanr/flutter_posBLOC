@@ -1,183 +1,137 @@
-// service_printer.dart
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
-import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collection/collection.dart';
 
 class ServicePrinter {
   static final ServicePrinter _instance = ServicePrinter._internal();
   factory ServicePrinter() => _instance;
-  // Di dalam class ServicePrinter
+
   ConnectState _currentStatus = ConnectState.disconnected;
-
-  ServicePrinter._internal() {
-    // Pantau terus status koneksi agar kita selalu tahu kondisinya
-    BluetoothPrintPlus.connectState.listen((state) {
-      _currentStatus = state;
-    });
-  }
-
-  final Set<String> _seenMac = {};
-  final List<BluetoothDevice> _devices = [];
-
   static const _savedMacKey = 'saved_printer_mac';
   static const _paperWidthKey = 'paper_width';
 
-  bool _printing = false;
+  bool _isPrinting = false;
   final List<Uint8List> _printQueue = [];
 
-  // Stream Controllers untuk broadcast state ke BLoC jika perlu
-  // (Tapi kita akan pakai langsung stream dari plugin untuk efisiensi)
-
-  /// ================= FILTER =================
-  bool _isPrinter(BluetoothDevice device) {
-    final name = (device.name).toLowerCase();
-    if (name.isEmpty) return false;
-    return name.contains('printer') ||
-        name.contains('pos') ||
-        name.contains('thermal') ||
-        name.contains('xp') ||
-        name.contains('rpp') ||
-        name.contains('epson') ||
-        name.contains('zjiang') ||
-        name.contains('gp') ||
-        name.contains('print') ||
-        name.contains('mpt'); // Tambahan umum
+  ServicePrinter._internal() {
+    BluetoothPrintPlus.connectState.listen((state) => _currentStatus = state);
   }
 
-  /// ================= STREAMS =================
-  // Stream status koneksi
-  Stream<ConnectState> get connectState => BluetoothPrintPlus.connectState;
+  // Regex untuk filter printer agar lebih clean
+  bool _isPrinter(BluetoothDevice device) {
+    final name = device.name.toLowerCase();
+    if (name.isEmpty) return false;
+    return RegExp(
+      r'printer|pos|thermal|xp|rpp|epson|zjiang|gp|print|mpt',
+    ).hasMatch(name);
+  }
 
-  // Stream status scanning
+  // Streams
+  Stream<ConnectState> get connectState => BluetoothPrintPlus.connectState;
   Stream<bool> get isScanning => BluetoothPrintPlus.isScanning;
 
-  // Stream hasil scan yang sudah difilter
   Stream<List<BluetoothDevice>> get scanResults =>
-      BluetoothPrintPlus.scanResults.map((devices) {
-        _devices.clear(); // Reset list setiap kali ada update dari plugin
-        _seenMac.clear();
+      BluetoothPrintPlus.scanResults.map(
+        (devices) => devices
+            .where((d) => _isPrinter(d))
+            .toSet() // Menghilangkan duplikasi berdasarkan objek
+            .toList(),
+      );
 
-        for (final device in devices) {
-          // Filter nama dan duplikasi
-          if (_isPrinter(device) && _seenMac.add(device.address)) {
-            _devices.add(device);
-          }
-        }
-        return List.unmodifiable(_devices);
-      });
-
-  /// ================= ACTIONS =================
+  // Actions
   Future<void> startScan() async {
-    _devices.clear();
-    _seenMac.clear();
     await BluetoothPrintPlus.stopScan();
     await BluetoothPrintPlus.startScan(timeout: const Duration(seconds: 10));
   }
 
-  Future<void> stopScan() async {
-    await BluetoothPrintPlus.stopScan();
-  }
+  Future<void> stopScan() => BluetoothPrintPlus.stopScan();
 
   Future<void> connect(BluetoothDevice device) async {
-    await BluetoothPrintPlus.connect(device);
-    // Simpan MAC address untuk auto-connect nanti
-    await _saveMac(device.address);
-  }
-
-  Future<void> disconnect() async {
-    await BluetoothPrintPlus.disconnect();
-  }
-
-  /// Cek apakah ada printer tersimpan dan coba konek
-  Future<bool> initSavedPrinter() async {
-    final mac = await getSavedMac();
-    debugPrint("Log ServicePrinter: savedMac: $mac");
-    if (mac != null) {
-      final device = BluetoothDevice('Saved Printer', mac);
+    try {
+      await BluetoothPrintPlus.disconnect();
+      await Future.delayed(const Duration(milliseconds: 500));
       await BluetoothPrintPlus.connect(device);
-      return true;
+      await _saveMac(device.address);
+    } catch (e) {
+      debugPrint("Log ServicePrinter: Connect Error $e");
     }
-    return false;
   }
 
-  /// ================= PRINTING =================
-  Future<void> printTest(PaperWidth paperSize) async {
-    final profile = await CapabilityProfile.load();
-    // Sesuaikan profile kertas
-    final gen = Generator(
-      paperSize == PaperWidth.mm80 ? PaperSize.mm80 : PaperSize.mm58,
-      profile,
-    );
+  Future<void> disconnect() => BluetoothPrintPlus.disconnect();
 
-    final bytes = <int>[];
-    bytes.addAll(gen.reset());
-    bytes.addAll(
-      gen.text(
-        'TEST PRINT SUKSES',
-        styles: const PosStyles(
-          bold: true,
-          align: PosAlign.center,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
-        ),
-      ),
-    );
-    bytes.addAll(
-      gen.text(
-        'Ukuran: ${paperSize.name}',
-        styles: const PosStyles(align: PosAlign.center),
-      ),
-    );
-    bytes.addAll(gen.hr());
-    bytes.addAll(
-      gen.text(
-        'Printer Connected!',
-        styles: const PosStyles(align: PosAlign.center),
-      ),
-    );
-    bytes.addAll(gen.feed(2));
-    bytes.addAll(gen.cut());
+  Future<bool> initSavedPrinter() async {
+    final savedMac = await getSavedMac();
+    if (savedMac == null) return false;
 
-    await enqueuePrint(Uint8List.fromList(bytes));
+    await stopScan();
+    await disconnect();
+
+    final completer = Completer<bool>();
+    StreamSubscription? scanSub;
+
+    await BluetoothPrintPlus.startScan(timeout: const Duration(seconds: 7));
+
+    scanSub = BluetoothPrintPlus.scanResults.listen((results) async {
+      final printer = results.firstWhereOrNull(
+        (d) => d.address.toUpperCase() == savedMac.toUpperCase(),
+      );
+
+      if (printer != null && !completer.isCompleted) {
+        await stopScan();
+        await scanSub?.cancel();
+        await BluetoothPrintPlus.connect(printer);
+
+        await Future.delayed(const Duration(seconds: 2));
+        completer.complete(_currentStatus == ConnectState.connected);
+      }
+    });
+
+    // Timeout safety
+    Future.delayed(const Duration(seconds: 8), () {
+      if (!completer.isCompleted) {
+        scanSub?.cancel();
+        completer.complete(false);
+      }
+    });
+
+    return completer.future;
   }
 
+  // Printing Logic
   Future<void> enqueuePrint(Uint8List bytes) async {
     _printQueue.add(bytes);
-    if (_printing) return;
+    if (_isPrinting) return;
 
-    _printing = true;
+    _isPrinting = true;
     while (_printQueue.isNotEmpty) {
-      final job = _printQueue.removeAt(0);
-      await _safeWrite(job);
+      await _safeWrite(_printQueue.removeAt(0));
     }
-    _printing = false;
+    _isPrinting = false;
   }
 
   Future<void> _safeWrite(Uint8List bytes) async {
+    if (_currentStatus != ConnectState.connected) {
+      if (!await initSavedPrinter()) return;
+    }
+
     try {
-      if (_currentStatus != ConnectState.connected) {
-        final mac = await getSavedMac();
-        if (mac == null) return;
+      // 1. Reset/Wake up printer
+      await BluetoothPrintPlus.write(Uint8List.fromList([0x1B, 0x40]));
+      await Future.delayed(const Duration(milliseconds: 200));
 
-        await BluetoothPrintPlus.connect(BluetoothDevice('Reconnect', mac));
-
-        // Tunggu sampai benar-benar CONNECTED
-        await BluetoothPrintPlus.connectState.firstWhere(
-          (state) => state == ConnectState.connected,
-        );
-      }
-
+      // 2. Kirim data
       await BluetoothPrintPlus.write(bytes);
     } catch (e) {
-      debugPrint("Error printing: $e");
+      debugPrint("Log ServicePrinter: Write Gagal $e");
+      await disconnect();
     }
   }
 
-  /// ================= STORAGE =================
+  // Storage
   Future<void> _saveMac(String mac) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_savedMacKey, mac);

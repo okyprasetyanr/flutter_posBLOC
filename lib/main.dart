@@ -5,9 +5,21 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
+import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
+import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
+import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
+import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
+import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/hive_setup/transaction_saved_hive_adapter.dart';
@@ -23,18 +35,6 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
-import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
-import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
-import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
-import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
-import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
-import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 
 final DataUserRepository dataUserRepo = DataUserRepository();
 final DataUserRepositoryCache repo = DataUserRepositoryCache(dataUserRepo);
@@ -42,17 +42,23 @@ final ServicePrinter? printService = kIsWeb ? null : ServicePrinter();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Hive.initFlutter();
   Hive.registerAdapter(TransactionSavedHiveAdapter());
-  await Hive.openBox('firestoreQueue');
-  await Hive.openBox<TransactionSavedHive>('saved_transaction');
+
+  await Future.wait([
+    Hive.openBox('firestoreQueue'),
+    Hive.openBox<TransactionSavedHive>('saved_transaction'),
+  ]);
+
   if (!kIsWeb) {
     Workmanager().initialize(callbackDispatcher);
     Workmanager().registerPeriodicTask(
       "1",
       "firestoreWorker",
-      frequency: Duration(minutes: 15),
+      frequency: const Duration(minutes: 15),
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );
   }
 
@@ -71,12 +77,11 @@ void main() async {
         BlocProvider(create: (_) => HistoryFinancialBloc(repo)),
         BlocProvider(create: (_) => OperatorBloc(repo)),
         BlocProvider(create: (_) => DataReportBloc(repo)),
+        if (!kIsWeb) BlocProvider(create: (_) => SettingsBloc(repo)),
         BlocProvider(
           lazy: false,
           create: (_) => PrinterBloc(ServicePrinter())..add(InitPrinter()),
         ),
-
-        if (!kIsWeb) BlocProvider(create: (_) => SettingsBloc(repo)),
       ],
       child: RepositoryProvider.value(
         value: repo,
@@ -93,19 +98,29 @@ void main() async {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    await Hive.initFlutter();
-    Hive.registerAdapter(TransactionSavedHiveAdapter());
+    // Gunakan try-catch di dalam worker agar jika gagal tidak membuat crash aplikasi utama
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      await Hive.initFlutter();
 
-    await Hive.openBox('firestoreQueue');
-    await Hive.openBox<TransactionSavedHive>('saved_transaction');
-    await FirestoreWorker.processQueueHive();
+      // Cek apakah adapter sudah terdaftar (menghindari error duplicated adapter)
+      if (!Hive.isAdapterRegistered(TransactionSavedHiveAdapter().typeId)) {
+        Hive.registerAdapter(TransactionSavedHiveAdapter());
+      }
 
-    debugPrint('Log Main: FirestoreWorker masuk');
-    return Future.value(true);
+      await Hive.openBox('firestoreQueue');
+      await Hive.openBox<TransactionSavedHive>('saved_transaction');
+
+      await FirestoreWorker.processQueueHive();
+      debugPrint('Log Main: FirestoreWorker sukses');
+      return Future.value(true);
+    } catch (e) {
+      debugPrint('Log Main: FirestoreWorker Error: $e');
+      return Future.value(false);
+    }
   });
 }
 
