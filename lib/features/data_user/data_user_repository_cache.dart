@@ -79,6 +79,8 @@ class DataUserRepositoryCache {
       debugPrint("Log DataUserRepositoryCache dataPartner: $a");
     }
 
+    debugPrint("Log DataUserRepositoryCache User: $dataAccount");
+
     return true;
   }
 

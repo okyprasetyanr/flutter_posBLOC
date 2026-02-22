@@ -22,6 +22,15 @@ class ModelBranch extends Equatable {
   set setaddressBranch(String value) => _addressBranch;
   set setidBranch(String value) => _idBranch;
 
+  factory ModelBranch.empty() {
+    return ModelBranch(
+      nameBranch: "",
+      numTelpBranch: "",
+      addressBranch: "",
+      idBranch: "",
+    );
+  }
+
   @override
   List<Object?> get props => [
     _areaBranch,
