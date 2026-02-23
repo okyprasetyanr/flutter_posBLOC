@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_state.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_report.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -187,6 +190,20 @@ class _UIReportState extends State<UIReport> {
                   rowContent("Pemasukan", report.getincome),
                   rowContent("Pengeluaran", report.getexpense),
                   rowContent("Total Kas", report.getcashInDrawer),
+                  customButtonIcon(
+                    backgroundColor: AppPropertyColor.primary,
+                    icon: Icon(
+                      Icons.print_rounded,
+                      color: AppPropertyColor.white,
+                    ),
+                    label: Text("Cetak", style: lv05TextStyleWhite),
+                    onPressed: () => context.read<PrinterBloc>().add(
+                      PrintData(
+                        data: state,
+                        type: PrintFormatType.transaction_sell,
+                      ),
+                    ),
+                  ),
                 ],
               );
             },

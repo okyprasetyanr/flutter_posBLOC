@@ -101,11 +101,12 @@ class UITransactionSuccess extends StatelessWidget {
                         backgroundColor: AppPropertyColor.primary,
                         icon: const Icon(Icons.print_rounded),
                         label: Text("Print", style: lv05TextStyleWhite),
-                        onPressed: () async {
-                          context.read<PrinterBloc>().add(
-                            PrintData(data: state, type: PrintFormatType.sell),
-                          );
-                        },
+                        onPressed: () => context.read<PrinterBloc>().add(
+                          PrintData(
+                            data: state,
+                            type: PrintFormatType.transaction_sell,
+                          ),
+                        ),
                       ),
                       // BlocListener<SettingsBloc, SettingsState>(
                       //   listener: (context, state) {

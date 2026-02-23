@@ -4,6 +4,8 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_row_list_item.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
@@ -643,16 +645,12 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                           Icons.print_rounded,
                           color: AppPropertyColor.black,
                         ),
-                        onPressed: () async {
-                          final printer = context.read<ServicePrinter>();
-                          final isAvailable =
-                              await printer.getSavedMac() != null;
-                          if (isAvailable) {
-                            // await printer.printTest();
-                          } else {
-                            customSnackBar(context, "Printer tidak tersambung");
-                          }
-                        },
+                        onPressed: () => context.read<PrinterBloc>().add(
+                          PrintData(
+                            data: state,
+                            type: PrintFormatType.transaction_sell,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 10),
                       customButton(

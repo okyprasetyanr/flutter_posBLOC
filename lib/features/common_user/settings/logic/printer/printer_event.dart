@@ -24,8 +24,15 @@ class ChangePaperSize extends PrinterEvent {
 class PrintData<T> extends PrinterEvent {
   final T? data;
   final PrintFormatType type;
+  final bool? history;
+  final bool? income;
 
-  PrintData({required this.data, required this.type});
+  PrintData({
+    required this.data,
+    required this.type,
+    this.income,
+    this.history,
+  });
 }
 
 // Event internal untuk update state dari Stream listener

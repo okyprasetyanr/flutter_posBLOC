@@ -118,7 +118,12 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       return;
     }
     try {
-      await ReceiptBuilder.print(formatType: event.type, data: event.data);
+      await ReceiptBuilder.print(
+        formatType: event.type,
+        data: event.data,
+        history: event.history,
+        income: event.income,
+      );
     } catch (e) {
       emit(state.copyWith(errorMessage: "Gagal print: $e"));
     }

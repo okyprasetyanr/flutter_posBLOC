@@ -302,13 +302,13 @@ enum LabelPricePopUpItem { Harga_Jual, Harga_Beli }
 enum PaperWidth { mm58, mm80 }
 
 enum PrintFormatType {
-  sell,
-  buy,
-  income,
-  expense,
+  transaction_sell,
+  transaction_buy,
+  transaction_financial,
   adjustment_in,
   adjustment_out,
   test_print,
+  report,
 }
 
 enum ErrorTypeApp { device_note_found, printer_timeout, printer_failed }
