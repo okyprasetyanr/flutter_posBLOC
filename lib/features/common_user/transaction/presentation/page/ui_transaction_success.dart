@@ -11,7 +11,6 @@ import 'package:flutter_pos/features/common_user/transaction/logic/payment/payme
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
-import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 
 class UITransactionSuccess extends StatelessWidget {
@@ -27,158 +26,116 @@ class UITransactionSuccess extends StatelessWidget {
           context.read<PaymentBloc>().add(PaymentResetTransaction());
         }
       },
-      child: LayoutTopBottom(
-        layoutTop: layoutTop(),
-        layoutBottom: layoutBottom(),
-        widgetNavigation: null,
-        refreshIndicator: refreshIndicator,
-      ),
-    );
-  }
-
-  Widget layoutTop() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            color: AppPropertyColor.primarylight1,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 15,
-                blurStyle: BlurStyle.outer,
-                color: AppPropertyColor.black.withValues(alpha: 0.3),
-              ),
-            ],
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppPropertyColor.primarylight2,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 10,
-                  blurStyle: BlurStyle.outer,
-                  color: AppPropertyColor.black.withValues(alpha: 0.2),
+      child: Scaffold(
+        appBar: AppBar(),
+        backgroundColor: AppPropertyColor.white,
+        body: SafeArea(
+          top: true,
+          bottom: true,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset("assets/success.png", height: 80),
+                const SizedBox(height: 10),
+                Text("Transaksi Berhasil!", style: lv3TextStyle),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                  child: BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
+                    selector: (state) {
+                      if (state is PaymentLoaded) {
+                        return state.transaction_sell;
+                      }
+                      return null;
+                    },
+                    builder: (context, state) {
+                      if (state == null) {
+                        return SizedBox.shrink();
+                      }
+                      return Column(
+                        children: [
+                          Text("Ringkasan", style: lv1TextStyle),
+                          const SizedBox(height: 10),
+                          rowContent("Nomor Faktur", state.getinvoice),
+                          rowContent(
+                            "Tanggal",
+                            formatDate(date: state.getdate),
+                          ),
+                          rowContent("Status", "Sukses"),
+                          rowContent(
+                            "Catatan",
+                            state.getnote.isEmpty ? "-" : state.getnote,
+                          ),
+                          rowContent("Tipe", state.getpaymentMethod.name),
+                          rowContent(
+                            "Diskon",
+                            "(${state.getdiscount}%) ${formatPriceRp(state.gettotalDiscount)}",
+                          ),
+                          rowContent(
+                            "PPN",
+                            "(${state.getppn}%) ${formatPriceRp(state.gettotalPpn)}",
+                          ),
+                          rowContent(
+                            "Charge",
+                            "(${state.getcharge}%) ${formatPriceRp(state.gettotalCharge)}",
+                          ),
+                          rowContent("Total", formatPriceRp(state.getsubTotal)),
+                          rowContent("Bayar", formatPriceRp(state.getbillPaid)),
+                          rowContent(
+                            "kembali",
+                            formatPriceRp(
+                              state.getbillPaid - state.getsubTotal,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: customButtonIcon(
+                                  backgroundColor: AppPropertyColor.primary,
+                                  icon: const Icon(
+                                    Icons.print_rounded,
+                                    color: AppPropertyColor.white,
+                                  ),
+                                  label: Text(
+                                    "Cetak",
+                                    style: lv05TextStyleWhite,
+                                  ),
+                                  onPressed: () =>
+                                      context.read<PrinterBloc>().add(
+                                        PrintData(
+                                          data: state,
+                                          type:
+                                              PrintFormatType.transaction_sell,
+                                        ),
+                                      ),
+                                ),
+                              ),
+                              Expanded(
+                                child: customButtonIcon(
+                                  backgroundColor: AppPropertyColor.condiment,
+                                  icon: const Icon(
+                                    Icons.send_rounded,
+                                    color: AppPropertyColor.white,
+                                  ),
+                                  label: Text(
+                                    "Kirim",
+                                    style: lv05TextStyleWhite,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
-            child: Image.asset("assets/success.png", height: 60),
           ),
         ),
-        Text("Transaksi Sukses!", style: transactionSuccessTextStyle),
-        BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
-          selector: (state) {
-            if (state is PaymentLoaded) {
-              return state.transaction_sell;
-            }
-            return null;
-          },
-          builder: (context, state) {
-            return state != null
-                ? Column(
-                    children: [
-                      Text(
-                        "Nominal ${formatPriceRp(state.gettotal)}",
-                        style: transactionSuccessPaidTextStyle,
-                      ),
-                      Text(
-                        "Dibayar ${formatPriceRp(state.getbillPaid)}",
-                        style: transactionSuccessPaidTextStyle,
-                      ),
-                      Text(
-                        "Kembali ${formatPriceRp(state.getbillPaid - state.gettotal)}",
-                        style: transactionSuccessPaidTextStyle,
-                      ),
-                      customButtonIcon(
-                        backgroundColor: AppPropertyColor.primary,
-                        icon: const Icon(Icons.print_rounded),
-                        label: Text("Print", style: lv05TextStyleWhite),
-                        onPressed: () => context.read<PrinterBloc>().add(
-                          PrintData(
-                            data: state,
-                            type: PrintFormatType.transaction_sell,
-                          ),
-                        ),
-                      ),
-                      // BlocListener<SettingsBloc, SettingsState>(
-                      //   listener: (context, state) {
-                      //     if (state is SettingsPrinterConnected &&
-                      //         state.error != null) {
-                      //       debugPrint(
-                      //         "Log UITransactionSucces: cek device_not_found",
-                      //       );
-                      //       customSnackBar(
-                      //         context,
-                      //         ErrorTypeApp.device_note_found.message,
-                      //       );
-                      //     }
-                      //   },
-                      //   child: SizedBox.shrink(),
-                      // ),
-                    ],
-                  )
-                : const SizedBox.shrink();
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget layoutBottom() {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppPropertyColor.primarylight3,
-        border: BoxBorder.all(
-          color: AppPropertyColor.grey,
-          style: BorderStyle.solid,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15),
-          topRight: Radius.circular(15),
-        ),
-      ),
-      child: BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
-        selector: (state) {
-          if (state is PaymentLoaded) {
-            return state.transaction_sell;
-          }
-          return null;
-        },
-        builder: (context, state) {
-          if (state == null) {
-            return SizedBox.shrink();
-          }
-          return Column(
-            children: [
-              rowContent("Nomor Faktur", "${state.getinvoice}"),
-              rowContent("Tanggal", "${state.getdate}"),
-              rowContent("Tipe", "${state.getpaymentMethod}"),
-              rowContent(
-                "Diskon",
-                "(${state.getdiscount}%) -${formatPriceRp(state.gettotalDiscount)}",
-              ),
-              rowContent(
-                "PPN",
-                "(${state.getppn}%) -${formatPriceRp(state.gettotalPpn)}",
-              ),
-              rowContent(
-                "Charge",
-                "(${state.getcharge}%) +${formatPriceRp(state.gettotalCharge)}",
-              ),
-              rowContent("Status", "Transaksi Sukses"),
-            ],
-          );
-        },
       ),
     );
   }

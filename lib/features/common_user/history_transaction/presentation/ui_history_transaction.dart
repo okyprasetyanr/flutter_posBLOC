@@ -53,6 +53,36 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
       layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
+      contentAppBar: SizedBox(
+        width: 123,
+        height: 25,
+        child:
+            BlocSelector<HistoryTransactionBloc, HistoryTransactionState, bool>(
+              selector: (state) {
+                if (state is HistoryTransactionLoaded) {
+                  return state.isSell;
+                }
+                return true;
+              },
+              builder: (context, state) {
+                return GestureDetector(
+                  onTap: () {
+                    context.read<HistoryTransactionBloc>().add(
+                      HistoryTransactionGetData(isSell: !state),
+                    );
+                  },
+                  child: WidgetAnimatePage(
+                    change: state,
+                    text1: "Penjualan",
+                    text2: "Pembelian",
+                    showAt1: 5,
+                    showAt2: 0,
+                  ),
+                );
+              },
+            ),
+      ),
+      title: "Riwayat Transaksi",
     );
   }
 
@@ -68,43 +98,6 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   Widget layoutTop() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Riwayat Transaksi", style: titleTextStyle),
-            SizedBox(
-              width: 80,
-              height: 40,
-              child:
-                  BlocSelector<
-                    HistoryTransactionBloc,
-                    HistoryTransactionState,
-                    bool
-                  >(
-                    selector: (state) {
-                      if (state is HistoryTransactionLoaded) {
-                        return state.isSell;
-                      }
-                      return true;
-                    },
-                    builder: (context, state) {
-                      return GestureDetector(
-                        onTap: () {
-                          context.read<HistoryTransactionBloc>().add(
-                            HistoryTransactionGetData(isSell: !state),
-                          );
-                        },
-                        child: WidgetAnimatePage(
-                          change: state,
-                          text1: "Penjualan",
-                          text2: "Pembelian",
-                        ),
-                      );
-                    },
-                  ),
-            ),
-          ],
-        ),
         Row(
           children: [
             Expanded(
@@ -544,6 +537,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                         rowContent(
                           "Total",
                           formatPriceRp(transaction.gettotal),
+                          forTotal: true,
                         ),
                       ],
                     ),

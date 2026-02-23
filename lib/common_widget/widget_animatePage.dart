@@ -6,11 +6,15 @@ class WidgetAnimatePage extends StatelessWidget {
   final bool change;
   final String text1;
   final String text2;
+  final double showAt1;
+  final double showAt2;
   const WidgetAnimatePage({
     super.key,
     required this.change,
     required this.text1,
     required this.text2,
+    required this.showAt1,
+    required this.showAt2,
   });
 
   @override
@@ -19,7 +23,7 @@ class WidgetAnimatePage extends StatelessWidget {
       children: [
         AnimatedPositioned(
           curve: Curves.easeInOut,
-          left: change ? 0 : -200,
+          left: change ? showAt1 : -200,
           duration: const Duration(milliseconds: 500),
           child: Row(
             children: [
@@ -30,7 +34,7 @@ class WidgetAnimatePage extends StatelessWidget {
         ),
         AnimatedPositioned(
           curve: Curves.easeInOut,
-          left: change ? 300 : 0,
+          left: change ? 300 : showAt2,
           duration: const Duration(milliseconds: 500),
           child: Align(
             alignment: Alignment.centerLeft,

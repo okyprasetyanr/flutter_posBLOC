@@ -59,60 +59,64 @@ class UIPaymentCashPayment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          if (!split) Text('Uang diterima:', style: lv05TextStyle),
-
-          BlocSelector<
-            PaymentBloc,
-            PaymentState,
-            (double?, double?, List<ModelSplit>?)
-          >(
-            selector: (state) {
-              if (state is PaymentLoaded) {
-                return (
-                  state.transaction_sell?.gettotal,
-                  state.transaction_sell?.getbillPaid,
-                  state.transaction_sell?.getdataSplit,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!split)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Text('Uang diterima:', style: lv05TextStyle),
+          ),
+        BlocSelector<
+          PaymentBloc,
+          PaymentState,
+          (double?, double?, List<ModelSplit>?)
+        >(
+          selector: (state) {
+            if (state is PaymentLoaded) {
+              return (
+                state.transaction_sell?.gettotal,
+                state.transaction_sell?.getbillPaid,
+                state.transaction_sell?.getdataSplit,
+              );
+            }
+            return (null, null, null);
+          },
+          builder: (context, state) {
+            List<double> quickPayOptions = _generateQuickPayOptions(
+              state.$1 ?? 0,
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!split) {
+                if (payController.text != formatQtyOrPrice(state.$2 ?? 0)) {
+                  payController.text = formatQtyOrPrice(state.$2 ?? 0);
+                  selectedAmount.value = state.$2 ?? 0;
+                }
+              } else {
+                payController.text = formatQtyOrPrice(
+                  state.$3
+                          ?.firstWhereOrNull(
+                            (element) =>
+                                element.getpaymentName ==
+                                LabelPaymentMethod.Cash,
+                          )
+                          ?.getpaymentTotal ??
+                      0,
                 );
               }
-              return (null, null, null);
-            },
-            builder: (context, state) {
-              List<double> quickPayOptions = _generateQuickPayOptions(
-                state.$1 ?? 0,
-              );
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!split) {
-                  if (payController.text != formatQtyOrPrice(state.$2 ?? 0)) {
-                    payController.text = formatQtyOrPrice(state.$2 ?? 0);
-                    selectedAmount.value = state.$2 ?? 0;
-                  }
-                } else {
-                  payController.text = formatQtyOrPrice(
-                    state.$3
-                            ?.firstWhereOrNull(
-                              (element) =>
-                                  element.getpaymentName ==
-                                  LabelPaymentMethod.Cash,
-                            )
-                            ?.getpaymentTotal ??
-                        0,
-                  );
-                }
-              });
-              return !split
-                  ? Center(
-                      child: Wrap(
-                        spacing: 5,
-                        children: quickPayOptions.map((amount) {
-                          return ValueListenableBuilder(
-                            valueListenable: selectedAmount,
-                            builder: (context, value, child) {
-                              return customButton(
+            });
+            return !split
+                ? SizedBox(
+                    height: 50,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: quickPayOptions.map((amount) {
+                        return ValueListenableBuilder(
+                          valueListenable: selectedAmount,
+                          builder: (context, value, child) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: customButton(
                                 backgroundColor: value == amount
                                     ? AppPropertyColor.primary
                                     : AppPropertyColor.white,
@@ -133,43 +137,44 @@ class UIPaymentCashPayment extends StatelessWidget {
                                     ),
                                   );
                                 },
-                              );
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    )
-                  : SizedBox.shrink();
-            },
-          ),
-          Row(
-            children: [
-              Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
-              const SizedBox(width: 5),
-              Expanded(
-                child: customTextField(
-                  alignEnd: true,
-                  context: context,
-                  controller: payController,
-                  inputType: TextInputType.number,
-                  suffixText: ",00",
-                  text: "Nominal Bayar",
-                  onChanged: (value) {
-                    final finalValue = double.tryParse(value) ?? 0;
-                    split
-                        ? context.read<PaymentBloc>().add(
-                            PaymentAdjust(billPaidSplitCash: finalValue),
-                          )
-                        : context.read<PaymentBloc>().add(
-                            PaymentAdjust(billPaid: finalValue),
-                          );
-                  },
-                ),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  )
+                : SizedBox.shrink();
+          },
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
+            const SizedBox(width: 5),
+            Expanded(
+              child: customTextField(
+                alignEnd: true,
+                context: context,
+                controller: payController,
+                inputType: TextInputType.number,
+                suffixText: ",00",
+                text: "Nominal Bayar",
+                onChanged: (value) {
+                  final finalValue = double.tryParse(value) ?? 0;
+                  split
+                      ? context.read<PaymentBloc>().add(
+                          PaymentAdjust(billPaidSplitCash: finalValue),
+                        )
+                      : context.read<PaymentBloc>().add(
+                          PaymentAdjust(billPaid: finalValue),
+                        );
+                },
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

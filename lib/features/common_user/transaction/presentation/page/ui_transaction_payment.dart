@@ -83,15 +83,16 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
       layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
+      contentAppBar: Text("Pembayaran", style: titleTextStyle),
     );
   }
 
   Widget layoutTop() {
     return Column(
       children: [
-        Text("Pembayaran", style: titleTextStyle),
         Expanded(
           child: ListView(
+            shrinkWrap: true,
             children: [
               UIPaymentDateInvoiceCustomerOperator(),
               UIPaymentDiscount(
@@ -218,41 +219,32 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                           }
                           return Column(
                             children: [
-                              _rowContentDetail(
-                                "Total Item",
-                                "${state.gettotalItem}",
-                              ),
-                              const SizedBox(height: 10),
-                              _rowContentDetail(
+                              rowContent("Total Item", "${state.gettotalItem}"),
+                              rowContent(
                                 "Sub Total",
                                 "${formatPriceRp(state.getsubTotal)}",
                               ),
-                              const SizedBox(height: 10),
-                              _rowContentDetail(
+                              rowContent(
                                 "Total Discount (${state.getdiscount}%)",
                                 "${formatPriceRp(state.gettotalDiscount)}",
                               ),
-                              const SizedBox(height: 10),
-                              _rowContentDetail(
+                              rowContent(
                                 "Total PPN (${state.getppn}%)",
                                 "${formatPriceRp(state.gettotalPpn)}",
                               ),
-                              const SizedBox(height: 10),
-                              _rowContentDetail(
+                              rowContent(
                                 "Total Charge (${state.getcharge}%)",
                                 "${formatPriceRp(state.gettotalCharge)}",
                               ),
-                              const SizedBox(height: 10),
-                              _rowContentDetail(
+                              rowContent(
                                 "Nominal Bayar",
                                 "${formatPriceRp(state.getbillPaid)}",
                               ),
-                              const SizedBox(height: 10),
-                              _rowContentDetail(
+                              rowContent(
                                 "Total",
                                 "${formatPriceRp(state.gettotal)}",
+                                forTotal: true,
                               ),
-                              const SizedBox(height: 10),
                             ],
                           );
                         },
@@ -363,19 +355,5 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
 
   Future<void> refreshIndicator() async {
     return;
-  }
-
-  Widget _rowContentDetail(String text, String value) {
-    TextStyle textStyle = text == "Total"
-        ? lv1TextStylePrimaryPrice
-        : lv05TextStyle;
-    return Row(
-      children: [
-        SizedBox(width: 110, child: Text(text, style: textStyle)),
-        Text(":", style: textStyle),
-        const Spacer(),
-        Text(value, style: textStyle),
-      ],
-    );
   }
 }

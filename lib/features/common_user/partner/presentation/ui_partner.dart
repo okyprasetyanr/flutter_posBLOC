@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dar
 import 'package:flutter_pos/features/common_user/partner/logic/partner_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
@@ -63,6 +63,34 @@ class _UIPartnerState extends State<UIPartner> {
       layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: _onRefresh,
+      title: "Data Kontak",
+      contentAppBar: GestureDetector(
+        onTap: () {
+          context.read<PartnerBloc>().add(PartnerStatusPartner());
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 500),
+          width: 123,
+          height: 27,
+          child: BlocSelector<PartnerBloc, PartnerState, bool>(
+            selector: (state) {
+              if (state is PartnerLoaded) {
+                return state.isCustomer;
+              }
+              return true;
+            },
+            builder: (context, state) {
+              return WidgetAnimatePage(
+                change: state,
+                text1: "Pelanggan",
+                text2: "Pemasok",
+                showAt1: 0,
+                showAt2: 13,
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -71,65 +99,7 @@ class _UIPartnerState extends State<UIPartner> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Data Kontak", style: titleTextStyle),
-            GestureDetector(
-              onTap: () {
-                context.read<PartnerBloc>().add(PartnerStatusPartner());
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 500),
-                width: 130,
-                padding: const EdgeInsets.only(top: 5, bottom: 5),
-                height: 40,
-                child: BlocSelector<PartnerBloc, PartnerState, bool>(
-                  selector: (state) {
-                    if (state is PartnerLoaded) {
-                      return state.isCustomer;
-                    }
-                    return true;
-                  },
-                  builder: (context, state) {
-                    return Stack(
-                      children: [
-                        AnimatedPositioned(
-                          curve: Curves.easeInOut,
-                          left: state ? 0 : -200,
-                          duration: const Duration(milliseconds: 500),
-                          child: Row(
-                            children: [
-                              Icon(Icons.swap_horiz_rounded, size: lv3IconSize),
-                              Text("Pelanggan", style: titleTextStyle),
-                            ],
-                          ),
-                        ),
-                        AnimatedPositioned(
-                          curve: Curves.easeInOut,
-                          left: state ? 300 : 15,
-                          duration: const Duration(milliseconds: 500),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.swap_horiz_rounded,
-                                  size: lv3IconSize,
-                                ),
-                                Text("Pemasok", style: titleTextStyle),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+        const SizedBox(height: 5),
         Row(
           children: [
             Expanded(
@@ -345,51 +315,50 @@ class _UIPartnerState extends State<UIPartner> {
             },
           ),
         ),
-        Align(
-          alignment: AlignmentGeometry.centerRight,
-          child: customButtonIcon(
-            onPressed: () {
-              debugPrint(
-                "UIPartner: date: ${parseDate(date: formatDate(date: DateTime.now()))},",
-              );
-              context.read<PartnerBloc>().add(
-                PartnerUploadDataPartner(
-                  email: emailPartnerController.text,
-                  name: namePartnerController.text,
-                  phone: phonePartnerController.text,
+        Row(
+          children: [
+            Expanded(
+              flex: 5,
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(AppPropertyText.ManualDelete, style: lv05TextStyle),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: customButtonIcon(
+                onPressed: () {
+                  debugPrint(
+                    "UIPartner: date: ${parseDate(date: formatDate(date: DateTime.now()))},",
+                  );
+                  context.read<PartnerBloc>().add(
+                    PartnerUploadDataPartner(
+                      email: emailPartnerController.text,
+                      name: namePartnerController.text,
+                      phone: phonePartnerController.text,
+                    ),
+                  );
+                  _resetForm();
+                },
+                icon: const Icon(
+                  Icons.check_rounded,
+                  color: AppPropertyColor.white,
                 ),
-              );
-              _resetForm();
-            },
-            icon: const Icon(
-              Icons.check_rounded,
-              color: AppPropertyColor.white,
+                label: Text(
+                  context.select<PartnerBloc, String>((value) {
+                    final bloc = value.state;
+                    if (bloc is PartnerLoaded) {
+                      return bloc.selectedPartner != null ? "Edit" : "Simpan";
+                    }
+                    return "Simpan";
+                  }),
+                  style: lv05TextStyleWhite,
+                ),
+                backgroundColor: AppPropertyColor.primary,
+              ),
             ),
-            label: Text(
-              context.select<PartnerBloc, String>((value) {
-                final bloc = value.state;
-                if (bloc is PartnerLoaded) {
-                  return bloc.selectedPartner != null ? "Edit" : "Simpan";
-                }
-                return "Simpan";
-              }),
-              style: lv05TextStyleWhite,
-            ),
-            backgroundColor: AppPropertyColor.primary,
-          ),
+          ],
         ),
-        Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            child: Text(
-              "PANDUAN:\nUntuk hapus Kategori, silahkan geser kiri Kategori yang diinginkan.",
-              style: lv05TextStyle,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
       ],
     );
   }

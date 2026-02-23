@@ -109,6 +109,8 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                       change: state,
                       text1: "Pendapatan",
                       text2: "Pengeluaran",
+                      showAt1: 5,
+                      showAt2: 0,
                     ),
                   ),
                 );

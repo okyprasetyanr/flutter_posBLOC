@@ -88,6 +88,7 @@ class _UIOperatorState extends State<UIOperator> {
       layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
+      title: "Data Operator",
     );
   }
 
@@ -95,7 +96,7 @@ class _UIOperatorState extends State<UIOperator> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Data Operator", style: titleTextStyle),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

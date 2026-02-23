@@ -38,19 +38,73 @@ class _UIReportState extends State<UIReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: BlocSelector<ReportBloc, ReportState, bool>(
+              selector: (state) {
+                if (state is ReportLoaded) {
+                  return state.isSell;
+                }
+                return true;
+              },
+              builder: (context, state) {
+                return GestureDetector(
+                  onTap: () => context.read<ReportBloc>().add(ReportIsSell()),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    width: 123,
+                    height: 30,
+                    child: WidgetAnimatePage(
+                      change: state,
+                      text1: "Penjualan",
+                      text2: "Pembelian",
+                      showAt1: 5,
+                      showAt2: 0,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+        toolbarHeight: 44,
+        leadingWidth: 250,
+        leading: Row(
+          children: [
+            IconButton(
+              style: ButtonStyle(
+                padding: WidgetStatePropertyAll(EdgeInsets.zero),
+              ),
+              icon: const Icon(Icons.arrow_back_ios_new, size: 25),
+              constraints: const BoxConstraints(),
+              onPressed: () => Navigator.pop(context),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              decoration: BoxDecoration(
+                color: AppPropertyColor.primary,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text("Laporan Kasir", style: titleTextStyleWhite),
+            ),
+          ],
+        ),
+      ),
       backgroundColor: AppPropertyColor.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: BlocSelector<ReportBloc, ReportState, (ModelReport?, bool)>(
+          child: BlocSelector<ReportBloc, ReportState, ModelReport?>(
             selector: (state) {
               if (state is ReportLoaded) {
-                return (state.report, state.isSell);
+                return state.report;
               }
-              return (null, true);
+              return null;
             },
             builder: (context, state) {
-              final report = state.$1;
+              final report = state;
               if (report == null) {
                 return Column(
                   children: [
@@ -62,27 +116,6 @@ class _UIReportState extends State<UIReport> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Laporan Kasir", style: titleTextStyle),
-                      GestureDetector(
-                        onTap: () =>
-                            context.read<ReportBloc>().add(ReportIsSell()),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
-                          width: 120,
-                          padding: const EdgeInsets.only(top: 5, bottom: 5),
-                          height: 40,
-                          child: WidgetAnimatePage(
-                            change: state.$2,
-                            text1: "Penjualan",
-                            text2: "Pembelian",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -190,17 +223,21 @@ class _UIReportState extends State<UIReport> {
                   rowContent("Pemasukan", report.getincome),
                   rowContent("Pengeluaran", report.getexpense),
                   rowContent("Total Kas", report.getcashInDrawer),
-                  customButtonIcon(
-                    backgroundColor: AppPropertyColor.primary,
-                    icon: Icon(
-                      Icons.print_rounded,
-                      color: AppPropertyColor.white,
-                    ),
-                    label: Text("Cetak", style: lv05TextStyleWhite),
-                    onPressed: () => context.read<PrinterBloc>().add(
-                      PrintData(
-                        data: state,
-                        type: PrintFormatType.transaction_sell,
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: customButtonIcon(
+                      backgroundColor: AppPropertyColor.primary,
+                      icon: Icon(
+                        Icons.print_rounded,
+                        color: AppPropertyColor.white,
+                      ),
+                      label: Text("Cetak", style: lv05TextStyleWhite),
+                      onPressed: () => context.read<PrinterBloc>().add(
+                        PrintData(
+                          data: state,
+                          type: PrintFormatType.transaction_sell,
+                        ),
                       ),
                     ),
                   ),

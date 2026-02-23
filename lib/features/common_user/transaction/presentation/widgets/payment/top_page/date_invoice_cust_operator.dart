@@ -25,11 +25,8 @@ class UIPaymentDateInvoiceCustomerOperator extends StatelessWidget {
         return Column(
           children: [
             rowContent("Tanggal", "${formatDate(date: state.getdate)}"),
-            const SizedBox(height: 10),
             rowContent("Nomor Faktur", "${state.getinvoice}"),
-            const SizedBox(height: 10),
             rowContent("Kontak", "${state.getnamePartner}"),
-            const SizedBox(height: 10),
             rowContent("Operator", "${state.getnameOperator}"),
           ],
         );

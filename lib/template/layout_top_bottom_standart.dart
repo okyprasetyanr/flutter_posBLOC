@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class LayoutTopBottom extends StatelessWidget {
   final Widget layoutTop;
   final Widget layoutBottom;
   final Widget? widgetNavigation;
+  final Widget? contentAppBar;
+  final String? title;
   final RefreshCallback refreshIndicator;
 
   const LayoutTopBottom({
@@ -13,21 +16,58 @@ class LayoutTopBottom extends StatelessWidget {
     required this.layoutBottom,
     required this.widgetNavigation,
     required this.refreshIndicator,
+    this.contentAppBar,
+    this.title,
   });
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final double availableHeight =
+        mediaQuery.size.height -
+        mediaQuery.padding.top -
+        mediaQuery.padding.bottom -
+        (contentAppBar != null ? 44 : 0);
+
     return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
+        appBar: title != null
+            ? AppBar(
+                actions: [
+                  if (contentAppBar != null)
+                    Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: contentAppBar!,
+                    ),
+                ],
+                toolbarHeight: 44,
+                leadingWidth: 250,
+                leading: Row(
+                  children: [
+                    IconButton(
+                      style: ButtonStyle(
+                        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                      ),
+                      icon: const Icon(Icons.arrow_back_ios_new, size: 25),
+                      constraints: const BoxConstraints(),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppPropertyColor.primary,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(title!, style: titleTextStyleWhite),
+                    ),
+                  ],
+                ),
+              )
+            : null,
         backgroundColor: AppPropertyColor.white,
         body: SafeArea(
-          top: true,
-          bottom: true,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: RefreshIndicator(
@@ -35,10 +75,7 @@ class LayoutTopBottom extends StatelessWidget {
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
-                  height:
-                      mediaQuery.size.height -
-                      mediaQuery.padding.top -
-                      mediaQuery.padding.bottom,
+                  height: availableHeight,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final height = constraints.maxHeight;
@@ -50,7 +87,6 @@ class LayoutTopBottom extends StatelessWidget {
                               children: [
                                 Positioned(
                                   top: 0,
-                                  right: 0,
                                   child: SizedBox(
                                     height: height * 0.6,
                                     width: width,
@@ -58,18 +94,19 @@ class LayoutTopBottom extends StatelessWidget {
                                   ),
                                 ),
                                 Positioned(
-                                  top: height * 0.615,
+                                  top: height * 0.61, // Mulai setelah layoutTop
                                   bottom: 0,
                                   child: SizedBox(
-                                    height: height / 0.55,
                                     width: width,
-                                    child: layoutBottom,
+                                    child:
+                                        layoutBottom, // layoutBottom akan mengisi sisa 40% layar
                                   ),
                                 ),
                                 if (widgetNavigation != null) widgetNavigation!,
                               ],
                             );
                           } else {
+                            // --- Mode Landscape ---
                             return Stack(
                               children: [
                                 Positioned(
@@ -86,7 +123,6 @@ class LayoutTopBottom extends StatelessWidget {
                                   bottom: 0,
                                   child: Container(
                                     width: 1,
-                                    height: 200,
                                     color: AppPropertyColor.grey,
                                     margin: const EdgeInsets.symmetric(
                                       vertical: 8,
@@ -94,7 +130,7 @@ class LayoutTopBottom extends StatelessWidget {
                                   ),
                                 ),
                                 Positioned(
-                                  top: 10,
+                                  top: 0,
                                   left: width * 0.57,
                                   right: 0,
                                   child: SizedBox(

@@ -86,6 +86,20 @@ class _NavigationGestureState extends State<NavigationGesture> {
                     ],
                   ),
                 ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: customButtonIcon(
+                    left: true,
+                    icon: const Icon(
+                      Icons.keyboard_backspace_rounded,
+                      color: AppPropertyColor.white,
+                    ),
+                    label: Text("Keluar", style: lv1TextStyleWhiteBold),
+                    backgroundColor: AppPropertyColor.deleteOrClose,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
               ],
             ),
           ),

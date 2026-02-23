@@ -147,6 +147,8 @@ class _UITransactionState extends State<UITransaction> {
                               change: state,
                               text1: "Penjualan",
                               text2: "Pembelian",
+                              showAt1: 5,
+                              showAt2: 0,
                             );
                           },
                         ),

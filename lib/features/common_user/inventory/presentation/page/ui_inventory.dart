@@ -173,9 +173,8 @@ class _UIInventoryState extends State<UIInventory> {
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
-                width: 110,
-                padding: const EdgeInsets.only(top: 5, bottom: 5),
-                height: 40,
+                width: 115,
+                height: 30,
                 child: ValueListenableBuilder(
                   valueListenable: currentPage,
                   builder: (context, value, child) {
@@ -183,6 +182,8 @@ class _UIInventoryState extends State<UIInventory> {
                       change: value,
                       text1: "Inventori",
                       text2: "Kategori",
+                      showAt1: 0,
+                      showAt2: 5,
                     );
                   },
                 ),
@@ -429,7 +430,7 @@ class _UIInventoryState extends State<UIInventory> {
                         horizontal: 20,
                       ),
                       child: Text(
-                        "PANDUAN:\nUntuk hapus Kategori, silahkan geser kiri Kategori yang diinginkan.",
+                        AppPropertyText.ManualDelete,
                         style: lv05TextStyle,
                         textAlign: TextAlign.center,
                       ),

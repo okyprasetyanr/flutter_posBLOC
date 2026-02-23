@@ -21,6 +21,8 @@ class AppPropertyColor {
 
 class AppPropertyText {
   static const String AppName = "Ringkas App";
+  static const String ManualDelete =
+      "Panduan: Geser ke kiri untuk hapus data yang diinginkan.";
 }
 
 class AppPropertyBorderRadius {

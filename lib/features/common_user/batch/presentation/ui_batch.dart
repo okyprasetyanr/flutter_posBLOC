@@ -72,7 +72,7 @@ class _UiBatchState extends State<UiBatch> {
             ),
             Spacer(),
             Text("Stok/Batch", style: titleTextStyle),
-            const SizedBox(width: 10),
+            const SizedBox(width: 3),
           ],
         ),
         Row(

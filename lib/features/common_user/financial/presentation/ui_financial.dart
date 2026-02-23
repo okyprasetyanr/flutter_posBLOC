@@ -61,42 +61,41 @@ class _UiFinancialState extends State<UiFinancial> {
       layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
+      title: "Data Kas",
+      contentAppBar: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        width: 145,
+        height: 27,
+        child: BlocSelector<FinancialBloc, FinancialState, bool>(
+          selector: (state) {
+            if (state is FinancialLoaded) {
+              return state.isIncome;
+            }
+            return true;
+          },
+          builder: (context, state) {
+            return GestureDetector(
+              onTap: () {
+                context.read<FinancialBloc>().add(FinancialIsIncome());
+              },
+              child: WidgetAnimatePage(
+                change: state,
+                text1: "Pendapatan",
+                text2: "Pengeluaran",
+                showAt1: 6,
+                showAt2: 0,
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
   Widget layoutTop() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Data Kas", style: titleTextStyle),
-            SizedBox(
-              width: 80,
-              height: 40,
-              child: BlocSelector<FinancialBloc, FinancialState, bool>(
-                selector: (state) {
-                  if (state is FinancialLoaded) {
-                    return state.isIncome;
-                  }
-                  return true;
-                },
-                builder: (context, state) {
-                  return GestureDetector(
-                    onTap: () {
-                      context.read<FinancialBloc>().add(FinancialIsIncome());
-                    },
-                    child: WidgetAnimatePage(
-                      change: state,
-                      text1: "Pendapatan",
-                      text2: "Pengeluaran",
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+        const SizedBox(height: 5),
         Row(
           children: [
             Expanded(
@@ -237,45 +236,44 @@ class _UiFinancialState extends State<UiFinancial> {
             ),
           ],
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: customButtonIcon(
-            backgroundColor: AppPropertyColor.primary,
-            icon: const Icon(
-              Icons.check_rounded,
-              color: AppPropertyColor.white,
+        Row(
+          children: [
+            Expanded(
+              flex: 5,
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(AppPropertyText.ManualDelete, style: lv05TextStyle),
+              ),
             ),
-            label: Text(
-              context.select<FinancialBloc, String>((value) {
-                final state = value.state;
-                bool edit = false;
-                if (state is FinancialLoaded) {
-                  edit = state.selectedFinancial != null;
-                }
-                return edit ? "Edit" : "Simpan";
-              }),
-              style: lv05TextStyleWhite,
+            Expanded(
+              flex: 2,
+              child: customButtonIcon(
+                backgroundColor: AppPropertyColor.primary,
+                icon: const Icon(
+                  Icons.check_rounded,
+                  color: AppPropertyColor.white,
+                ),
+                label: Text(
+                  context.select<FinancialBloc, String>((value) {
+                    final state = value.state;
+                    bool edit = false;
+                    if (state is FinancialLoaded) {
+                      edit = state.selectedFinancial != null;
+                    }
+                    return edit ? "Edit" : "Simpan";
+                  }),
+                  style: lv05TextStyleWhite,
+                ),
+                onPressed: () {
+                  context.read<FinancialBloc>().add(
+                    FinancialUploadDataFinancial(name: nameController.text),
+                  );
+                  nameController.clear();
+                },
+              ),
             ),
-            onPressed: () {
-              context.read<FinancialBloc>().add(
-                FinancialUploadDataFinancial(name: nameController.text),
-              );
-              nameController.clear();
-            },
-          ),
+          ],
         ),
-        Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Text(
-              "PANDUAN:\nUntuk hapus Kategori, silahkan geser kiri Kategori yang diinginkan.",
-              style: lv05TextStyle,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
       ],
     );
   }

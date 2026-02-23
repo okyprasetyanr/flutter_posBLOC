@@ -51,49 +51,41 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
       layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
+      title: "Riwayat Kas",
+      contentAppBar: SizedBox(
+        width: 143,
+        height: 28,
+        child: BlocSelector<HistoryFinancialBloc, HistoryFinancialState, bool>(
+          selector: (state) {
+            if (state is HistoryFinancialLoaded) {
+              return state.isIncome;
+            }
+            return true;
+          },
+          builder: (context, state) {
+            return GestureDetector(
+              onTap: () {
+                context.read<HistoryFinancialBloc>().add(
+                  HistoryFinancialGetData(isIncome: !state),
+                );
+              },
+              child: WidgetAnimatePage(
+                change: state,
+                text1: "Pendapatan",
+                text2: "Pengeluaran",
+                showAt1: 5,
+                showAt2: 0,
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
   Widget layoutTop() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Riwayat Kas", style: titleTextStyle),
-            SizedBox(
-              width: 80,
-              height: 40,
-              child:
-                  BlocSelector<
-                    HistoryFinancialBloc,
-                    HistoryFinancialState,
-                    bool
-                  >(
-                    selector: (state) {
-                      if (state is HistoryFinancialLoaded) {
-                        return state.isIncome;
-                      }
-                      return true;
-                    },
-                    builder: (context, state) {
-                      return GestureDetector(
-                        onTap: () {
-                          context.read<HistoryFinancialBloc>().add(
-                            HistoryFinancialGetData(isIncome: !state),
-                          );
-                        },
-                        child: WidgetAnimatePage(
-                          change: state,
-                          text1: "Pendapatan",
-                          text2: "Pengeluaran",
-                        ),
-                      );
-                    },
-                  ),
-            ),
-          ],
-        ),
         Row(
           children: [
             Expanded(
@@ -396,6 +388,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                         rowContent(
                           "Total",
                           formatPriceRp(transaction.getamount),
+                          forTotal: true,
                         ),
                       ],
                     ),
