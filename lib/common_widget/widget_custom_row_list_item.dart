@@ -12,6 +12,14 @@ Widget customRowListItem({
 }) {
   return Column(
     children: [
+      if (label)
+        const SizedBox(
+          height: 1,
+          width: double.infinity,
+          child: const DecoratedBox(
+            decoration: BoxDecoration(color: AppPropertyColor.greyLight),
+          ),
+        ),
       Row(
         children: [
           Expanded(
@@ -23,11 +31,11 @@ Widget customRowListItem({
               textAlign: label ? TextAlign.center : TextAlign.start,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 1,
             height: 15,
             child: const DecoratedBox(
-              decoration: BoxDecoration(color: AppPropertyColor.grey),
+              decoration: BoxDecoration(color: AppPropertyColor.greyLight),
             ),
           ),
           Expanded(
@@ -38,11 +46,11 @@ Widget customRowListItem({
               textAlign: TextAlign.center,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 1,
             height: 15,
             child: const DecoratedBox(
-              decoration: BoxDecoration(color: AppPropertyColor.grey),
+              decoration: BoxDecoration(color: AppPropertyColor.greyLight),
             ),
           ),
           Expanded(
@@ -56,11 +64,11 @@ Widget customRowListItem({
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 1,
             height: 15,
             child: const DecoratedBox(
-              decoration: BoxDecoration(color: AppPropertyColor.grey),
+              decoration: BoxDecoration(color: AppPropertyColor.greyLight),
             ),
           ),
           Expanded(
@@ -74,11 +82,11 @@ Widget customRowListItem({
         ],
       ),
       if (label)
-        SizedBox(
+        const SizedBox(
           height: 1,
           width: double.infinity,
           child: const DecoratedBox(
-            decoration: BoxDecoration(color: AppPropertyColor.grey),
+            decoration: BoxDecoration(color: AppPropertyColor.greyLight),
           ),
         ),
     ],

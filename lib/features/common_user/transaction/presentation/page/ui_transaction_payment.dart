@@ -83,7 +83,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
       layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
-      contentAppBar: Text("Pembayaran", style: titleTextStyle),
+      title: "Pembayaran",
     );
   }
 

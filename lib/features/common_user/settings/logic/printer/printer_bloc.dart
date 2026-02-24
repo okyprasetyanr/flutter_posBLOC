@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
-import 'package:flutter_pos/function/printer/format_print.dart';
-import 'package:flutter_pos/function/printer/service_printer.dart';
+import 'package:flutter_pos/function/format_print.dart';
+import 'package:flutter_pos/service/service_printer.dart';
 import 'printer_event.dart';
 import 'printer_state.dart';
 
@@ -121,8 +121,8 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       await ReceiptBuilder.print(
         formatType: event.type,
         data: event.data,
-        history: event.history,
-        income: event.income,
+        history: event.history ?? false,
+        income: event.income ?? true,
       );
     } catch (e) {
       emit(state.copyWith(errorMessage: "Gagal print: $e"));

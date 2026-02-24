@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
@@ -14,12 +15,16 @@ class UiFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppPropertyColor.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: ListView(
           controller: controller,
           children: [
-            Center(child: Text("Fitur", style: titleTextStyle)),
+            SizedBox(
+              width: double.infinity,
+              child: customTextBorder("Fitur", lv2TextStyleWhite),
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

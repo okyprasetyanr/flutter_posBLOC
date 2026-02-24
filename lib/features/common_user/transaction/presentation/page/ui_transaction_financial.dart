@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_event.dart';
@@ -219,20 +220,11 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                       : nullKas,
                   builder: (context, state) {
                     final isKas = state != nullKas;
-                    return Container(
-                      margin: EdgeInsets.only(left: isKas ? 10 : 0),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 5,
-                        horizontal: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isKas ? AppPropertyColor.primary : null,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        state,
-                        style: isKas ? lv1TextStyleWhite : lv1TextStyle,
-                      ),
+                    return customTextBorder(
+                      state,
+                      isKas ? lv1TextStyleWhite : lv1TextStyle,
+                      marginLeft: isKas ? 10 : 0,
+                      whiteBackground: !isKas,
                     );
                   },
                 ),

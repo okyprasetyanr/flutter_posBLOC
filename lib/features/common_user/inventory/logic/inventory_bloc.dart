@@ -8,7 +8,7 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/service_image.dart.dart';
+import 'package:flutter_pos/service/service_image.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';

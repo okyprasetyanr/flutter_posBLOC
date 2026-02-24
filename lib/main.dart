@@ -24,7 +24,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/hive_setup/transaction_saved_hive_adapter.dart';
 import 'package:flutter_pos/firebase_options.dart';
-import 'package:flutter_pos/function/printer/service_printer.dart';
+import 'package:flutter_pos/service/service_printer.dart';
 import 'package:flutter_pos/features/hive_setup/model_transaction_save.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';

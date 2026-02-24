@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/printer/service_printer.dart';
+import 'package:flutter_pos/service/service_printer.dart';
 import 'package:flutter_pos/main.dart' as UserSession;
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
@@ -22,11 +22,9 @@ class ReceiptBuilder {
   static Future<void> print<T>({
     required PrintFormatType formatType,
     required T data,
-    bool? history,
-    bool? income,
+    required bool history,
+    required bool income,
   }) async {
-    final finalHistory = history ?? false;
-    final finalIncome = income ?? true;
     final profile = await _getProfile();
     final service = ServicePrinter();
     final width = await service.getPaperSize();
@@ -57,13 +55,14 @@ class ReceiptBuilder {
           user: user,
           invoice: trans.getinvoice,
           date: trans.getdate,
+          fontType: fontType,
         );
 
         addLeftRight(
           gen,
           bytes,
-          "${trans.getpaymentMethod.name}-${trans.getstatusTransaction!.name}",
-          finalHistory ? "Print Ulang Nota" : "Print Nota",
+          "${trans.getpaymentMethod.name}-${history ? trans.getstatusTransaction!.name : "Sukses"}",
+          history ? "Print Ulang Nota" : "Print Nota",
           width,
           fontType: fontType,
         );
@@ -174,8 +173,7 @@ class ReceiptBuilder {
         );
 
         // 4. FOOTER
-        addTextFooter(gen, bytes, company: company);
-
+        addTextFooter(gen, bytes, company: company, fontType: fontType);
         break;
 
       case PrintFormatType.test_print:
@@ -187,6 +185,7 @@ class ReceiptBuilder {
           user: user,
           invoice: "",
           date: dateNowYMDBLOC(),
+          fontType: fontType,
         );
         addText(
           gen,
@@ -201,7 +200,7 @@ class ReceiptBuilder {
         );
         bytes.addAll(gen.feed(1));
         addText(gen, bytes, "Test Print Sukses!");
-        addTextFooter(gen, bytes, company: company);
+        addTextFooter(gen, bytes, company: company, fontType: fontType);
         break;
 
       case PrintFormatType.transaction_financial:
@@ -214,12 +213,13 @@ class ReceiptBuilder {
           user: user,
           invoice: expense.getinvoice,
           date: expense.getdate,
+          fontType: fontType,
         );
         addLeftRight(
           gen,
           bytes,
           expense.getstatusTransaction!.name,
-          finalIncome ? "Pendapatan" : "Pengeluaran",
+          income ? "Pendapatan" : "Pengeluaran",
           width,
           fontType: fontType,
         );
@@ -232,8 +232,7 @@ class ReceiptBuilder {
           width,
           fontType: fontType,
         );
-        bytes.addAll(gen.hr());
-        addTextFooter(gen, bytes, company: company);
+        addTextFooter(gen, bytes, company: company, fontType: fontType);
         break;
 
       case PrintFormatType.transaction_buy:
@@ -247,12 +246,13 @@ class ReceiptBuilder {
           user: user,
           invoice: trans.getinvoice,
           date: trans.getdate,
+          fontType: fontType,
         );
         addLeftRight(
           gen,
           bytes,
           "${trans.getpaymentMethod.name}-${trans.getstatusTransaction!.name}",
-          finalHistory ? "Print Ulang Nota" : "Print Nota",
+          history ? "Print Ulang Nota" : "Print Nota",
           width,
           fontType: fontType,
         );
@@ -344,7 +344,7 @@ class ReceiptBuilder {
           fontType: fontType,
         );
         bytes.addAll(gen.hr());
-        addTextFooter(gen, bytes, company: company);
+        addTextFooter(gen, bytes, company: company, fontType: fontType);
         break;
 
       case PrintFormatType.report:
@@ -357,6 +357,7 @@ class ReceiptBuilder {
           user: user,
           invoice: "Laporan Kasir",
           date: dateNowYMDBLOC(),
+          fontType: fontType,
         );
 
         bytes.addAll(gen.hr());
@@ -409,10 +410,11 @@ class ReceiptBuilder {
           fontType: fontType,
         );
 
+        bytes.addAll(gen.hr());
         addLeftRight(
           gen,
           bytes,
-          "QRIS",
+          " QRIS",
           report.getsummary.getqris,
           width,
           fontType: fontType,
@@ -420,7 +422,7 @@ class ReceiptBuilder {
         addLeftRight(
           gen,
           bytes,
-          "Debit",
+          " Debit",
           report.getsummary.getdebit,
           width,
           fontType: fontType,
@@ -428,11 +430,12 @@ class ReceiptBuilder {
         addLeftRight(
           gen,
           bytes,
-          "Tunai",
+          " Tunai",
           report.getsummary.getcash,
           width,
           fontType: fontType,
         );
+        bytes.addAll(gen.hr());
         addLeftRight(
           gen,
           bytes,
@@ -449,6 +452,7 @@ class ReceiptBuilder {
           width,
           fontType: fontType,
         );
+        bytes.addAll(gen.hr());
         addLeftRight(
           gen,
           bytes,
@@ -458,11 +462,13 @@ class ReceiptBuilder {
           fontType: fontType,
         );
 
-        bytes.addAll(gen.hr());
-        addTextFooter(gen, bytes, company: company);
+        addTextFooter(gen, bytes, company: company, fontType: fontType);
         break;
 
-      default:
+      case PrintFormatType.adjustment_in:
+        break;
+
+      case PrintFormatType.adjustment_out:
         break;
     }
 
@@ -575,7 +581,7 @@ class ReceiptBuilder {
     bytes.addAll(
       gen.text(
         line,
-        styles: PosStyles(fontType: fontType, align: PosAlign.center),
+        styles: PosStyles(fontType: fontType, align: PosAlign.left),
       ),
     );
   }

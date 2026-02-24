@@ -9,7 +9,7 @@ class PrinterState extends Equatable {
   final PaperWidth paperWidth;
   final String? errorMessage;
   final bool? isLoading;
-  final BluetoothDevice? connectedDevice; // Menyimpan info device yg connect
+  final BluetoothDevice? connectedDevice;
 
   const PrinterState({
     this.isLoading,
@@ -36,8 +36,7 @@ class PrinterState extends Equatable {
       isScanning: isScanning ?? this.isScanning,
       connectState: connectState ?? this.connectState,
       paperWidth: paperWidth ?? this.paperWidth,
-      errorMessage:
-          errorMessage, // Reset error jika null passed (opsional logic)
+      errorMessage: errorMessage,
       connectedDevice: connectedDevice ?? this.connectedDevice,
     );
   }

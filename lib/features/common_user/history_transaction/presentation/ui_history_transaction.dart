@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_row_list_item.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/printer/service_printer.dart';
+import 'package:flutter_pos/service/service_printer.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -412,7 +413,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   Widget layoutBottom() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
-      padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+      padding: const EdgeInsets.only(top: 5, left: 10, right: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
@@ -451,6 +452,14 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
               final transaction = state.$1!;
               return Column(
                 children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: customTextBorder(
+                      "Detail Transaksi",
+                      lv2TextStyleWhite,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: ListView(
                       children: [
@@ -510,6 +519,15 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                   ],
                                 );
                               }),
+                              const SizedBox(
+                                height: 1,
+                                width: double.infinity,
+                                child: const DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: AppPropertyColor.greyLight,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -641,8 +659,9 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                         ),
                         onPressed: () => context.read<PrinterBloc>().add(
                           PrintData(
-                            data: state,
+                            data: state.$1,
                             type: PrintFormatType.transaction_sell,
+                            history: true,
                           ),
                         ),
                       ),

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
+import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_event.dart';
@@ -266,6 +269,13 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: customTextBorder(
+                                      dataTransaction.getnameFinancial,
+                                      lv1TextStyleWhite,
+                                    ),
+                                  ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -376,6 +386,14 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
               final transaction = state.$1!;
               return Column(
                 children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: customTextBorder(
+                      "Detail Transaksi",
+                      lv2TextStyleWhite,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: ListView(
                       children: [
@@ -386,7 +404,13 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                           transaction.getstatusTransaction!.name,
                         ),
                         rowContent(
-                          "Total",
+                          "Catatan:",
+                          transaction.getnote.isEmpty
+                              ? "-"
+                              : transaction.getnote,
+                        ),
+                        rowContent(
+                          transaction.getnameFinancial,
                           formatPriceRp(transaction.getamount),
                           forTotal: true,
                         ),
@@ -394,6 +418,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                     ),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       customButton(
                         backgroundColor: AppPropertyColor.white,
@@ -417,7 +442,13 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                           Icons.print_rounded,
                           color: AppPropertyColor.primary,
                         ),
-                        onPressed: () {},
+                        onPressed: () => context.read<PrinterBloc>().add(
+                          PrintData(
+                            data: state.$1,
+                            type: PrintFormatType.transaction_financial,
+                            history: true,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 10),
                       customButton(

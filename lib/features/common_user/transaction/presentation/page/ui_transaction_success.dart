@@ -27,7 +27,7 @@ class UITransactionSuccess extends StatelessWidget {
         }
       },
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(backgroundColor: AppPropertyColor.white),
         backgroundColor: AppPropertyColor.white,
         body: SafeArea(
           top: true,

@@ -6,6 +6,7 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
@@ -26,10 +27,16 @@ class UiBackupRestore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppPropertyColor.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
+            SizedBox(
+              width: double.infinity,
+              child: customTextBorder("Manajemen Data", lv2TextStyleWhite),
+            ),
+            const SizedBox(height: 20),
             Align(
               alignment: Alignment.centerLeft,
               child: Text("Cadangkan", style: subTitleTextStyleBold),

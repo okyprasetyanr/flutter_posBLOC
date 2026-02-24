@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
@@ -22,18 +23,22 @@ class UiLogoHeaderFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppPropertyColor.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
-            Text("Logo,Header & Footer", style: subTitleTextStyleBold),
-            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: customTextBorder("Branding", lv2TextStyleWhite),
+            ),
+            const SizedBox(height: 20),
             Image.asset("assets/logo.png", height: 150, width: 150),
             const SizedBox(height: 10),
             Align(
               alignment: Alignment.center,
               child: SizedBox(
-                width: 200,
+                width: 250,
                 child: BlocListener<SettingsBloc, SettingsState>(
                   listener: (context, state) {
                     if (state is SettingsLogoHeaderFooterLoaded) {

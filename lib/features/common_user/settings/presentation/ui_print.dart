@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_state.dart';
+import 'package:flutter_pos/service/service_printer.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UIPrint extends StatelessWidget {
   const UIPrint({Key? key}) : super(key: key);
@@ -13,11 +19,7 @@ class UIPrint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pengaturan Printer"),
-        backgroundColor: AppPropertyColor.primary,
-        foregroundColor: AppPropertyColor.white,
-      ),
+      backgroundColor: AppPropertyColor.white,
       body: BlocListener<PrinterBloc, PrinterState>(
         listenWhen: (previous, current) =>
             previous.errorMessage != current.errorMessage &&
@@ -43,29 +45,30 @@ class PrinterView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // ================= HEADER: STATUS & PAPER SIZE =================
+        SizedBox(
+          width: double.infinity,
+          child: customTextBorder("Printer", lv2TextStyleWhite),
+        ),
         _buildHeader(context),
 
-        const Divider(thickness: 1),
-
-        BlocSelector<PrinterBloc, PrinterState, bool>(
-          selector: (state) => state.isScanning,
-          builder: (context, state) {
-            if (state) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return ElevatedButton.icon(
-              onPressed: () => context.read<PrinterBloc>().add(StartScan()),
-              icon: const Icon(Icons.search),
-              label: const Text("Scan Printer Bluetooth"),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 45),
-              ),
-            );
-          },
+        SizedBox(
+          width: double.infinity,
+          child: BlocSelector<PrinterBloc, PrinterState, bool>(
+            selector: (state) => state.isScanning,
+            builder: (context, state) {
+              if (state) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return customButtonIcon(
+                backgroundColor: AppPropertyColor.white,
+                icon: const Icon(Icons.search, color: AppPropertyColor.black),
+                label: Text("Scan Printer Bluetooth", style: lv1TextStyle),
+                onPressed: () => context.read<PrinterBloc>().add(StartScan()),
+              );
+            },
+          ),
         ),
 
-        // ================= LIST DEVICES =================
         Expanded(
           child:
               BlocSelector<
@@ -85,7 +88,7 @@ class PrinterView extends StatelessWidget {
                       child: Text(
                         "Belum ada device ditemukan.\nPastikan Bluetooth menyala.",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: AppPropertyColor.grey),
+                        style: lv05TextStyle,
                       ),
                     );
                   }
@@ -94,13 +97,12 @@ class PrinterView extends StatelessWidget {
                     itemCount: state.$2.length,
                     itemBuilder: (context, index) {
                       final device = state.$2[index];
-                      // Cek apakah device ini yang sedang terkoneksi (Logic sederhana berdasarkan address/nama)
-                      // Note: BluetoothPrintPlus tidak selalu menyimpan full object device di state connected
                       final isConnected =
                           state.$3 == ConnectState.connected &&
                           state.$4?.address == device.address;
 
                       return Card(
+                        color: AppPropertyColor.white,
                         margin: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 4,
@@ -109,23 +111,21 @@ class PrinterView extends StatelessWidget {
                           leading: Icon(
                             Icons.print,
                             color: isConnected
-                                ? AppPropertyColor.green
+                                ? AppPropertyColor.primary
                                 : AppPropertyColor.grey,
                           ),
-                          title: Text(device.name),
-                          subtitle: Text(device.address),
+                          title: Text(device.name, style: lv05TextStyle),
+                          subtitle: Text(device.address, style: lv05TextStyle),
                           trailing: isConnected
-                              ? const Chip(
+                              ? Chip(
                                   label: Text(
                                     "Terhubung",
-                                    style: TextStyle(
-                                      color: AppPropertyColor.white,
-                                    ),
+                                    style: lv1TextStyleWhite,
                                   ),
-                                  backgroundColor: AppPropertyColor.green,
+                                  backgroundColor: AppPropertyColor.primary,
                                 )
                               : ElevatedButton(
-                                  child: const Text("Connect"),
+                                  child: const Text("Sambung"),
                                   onPressed: () {
                                     context.read<PrinterBloc>().add(
                                       ConnectDevice(device),
@@ -152,10 +152,9 @@ class PrinterView extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      color: AppPropertyColor.greyLight,
+      color: AppPropertyColor.white,
       child: Column(
         children: [
-          // Status Row
           BlocSelector<PrinterBloc, PrinterState, ConnectState>(
             selector: (state) => state.connectState,
             builder: (context, state) {
@@ -170,59 +169,52 @@ class PrinterView extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    isConnected ? "Status: TERKONEKSI" : "Status: TERPUTUS",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isConnected
-                          ? AppPropertyColor.primary
-                          : AppPropertyColor.deleteOrClose,
-                    ),
+                    isConnected ? "Status: Terhubung" : "Status: Terputus",
+                    style: lv1TextStyleBold,
                   ),
                   const Spacer(),
                   if (isConnected)
-                    TextButton(
+                    customButton(
+                      backgroundColor: AppPropertyColor.deleteOrClose,
+                      child: Text("Putuskan", style: lv1TextStyleWhite),
                       onPressed: () =>
                           context.read<PrinterBloc>().add(DisconnectDevice()),
-                      child: const Text(
-                        "Putus",
-                        style: TextStyle(color: AppPropertyColor.deleteOrClose),
-                      ),
                     ),
                 ],
               );
             },
           ),
           const SizedBox(height: 10),
-          // Paper Size Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Ukuran Kertas:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              BlocSelector<PrinterBloc, PrinterState, PaperWidth>(
-                selector: (state) => state.paperWidth,
-                builder: (context, state) {
-                  return DropdownButton<PaperWidth>(
-                    value: state,
-                    items: const [
-                      DropdownMenuItem(
-                        value: PaperWidth.mm58,
-                        child: Text("58mm (Kecil)"),
-                      ),
-                      DropdownMenuItem(
-                        value: PaperWidth.mm80,
-                        child: Text("80mm (Besar)"),
-                      ),
+              Expanded(
+                flex: 3,
+                child: FutureBuilder(
+                  future: ServicePrinter().getSavedMac(),
+                  builder: (context, snapshot) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Terhubung ke:", style: lv1TextStyleBold),
+                      Text(snapshot.data ?? "-", style: lv1TextStyleBold),
                     ],
-                    onChanged: (val) {
-                      if (val != null) {
-                        context.read<PrinterBloc>().add(ChangePaperSize(val));
-                      }
-                    },
-                  );
-                },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: BlocSelector<PrinterBloc, PrinterState, PaperWidth>(
+                  selector: (state) => state.paperWidth,
+                  builder: (context, state) {
+                    return WidgetDropDownFilter(
+                      initialValue: state,
+                      filters: PaperWidth.values.map((map) => map).toList(),
+                      text: "Pilih Kertas",
+                      selectedValue: (selectedEnum) => context
+                          .read<PrinterBloc>()
+                          .add(ChangePaperSize(selectedEnum)),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -238,7 +230,7 @@ class PrinterView extends StatelessWidget {
         color: AppPropertyColor.white,
         boxShadow: [
           BoxShadow(
-            color: AppPropertyColor.grey.withOpacity(0.2),
+            color: AppPropertyColor.grey.withValues(alpha: 0.2),
             blurRadius: 5,
             offset: const Offset(0, -3),
           ),
@@ -262,7 +254,7 @@ class PrinterView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               icon: const Icon(Icons.receipt_long),
-              label: const Text("TEST PRINT"),
+              label: Text("Cetak", style: lv3TextStyleWhiteBold),
             ),
           );
         },

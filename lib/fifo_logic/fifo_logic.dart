@@ -198,10 +198,6 @@ ModelFIFOLogic fifoLogic({
       ? batches.first.getprice_item
       : item.getpriceItemFinal;
 
-  debugPrint(
-    "Log FifoLogic: priceItemBatch: $priceSell, batchesCount: ${batches.first.getprice_item}",
-  );
-
   final priceBuy = batches.isNotEmpty
       ? batches.first.getprice_itemBuy
       : item.getpriceItemBuy;

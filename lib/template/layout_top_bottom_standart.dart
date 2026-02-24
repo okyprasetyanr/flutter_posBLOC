@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class LayoutTopBottom extends StatelessWidget {
@@ -33,8 +34,9 @@ class LayoutTopBottom extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
-        appBar: title != null
+        appBar: title != null || contentAppBar != null
             ? AppBar(
+                backgroundColor: AppPropertyColor.white,
                 actions: [
                   if (contentAppBar != null)
                     Padding(
@@ -54,14 +56,8 @@ class LayoutTopBottom extends StatelessWidget {
                       constraints: const BoxConstraints(),
                       onPressed: () => Navigator.pop(context),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: AppPropertyColor.primary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(title!, style: titleTextStyleWhite),
-                    ),
+                    if (title != null)
+                      customTextBorder(title!, titleTextStyleWhite),
                   ],
                 ),
               )

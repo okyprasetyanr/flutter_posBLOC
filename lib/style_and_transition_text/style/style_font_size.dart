@@ -227,6 +227,12 @@ final lv3TextStyle = GoogleFonts.poppins(
   fontSize: 16,
 );
 
+final lv3TextStyleWhiteBold = GoogleFonts.poppins(
+  color: AppPropertyColor.white,
+  fontWeight: FontWeight.w500,
+  fontSize: 16,
+);
+
 final lv4TextStyle = GoogleFonts.poppins(
   color: AppPropertyColor.black,
   fontWeight: FontWeight.w600,

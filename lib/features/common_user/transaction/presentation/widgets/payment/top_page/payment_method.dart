@@ -8,7 +8,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/payment/payme
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/cash_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/debit_payment.dart';
-import 'package:flutter_pos/function/bottom_sheet.dart';
+import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';

@@ -9,7 +9,7 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/item_page/bottom_page/condiment_switch.dart';
-import 'package:flutter_pos/function/bottom_sheet.dart';
+import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';

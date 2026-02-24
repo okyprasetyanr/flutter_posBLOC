@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
@@ -41,7 +42,18 @@ class UIProfile extends StatelessWidget {
               : ListView(
                   controller: controller,
                   children: [
-                    Center(child: Text("Profil", style: titleTextStyle)),
+                    SizedBox(
+                      width: double.infinity,
+                      child: customTextBorder("Profil", lv2TextStyleWhite),
+                    ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Image.asset(
+                        "assets/logo.png",
+                        height: 100,
+                        width: 100,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,15 +62,6 @@ class UIProfile extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                child: Image.asset(
-                                  "assets/logo.png",
-                                  height: 100,
-                                  width: 100,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-
                               Text("Pengguna", style: subTitleTextStyle),
                               Text("Nama", style: lv05TextStyleBold),
                               CustomText(text: dataAccount.getNameUser),

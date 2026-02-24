@@ -73,6 +73,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppPropertyColor.white,
       body: SafeArea(
         top: true,
         bottom: true,

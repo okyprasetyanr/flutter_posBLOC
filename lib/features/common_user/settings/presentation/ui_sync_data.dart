@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
@@ -15,6 +16,7 @@ class UiSyncData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppPropertyColor.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child:
@@ -39,16 +41,12 @@ class UiSyncData extends StatelessWidget {
                   controller: controller,
                   shrinkWrap: true,
                   children: [
-                    Center(child: Text("Sinkron Data", style: titleTextStyle)),
-                    customButtonIcon(
-                      backgroundColor: AppPropertyColor.primary,
-                      icon: const Icon(
-                        Icons.publish_rounded,
-                        color: AppPropertyColor.white,
+                    SizedBox(
+                      width: double.infinity,
+                      child: customTextBorder(
+                        "Sinkron Data",
+                        lv2TextStyleWhite,
                       ),
-                      label: Text("Kirim Data", style: lv05TextStyleWhite),
-                      onPressed: () =>
-                          context.read<SettingsBloc>().add(SettingPushData()),
                     ),
                     const SizedBox(height: 10),
                     Container(
@@ -109,6 +107,17 @@ class UiSyncData extends StatelessWidget {
                       label: Text("Ambil Data", style: lv05TextStyleWhite),
                       onPressed: () =>
                           context.read<SettingsBloc>().add(SettingGetData()),
+                    ),
+                    const SizedBox(height: 10),
+                    customButtonIcon(
+                      backgroundColor: AppPropertyColor.primary,
+                      icon: const Icon(
+                        Icons.publish_rounded,
+                        color: AppPropertyColor.white,
+                      ),
+                      label: Text("Kirim Data", style: lv05TextStyleWhite),
+                      onPressed: () =>
+                          context.read<SettingsBloc>().add(SettingPushData()),
                     ),
                   ],
                 );

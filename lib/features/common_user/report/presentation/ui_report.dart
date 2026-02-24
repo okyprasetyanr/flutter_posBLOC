@@ -39,6 +39,7 @@ class _UIReportState extends State<UIReport> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppPropertyColor.white,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10),
@@ -234,10 +235,7 @@ class _UIReportState extends State<UIReport> {
                       ),
                       label: Text("Cetak", style: lv05TextStyleWhite),
                       onPressed: () => context.read<PrinterBloc>().add(
-                        PrintData(
-                          data: state,
-                          type: PrintFormatType.transaction_sell,
-                        ),
+                        PrintData(data: state, type: PrintFormatType.report),
                       ),
                     ),
                   ),
