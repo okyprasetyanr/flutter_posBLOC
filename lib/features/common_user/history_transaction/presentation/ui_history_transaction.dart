@@ -521,14 +521,10 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                   ],
                                 );
                               }),
-                              const SizedBox(
-                                height: 1,
-                                width: double.infinity,
-                                child: const DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: AppPropertyColor.greyLight,
-                                  ),
-                                ),
+                              const Divider(
+                                thickness: 1,
+                                height: 5,
+                                color: AppPropertyColor.greyLight,
                               ),
                             ],
                           ),

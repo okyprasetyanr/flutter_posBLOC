@@ -7,20 +7,17 @@ class WaveClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
 
-    double waveHeight = 10; // tinggi gelombang
-    double waveWidth = 10; // makin kecil = makin rapat
+    double waveHeight = 10;
+    double waveWidth = 10;
 
-    // ==== WAVE ATAS ====
     path.moveTo(0, waveHeight);
 
     for (double i = 0; i < size.width; i += waveWidth) {
       path.quadraticBezierTo(i + waveWidth / 2, 0, i + waveWidth, waveHeight);
     }
 
-    // ==== TURUN KE BAWAH ====
     path.lineTo(size.width, size.height - waveHeight);
 
-    // ==== WAVE BAWAH ====
     for (double i = size.width; i > 0; i -= waveWidth) {
       path.quadraticBezierTo(
         i - waveWidth / 2,

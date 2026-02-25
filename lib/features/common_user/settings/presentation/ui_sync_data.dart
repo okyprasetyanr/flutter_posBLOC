@@ -49,10 +49,10 @@ class UiSyncData extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Container(
-                      color: AppPropertyColor.grey,
-                      height: 1,
-                      width: double.infinity,
+                    const Divider(
+                      thickness: 2,
+                      height: 5,
+                      color: AppPropertyColor.greyLight,
                     ),
 
                     if (state.$2)

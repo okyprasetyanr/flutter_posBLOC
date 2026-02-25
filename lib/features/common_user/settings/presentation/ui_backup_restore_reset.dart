@@ -101,10 +101,10 @@ class UiBackupRestore extends StatelessWidget {
               style: lv05TextStyleItalic,
             ),
             const SizedBox(height: 10),
-            Container(
-              height: 1,
-              width: double.infinity,
-              color: AppPropertyColor.grey,
+            const Divider(
+              thickness: 1,
+              height: 5,
+              color: AppPropertyColor.greyLight,
             ),
             const SizedBox(height: 10),
             Row(
@@ -158,10 +158,10 @@ class UiBackupRestore extends StatelessWidget {
             ),
 
             const SizedBox(height: 10),
-            Container(
-              height: 1,
-              width: double.infinity,
-              color: AppPropertyColor.grey,
+            const Divider(
+              thickness: 1,
+              height: 5,
+              color: AppPropertyColor.greyLight,
             ),
             const SizedBox(height: 10),
             Row(

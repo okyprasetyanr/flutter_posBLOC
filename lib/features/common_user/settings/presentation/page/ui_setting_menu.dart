@@ -142,7 +142,7 @@ class _UISettingsState extends State<UISettings> {
                           context: context,
                           resetItemForm: null,
                           content: (scrollController) {
-                            return UIPrint();
+                            return UIPrint(scrollController: scrollController);
                           },
                         );
                       },
