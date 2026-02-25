@@ -46,7 +46,7 @@ Widget customListGradient<T>({
                       direction: DismissDirection.endToStart,
                       background: Container(
                         padding: const EdgeInsets.only(right: 10),
-                        color: AppPropertyColor.deleteOrClose,
+                        color: AppPropertyColor.red,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Icon(

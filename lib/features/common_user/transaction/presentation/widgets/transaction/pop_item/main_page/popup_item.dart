@@ -108,7 +108,8 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                                               AppPropertyColor.white,
                                           child: const Icon(
                                             Icons.fastfood_rounded,
-                                            color: AppPropertyColor.condiment,
+                                            color:
+                                                AppPropertyColor.secondPrimary,
                                             size: lv2IconSize,
                                           ),
                                           onPressed: () {
@@ -127,7 +128,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                             backgroundColor: AppPropertyColor.white,
                             child: const Icon(
                               Icons.delete_forever_rounded,
-                              color: AppPropertyColor.deleteOrClose,
+                              color: AppPropertyColor.red,
                               size: lv2IconSize,
                             ),
                             onPressed: () {
@@ -142,7 +143,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                         Expanded(
                           flex: 1,
                           child: customButton(
-                            backgroundColor: AppPropertyColor.deleteOrClose,
+                            backgroundColor: AppPropertyColor.red,
                             child: const Icon(
                               Icons.close_rounded,
                               color: AppPropertyColor.white,

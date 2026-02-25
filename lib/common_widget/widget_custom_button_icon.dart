@@ -20,7 +20,8 @@ Widget customButtonIcon({
       icon: icon,
       iconAlignment: rightIcon ? IconAlignment.end : IconAlignment.start,
       style: ElevatedButton.styleFrom(
-        visualDensity: VisualDensity.compact,
+        elevation: 4,
+        visualDensity: const VisualDensity(horizontal: -2.0, vertical: -2.0),
         backgroundColor: backgroundColor,
         minimumSize: const Size(0, 0),
         alignment: left ? Alignment.centerLeft : Alignment.center,

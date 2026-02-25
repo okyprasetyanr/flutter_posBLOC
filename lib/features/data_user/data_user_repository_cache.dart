@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
@@ -132,7 +133,15 @@ class DataUserRepositoryCache {
   }
 
   Future<void> initUser() async {
-    dataUser = await repo.getUser();
+    dataUser = [];
+    if (dataAccount!.getRoleUser == RoleType.Pemilik) {
+      dataUser.add(dataAccount!);
+    }
+    dataUser.addAll(await repo.getUser());
+
+    debugPrint(
+      "Log DataUserRepositoryCache: dataUser: ${dataUser.map((e) => e.getNameUser)}, roleAccount: ${dataAccount!.getRoleUser}",
+    );
   }
 
   ModelUser getAccount() {

@@ -30,12 +30,6 @@ class _UiFinancialState extends State<UiFinancial> {
   final branchController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void resetForm() {
-    nameController.clear();
-    branchController.clear();
-    searchController.clear();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -62,6 +56,7 @@ class _UiFinancialState extends State<UiFinancial> {
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
       title: "Data Kas",
+      color: context.colorFinance,
       contentAppBar: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
         width: 145,
@@ -120,7 +115,6 @@ class _UiFinancialState extends State<UiFinancial> {
                   return WidgetDropdownBranch(
                     idBranch: state,
                     selectedIdBranch: (selectedIdBranch) {
-                      resetForm();
                       context.read<FinancialBloc>().add(
                         FinancialGetData(idBranch: selectedIdBranch),
                       );
@@ -179,8 +173,8 @@ class _UiFinancialState extends State<UiFinancial> {
               context.read<FinancialBloc>().add(
                 FinancialResetSelectedFinancial(),
               );
-              _resetForm();
             },
+            color: context.colorFinance,
           ),
         ),
         const SizedBox(height: 10),
@@ -198,8 +192,12 @@ class _UiFinancialState extends State<UiFinancial> {
                       previous.selectedFinancial != current.selectedFinancial,
                   listener: (context, state) {
                     if (state is FinancialLoaded) {
-                      nameController.text =
-                          state.selectedFinancial?.getnameFinancial ?? "";
+                      if (state.selectedFinancial != null) {
+                        nameController.text =
+                            state.selectedFinancial?.getnameFinancial ?? "";
+                      } else if (state.selectedFinancial == null) {
+                        nameController.clear();
+                      }
                     }
                   },
                   child: customTextField(
@@ -248,7 +246,7 @@ class _UiFinancialState extends State<UiFinancial> {
             Expanded(
               flex: 2,
               child: customButtonIcon(
-                backgroundColor: AppPropertyColor.primary,
+                backgroundColor: context.colorFinance,
                 icon: const Icon(
                   Icons.check_rounded,
                   color: AppPropertyColor.white,
@@ -276,10 +274,6 @@ class _UiFinancialState extends State<UiFinancial> {
         ),
       ],
     );
-  }
-
-  void _resetForm() {
-    nameController.clear();
   }
 
   Future<void> refreshIndicator() async {

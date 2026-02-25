@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 Widget WidgetDropDownFilter<T extends Enum>({
@@ -11,6 +12,9 @@ Widget WidgetDropDownFilter<T extends Enum>({
   return DropdownButtonFormField<T>(
     style: lv05TextStyle,
     decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppPropertyColor.primary, width: 2),
+      ),
       label: Text(text, style: lv1TextStyle),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       isDense: true,

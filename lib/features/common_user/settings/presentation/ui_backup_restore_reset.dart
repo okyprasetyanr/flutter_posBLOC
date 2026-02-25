@@ -119,7 +119,7 @@ class UiBackupRestore extends StatelessWidget {
                     backgroundColor: AppPropertyColor.white,
                     icon: const Icon(
                       Icons.folder_delete_rounded,
-                      color: AppPropertyColor.deleteOrClose,
+                      color: AppPropertyColor.red,
                     ),
                     label: Text("Reset", style: lv05TextStyleRed),
                     onPressed: () {

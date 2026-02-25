@@ -34,7 +34,9 @@ class TransactionListViewOrderedItem extends StatelessWidget {
             },
             builder: (context, state) {
               if (state.isEmpty) {
-                return Text("Belum ada Pesanan!", style: lv1TextStyle);
+                return Center(
+                  child: Text("Belum ada Pesanan!", style: lv1TextStyle),
+                );
               } else {
                 return Column(
                   children: [
@@ -134,7 +136,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                                 Container(
                                                   decoration: BoxDecoration(
                                                     color: AppPropertyColor
-                                                        .primarylight3,
+                                                        .primaryLight3,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           5,
@@ -231,8 +233,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         return ListTile(
                                           leading: CircleAvatar(
-                                            backgroundColor:
-                                                AppPropertyColor.primary,
+                                            backgroundColor: context.colorTrans,
                                             child: Icon(
                                               Icons.person,
                                               size: lv2IconSize,
@@ -263,7 +264,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                           ),
 
                           customButtonIcon(
-                            backgroundColor: AppPropertyColor.primary,
+                            backgroundColor: context.colorTrans,
                             icon: const Icon(
                               Icons.add,
                               color: AppPropertyColor.white,
@@ -314,7 +315,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   Icons.contacts_rounded,
                   color: AppPropertyColor.white,
                 ),
-                backgroundColor: AppPropertyColor.primary,
+                backgroundColor: context.colorTrans,
               ),
             ),
             const SizedBox(width: 10),
@@ -327,10 +328,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                     TransactionResetOrderedItem(),
                   );
                 },
-                child: Icon(
-                  Icons.delete,
-                  color: AppPropertyColor.deleteOrClose,
-                ),
+                child: Icon(Icons.delete, color: AppPropertyColor.red),
               ),
             ),
             const SizedBox(width: 10),
@@ -367,7 +365,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   Icons.attach_money_rounded,
                   color: AppPropertyColor.white,
                 ),
-                backgroundColor: AppPropertyColor.primary,
+                backgroundColor: context.colorTrans,
               ),
             ),
           ],

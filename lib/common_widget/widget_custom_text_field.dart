@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
@@ -43,6 +44,9 @@ Widget customTextField({
     controller: controller,
     style: lv05TextStyle,
     decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppPropertyColor.primary, width: 2),
+      ),
       suffixText: suffixText,
       floatingLabelBehavior: FloatingLabelBehavior.always,
       label: Text(text!, style: lv1TextStyle),

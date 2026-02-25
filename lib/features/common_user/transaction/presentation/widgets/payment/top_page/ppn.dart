@@ -41,30 +41,35 @@ class UIPaymentPPN extends StatelessWidget {
                   spacing: 5,
                   children: [11, 25, 30].map((ppn) {
                     final isSelected = state.getppn == ppn;
-                    return customButtonIcon(
-                      backgroundColor: isSelected
-                          ? AppPropertyColor.primary
-                          : AppPropertyColor.white,
-                      icon: Icon(
-                        Icons.check_rounded,
-                        size: lv05IconSize,
-                        color: isSelected
-                            ? AppPropertyColor.white
-                            : AppPropertyColor.black,
+                    return SizedBox(
+                      width: 54,
+                      child: customButtonIcon(
+                        backgroundColor: isSelected
+                            ? AppPropertyColor.primary
+                            : AppPropertyColor.white,
+                        icon: Icon(
+                          Icons.check_rounded,
+                          size: lv05IconSize,
+                          color: isSelected
+                              ? AppPropertyColor.white
+                              : AppPropertyColor.black,
+                        ),
+                        label: Text(
+                          "$ppn%",
+                          style: isSelected
+                              ? lv05TextStyleWhite
+                              : lv05TextStyle,
+                        ),
+                        onPressed: () {
+                          if (customPPNController.text.isNotEmpty) {
+                            customPPNController.clear();
+                          }
+                          final ppnValue = isSelected ? 0 : ppn;
+                          context.read<PaymentBloc>().add(
+                            PaymentAdjust(ppn: ppnValue),
+                          );
+                        },
                       ),
-                      label: Text(
-                        "$ppn%",
-                        style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
-                      ),
-                      onPressed: () {
-                        if (customPPNController.text.isNotEmpty) {
-                          customPPNController.clear();
-                        }
-                        final ppnValue = isSelected ? 0 : ppn;
-                        context.read<PaymentBloc>().add(
-                          PaymentAdjust(ppn: ppnValue),
-                        );
-                      },
                     );
                   }).toList(),
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
@@ -82,13 +83,10 @@ class _UIReportState extends State<UIReport> {
               constraints: const BoxConstraints(),
               onPressed: () => Navigator.pop(context),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-              decoration: BoxDecoration(
-                color: AppPropertyColor.primary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text("Laporan Kasir", style: titleTextStyleWhite),
+            customTextBorder(
+              "Laporan Kasir",
+              titleTextStyleWhite,
+              color: context.colorReport,
             ),
           ],
         ),
@@ -228,8 +226,8 @@ class _UIReportState extends State<UIReport> {
                   SizedBox(
                     width: double.infinity,
                     child: customButtonIcon(
-                      backgroundColor: AppPropertyColor.primary,
-                      icon: Icon(
+                      backgroundColor: context.colorReport,
+                      icon: const Icon(
                         Icons.print_rounded,
                         color: AppPropertyColor.white,
                       ),

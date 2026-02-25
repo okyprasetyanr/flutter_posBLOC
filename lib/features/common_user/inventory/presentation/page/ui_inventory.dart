@@ -191,6 +191,7 @@ class _UIInventoryState extends State<UIInventory> {
             ),
           ],
         ),
+
         Expanded(
           child: PageView(
             controller: pageControllerTop,
@@ -297,7 +298,7 @@ class _UIInventoryState extends State<UIInventory> {
                       AnimatedPositioned(
                         top: 0,
                         curve: Curves.easeInOut,
-                        left: value ? 0 : 450,
+                        left: value ? 0 : 650,
                         duration: const Duration(milliseconds: 500),
                         child: SizedBox(
                           width: 100,

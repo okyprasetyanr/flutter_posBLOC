@@ -6,6 +6,7 @@ Widget customTextBorder(
   TextStyle textStyle, {
   bool? whiteBackground = false,
   double? marginLeft,
+  Color? color,
 }) {
   return Container(
     margin: EdgeInsets.only(left: marginLeft ?? 0),
@@ -13,7 +14,7 @@ Widget customTextBorder(
     decoration: BoxDecoration(
       color: whiteBackground!
           ? AppPropertyColor.white
-          : AppPropertyColor.primary,
+          : color ?? AppPropertyColor.primary,
       borderRadius: BorderRadius.circular(8),
     ),
     child: Text(title, style: textStyle, textAlign: TextAlign.center),

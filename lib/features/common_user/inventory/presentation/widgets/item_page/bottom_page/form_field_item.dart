@@ -139,7 +139,7 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                     context: context,
                     index: 2,
                     nodes: nodes,
-                    inputType: TextInputType.text,
+                    inputType: TextInputType.number,
                     text: "Harga",
                     controller: priceItemController,
                     enable: true,

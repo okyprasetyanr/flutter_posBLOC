@@ -124,8 +124,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                   AppPropertyColor.white,
                                               child: const Icon(
                                                 Icons.remove_rounded,
-                                                color: AppPropertyColor
-                                                    .deleteOrClose,
+                                                color: AppPropertyColor.red,
                                               ),
                                               onPressed: () {
                                                 if (qtyitem == 0) {
@@ -184,8 +183,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                   AppPropertyColor.white,
                                               child: const Icon(
                                                 Icons.add_rounded,
-                                                color: AppPropertyColor
-                                                    .deleteOrClose,
+                                                color: AppPropertyColor.red,
                                               ),
                                               onPressed: () {
                                                 ModelItemOrdered

@@ -84,7 +84,7 @@ class UITransactionListViewCategory extends StatelessWidget {
                                   category.getidCategory ==
                                   stateSelected.getidCategory;
                               final backgroundColor = validasiSelected
-                                  ? AppPropertyColor.primary
+                                  ? context.colorTrans
                                   : AppPropertyColor.greyLight;
                               final textColor = validasiSelected
                                   ? lv05TextStyleWhite

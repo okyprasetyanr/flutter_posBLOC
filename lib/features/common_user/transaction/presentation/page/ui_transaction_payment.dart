@@ -256,92 +256,108 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                 flex: 1,
                 child: Column(
                   children: [
-                    BlocSelector<PaymentBloc, PaymentState, bool>(
-                      selector: (state) =>
-                          state is PaymentLoaded ? state.isSell : false,
-                      builder: (context, isSell) {
-                        return isSell
-                            ? customButton(
-                                backgroundColor: AppPropertyColor.white,
-                                child: Text("Simpan", style: lv05TextStyleBold),
-                                onPressed: () {
-                                  context.read<PaymentBloc>().add(
-                                    PaymentProcess(
-                                      statusTransaction:
-                                          ListStatusTransaction.Tersimpan,
-                                      context: context,
-                                    ),
-                                  );
-                                  customSnackBar(
-                                    context,
-                                    "Transaksi Disimpan!",
-                                  );
-                                },
-                              )
-                            : const SizedBox.shrink();
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    customButtonIcon(
-                      backgroundColor: AppPropertyColor.deleteOrClose,
-                      icon: const Icon(
-                        Icons.arrow_back_rounded,
-                        color: AppPropertyColor.white,
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      width: double.infinity,
+                      child: BlocSelector<PaymentBloc, PaymentState, bool>(
+                        selector: (state) =>
+                            state is PaymentLoaded ? state.isSell : false,
+                        builder: (context, isSell) {
+                          return isSell
+                              ? customButton(
+                                  backgroundColor: AppPropertyColor.white,
+                                  child: Text(
+                                    "Simpan",
+                                    style: lv05TextStyleBold,
+                                  ),
+                                  onPressed: () {
+                                    context.read<PaymentBloc>().add(
+                                      PaymentProcess(
+                                        statusTransaction:
+                                            ListStatusTransaction.Tersimpan,
+                                        context: context,
+                                      ),
+                                    );
+                                    customSnackBar(
+                                      context,
+                                      "Transaksi Disimpan!",
+                                    );
+                                  },
+                                )
+                              : const SizedBox.shrink();
+                        },
                       ),
-                      label: Text("Batal", style: lv05TextStyleBoldWhite),
-                      onPressed: () {
-                        Navigator.popUntil(
-                          context,
-                          ModalRoute.withName('/sell'),
-                        );
-                        final blocPayment = context.read<PaymentBloc>();
-                        blocPayment.add(PaymentResetTransaction());
-                      },
                     ),
-                    const SizedBox(height: 10),
-                    customButtonIcon(
-                      backgroundColor: AppPropertyColor.primary,
-                      icon: const Icon(
-                        Icons.attach_money_rounded,
-                        color: AppPropertyColor.white,
+                    const SizedBox(height: 5),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      width: double.infinity,
+                      child: customButtonIcon(
+                        backgroundColor: AppPropertyColor.red,
+                        icon: const Icon(
+                          Icons.arrow_back_rounded,
+                          color: AppPropertyColor.white,
+                        ),
+                        label: Text("Batal", style: lv05TextStyleBoldWhite),
+                        onPressed: () {
+                          Navigator.popUntil(
+                            context,
+                            ModalRoute.withName('/sell'),
+                          );
+                          final blocPayment = context.read<PaymentBloc>();
+                          blocPayment.add(PaymentResetTransaction());
+                        },
                       ),
-                      label: Text("Bayar", style: lv05TextStyleBoldWhite),
-                      onPressed: () {
-                        final dataTransaction =
-                            (context.read<PaymentBloc>().state as PaymentLoaded)
-                                .transaction_sell!;
-                        if (dataTransaction.getbillPaid == 0 ||
-                            dataTransaction.getbillPaid <
-                                dataTransaction.gettotal) {
-                          return customSnackBar(
-                            context,
-                            "Nominal Pembayaran tidak Sesuai!",
-                          );
-                        }
+                    ),
+                    const SizedBox(height: 5),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      width: double.infinity,
+                      child: customButtonIcon(
+                        backgroundColor: AppPropertyColor.primary,
+                        icon: const Icon(
+                          Icons.attach_money_rounded,
+                          color: AppPropertyColor.white,
+                        ),
+                        label: Text("Bayar", style: lv05TextStyleBoldWhite),
+                        onPressed: () {
+                          final dataTransaction =
+                              (context.read<PaymentBloc>().state
+                                      as PaymentLoaded)
+                                  .transaction_sell!;
+                          if (dataTransaction.getbillPaid == 0 ||
+                              dataTransaction.getbillPaid <
+                                  dataTransaction.gettotal) {
+                            return customSnackBar(
+                              context,
+                              "Nominal Pembayaran tidak Sesuai!",
+                            );
+                          }
 
-                        if (dataTransaction.getpaymentMethod ==
-                                LabelPaymentMethod.Split &&
-                            (dataTransaction.getbillPaid == 0 ||
-                                dataTransaction.getbillPaid !=
-                                    dataTransaction.gettotal)) {
-                          return customSnackBar(
-                            context,
-                            "Nominal Pembayaran tidak Sama!",
+                          if (dataTransaction.getpaymentMethod ==
+                                  LabelPaymentMethod.Split &&
+                              (dataTransaction.getbillPaid == 0 ||
+                                  dataTransaction.getbillPaid !=
+                                      dataTransaction.gettotal)) {
+                            return customSnackBar(
+                              context,
+                              "Nominal Pembayaran tidak Sama!",
+                            );
+                          }
+                          context.read<PaymentBloc>().add(
+                            PaymentProcess(
+                              statusTransaction: ListStatusTransaction.Sukses,
+                              context: context,
+                            ),
                           );
-                        }
-                        context.read<PaymentBloc>().add(
-                          PaymentProcess(
-                            statusTransaction: ListStatusTransaction.Sukses,
-                            context: context,
-                          ),
-                        );
 
-                        navUpDownTransition(
-                          context,
-                          '/selltransactionsuccess',
-                          false,
-                        );
-                      },
+                          navUpDownTransition(
+                            context,
+                            '/selltransactionsuccess',
+                            false,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

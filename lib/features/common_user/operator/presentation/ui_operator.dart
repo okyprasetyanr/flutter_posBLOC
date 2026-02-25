@@ -10,6 +10,7 @@ import 'package:flutter_pos/features/common_user/operator/logic/operator_event.d
 import 'package:flutter_pos/features/common_user/operator/logic/operator_state.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -220,6 +221,7 @@ class _UIOperatorState extends State<UIOperator> {
   Widget layoutBottom() {
     return Column(
       children: [
+        const SizedBox(height: 5),
         Expanded(
           child: BlocListener<OperatorBloc, OperatorState>(
             listener: (context, state) {
@@ -244,6 +246,7 @@ class _UIOperatorState extends State<UIOperator> {
             child: Form(
               key: _formKey,
               child: ListView(
+                shrinkWrap: true,
                 children: [
                   const SizedBox(height: 5),
                   Row(
@@ -450,12 +453,15 @@ class _UIOperatorState extends State<UIOperator> {
             children: [
               Expanded(
                 child: WidgetDropDownFilter(
-                  initialValue: state.$1
-                      ? roleTypeList.firstWhere(
+                  initialValue:
+                      state.$1 && state.$2!.getRoleUser == RoleType.Pemilik
+                      ? roleTypeListOwner().firstWhereOrNull(
                           (element) => element == state.$2!.getRoleUser,
                         )
                       : RoleType.Kasir,
-                  filters: roleTypeList,
+                  filters: state.$1 && state.$2!.getRoleUser == RoleType.Pemilik
+                      ? roleTypeListOwner()
+                      : roleTypeList,
                   text: "Jenis Operator",
                   selectedValue: (selectedEnum) {
                     context.read<OperatorBloc>().add(
@@ -551,6 +557,7 @@ class _UIOperatorState extends State<UIOperator> {
         SizedBox(
           width: double.infinity,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: customButtonIcon(
@@ -562,7 +569,7 @@ class _UIOperatorState extends State<UIOperator> {
                   ),
                   label: Text("Bersihkan", style: lv05TextStyle),
                   onPressed: () {
-                    resetForm();
+                    context.read<OperatorBloc>().add(OperatorResetForm());
                   },
                 ),
               ),
@@ -619,12 +626,8 @@ class _UIOperatorState extends State<UIOperator> {
     _initData();
   }
 
-  void resetForm() {
-    context.read<OperatorBloc>().add(OperatorResetForm());
-    passwordController.clear();
-    nameController.clear();
-    emailController.clear();
-    phoneController.clear();
-    noteController.clear();
+  List<RoleType> roleTypeListOwner() {
+    List<RoleType> newRoleTypeList = [RoleType.Pemilik, ...roleTypeList];
+    return newRoleTypeList;
   }
 }

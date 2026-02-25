@@ -28,7 +28,7 @@ class UIPrint extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage ?? 'Error'),
-              backgroundColor: AppPropertyColor.deleteOrClose,
+              backgroundColor: AppPropertyColor.red,
             ),
           );
         },
@@ -43,109 +43,115 @@ class PrinterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          child: customTextBorder("Printer", lv2TextStyleWhite),
-        ),
-        _buildHeader(context),
-
-        SizedBox(
-          width: double.infinity,
-          child: BlocSelector<PrinterBloc, PrinterState, bool>(
-            selector: (state) => state.isScanning,
-            builder: (context, state) {
-              if (state) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return customButtonIcon(
-                backgroundColor: AppPropertyColor.white,
-                icon: const Icon(Icons.search, color: AppPropertyColor.black),
-                label: Text("Scan Printer Bluetooth", style: lv1TextStyle),
-                onPressed: () => context.read<PrinterBloc>().add(StartScan()),
-              );
-            },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: customTextBorder("Printer", lv2TextStyleWhite),
           ),
-        ),
+          _buildHeader(context),
 
-        Expanded(
-          child:
-              BlocSelector<
-                PrinterBloc,
-                PrinterState,
-                (bool, List<BluetoothDevice>, ConnectState, BluetoothDevice?)
-              >(
-                selector: (state) => (
-                  state.isScanning,
-                  state.scanResults,
-                  state.connectState,
-                  state.connectedDevice,
-                ),
-                builder: (context, state) {
-                  if (state.$2.isEmpty && !state.$1) {
-                    return Center(
-                      child: Text(
-                        "Belum ada device ditemukan.\nPastikan Bluetooth menyala.",
-                        textAlign: TextAlign.center,
-                        style: lv05TextStyle,
-                      ),
-                    );
-                  }
+          SizedBox(
+            width: double.infinity,
+            child: BlocSelector<PrinterBloc, PrinterState, bool>(
+              selector: (state) => state.isScanning,
+              builder: (context, state) {
+                if (state) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return customButtonIcon(
+                  backgroundColor: AppPropertyColor.white,
+                  icon: const Icon(Icons.search, color: AppPropertyColor.black),
+                  label: Text("Scan Printer Bluetooth", style: lv1TextStyle),
+                  onPressed: () => context.read<PrinterBloc>().add(StartScan()),
+                );
+              },
+            ),
+          ),
 
-                  return ListView.builder(
-                    itemCount: state.$2.length,
-                    itemBuilder: (context, index) {
-                      final device = state.$2[index];
-                      final isConnected =
-                          state.$3 == ConnectState.connected &&
-                          state.$4?.address == device.address;
-
-                      return Card(
-                        color: AppPropertyColor.white,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 4,
-                        ),
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.print,
-                            color: isConnected
-                                ? AppPropertyColor.primary
-                                : AppPropertyColor.grey,
-                          ),
-                          title: Text(device.name, style: lv05TextStyle),
-                          subtitle: Text(device.address, style: lv05TextStyle),
-                          trailing: isConnected
-                              ? Chip(
-                                  label: Text(
-                                    "Terhubung",
-                                    style: lv1TextStyleWhite,
-                                  ),
-                                  backgroundColor: AppPropertyColor.primary,
-                                )
-                              : ElevatedButton(
-                                  child: const Text("Sambung"),
-                                  onPressed: () {
-                                    context.read<PrinterBloc>().add(
-                                      ConnectDevice(device),
-                                    );
-                                  },
-                                ),
-                          onTap: () {
-                            context.read<PrinterBloc>().add(
-                              ConnectDevice(device),
-                            );
-                          },
+          Expanded(
+            child:
+                BlocSelector<
+                  PrinterBloc,
+                  PrinterState,
+                  (bool, List<BluetoothDevice>, ConnectState, BluetoothDevice?)
+                >(
+                  selector: (state) => (
+                    state.isScanning,
+                    state.scanResults,
+                    state.connectState,
+                    state.connectedDevice,
+                  ),
+                  builder: (context, state) {
+                    if (state.$2.isEmpty && !state.$1) {
+                      return Center(
+                        child: Text(
+                          "Belum ada device ditemukan.\nPastikan Bluetooth menyala.",
+                          textAlign: TextAlign.center,
+                          style: lv05TextStyle,
                         ),
                       );
-                    },
-                  );
-                },
-              ),
-        ),
-        _buildFooter(context),
-      ],
+                    }
+
+                    return ListView.builder(
+                      itemCount: state.$2.length,
+                      itemBuilder: (context, index) {
+                        final device = state.$2[index];
+                        final isConnected =
+                            state.$3 == ConnectState.connected &&
+                            state.$4?.address == device.address;
+
+                        return Card(
+                          color: AppPropertyColor.white,
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.print,
+                              color: isConnected
+                                  ? AppPropertyColor.primary
+                                  : AppPropertyColor.grey,
+                            ),
+                            title: Text(device.name, style: lv05TextStyle),
+                            subtitle: Text(
+                              device.address,
+                              style: lv05TextStyle,
+                            ),
+                            trailing: isConnected
+                                ? Chip(
+                                    label: Text(
+                                      "Terhubung",
+                                      style: lv1TextStyleWhite,
+                                    ),
+                                    backgroundColor: AppPropertyColor.primary,
+                                  )
+                                : ElevatedButton(
+                                    child: const Text("Sambung"),
+                                    onPressed: () {
+                                      context.read<PrinterBloc>().add(
+                                        ConnectDevice(device),
+                                      );
+                                    },
+                                  ),
+                            onTap: () {
+                              context.read<PrinterBloc>().add(
+                                ConnectDevice(device),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+          ),
+          _buildFooter(context),
+        ],
+      ),
     );
   }
 
@@ -175,7 +181,7 @@ class PrinterView extends StatelessWidget {
                   const Spacer(),
                   if (isConnected)
                     customButton(
-                      backgroundColor: AppPropertyColor.deleteOrClose,
+                      backgroundColor: AppPropertyColor.red,
                       child: Text("Putuskan", style: lv1TextStyleWhite),
                       onPressed: () =>
                           context.read<PrinterBloc>().add(DisconnectDevice()),

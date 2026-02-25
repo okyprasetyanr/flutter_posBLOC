@@ -37,7 +37,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       idBranch = currentState.idBranch;
     }
 
-    debugPrint("Log OperatorBloc: $roleUser , $statusUser, $idBranch");
+    debugPrint("Log OperatorBloc: ${dataUser.map((e) => e.getNameUser)}");
     return dataUser.where((element) {
       if (statusUser != null) {
         final byStatus = element.getstatusUser == statusUser;
@@ -47,7 +47,9 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         final byRole = element.getRoleUser == roleUser;
         if (!byRole) return false;
       }
-      final byIdBranch = element.getIdBranchUser == idBranch;
+      final byIdBranch =
+          element.getIdBranchUser == idBranch ||
+          element.getIdBranchUser == null;
       if (!byIdBranch) return false;
 
       return true;

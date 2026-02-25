@@ -65,7 +65,7 @@ class UiSyncData extends StatelessWidget {
                             backgroundColor: AppPropertyColor.white,
                             icon: const Icon(
                               Icons.cancel_rounded,
-                              color: AppPropertyColor.deleteOrClose,
+                              color: AppPropertyColor.red,
                             ),
                             label: Text("Batalkan", style: lv05TextStyleBold),
                             onPressed: () {

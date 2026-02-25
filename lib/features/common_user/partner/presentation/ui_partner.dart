@@ -64,6 +64,7 @@ class _UIPartnerState extends State<UIPartner> {
       widgetNavigation: null,
       refreshIndicator: _onRefresh,
       title: "Data Kontak",
+      color: context.colorPartner,
       contentAppBar: GestureDetector(
         onTap: () {
           context.read<PartnerBloc>().add(PartnerStatusPartner());
@@ -200,16 +201,20 @@ class _UIPartnerState extends State<UIPartner> {
   Widget layoutBottom() {
     return Column(
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: customButtonIconReset(
-            onPressed: () {
-              context.read<PartnerBloc>().add(PartnerResetSelectedPartner());
-              namePartnerController.clear();
-              phonePartnerController.clear();
-              emailPartnerController.clear();
-            },
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Form Data:", style: lv1TextStyleBold),
+            Align(
+              alignment: Alignment.centerRight,
+              child: customButtonIconReset(
+                onPressed: () => context.read<PartnerBloc>().add(
+                  PartnerResetSelectedPartner(),
+                ),
+                color: context.colorPartner,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 10),
         BlocListener<PartnerBloc, PartnerState>(
@@ -218,11 +223,17 @@ class _UIPartnerState extends State<UIPartner> {
               current is PartnerLoaded &&
               previous.selectedPartner != current.selectedPartner,
           listener: (context, state) {
-            if (state is PartnerLoaded && state.selectedPartner != null) {
-              namePartnerController.text = state.selectedPartner!.getname;
-              phonePartnerController.text = state.selectedPartner!.getphone;
-              emailPartnerController.text =
-                  state.selectedPartner?.getemail ?? "";
+            if (state is PartnerLoaded) {
+              if (state.selectedPartner != null) {
+                namePartnerController.text = state.selectedPartner!.getname;
+                phonePartnerController.text = state.selectedPartner!.getphone;
+                emailPartnerController.text =
+                    state.selectedPartner?.getemail ?? "";
+              } else if (state.selectedPartner == null) {
+                namePartnerController.clear();
+                phonePartnerController.clear();
+                emailPartnerController.clear();
+              }
             }
           },
           child: BlocSelector<PartnerBloc, PartnerState, bool>(
@@ -338,7 +349,6 @@ class _UIPartnerState extends State<UIPartner> {
                       phone: phonePartnerController.text,
                     ),
                   );
-                  _resetForm();
                 },
                 icon: const Icon(
                   Icons.check_rounded,
@@ -354,7 +364,7 @@ class _UIPartnerState extends State<UIPartner> {
                   }),
                   style: lv05TextStyleWhite,
                 ),
-                backgroundColor: AppPropertyColor.primary,
+                backgroundColor: context.colorPartner,
               ),
             ),
           ],
@@ -366,11 +376,5 @@ class _UIPartnerState extends State<UIPartner> {
   Future<void> _onRefresh() async {
     await context.read<DataUserRepositoryCache>().initPartner();
     _initData();
-  }
-
-  void _resetForm() {
-    namePartnerController.clear();
-    phonePartnerController.clear();
-    emailPartnerController.clear();
   }
 }

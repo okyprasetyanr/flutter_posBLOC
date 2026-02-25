@@ -84,6 +84,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
             ),
       ),
       title: "Riwayat Transaksi",
+      color: context.colorHist,
     );
   }
 
@@ -457,6 +458,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                     child: customTextBorder(
                       "Detail Transaksi",
                       lv2TextStyleWhite,
+                      color: context.colorHist,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -531,7 +533,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
                         rowContent(
                           "Sub Total",
                           formatPriceRp(transaction.getsubTotal),
@@ -567,7 +569,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                         backgroundColor: AppPropertyColor.white,
                         child: const Icon(
                           Icons.delete_forever_rounded,
-                          color: AppPropertyColor.deleteOrClose,
+                          color: AppPropertyColor.red,
                         ),
                         onPressed: () {
                           state.$2
@@ -667,7 +669,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                       ),
                       const SizedBox(width: 10),
                       customButton(
-                        backgroundColor: AppPropertyColor.primary,
+                        backgroundColor: context.colorHist,
                         child: const Icon(
                           Icons.close_rounded,
                           color: AppPropertyColor.white,

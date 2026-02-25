@@ -96,7 +96,7 @@ class _NavigationGestureState extends State<NavigationGesture> {
                       color: AppPropertyColor.white,
                     ),
                     label: Text("Keluar", style: lv1TextStyleWhiteBold),
-                    backgroundColor: AppPropertyColor.deleteOrClose,
+                    backgroundColor: AppPropertyColor.red,
                     onPressed: () => Navigator.pop(context),
                   ),
                 ),

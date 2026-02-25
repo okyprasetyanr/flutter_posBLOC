@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
@@ -19,6 +20,9 @@ class WidgetDropdownBranch extends StatelessWidget {
     final dataBranch = context.read<DataUserRepositoryCache>().getBranch();
     return DropdownButtonFormField<ModelBranch>(
       decoration: InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppPropertyColor.primary, width: 2),
+        ),
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(vertical: 4),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),

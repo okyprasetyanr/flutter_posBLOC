@@ -41,30 +41,35 @@ class UIPaymentDiscount extends StatelessWidget {
                   spacing: 5,
                   children: [10, 25, 50].map((discount) {
                     final isSelected = state.getdiscount == discount;
-                    return customButtonIcon(
-                      backgroundColor: isSelected
-                          ? AppPropertyColor.primary
-                          : AppPropertyColor.white,
-                      icon: Icon(
-                        Icons.check_rounded,
-                        size: lv05IconSize,
-                        color: isSelected
-                            ? AppPropertyColor.white
-                            : AppPropertyColor.black,
+                    return SizedBox(
+                      width: 54,
+                      child: customButtonIcon(
+                        backgroundColor: isSelected
+                            ? AppPropertyColor.primary
+                            : AppPropertyColor.white,
+                        icon: Icon(
+                          Icons.check_rounded,
+                          size: lv05IconSize,
+                          color: isSelected
+                              ? AppPropertyColor.white
+                              : AppPropertyColor.black,
+                        ),
+                        label: Text(
+                          "$discount%",
+                          style: isSelected
+                              ? lv05TextStyleWhite
+                              : lv05TextStyle,
+                        ),
+                        onPressed: () {
+                          if (customDiscountController.text.isNotEmpty) {
+                            customDiscountController.clear();
+                          }
+                          final discountValue = isSelected ? 0 : discount;
+                          context.read<PaymentBloc>().add(
+                            PaymentAdjust(discount: discountValue),
+                          );
+                        },
                       ),
-                      label: Text(
-                        "$discount%",
-                        style: isSelected ? lv05TextStyleWhite : lv05TextStyle,
-                      ),
-                      onPressed: () {
-                        if (customDiscountController.text.isNotEmpty) {
-                          customDiscountController.clear();
-                        }
-                        final discountValue = isSelected ? 0 : discount;
-                        context.read<PaymentBloc>().add(
-                          PaymentAdjust(discount: discountValue),
-                        );
-                      },
                     );
                   }).toList(),
                 ),

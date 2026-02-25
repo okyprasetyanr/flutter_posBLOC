@@ -113,7 +113,8 @@ class UITransactionSuccess extends StatelessWidget {
                               ),
                               Expanded(
                                 child: customButtonIcon(
-                                  backgroundColor: AppPropertyColor.condiment,
+                                  backgroundColor:
+                                      AppPropertyColor.secondPrimary,
                                   icon: const Icon(
                                     Icons.send_rounded,
                                     color: AppPropertyColor.white,

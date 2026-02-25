@@ -84,27 +84,30 @@ class UITransactionGridViewItem extends StatelessWidget {
                           "Mode FIFO: Qty 0 tidak dapat dipilih!",
                         );
                       }
-                      context.read<TransactionBloc>().add(
-                        TransactionSelectedItem(
-                          selectedItem: selectedItem,
-                          edit: false,
-                        ),
-                      );
                       final bloc = context.read<TransactionBloc>();
                       final available =
                           checkQTY(
                             (bloc.state as TransactionLoaded).itemOrdered,
                             (bloc.state as TransactionLoaded).dataItem!,
-                          ).entries.any(
-                            (element) =>
-                                element.value.ordered >= element.value.stock,
-                          );
+                          ).entries.any((element) {
+                            debugPrint(
+                              "Log UITransaction: checkQTY Item: ordered: ${element.value.ordered}, stock: ${element.value.stock}",
+                            );
+                            return element.value.ordered >= element.value.stock;
+                          });
                       if (available && UserSession.getStatusFifo()) {
                         return customSnackBar(
                           context,
                           "FIFO: Stok sudah mencapai batas",
                         );
                       }
+
+                      context.read<TransactionBloc>().add(
+                        TransactionSelectedItem(
+                          selectedItem: selectedItem,
+                          edit: false,
+                        ),
+                      );
                     },
                     child: Padding(
                       padding: const EdgeInsetsGeometry.all(3),

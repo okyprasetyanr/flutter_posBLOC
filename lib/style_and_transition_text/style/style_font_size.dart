@@ -96,13 +96,13 @@ final lv05TextStyleItalic = GoogleFonts.poppins(
 );
 
 final lv05TextStyleRed = GoogleFonts.poppins(
-  color: AppPropertyColor.deleteOrClose,
+  color: AppPropertyColor.red,
   fontWeight: FontWeight.w300,
   fontSize: 10,
 );
 
 final lv05TextStyleRedPrice = GoogleFonts.poppins(
-  color: AppPropertyColor.deleteOrClose,
+  color: AppPropertyColor.red,
   fontWeight: FontWeight.w600,
   fontSize: 10,
 );
@@ -168,7 +168,7 @@ final lv05textStylePrice = GoogleFonts.poppins(
 );
 
 final lv05textStylePriceCondiment = GoogleFonts.poppins(
-  color: AppPropertyColor.condiment,
+  color: AppPropertyColor.secondPrimary,
   fontWeight: FontWeight.w600,
   fontSize: 10,
 );

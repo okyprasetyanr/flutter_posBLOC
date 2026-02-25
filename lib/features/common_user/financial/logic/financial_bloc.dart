@@ -81,7 +81,7 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     } else {
       dataFinancial.add(data);
     }
-
+    add(FinancialResetSelectedFinancial());
     add(FinancialGetData());
   }
 

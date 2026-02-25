@@ -55,6 +55,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
       title: "Riwayat Kas",
+      color: context.colorHistFinance,
       contentAppBar: SizedBox(
         width: 143,
         height: 28,
@@ -391,6 +392,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                     child: customTextBorder(
                       "Detail Transaksi",
                       lv2TextStyleWhite,
+                      color: context.colorHistFinance,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -424,7 +426,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                         backgroundColor: AppPropertyColor.white,
                         child: Icon(
                           Icons.delete_forever_rounded,
-                          color: AppPropertyColor.deleteOrClose,
+                          color: AppPropertyColor.red,
                         ),
                         onPressed: () {
                           transaction.getstatusTransaction ==
@@ -438,9 +440,9 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                       const SizedBox(width: 10),
                       customButton(
                         backgroundColor: AppPropertyColor.white,
-                        child: const Icon(
+                        child: Icon(
                           Icons.print_rounded,
-                          color: AppPropertyColor.primary,
+                          color: context.colorHistFinance,
                         ),
                         onPressed: () => context.read<PrinterBloc>().add(
                           PrintData(
@@ -452,7 +454,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                       ),
                       const SizedBox(width: 10),
                       customButton(
-                        backgroundColor: AppPropertyColor.primary,
+                        backgroundColor: context.colorHistFinance,
                         child: Icon(
                           Icons.close_rounded,
                           color: AppPropertyColor.white,

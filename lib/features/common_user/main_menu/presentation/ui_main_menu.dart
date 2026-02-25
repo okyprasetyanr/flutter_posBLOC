@@ -20,6 +20,7 @@ import 'package:flutter_pos/function/report_algoritm.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
+import 'package:flutter_pos/template/background.dart';
 
 class UIMainMenu extends StatefulWidget {
   const UIMainMenu({super.key});
@@ -151,192 +152,206 @@ class _UIMainMenuState extends State<UIMainMenu> {
   }
 
   Widget widgetTop() {
-    return Row(
+    return Stack(
       children: [
-        Expanded(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              listTileText(
-                () {
-                  _pageView(0);
-                  selectedMenu.value = "Dashboard";
-                },
-                Icons.dashboard_customize_sharp,
-                "Dashboard",
-                selectedMenu,
-              ),
-              listTileText(
-                () {
-                  _pageView(1);
-                  selectedMenu.value = "Data";
-                },
-                Icons.table_chart_rounded,
-                "Data",
-                selectedMenu,
-              ),
-              listTileText(
-                () {
-                  _pageView(2);
-                  selectedMenu.value = "Riwayat";
-                },
-                Icons.work_history_rounded,
-                "Riwayat",
-                selectedMenu,
-              ),
-              listTileText(
-                () {
-                  navUpDownTransition(context, '/settings', false);
-                },
-                Icons.settings,
-                "Pengaturan",
-                selectedMenu,
-              ),
-            ],
+        Positioned(
+          bottom: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          child: ClipPath(
+            clipper: WaveClipper(),
+            child: Container(height: double.infinity, color: Colors.yellow),
           ),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          flex: 2,
-          child:
-              BlocSelector<
-                DataReportBloc,
-                DataReportState,
-                (double, double, int, int, double, double)
-              >(
-                selector: (state) {
-                  if (state is DataReportLoaded) {
-                    return (
-                      state.totalSell,
-                      state.totalNeto,
-                      state.totalTransaction,
-                      state.totalItemTranasction,
-                      state.totalIncome,
-                      state.totalExpense,
-                    );
-                  }
-                  return (0.0, 0.0, 0, 0, 0.0, 0.0);
-                },
-                builder: (context, state) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 150,
-                        child:
-                            BlocSelector<
-                              DataReportBloc,
-                              DataReportState,
-                              String
-                            >(
-                              selector: (state) {
-                                if (state is DataReportLoaded) {
-                                  return state.idBranch!;
-                                }
-                                return "";
-                              },
-                              builder: (context, state) {
-                                return WidgetDropdownBranch(
-                                  idBranch: state,
-                                  selectedIdBranch: (selectedIdBranch) =>
-                                      context.read<DataReportBloc>().add(
-                                        DataReportGetData(
-                                          idBranch: selectedIdBranch,
-                                        ),
-                                      ),
-                                );
-                              },
-                            ),
-                      ),
-                      DoubleWave(mirror: false),
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: AppPropertyColor.white,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
-                            ),
-                            boxShadow: [
-                              const BoxShadow(
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                                color: AppPropertyColor.blackLight,
-                              ),
-                            ],
-                          ),
-                          child: Wrap(
-                            children: [
-                              Center(
-                                child: Text(
-                                  "Laporan Singkat",
-                                  style: lv1TextStyleBold,
-                                ),
-                              ),
-                              rowContent(
-                                "Total Penjualan",
-                                formatPriceRp(state.$1),
-                              ),
-                              rowContent(
-                                "Total Keuntungan",
-                                formatPriceRp(state.$2),
-                              ),
-                              rowContent(
-                                "Jumlah Transaksi",
-                                formatQtyOrPrice(state.$3.toDouble()),
-                              ),
-                              rowContent(
-                                "Jumlah Item Terjual",
-                                formatQtyOrPrice(state.$4.toDouble()),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppPropertyColor.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                                color: AppPropertyColor.blackLight,
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Wrap(
-                              children: [
-                                rowContent(
-                                  "Total Pendapatan",
-                                  formatPriceRp(state.$5),
-                                ),
-                                rowContent(
-                                  "Total Pengeluaran",
-                                  formatPriceRp(state.$6),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      DoubleWave(mirror: true),
-                    ],
-                  );
-                },
+        Row(
+          children: [
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  listTileText(
+                    () {
+                      _pageView(0);
+                      selectedMenu.value = "Dashboard";
+                    },
+                    Icons.dashboard_customize_sharp,
+                    "Dashboard",
+                    selectedMenu,
+                  ),
+                  listTileText(
+                    () {
+                      _pageView(1);
+                      selectedMenu.value = "Data";
+                    },
+                    Icons.table_chart_rounded,
+                    "Data",
+                    selectedMenu,
+                  ),
+                  listTileText(
+                    () {
+                      _pageView(2);
+                      selectedMenu.value = "Riwayat";
+                    },
+                    Icons.work_history_rounded,
+                    "Riwayat",
+                    selectedMenu,
+                  ),
+                  listTileText(
+                    () {
+                      navUpDownTransition(context, '/settings', false);
+                    },
+                    Icons.settings,
+                    "Pengaturan",
+                    selectedMenu,
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child:
+                  BlocSelector<
+                    DataReportBloc,
+                    DataReportState,
+                    (double, double, int, int, double, double)
+                  >(
+                    selector: (state) {
+                      if (state is DataReportLoaded) {
+                        return (
+                          state.totalSell,
+                          state.totalNeto,
+                          state.totalTransaction,
+                          state.totalItemTranasction,
+                          state.totalIncome,
+                          state.totalExpense,
+                        );
+                      }
+                      return (0.0, 0.0, 0, 0, 0.0, 0.0);
+                    },
+                    builder: (context, state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child:
+                                BlocSelector<
+                                  DataReportBloc,
+                                  DataReportState,
+                                  String
+                                >(
+                                  selector: (state) {
+                                    if (state is DataReportLoaded) {
+                                      return state.idBranch!;
+                                    }
+                                    return "";
+                                  },
+                                  builder: (context, state) {
+                                    return WidgetDropdownBranch(
+                                      idBranch: state,
+                                      selectedIdBranch: (selectedIdBranch) =>
+                                          context.read<DataReportBloc>().add(
+                                            DataReportGetData(
+                                              idBranch: selectedIdBranch,
+                                            ),
+                                          ),
+                                    );
+                                  },
+                                ),
+                          ),
+                          DoubleWave(mirror: false),
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                color: AppPropertyColor.white,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                                boxShadow: [
+                                  const BoxShadow(
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
+                                    color: AppPropertyColor.blackLight,
+                                  ),
+                                ],
+                              ),
+                              child: Wrap(
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      "Laporan Singkat",
+                                      style: lv1TextStyleBold,
+                                    ),
+                                  ),
+                                  rowContent(
+                                    "Total Penjualan",
+                                    formatPriceRp(state.$1),
+                                  ),
+                                  rowContent(
+                                    "Total Keuntungan",
+                                    formatPriceRp(state.$2),
+                                  ),
+                                  rowContent(
+                                    "Jumlah Transaksi",
+                                    formatQtyOrPrice(state.$3.toDouble()),
+                                  ),
+                                  rowContent(
+                                    "Jumlah Item Terjual",
+                                    formatQtyOrPrice(state.$4.toDouble()),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppPropertyColor.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
+                                    color: AppPropertyColor.blackLight,
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Wrap(
+                                  children: [
+                                    rowContent(
+                                      "Total Pendapatan",
+                                      formatPriceRp(state.$5),
+                                    ),
+                                    rowContent(
+                                      "Total Pengeluaran",
+                                      formatPriceRp(state.$6),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          DoubleWave(mirror: true),
+                        ],
+                      );
+                    },
+                  ),
+            ),
+          ],
         ),
       ],
     );

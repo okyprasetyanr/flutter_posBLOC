@@ -9,6 +9,7 @@ class LayoutTopBottom extends StatelessWidget {
   final Widget? widgetNavigation;
   final Widget? contentAppBar;
   final String? title;
+  final Color? color;
   final RefreshCallback refreshIndicator;
 
   const LayoutTopBottom({
@@ -19,6 +20,7 @@ class LayoutTopBottom extends StatelessWidget {
     required this.refreshIndicator,
     this.contentAppBar,
     this.title,
+    this.color,
   });
 
   @override
@@ -28,7 +30,7 @@ class LayoutTopBottom extends StatelessWidget {
         mediaQuery.size.height -
         mediaQuery.padding.top -
         mediaQuery.padding.bottom -
-        (contentAppBar != null ? 44 : 0);
+        (title != null || contentAppBar != null ? 44 : 0);
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -57,7 +59,11 @@ class LayoutTopBottom extends StatelessWidget {
                       onPressed: () => Navigator.pop(context),
                     ),
                     if (title != null)
-                      customTextBorder(title!, titleTextStyleWhite),
+                      customTextBorder(
+                        title!,
+                        titleTextStyleWhite,
+                        color: color,
+                      ),
                   ],
                 ),
               )
@@ -90,12 +96,11 @@ class LayoutTopBottom extends StatelessWidget {
                                   ),
                                 ),
                                 Positioned(
-                                  top: height * 0.61, // Mulai setelah layoutTop
+                                  top: height * 0.61,
                                   bottom: 0,
                                   child: SizedBox(
                                     width: width,
-                                    child:
-                                        layoutBottom, // layoutBottom akan mengisi sisa 40% layar
+                                    child: layoutBottom,
                                   ),
                                 ),
                                 if (widgetNavigation != null) widgetNavigation!,

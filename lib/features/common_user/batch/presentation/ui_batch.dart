@@ -208,6 +208,7 @@ class _UiBatchState extends State<UiBatch> {
                             return Padding(
                               padding: const EdgeInsets.all(10),
                               child: Material(
+                                color: AppPropertyColor.white,
                                 borderRadius: BorderRadius.circular(10),
                                 elevation: 4,
                                 child: Column(

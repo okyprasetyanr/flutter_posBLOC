@@ -34,7 +34,6 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
   final noteController = TextEditingController();
   final amountController = TextEditingController();
   final searchController = TextEditingController();
-
   @override
   void dispose() {
     searchController.dispose();
@@ -74,7 +73,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
             Row(
               children: [
                 customButtonIcon(
-                  backgroundColor: AppPropertyColor.primary,
+                  backgroundColor: context.colorTransFinance,
                   icon: const Icon(
                     Icons.menu_rounded,
                     color: AppPropertyColor.white,
@@ -148,7 +147,6 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                           context.read<TransFinancialBloc>().add(
                             TransFinancialGetData(idBranch: selectedIdBranch),
                           );
-                          _resetForm();
                         },
                       );
                     },
@@ -253,8 +251,8 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                 context.read<TransFinancialBloc>().add(
                   TransFinancialResetSelected(),
                 );
-                _resetForm();
               },
+              color: context.colorTransFinance,
             ),
           ],
         ),
@@ -311,9 +309,8 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                       note: noteController.text,
                     ),
                   );
-                  _resetForm();
                 },
-                backgroundColor: AppPropertyColor.primary,
+                backgroundColor: context.colorTransFinance,
                 icon: const Icon(
                   Icons.check_rounded,
                   color: AppPropertyColor.white,
@@ -325,11 +322,6 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
         ),
       ],
     );
-  }
-
-  void _resetForm() {
-    noteController.clear();
-    amountController.clear();
   }
 
   Future<void> refreshIndicator() async {
