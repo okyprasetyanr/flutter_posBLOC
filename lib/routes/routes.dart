@@ -11,13 +11,11 @@ import 'package:flutter_pos/features/common_user/transaction/presentation/page/u
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_success.dart';
 import 'package:flutter_pos/main.dart';
-import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.dart';
 import 'package:flutter_pos/screen_signup.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/page/ui_setting_menu.dart';
 import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
 
 final routesPage = {
-  '/print': (context) => const UIPrint(),
   '/settings': (context) => const UISettings(),
   '/historyfinancial': (context) => const UiHistoryFinancial(),
   '/operator': (context) => const UIOperator(),

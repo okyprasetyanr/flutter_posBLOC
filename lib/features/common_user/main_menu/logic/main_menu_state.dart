@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class DataReportState {}
 
@@ -15,8 +17,16 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
   final int totalItemTranasction;
   final double totalIncome;
   final double totalExpense;
+  final List<ModelItemBatch> expiredItem;
+  final ModelItem? lowStock;
+  final ModelItem? bestSeller;
+  final ModelItem? worstSeller;
 
   DataReportLoaded({
+    this.expiredItem = const [],
+    this.lowStock,
+    this.bestSeller,
+    this.worstSeller,
     this.dataBranch = const [],
     this.idBranch,
     this.totalNeto = 0,
@@ -36,8 +46,16 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     int? totalItemTranasction,
     double? totalIncome,
     double? totalExpense,
+    List<ModelItemBatch>? expiredItem,
+    ModelItem? lowStock,
+    ModelItem? bestSeller,
+    ModelItem? worstSeller,
   }) {
     return DataReportLoaded(
+      bestSeller: bestSeller ?? this.bestSeller,
+      expiredItem: expiredItem ?? this.expiredItem,
+      lowStock: lowStock ?? this.lowStock,
+      worstSeller: worstSeller ?? this.worstSeller,
       dataBranch: dataBranch ?? this.dataBranch,
       idBranch: idBranch ?? this.idBranch,
       totalExpense: totalExpense ?? this.totalExpense,
@@ -51,6 +69,10 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    expiredItem,
+    lowStock,
+    bestSeller,
+    worstSeller,
     dataBranch,
     idBranch,
     totalExpense,

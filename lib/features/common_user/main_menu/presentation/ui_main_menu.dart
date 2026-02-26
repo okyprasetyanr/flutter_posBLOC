@@ -8,7 +8,6 @@ import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar_access.dart';
-import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/enum/enum.dart';
@@ -18,6 +17,8 @@ import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/report_algoritm.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
@@ -170,13 +171,16 @@ class _UIMainMenuState extends State<UIMainMenu> {
               ),
             ],
           ),
-          child: Text(
-            "Halo ${context.read<DataUserRepositoryCache>().dataAccount!.getNameUser}, jualan lagi kita!",
-            style: lv1TextStyle,
-            overflow: TextOverflow.ellipsis,
+          child: Center(
+            child: Text(
+              "Halo ${context.read<DataUserRepositoryCache>().dataAccount!.getNameUser}, jualan lagi kita!",
+              style: lv1TextStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
         Expanded(
+          flex: 4,
           child: Row(
             children: [
               Expanded(
@@ -373,6 +377,90 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     ),
               ),
             ],
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child:
+                BlocSelector<
+                  DataReportBloc,
+                  DataReportState,
+                  (ModelItem?, ModelItem?, ModelItem?, List<ModelItemBatch>)
+                >(
+                  selector: (state) => state is DataReportLoaded
+                      ? (
+                          state.bestSeller,
+                          state.worstSeller,
+                          state.lowStock,
+                          state.expiredItem,
+                        )
+                      : (null, null, null, []),
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: summaryLayout(
+                                item: state.$1,
+                                label: "Teralris",
+                                getName: (data) => data.getnameItem,
+                                getDetailData: (data) => data.getqtyItem,
+                              ),
+                            ),
+                            Expanded(
+                              child: summaryLayout(
+                                item: state.$2,
+                                label: "Tidak laris",
+                                getName: (data) => data.getnameItem,
+                                getDetailData: (data) => data.getqtyItem,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Expanded(
+                                child: summaryLayout(
+                                  item: state.$3,
+                                  label: "Stok menipis",
+                                  getName: (data) => data.getnameItem,
+                                  getDetailData: (data) => data.getqtyItem,
+                                  labelAfterName: "Sisa Stok",
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: summaryLayoutList(
+                                      item: state.$4,
+                                      label: "Hampir Kadaluarsa",
+                                      getCount: (data) => data.length,
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: summaryLayoutList(
+                                      item: state.$4,
+                                      label: "Hampir Kadaluarsa",
+                                      getCount: (data) => data.length,
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                ),
           ),
         ),
       ],
@@ -622,6 +710,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
               ),
               Expanded(
                 child: Card(
+                  color: AppPropertyColor.white,
                   margin: EdgeInsets.zero,
                   elevation: 4,
                   child: Padding(
@@ -633,6 +722,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     ),
                     child: LineChart(
                       LineChartData(
+                        backgroundColor: AppPropertyColor.white,
                         minX: 0,
                         maxX: 6,
                         minY: 0,
@@ -704,7 +794,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
 
                         lineTouchData: LineTouchData(
                           touchTooltipData: LineTouchTooltipData(
-                            // tooltipBgColor: AppPropertyColor.black87,
                             getTooltipItems: (touchedSpots) {
                               return touchedSpots.map((spot) {
                                 return LineTooltipItem(
@@ -817,6 +906,108 @@ Widget gridViewMenu(VoidCallback onPressed, Icon? icon, String text) {
         Text(text, style: lv05TextStyle, textAlign: TextAlign.center),
       ],
     ),
+    onPressed: onPressed,
+  );
+}
+
+Widget summaryLayout<T>({
+  required T? item,
+  required String label,
+  required Function(T data) getName,
+  required Function(T data) getDetailData,
+  String? labelAfterName,
+}) {
+  return Card(
+    color: AppPropertyColor.white,
+    elevation: 4,
+    child: Padding(
+      padding: EdgeInsets.all(5),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(5),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppPropertyColor.primary,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            child: Text(
+              label,
+              style: lv05TextStyleWhite,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 10),
+          item != null
+              ? Row(
+                  children: [
+                    Card(
+                      elevation: 4,
+                      child: Image.asset(
+                        "assets/logo.png",
+                        width: 30,
+                        height: 30,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          rowContent("Nama Item", getName(item)),
+                          rowContent(
+                            labelAfterName ?? "Terjual",
+                            formatQtyOrPrice(getDetailData(item)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Center(child: Text("-", style: lv4TextStyle)),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget summaryLayoutList<T>({
+  required T? item,
+  required String label,
+  required Function(T data) getCount,
+  required Function() onPressed,
+  Color? labelColor,
+}) {
+  return customButton(
+    backgroundColor: AppPropertyColor.white,
+    child: Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(5),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppPropertyColor.red,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+          ),
+          child: Text(
+            label,
+            style: lv05TextStyleWhite,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: 10),
+        item != null
+            ? Text("${getCount(item)}", style: lv3TextStyle)
+            : Center(child: Text("-", style: lv4TextStyle)),
+      ],
+    ),
+
     onPressed: onPressed,
   );
 }
