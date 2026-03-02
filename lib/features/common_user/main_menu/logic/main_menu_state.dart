@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 
@@ -17,13 +18,15 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
   final int totalItemTranasction;
   final double totalIncome;
   final double totalExpense;
-  final List<ModelItemBatch> expiredItem;
+  final List<ModelExpiredItemBatch> expiredItem;
+  final List<ModelExpiredItemBatch> almostExpiredItem;
   final ModelItem? lowStock;
   final ModelItem? bestSeller;
   final ModelItem? worstSeller;
 
   DataReportLoaded({
     this.expiredItem = const [],
+    this.almostExpiredItem = const [],
     this.lowStock,
     this.bestSeller,
     this.worstSeller,
@@ -46,7 +49,8 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     int? totalItemTranasction,
     double? totalIncome,
     double? totalExpense,
-    List<ModelItemBatch>? expiredItem,
+    List<ModelExpiredItemBatch>? expiredItem,
+    List<ModelExpiredItemBatch>? almostExpiredItem,
     ModelItem? lowStock,
     ModelItem? bestSeller,
     ModelItem? worstSeller,
@@ -54,6 +58,7 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     return DataReportLoaded(
       bestSeller: bestSeller ?? this.bestSeller,
       expiredItem: expiredItem ?? this.expiredItem,
+      almostExpiredItem: almostExpiredItem ?? this.almostExpiredItem,
       lowStock: lowStock ?? this.lowStock,
       worstSeller: worstSeller ?? this.worstSeller,
       dataBranch: dataBranch ?? this.dataBranch,
@@ -70,6 +75,7 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
   @override
   List<Object?> get props => [
     expiredItem,
+    almostExpiredItem,
     lowStock,
     bestSeller,
     worstSeller,

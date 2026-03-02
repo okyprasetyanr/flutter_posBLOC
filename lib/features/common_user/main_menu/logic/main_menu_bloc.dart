@@ -6,6 +6,7 @@ import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 
 class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
@@ -134,9 +135,13 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
           qtyItem.entries.reduce((a, b) => a.value < b.value ? a : b).key,
     );
 
-    final expiredItems = repoCache
+    final now = DateTime.now();
+    Map<String, ModelExpiredItemBatch> almostExpiredItem = {};
+    final dataItemExpired = repoCache
         .getBatch(idBranch)
-        .expand((element) => element.getitems_batch)
+        .expand((element) => element.getitems_batch);
+
+    dataItemExpired
         .where(
           (item) =>
               item.getexpiredDate != null &&
@@ -145,12 +150,52 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
                 DateTime.now().subtract(const Duration(days: 5)),
               ),
         )
-        .toList();
+        .forEach((element) {
+          if (!almostExpiredItem.containsKey(element.getidItem)) {
+            almostExpiredItem[element.getidItem] = ModelExpiredItemBatch(
+              nameItem: element.getnameItem,
+              idItem: element.getidItem,
+              totalExpired: 0,
+              invoiceList: [],
+            );
+          }
+          almostExpiredItem[element.getidItem]!.invoiceList.add(
+            element.getinvoice,
+          );
+
+          almostExpiredItem[element.getidItem]!.totalExpired += 1;
+        });
+
+    Map<String, ModelExpiredItemBatch> expiredItem = {};
+    dataItemExpired
+        .where((item) {
+          if (item.getexpiredDate == null || item.getexpiredDate == "-")
+            return false;
+
+          final exp = item.getexpiredDate!;
+          return exp.year == now.year &&
+              exp.month == now.month &&
+              exp.day == now.day;
+        })
+        .forEach((element) {
+          if (!expiredItem.containsKey(element.getidItem)) {
+            expiredItem[element.getidItem] = ModelExpiredItemBatch(
+              nameItem: element.getnameItem,
+              idItem: element.getidItem,
+              totalExpired: 0,
+              invoiceList: [],
+            );
+          }
+          expiredItem[element.getidItem]!.invoiceList.add(element.getinvoice);
+
+          expiredItem[element.getidItem]!.totalExpired += 1;
+        });
 
     emit(
       currentState.copyWith(
         bestSeller: bestSeller,
-        expiredItem: expiredItems,
+        expiredItem: expiredItem.values.toList(),
+        almostExpiredItem: almostExpiredItem.values.toList(),
         lowStock: lowStockItems,
         worstSeller: worstSeller,
         dataBranch: dataBranch,

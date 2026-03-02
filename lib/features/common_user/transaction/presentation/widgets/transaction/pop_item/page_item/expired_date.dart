@@ -26,7 +26,7 @@ class _UITransactionPopUpExpiredDateState
             onSelected: (day, month, year) {
               debugPrint("Log UITransaction: CustomDate: $year-$month-$day");
               context.read<TransactionBloc>().add(
-                TransactionAdjustItem(expiredDate: "$year-$month-$day"),
+                TransactionAdjustItem(day: day, month: month, year: year),
               );
             },
           ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
+import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar_access.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/report_algoritm.dart';
+import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -387,16 +389,23 @@ class _UIMainMenuState extends State<UIMainMenu> {
                 BlocSelector<
                   DataReportBloc,
                   DataReportState,
-                  (ModelItem?, ModelItem?, ModelItem?, List<ModelItemBatch>)
+                  (
+                    ModelItem?,
+                    ModelItem?,
+                    ModelItem?,
+                    List<ModelExpiredItemBatch>,
+                    List<ModelExpiredItemBatch>,
+                  )
                 >(
                   selector: (state) => state is DataReportLoaded
                       ? (
                           state.bestSeller,
                           state.worstSeller,
                           state.lowStock,
+                          state.almostExpiredItem,
                           state.expiredItem,
                         )
-                      : (null, null, null, []),
+                      : (null, null, null, [], []),
                   builder: (context, state) {
                     return Column(
                       children: [
@@ -438,18 +447,40 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                 children: [
                                   Expanded(
                                     child: summaryLayoutList(
+                                      labelColor:
+                                          AppPropertyColor.secondPrimary,
                                       item: state.$4,
                                       label: "Hampir Kadaluarsa",
                                       getCount: (data) => data.length,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        customBottomSheet(
+                                          context: context,
+                                          resetItemForm: null,
+                                          content: (scrollController) =>
+                                              contentExpiredItem(
+                                                state.$5,
+                                                scrollController,
+                                              ),
+                                        );
+                                      },
                                     ),
                                   ),
                                   Expanded(
                                     child: summaryLayoutList(
-                                      item: state.$4,
-                                      label: "Hampir Kadaluarsa",
+                                      item: state.$5,
+                                      label: "Sudah Kadaluarsa",
                                       getCount: (data) => data.length,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        customBottomSheet(
+                                          context: context,
+                                          resetItemForm: null,
+                                          content: (scrollController) =>
+                                              contentExpiredItem(
+                                                state.$5,
+                                                scrollController,
+                                              ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -461,6 +492,59 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     );
                   },
                 ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget contentExpiredItem(
+    List<ModelExpiredItemBatch> expiredItem,
+    ScrollController controller,
+  ) {
+    return Column(
+      children: [
+        Text("Item Kadaluarsa", style: lv1TextStyleBold),
+        Expanded(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: expiredItem.length,
+            controller: controller,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Image.asset("assets/Logo.png", height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(expiredItem[index].getNameItem),
+                      Text("$expiredItem[index].gettotalExpired"),
+                    ],
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: expiredItem[index].getInvoiceList.length,
+                    itemBuilder: (context, index) => Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          width: 5,
+                          height: 5,
+                          decoration: const BoxDecoration(
+                            color: AppPropertyColor.red,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Text(
+                          expiredItem[index].getInvoiceList[index],
+                          style: lv05TextStyleItalic,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ],
@@ -989,7 +1073,7 @@ Widget summaryLayoutList<T>({
           padding: EdgeInsets.all(5),
           width: double.infinity,
           decoration: BoxDecoration(
-            color: AppPropertyColor.red,
+            color: labelColor ?? AppPropertyColor.red,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),

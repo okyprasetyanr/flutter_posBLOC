@@ -426,8 +426,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     int discount = event.discount ?? item.getdiscountItem;
 
     DateTime? expiredDate = item.getexpiredDate;
-    if (event.expiredDate != null) {
-      expiredDate = parseDate(date: event.expiredDate!);
+    if (event.day != null && event.month != null && event.year != null) {
+      expiredDate = parseDate(
+        date: "${event.year}-${event.month}-${event.day}",
+      );
     }
 
     final resultFifo = fifoLogic(
