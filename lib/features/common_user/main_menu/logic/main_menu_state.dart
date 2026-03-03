@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class DataReportState {}
 

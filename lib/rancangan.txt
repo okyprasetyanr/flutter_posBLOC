@@ -32,3 +32,4 @@ Catat old_qty dan new_qty agar terlihat perubahannya secara transparan.
 
 Pengingat BUG:
 ketika load transaksi tersimpan, custom diskon,PPN pake nominal ngasal ga keload, harusnya value ditampilkan dikolom custom 
+ketika sudah set Kadaluarsa, lalu klik item untuk edit, tanggalnya terreset

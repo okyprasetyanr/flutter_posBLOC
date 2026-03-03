@@ -429,6 +429,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (event.day != null && event.month != null && event.year != null) {
       expiredDate = parseDate(
         date: "${event.year}-${event.month}-${event.day}",
+        minute: false,
       );
     }
 

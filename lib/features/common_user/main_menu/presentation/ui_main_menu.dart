@@ -20,7 +20,6 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/report_algoritm.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';

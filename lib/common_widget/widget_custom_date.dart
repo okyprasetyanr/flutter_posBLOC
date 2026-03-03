@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class WidgetCustomDate extends StatelessWidget {
-  final void Function(String, String, String) onSelected;
-  const WidgetCustomDate({super.key, required this.onSelected});
+  final void Function(String?, String?, String?) onSelected;
+  final String? initDay, initMonth, initYear;
+  const WidgetCustomDate({
+    super.key,
+    required this.onSelected,
+    this.initDay,
+    this.initMonth,
+    this.initYear,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +31,9 @@ class WidgetCustomDate extends StatelessWidget {
     ];
     List<String> years = List.generate(10, (index) => '${2025 + index}');
 
-    String? selectedDay;
-    String? selectedMonth;
-    String? selectedYear;
+    String? selectedDay = initDay;
+    String? selectedMonth = initMonth;
+    String? selectedYear = initYear;
 
     return Row(
       children: [
@@ -42,7 +49,7 @@ class WidgetCustomDate extends StatelessWidget {
                 .toList(),
             onChanged: (value) {
               selectedDay = value;
-              onSelected(value!, selectedMonth ?? '', selectedYear ?? '');
+              onSelected(value!, selectedMonth, selectedYear);
             },
             decoration: InputDecoration(
               labelText: "Tanggal",
@@ -70,7 +77,7 @@ class WidgetCustomDate extends StatelessWidget {
                 .toList(),
             onChanged: (value) {
               selectedMonth = value;
-              onSelected(selectedDay ?? '', value!, selectedYear ?? '');
+              onSelected(selectedDay, value!, selectedYear);
             },
             decoration: InputDecoration(
               labelText: "Bulan",
@@ -97,7 +104,7 @@ class WidgetCustomDate extends StatelessWidget {
                 .toList(),
             onChanged: (value) {
               selectedYear = value;
-              onSelected(selectedDay ?? '', selectedMonth ?? '', value!);
+              onSelected(selectedDay, selectedMonth, value!);
             },
             decoration: InputDecoration(
               labelText: "Tahun",
