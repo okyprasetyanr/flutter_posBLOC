@@ -130,9 +130,9 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     if (orientation == Orientation.portrait) {
                       return Column(
                         children: [
-                          Flexible(fit: FlexFit.loose, child: widgetTop()),
+                          Expanded(flex: 4, child: widgetTop()),
                           const SizedBox(height: 10),
-                          Flexible(fit: FlexFit.loose, child: widgetBottom()),
+                          Expanded(flex: 2, child: widgetBottom()),
                         ],
                       );
                     } else {
@@ -160,7 +160,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: AppPropertyColor.white,
@@ -175,11 +175,12 @@ class _UIMainMenuState extends State<UIMainMenu> {
           child: Center(
             child: Text(
               "Halo ${context.read<DataUserRepositoryCache>().dataAccount!.getNameUser}, jualan lagi kita!",
-              style: lv1TextStyle,
+              style: lv05TextStyle,
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
+        const SizedBox(height: 5),
         Expanded(
           flex: 4,
           child: Row(
@@ -310,7 +311,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                   Center(
                                     child: Text(
                                       "Laporan Singkat",
-                                      style: lv1TextStyleBold,
+                                      style: lv05TextStyleBold,
                                     ),
                                   ),
                                   rowContent(
@@ -413,7 +414,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                             Expanded(
                               child: summaryLayout(
                                 item: state.$1,
-                                label: "Teralris",
+                                label: "Terlaris",
                                 getName: (data) => data.getnameItem,
                                 getDetailData: (data) => data.getqtyItem,
                               ),
@@ -503,7 +504,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
   ) {
     return Column(
       children: [
-        Text("Item Kadaluarsa", style: lv1TextStyleBold),
+        Text("Item Kadaluarsa", style: lv05TextStyleBold),
         Expanded(
           child: ListView.builder(
             shrinkWrap: true,
@@ -610,7 +611,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     GridView.count(
                       crossAxisCount: 3,
                       shrinkWrap: true,
-                      childAspectRatio: 1,
+                      childAspectRatio: 1.5,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
                       children: [
@@ -670,7 +671,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                       crossAxisCount: 3,
                       padding: const EdgeInsets.all(10),
                       shrinkWrap: true,
-                      childAspectRatio: 1,
+                      childAspectRatio: 1.5,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
 
@@ -731,7 +732,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                       crossAxisCount: 3,
                       padding: const EdgeInsets.all(10),
                       shrinkWrap: true,
-                      childAspectRatio: 1,
+                      childAspectRatio: 1.5,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
 
@@ -788,7 +789,10 @@ class _UIMainMenuState extends State<UIMainMenu> {
                       topRight: Radius.circular(8),
                     ),
                   ),
-                  child: Text("Grafik Penjualan 1 Minggu", style: lv1TextStyle),
+                  child: Text(
+                    "Grafik Penjualan 1 Minggu",
+                    style: lv05TextStyle,
+                  ),
                 ),
               ),
               Expanded(
@@ -1003,56 +1007,53 @@ Widget summaryLayout<T>({
   return Card(
     color: AppPropertyColor.white,
     elevation: 4,
-    child: Padding(
-      padding: EdgeInsets.all(5),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(5),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppPropertyColor.primary,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-            ),
-            child: Text(
-              label,
-              style: lv05TextStyleWhite,
-              textAlign: TextAlign.center,
+    child: Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(5),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppPropertyColor.primary,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
             ),
           ),
-          const SizedBox(height: 10),
-          item != null
-              ? Row(
-                  children: [
-                    Card(
-                      elevation: 4,
-                      child: Image.asset(
-                        "assets/logo.png",
-                        width: 30,
-                        height: 30,
-                        fit: BoxFit.cover,
-                      ),
+          child: Text(
+            label,
+            style: lv05TextStyleWhite,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: 5),
+        item != null
+            ? Row(
+                children: [
+                  Card(
+                    elevation: 4,
+                    child: Image.asset(
+                      "assets/logo.png",
+                      width: 25,
+                      height: 25,
+                      fit: BoxFit.cover,
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          rowContent("Nama Item", getName(item)),
-                          rowContent(
-                            labelAfterName ?? "Terjual",
-                            formatQtyOrPrice(getDetailData(item)),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        rowContent("Nama", getName(item)),
+                        rowContent(
+                          labelAfterName ?? "Terjual",
+                          formatQtyOrPrice(getDetailData(item)),
+                        ),
+                      ],
                     ),
-                  ],
-                )
-              : Center(child: Text("-", style: lv4TextStyle)),
-        ],
-      ),
+                  ),
+                ],
+              )
+            : Center(child: Text("-", style: lv4TextStyle)),
+      ],
     ),
   );
 }
