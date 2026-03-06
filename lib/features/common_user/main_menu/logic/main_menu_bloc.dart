@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
@@ -41,8 +42,13 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     final dataBranch = await repoCache.getBranch();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
-    final dataTransaction = await repoCache.getTransactionSell(idBranch);
-    final dataTransactionByData = dataTransaction.where((element) {
+    final dataTransaction = await repoCache
+        .getTransactionSell(idBranch)
+        .where(
+          (element) =>
+              element.getstatusTransaction == ListStatusTransaction.Sukses,
+        );
+    final dataTransactionByDate = dataTransaction.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -57,7 +63,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     int totalTransaction = 0;
     int totalItemTransaction = 0;
 
-    for (final element in dataTransactionByData) {
+    for (final element in dataTransactionByDate) {
       final total = element.gettotal;
       netSales += total;
       grossSales +=
@@ -96,11 +102,13 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
       expense += e.getamount;
     }
 
+    debugPrint("Log MainMenuBloc: cek");
+
     final dataItem = await repoCache.getItem(idBranch);
-    ModelItem? bestSeller;
-    ModelItem? worstSeller;
-    ModelItem? lowStockItems;
-    if (dataItem.isNotEmpty) {
+    ModelItem? bestSeller = null;
+    ModelItem? worstSeller = null;
+    ModelItem? lowStockItems = null;
+    if (dataTransaction.isNotEmpty && dataItem.isNotEmpty) {
       final Map<String, double> qtyPerItem = {};
       dataTransaction.expand((e) => e.getitemsOrdered).forEach((item) async {
         await qtyPerItem.update(

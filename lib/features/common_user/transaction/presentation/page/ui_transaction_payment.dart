@@ -195,7 +195,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
           child: Row(
             children: [
               Expanded(
-                flex: 3,
+                flex: 5,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -253,7 +253,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
               ),
               const SizedBox(width: 8),
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Column(
                   children: [
                     Container(

@@ -42,7 +42,7 @@ class UIPaymentDiscount extends StatelessWidget {
                   children: [10, 25, 50].map((discount) {
                     final isSelected = state.getdiscount == discount;
                     return SizedBox(
-                      width: 54,
+                      width: 57,
                       child: customButtonIcon(
                         backgroundColor: isSelected
                             ? AppPropertyColor.primary

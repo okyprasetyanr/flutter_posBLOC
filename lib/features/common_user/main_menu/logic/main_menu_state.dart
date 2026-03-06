@@ -55,11 +55,11 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     ModelItem? worstSeller,
   }) {
     return DataReportLoaded(
-      bestSeller: bestSeller ?? this.bestSeller,
-      expiredItem: expiredItem ?? this.expiredItem,
-      almostExpiredItem: almostExpiredItem ?? this.almostExpiredItem,
-      lowStock: lowStock ?? this.lowStock,
-      worstSeller: worstSeller ?? this.worstSeller,
+      bestSeller: bestSeller,
+      expiredItem: expiredItem ?? [],
+      almostExpiredItem: almostExpiredItem ?? [],
+      lowStock: lowStock,
+      worstSeller: worstSeller,
       dataBranch: dataBranch ?? this.dataBranch,
       idBranch: idBranch ?? this.idBranch,
       totalExpense: totalExpense ?? this.totalExpense,

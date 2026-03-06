@@ -42,7 +42,7 @@ class UIPaymentPPN extends StatelessWidget {
                   children: [11, 25, 30].map((ppn) {
                     final isSelected = state.getppn == ppn;
                     return SizedBox(
-                      width: 54,
+                      width: 57,
                       child: customButtonIcon(
                         backgroundColor: isSelected
                             ? AppPropertyColor.primary

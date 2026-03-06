@@ -153,7 +153,7 @@ ModelFIFOLogic fifoLogic({
   //custom QTY
   if (qty != null) {
     if (isFifo) {
-      final diff = qty - _totalQty(batches).toInt();
+      final diff = qty - _totalQty(batches);
       if (diff > 0) {
         _allocateFIFO(
           priceBuy: customPriceBuy,
@@ -241,8 +241,48 @@ void _allocateFIFO({
             (e) => e.getidItem == idItem && e.getqtyItem_in > e.getqtyItem_out,
           )
           .toList()
-        ..sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
+        ..sort((a, b) {
+          // 1. Compare expired date
+          if (a.getexpiredDate == null && b.getexpiredDate == null) {
+            return a.getdateBuy.compareTo(b.getdateBuy);
+          }
+          if (a.getexpiredDate == null) return 1;
+          if (b.getexpiredDate == null) return -1;
 
+          final expiredCompare = a.getexpiredDate!.compareTo(b.getexpiredDate!);
+          if (expiredCompare != 0) return expiredCompare;
+
+          // 2. Jika expired sama → FIFO dari tanggal beli
+          return a.getdateBuy.compareTo(b.getdateBuy);
+        });
+
+  //FIFO
+  // fifoBatches.sort((a, b) {
+  //   return a.getdateBuy.compareTo(b.getdateBuy);
+  // });
+
+  //FEFO
+  // fifoBatches.sort((a, b) {
+  //   if (a.getexpiredDate == null && b.getexpiredDate == null) return 0;
+  //   if (a.getexpiredDate == null) return 1;
+  //   if (b.getexpiredDate == null) return -1;
+  //   return a.getexpiredDate!.compareTo(b.getexpiredDate!);
+  // });
+
+  // FIFO + Expired Priority
+  //   fifoBatches.sort((a, b) {
+  //   int buyCompare = a.getdateBuy.compareTo(b.getdateBuy);
+
+  //   if (buyCompare != 0) {
+  //     return buyCompare;
+  //   }
+
+  //   if (a.getexpiredDate == null && b.getexpiredDate == null) return 0;
+  //   if (a.getexpiredDate == null) return 1;
+  //   if (b.getexpiredDate == null) return -1;
+
+  //   return a.getexpiredDate!.compareTo(b.getexpiredDate!);
+  // });
   for (final batch in fifo) {
     if (need <= 0) break;
 
@@ -304,7 +344,7 @@ void _releaseFIFO({
     final batch = usedBatches[i];
 
     if (batch.getqty_item <= release) {
-      release -= batch.getqty_item.toInt();
+      release -= batch.getqty_item;
       usedBatches.removeAt(i);
     } else {
       usedBatches[i] = ModelItemOrderedBatch(
@@ -438,7 +478,18 @@ Map<String, List<ModelItemBatch>> buildFifoBatchMap({
   }
 
   fifoMap.forEach((_, batches) {
-    batches.sort((a, b) => a.getdateBuy.compareTo(b.getdateBuy));
+    batches.sort((a, b) {
+      if (a.getexpiredDate == null && b.getexpiredDate == null) {
+        return a.getdateBuy.compareTo(b.getdateBuy);
+      }
+      if (a.getexpiredDate == null) return 1;
+      if (b.getexpiredDate == null) return -1;
+
+      final expiredCompare = a.getexpiredDate!.compareTo(b.getexpiredDate!);
+      if (expiredCompare != 0) return expiredCompare;
+
+      return a.getdateBuy.compareTo(b.getdateBuy);
+    });
   });
 
   allBatchMap.forEach((idItem, batches) {
@@ -464,8 +515,8 @@ void applyFifoPriceToItem({
     );
 
     listItem[i] = item.copyWith(
-      priceItemByBatch: fifoBatches.last.getpriceItemFinal,
-      priceItemBuyByBatch: fifoBatches.first.getpriceItemBuy,
+      priceItemByBatch: fifoBatches.first.getpriceItemFinal,
+      priceItemBuyByBatch: fifoBatches.last.getpriceItemBuy,
     );
   }
 }

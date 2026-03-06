@@ -123,7 +123,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Expanded(
                 child: OrientationBuilder(
                   builder: (context, orientation) {
@@ -235,20 +235,19 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     BlocSelector<
                       DataReportBloc,
                       DataReportState,
-                      (double, double, int, int, double, double)
+                      (double, int, int, double, double)
                     >(
                       selector: (state) {
                         if (state is DataReportLoaded) {
                           return (
                             state.totalSell,
-                            state.totalNeto,
                             state.totalTransaction,
                             state.totalItemTranasction,
                             state.totalIncome,
                             state.totalExpense,
                           );
                         }
-                        return (0.0, 0.0, 0, 0, 0.0, 0.0);
+                        return (0.0, 0, 0, 0.0, 0.0);
                       },
                       builder: (context, state) {
                         return Column(
@@ -319,16 +318,12 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                     formatPriceRp(state.$1),
                                   ),
                                   rowContent(
-                                    "Total Keuntungan",
-                                    formatPriceRp(state.$2),
-                                  ),
-                                  rowContent(
                                     "Jumlah Transaksi",
-                                    formatQtyOrPrice(state.$3.toDouble()),
+                                    formatQtyOrPrice(state.$2.toDouble()),
                                   ),
                                   rowContent(
                                     "Jumlah Item Terjual",
-                                    formatQtyOrPrice(state.$4.toDouble()),
+                                    formatQtyOrPrice(state.$3.toDouble()),
                                   ),
                                 ],
                               ),
@@ -362,11 +357,11 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                   children: [
                                     rowContent(
                                       "Total Pendapatan",
-                                      formatPriceRp(state.$5),
+                                      formatPriceRp(state.$4),
                                     ),
                                     rowContent(
                                       "Total Pengeluaran",
-                                      formatPriceRp(state.$6),
+                                      formatPriceRp(state.$5),
                                     ),
                                   ],
                                 ),
@@ -492,8 +487,9 @@ class _UIMainMenuState extends State<UIMainMenu> {
           child: Column(
             children: [
               SizedBox(
-                height: 80,
+                height: 75,
                 child: PageView(
+                  physics: NeverScrollableScrollPhysics(),
                   controller: currentPage,
                   children: [
                     GridView.count(
@@ -556,7 +552,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     ),
                     GridView.count(
                       crossAxisCount: 3,
-                      padding: const EdgeInsets.all(10),
                       shrinkWrap: true,
                       childAspectRatio: 1.5,
                       mainAxisSpacing: 10,
@@ -617,7 +612,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     ),
                     GridView.count(
                       crossAxisCount: 3,
-                      padding: const EdgeInsets.all(10),
                       shrinkWrap: true,
                       childAspectRatio: 1.5,
                       mainAxisSpacing: 10,
@@ -717,15 +711,13 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                 Row(
                                   children: [
                                     Expanded(
-                                      child: Expanded(
-                                        child: summaryLayout(
-                                          item: state.$3,
-                                          label: "Stok menipis",
-                                          getName: (data) => data.getnameItem,
-                                          getDetailData: (data) =>
-                                              data.getqtyItem,
-                                          labelAfterName: "Sisa Stok",
-                                        ),
+                                      child: summaryLayout(
+                                        item: state.$3,
+                                        label: "Stok menipis",
+                                        getName: (data) => data.getnameItem,
+                                        getDetailData: (data) =>
+                                            data.getqtyItem,
+                                        labelAfterName: "Sisa Stok",
                                       ),
                                     ),
                                     Expanded(
@@ -781,12 +773,12 @@ class _UIMainMenuState extends State<UIMainMenu> {
                   ),
                 ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
                   margin: EdgeInsets.only(right: 10),
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppPropertyColor.white,
                     borderRadius: BorderRadius.only(
@@ -801,7 +793,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                 ),
               ),
               SizedBox(
-                height: 130,
+                height: 100,
                 child: Card(
                   color: AppPropertyColor.white,
                   margin: EdgeInsets.zero,
@@ -1060,7 +1052,7 @@ Widget summaryLayout<T>({
                     ),
                   ],
                 )
-              : Center(child: Text("-", style: lv4TextStyle)),
+              : Center(child: Text("-", style: lv2TextStyle)),
         ),
       ],
     ),

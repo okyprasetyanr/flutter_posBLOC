@@ -500,5 +500,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     repoCache.dataTransBuy.clear();
     repoCache.dataTransIncome.clear();
     repoCache.dataTransExpense.clear();
+    repoCache.notifyChanged();
   }
 }

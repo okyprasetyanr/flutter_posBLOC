@@ -17,7 +17,16 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: AppPropertyColor.primary,
+        color: context.select<TransactionBloc, Color>((value) {
+          final currentState = value.state;
+          if (currentState is TransactionLoaded) {
+            return currentState.isSell
+                ? AppPropertyColor.primary
+                : AppPropertyColor.secondPrimary;
+          }
+
+          return AppPropertyColor.primary;
+        }),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(

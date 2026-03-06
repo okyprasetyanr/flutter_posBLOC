@@ -83,10 +83,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final index = counter.indexWhere(
       (element) => element.getidBranch == idBranch,
     );
-    counter[index] = counter[index].copyWith(
-      counterSellSaved: hiveTransactionSaved.length,
-    );
-
+    if (index != -1) {
+      counter[index] = counter[index].copyWith(
+        counterSellSaved: hiveTransactionSaved.length,
+      );
+    }
     List<ModelTransaction> dataTransactionSaved = [];
     hiveTransactionSaved.forEach((element) {
       final rawItems = element.datatransactionSaved['items_ordered'] as List?;
@@ -162,9 +163,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     dataItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
     final isSell = !UserSession.getStatusFifo() ? true : currentState.isSell;
-    debugPrint(
-      "Log TransactionBloc: GetData: isSell: ${isSell}, dataItem: ${dataItem.first.getpriceItemBuyByBatch}",
-    );
+
     emit(
       currentState.copyWith(
         isSell: isSell,
@@ -431,11 +430,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         date: "${event.day}-${event.month}-${event.year}",
         minute: false,
       );
-
-      debugPrint("event.day   : ${event.day}");
-      debugPrint("event.month : ${event.month}");
-      debugPrint("event.year  : ${event.year}");
-      debugPrint("expiredDate  : ${expiredDate}");
     }
     final resultFifo = fifoLogic(
       secondCustomPrice: event.secondCustomPrice,
