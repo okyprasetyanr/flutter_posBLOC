@@ -74,93 +74,87 @@ class UIPrint extends StatelessWidget {
                     ),
                   ),
 
-                  Expanded(
-                    child:
-                        BlocSelector<
-                          PrinterBloc,
-                          PrinterState,
-                          (
-                            bool,
-                            List<BluetoothDevice>,
-                            ConnectState,
-                            BluetoothDevice?,
-                          )
-                        >(
-                          selector: (state) => (
-                            state.isScanning,
-                            state.scanResults,
-                            state.connectState,
-                            state.connectedDevice,
+                  BlocSelector<
+                    PrinterBloc,
+                    PrinterState,
+                    (
+                      bool,
+                      List<BluetoothDevice>,
+                      ConnectState,
+                      BluetoothDevice?,
+                    )
+                  >(
+                    selector: (state) => (
+                      state.isScanning,
+                      state.scanResults,
+                      state.connectState,
+                      state.connectedDevice,
+                    ),
+                    builder: (context, state) {
+                      if (state.$2.isEmpty && !state.$1) {
+                        return Center(
+                          child: Text(
+                            "Belum ada device ditemukan.\nPastikan Bluetooth menyala.",
+                            textAlign: TextAlign.center,
+                            style: lv05TextStyle,
                           ),
-                          builder: (context, state) {
-                            if (state.$2.isEmpty && !state.$1) {
-                              return Center(
-                                child: Text(
-                                  "Belum ada device ditemukan.\nPastikan Bluetooth menyala.",
-                                  textAlign: TextAlign.center,
-                                  style: lv05TextStyle,
-                                ),
-                              );
-                            }
+                        );
+                      }
 
-                            return ListView.builder(
-                              itemCount: state.$2.length,
-                              itemBuilder: (context, index) {
-                                final device = state.$2[index];
-                                final isConnected =
-                                    state.$3 == ConnectState.connected &&
-                                    state.$4?.address == device.address;
+                      return ListView.builder(
+                        itemCount: state.$2.length,
+                        itemBuilder: (context, index) {
+                          final device = state.$2[index];
+                          final isConnected =
+                              state.$3 == ConnectState.connected &&
+                              state.$4?.address == device.address;
 
-                                return Card(
-                                  color: AppPropertyColor.white,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 4,
-                                  ),
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.print,
-                                      color: isConnected
-                                          ? AppPropertyColor.primary
-                                          : AppPropertyColor.grey,
+                          return Card(
+                            color: AppPropertyColor.white,
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 4,
+                            ),
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.print,
+                                color: isConnected
+                                    ? AppPropertyColor.primary
+                                    : AppPropertyColor.grey,
+                              ),
+                              title: Text(device.name, style: lv05TextStyle),
+                              subtitle: Text(
+                                device.address,
+                                style: lv05TextStyle,
+                              ),
+                              trailing: isConnected
+                                  ? Chip(
+                                      label: Text(
+                                        "Terhubung",
+                                        style: lv1TextStyleWhite,
+                                      ),
+                                      backgroundColor: AppPropertyColor.primary,
+                                    )
+                                  : ElevatedButton(
+                                      child: const Text("Sambung"),
+                                      onPressed: () {
+                                        context.read<PrinterBloc>().add(
+                                          ConnectDevice(device),
+                                        );
+                                      },
                                     ),
-                                    title: Text(
-                                      device.name,
-                                      style: lv05TextStyle,
-                                    ),
-                                    subtitle: Text(
-                                      device.address,
-                                      style: lv05TextStyle,
-                                    ),
-                                    trailing: isConnected
-                                        ? Chip(
-                                            label: Text(
-                                              "Terhubung",
-                                              style: lv1TextStyleWhite,
-                                            ),
-                                            backgroundColor:
-                                                AppPropertyColor.primary,
-                                          )
-                                        : ElevatedButton(
-                                            child: const Text("Sambung"),
-                                            onPressed: () {
-                                              context.read<PrinterBloc>().add(
-                                                ConnectDevice(device),
-                                              );
-                                            },
-                                          ),
-                                    onTap: () {
-                                      context.read<PrinterBloc>().add(
-                                        ConnectDevice(device),
-                                      );
-                                    },
-                                  ),
+                              onTap: () {
+                                context.read<PrinterBloc>().add(
+                                  ConnectDevice(device),
                                 );
                               },
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
+
                   _buildFooter(context),
                 ],
               ),

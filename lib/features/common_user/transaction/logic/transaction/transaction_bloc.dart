@@ -428,11 +428,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     DateTime? expiredDate = item.getexpiredDate;
     if (event.day != null && event.month != null && event.year != null) {
       expiredDate = parseDate(
-        date: "${event.year}-${event.month}-${event.day}",
+        date: "${event.day}-${event.month}-${event.year}",
         minute: false,
       );
-    }
 
+      debugPrint("event.day   : ${event.day}");
+      debugPrint("event.month : ${event.month}");
+      debugPrint("event.year  : ${event.year}");
+      debugPrint("expiredDate  : ${expiredDate}");
+    }
     final resultFifo = fifoLogic(
       secondCustomPrice: event.secondCustomPrice,
       state: currentState,

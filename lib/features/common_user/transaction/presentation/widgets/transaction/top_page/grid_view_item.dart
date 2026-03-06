@@ -95,7 +95,9 @@ class UITransactionGridViewItem extends StatelessWidget {
                             );
                             return element.value.ordered >= element.value.stock;
                           });
-                      if (available && UserSession.getStatusFifo()) {
+                      if (available &&
+                          UserSession.getStatusFifo() &&
+                          (bloc.state as TransactionLoaded).isSell) {
                         return customSnackBar(
                           context,
                           "FIFO: Stok sudah mencapai batas",

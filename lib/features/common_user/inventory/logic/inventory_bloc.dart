@@ -187,10 +187,6 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     applyFifoPriceToItem(listItem: dataItem, fifoMap: fifoMap);
 
-    debugPrint(
-      "Log InventoryBloc: priceItemByBatch: ${dataItem.first.getpriceItemByBatch}",
-    );
-
     emit(
       InventoryLoaded(
         filteredDataCategory: filteredDataCategory,

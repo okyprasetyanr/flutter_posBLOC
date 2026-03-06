@@ -130,9 +130,9 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     if (orientation == Orientation.portrait) {
                       return Column(
                         children: [
-                          Expanded(flex: 4, child: widgetTop()),
+                          Expanded(flex: 3, child: widgetTop()),
                           const SizedBox(height: 10),
-                          Expanded(flex: 2, child: widgetBottom()),
+                          Expanded(flex: 5, child: widgetBottom(false)),
                         ],
                       );
                     } else {
@@ -140,7 +140,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                         children: [
                           Expanded(child: widgetTop()),
                           const SizedBox(width: 10),
-                          Expanded(child: widgetBottom()),
+                          Expanded(child: widgetBottom(true)),
                         ],
                       );
                     }
@@ -381,119 +381,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
             ],
           ),
         ),
-        Expanded(
-          flex: 3,
-          child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child:
-                BlocSelector<
-                  DataReportBloc,
-                  DataReportState,
-                  (
-                    ModelItem?,
-                    ModelItem?,
-                    ModelItem?,
-                    List<ModelExpiredItemBatch>,
-                    List<ModelExpiredItemBatch>,
-                  )
-                >(
-                  selector: (state) => state is DataReportLoaded
-                      ? (
-                          state.bestSeller,
-                          state.worstSeller,
-                          state.lowStock,
-                          state.almostExpiredItem,
-                          state.expiredItem,
-                        )
-                      : (null, null, null, [], []),
-                  builder: (context, state) {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: summaryLayout(
-                                item: state.$1,
-                                label: "Terlaris",
-                                getName: (data) => data.getnameItem,
-                                getDetailData: (data) => data.getqtyItem,
-                              ),
-                            ),
-                            Expanded(
-                              child: summaryLayout(
-                                item: state.$2,
-                                label: "Tidak laris",
-                                getName: (data) => data.getnameItem,
-                                getDetailData: (data) => data.getqtyItem,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Expanded(
-                                child: summaryLayout(
-                                  item: state.$3,
-                                  label: "Stok menipis",
-                                  getName: (data) => data.getnameItem,
-                                  getDetailData: (data) => data.getqtyItem,
-                                  labelAfterName: "Sisa Stok",
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: summaryLayoutList(
-                                      labelColor:
-                                          AppPropertyColor.secondPrimary,
-                                      item: state.$4,
-                                      label: "Hampir Kadaluarsa",
-                                      getCount: (data) => data.length,
-                                      onPressed: () {
-                                        customBottomSheet(
-                                          context: context,
-                                          resetItemForm: null,
-                                          content: (scrollController) =>
-                                              contentExpiredItem(
-                                                state.$5,
-                                                scrollController,
-                                              ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: summaryLayoutList(
-                                      item: state.$5,
-                                      label: "Sudah Kadaluarsa",
-                                      getCount: (data) => data.length,
-                                      onPressed: () {
-                                        customBottomSheet(
-                                          context: context,
-                                          resetItemForm: null,
-                                          content: (scrollController) =>
-                                              contentExpiredItem(
-                                                state.$5,
-                                                scrollController,
-                                              ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                ),
-          ),
-        ),
       ],
     );
   }
@@ -551,7 +438,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
     );
   }
 
-  Widget widgetBottom() {
+  Widget widgetBottom(bool hideContent) {
     final dataSell = context
         .read<DataUserRepositoryCache>()
         .dataTransSell
@@ -576,8 +463,8 @@ class _UIMainMenuState extends State<UIMainMenu> {
     return Stack(
       children: [
         Positioned(
-          top: 50,
-          bottom: 20,
+          top: 30,
+          bottom: 0,
           left: 0,
           right: 0,
           child: ClipPath(
@@ -604,13 +491,13 @@ class _UIMainMenuState extends State<UIMainMenu> {
           right: 0,
           child: Column(
             children: [
-              Expanded(
+              SizedBox(
+                height: 80,
                 child: PageView(
                   controller: currentPage,
                   children: [
                     GridView.count(
                       crossAxisCount: 3,
-                      shrinkWrap: true,
                       childAspectRatio: 1.5,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
@@ -777,6 +664,124 @@ class _UIMainMenuState extends State<UIMainMenu> {
                   ],
                 ),
               ),
+              if (!hideContent)
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child:
+                        BlocSelector<
+                          DataReportBloc,
+                          DataReportState,
+                          (
+                            ModelItem?,
+                            ModelItem?,
+                            ModelItem?,
+                            List<ModelExpiredItemBatch>,
+                            List<ModelExpiredItemBatch>,
+                          )
+                        >(
+                          selector: (state) => state is DataReportLoaded
+                              ? (
+                                  state.bestSeller,
+                                  state.worstSeller,
+                                  state.lowStock,
+                                  state.almostExpiredItem,
+                                  state.expiredItem,
+                                )
+                              : (null, null, null, [], []),
+                          builder: (context, state) {
+                            return Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: summaryLayout(
+                                        item: state.$1,
+                                        label: "Terlaris",
+                                        getName: (data) => data.getnameItem,
+                                        getDetailData: (data) =>
+                                            data.getqtyItem,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: summaryLayout(
+                                        item: state.$2,
+                                        label: "Tidak laris",
+                                        getName: (data) => data.getnameItem,
+                                        getDetailData: (data) =>
+                                            data.getqtyItem,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Expanded(
+                                        child: summaryLayout(
+                                          item: state.$3,
+                                          label: "Stok menipis",
+                                          getName: (data) => data.getnameItem,
+                                          getDetailData: (data) =>
+                                              data.getqtyItem,
+                                          labelAfterName: "Sisa Stok",
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: summaryLayoutList(
+                                              labelColor: AppPropertyColor
+                                                  .secondPrimary,
+                                              item: state.$4,
+                                              label: "Hampir Kadaluarsa",
+                                              getCount: (data) => data.length,
+                                              onPressed: () {
+                                                customBottomSheet(
+                                                  context: context,
+                                                  resetItemForm: null,
+                                                  content: (scrollController) =>
+                                                      contentExpiredItem(
+                                                        state.$5,
+                                                        scrollController,
+                                                      ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: summaryLayoutList(
+                                              item: state.$5,
+                                              label: "Sudah Kadaluarsa",
+                                              getCount: (data) => data.length,
+                                              onPressed: () {
+                                                customBottomSheet(
+                                                  context: context,
+                                                  resetItemForm: null,
+                                                  content: (scrollController) =>
+                                                      contentExpiredItem(
+                                                        state.$5,
+                                                        scrollController,
+                                                      ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                  ),
+                ),
+
+              const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
@@ -795,7 +800,8 @@ class _UIMainMenuState extends State<UIMainMenu> {
                   ),
                 ),
               ),
-              Expanded(
+              SizedBox(
+                height: 130,
                 child: Card(
                   color: AppPropertyColor.white,
                   margin: EdgeInsets.zero,
@@ -1010,7 +1016,7 @@ Widget summaryLayout<T>({
     child: Column(
       children: [
         Container(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.symmetric(vertical: 5),
           width: double.infinity,
           decoration: BoxDecoration(
             color: AppPropertyColor.primary,
@@ -1025,34 +1031,37 @@ Widget summaryLayout<T>({
             textAlign: TextAlign.center,
           ),
         ),
-        const SizedBox(height: 5),
-        item != null
-            ? Row(
-                children: [
-                  Card(
-                    elevation: 4,
-                    child: Image.asset(
-                      "assets/logo.png",
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.cover,
+        Padding(
+          padding: EdgeInsets.only(bottom: 5, left: 5, right: 5),
+          child: item != null
+              ? Row(
+                  children: [
+                    Card(
+                      elevation: 4,
+                      child: Image.asset(
+                        "assets/logo.png",
+                        width: 25,
+                        height: 25,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        rowContent("Nama", getName(item)),
-                        rowContent(
-                          labelAfterName ?? "Terjual",
-                          formatQtyOrPrice(getDetailData(item)),
-                        ),
-                      ],
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(getName(item), style: lv05TextStyle),
+                          Text(
+                            "${labelAfterName ?? "Terjual"}: ${formatQtyOrPrice(getDetailData(item))}",
+                            style: lv05TextStyle,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              )
-            : Center(child: Text("-", style: lv4TextStyle)),
+                  ],
+                )
+              : Center(child: Text("-", style: lv4TextStyle)),
+        ),
       ],
     ),
   );
@@ -1066,11 +1075,11 @@ Widget summaryLayoutList<T>({
   Color? labelColor,
 }) {
   return customButton(
+    padding: false,
     backgroundColor: AppPropertyColor.white,
     child: Column(
       children: [
         Container(
-          padding: EdgeInsets.all(5),
           width: double.infinity,
           decoration: BoxDecoration(
             color: labelColor ?? AppPropertyColor.red,
@@ -1085,10 +1094,12 @@ Widget summaryLayoutList<T>({
             textAlign: TextAlign.center,
           ),
         ),
-        const SizedBox(height: 10),
-        item != null
-            ? Text("${getCount(item)}", style: lv3TextStyle)
-            : Center(child: Text("-", style: lv4TextStyle)),
+        Padding(
+          padding: EdgeInsets.all(5),
+          child: item != null
+              ? Text("${getCount(item)}", style: lv3TextStyle)
+              : Center(child: Text("-", style: lv4TextStyle)),
+        ),
       ],
     ),
 

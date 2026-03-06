@@ -42,7 +42,7 @@ class WidgetCustomDate extends StatelessWidget {
           child: DropdownButtonFormField<String>(
             style: lv05TextStyle,
             isDense: true,
-            initialValue: selectedDay,
+            initialValue: days.contains(selectedDay) ? selectedDay : null,
             hint: Text("...", style: lv05TextStyle),
             items: days
                 .map((d) => DropdownMenuItem(value: d, child: Text(d)))
@@ -70,7 +70,7 @@ class WidgetCustomDate extends StatelessWidget {
           child: DropdownButtonFormField<String>(
             style: lv05TextStyle,
             isDense: true,
-            initialValue: selectedMonth,
+            initialValue: days.contains(selectedMonth) ? selectedMonth : null,
             hint: Text("...", style: lv05TextStyle),
             items: months
                 .map((m) => DropdownMenuItem(value: m, child: Text(m)))
@@ -97,7 +97,7 @@ class WidgetCustomDate extends StatelessWidget {
           flex: 4,
           child: DropdownButtonFormField<String>(
             style: lv05TextStyle,
-            initialValue: selectedYear,
+            initialValue: years.contains(selectedYear) ? selectedYear : null,
             hint: Text("...", style: lv05TextStyle),
             items: years
                 .map((y) => DropdownMenuItem(value: y, child: Text(y)))

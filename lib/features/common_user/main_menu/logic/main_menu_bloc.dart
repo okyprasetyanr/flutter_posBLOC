@@ -97,44 +97,47 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     }
 
     final dataItem = await repoCache.getItem(idBranch);
+    ModelItem? bestSeller;
+    ModelItem? worstSeller;
+    ModelItem? lowStockItems;
+    if (dataItem.isNotEmpty) {
+      final Map<String, double> qtyPerItem = {};
+      dataTransaction.expand((e) => e.getitemsOrdered).forEach((item) async {
+        await qtyPerItem.update(
+          item.getidItem,
+          (value) => value + item.getqtyItem,
+          ifAbsent: () => item.getqtyItem,
+        );
+      });
 
-    final Map<String, double> qtyPerItem = {};
-    dataTransaction.expand((e) => e.getitemsOrdered).forEach((item) async {
-      await qtyPerItem.update(
-        item.getidItem,
-        (value) => value + item.getqtyItem,
-        ifAbsent: () => item.getqtyItem,
+      final Map<String, double> qtyItem = {};
+      dataItem.forEach(
+        (element) async => await qtyItem.update(
+          element.getidItem,
+          (value) => value + element.getqtyItem,
+          ifAbsent: () => element.getqtyItem,
+        ),
       );
-    });
+      final bestItem = qtyPerItem.entries.reduce(
+        (a, b) => a.value > b.value ? a : b,
+      );
+      bestSeller = dataItem
+          .firstWhere((element) => element.getidItem == bestItem.key)
+          .copyWith(qtyItem: bestItem.value);
 
-    final Map<String, double> qtyItem = {};
-    dataItem.forEach(
-      (element) async => await qtyItem.update(
-        element.getidItem,
-        (value) => value + element.getqtyItem,
-        ifAbsent: () => element.getqtyItem,
-      ),
-    );
-    final bestItem = qtyPerItem.entries.reduce(
-      (a, b) => a.value > b.value ? a : b,
-    );
-    final bestSeller = dataItem
-        .firstWhere((element) => element.getidItem == bestItem.key)
-        .copyWith(qtyItem: bestItem.value);
+      final worstItem = qtyPerItem.entries.reduce(
+        (a, b) => a.value < b.value ? a : b,
+      );
+      worstSeller = dataItem
+          .firstWhere((element) => element.getidItem == worstItem.key)
+          .copyWith(qtyItem: worstItem.value);
 
-    final worstItem = qtyPerItem.entries.reduce(
-      (a, b) => a.value < b.value ? a : b,
-    );
-    final worstSeller = dataItem
-        .firstWhere((element) => element.getidItem == worstItem.key)
-        .copyWith(qtyItem: worstItem.value);
-
-    ModelItem lowStockItems = dataItem.firstWhere(
-      (element) =>
-          element.getidItem ==
-          qtyItem.entries.reduce((a, b) => a.value < b.value ? a : b).key,
-    );
-
+      lowStockItems = dataItem.firstWhere(
+        (element) =>
+            element.getidItem ==
+            qtyItem.entries.reduce((a, b) => a.value < b.value ? a : b).key,
+      );
+    }
     final now = DateTime.now();
     Map<String, ModelExpiredItemBatch> almostExpiredItem = {};
     final dataItemExpired = repoCache

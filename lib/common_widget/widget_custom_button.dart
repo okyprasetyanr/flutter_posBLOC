@@ -5,6 +5,7 @@ Widget customButton({
   Color? backgroundColor,
   Widget? child,
   bool moreRadius = false,
+  bool padding = true,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -16,9 +17,11 @@ Widget customButton({
         elevation: const WidgetStatePropertyAll(4),
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
         minimumSize: const WidgetStatePropertyAll(Size(0, 0)),
-        padding: const WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        ),
+        padding: padding
+            ? const WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              )
+            : const WidgetStatePropertyAll(EdgeInsets.only()),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(moreRadius ? 15 : 10),
