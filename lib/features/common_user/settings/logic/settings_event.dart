@@ -10,6 +10,12 @@ class SettingsFeature extends SettingsEvent {}
 
 class SettingsFeatureFIFO extends SettingsEvent {}
 
+class SettingsFeatureSelectedStockMode extends SettingsEvent {
+  final StockMode stockMode;
+
+  SettingsFeatureSelectedStockMode({required this.stockMode});
+}
+
 class SettingsSyncData extends SettingsEvent {}
 
 class SettingsSelectedSyncData extends SettingsEvent {

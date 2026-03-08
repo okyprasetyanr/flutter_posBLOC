@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class BatchBloc extends Bloc<BatchEvent, BatchState> {
@@ -52,9 +55,11 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
   ) {
     final currentState = state;
     if (currentState is BatchLoaded) {
-      final ItemById = currentState.dataItemBatch
-          .where((element) => element.getidItem == event.selectedIdItem)
-          .toList();
+      final ItemById = sortStockMode(
+        currentState.dataItemBatch
+            .where((element) => element.getidItem == event.selectedIdItem)
+            .toList(),
+      );
 
       double qtyIn = 0;
       double qtyOut = 0;
@@ -83,6 +88,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
       );
       emit(
         currentState.copyWith(
+          selectedIdItem: event.selectedIdItem,
           dataItemByIdItem: ItemById,
           detailSelectedItem: detailItemBatch,
         ),
@@ -106,16 +112,47 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
   FutureOr<void> _onSearch(BatchSearchItem event, Emitter<BatchState> emit) {
     final currentState = state;
     if (currentState is BatchLoaded) {
-      final filteredItem = event.search.isNotEmpty
-          ? currentState.dataItem
-                .where(
-                  (element) => element.getnameItem.toLowerCase().contains(
-                    event.search.toLowerCase(),
-                  ),
-                )
-                .toList()
-          : currentState.dataItem;
-      emit(currentState.copyWith(filteredItem: filteredItem));
+      List<ModelItem> filteredItem = currentState.dataItem;
+      List<ModelItemBatch> filteredItemBatch =
+          currentState.dataItemByIdItem?.toList() ?? [];
+
+      if (currentState.selectedIdItem != null) {
+        filteredItemBatch = event.search.isNotEmpty
+            ? currentState.dataItemBatch
+                  .where(
+                    (element) =>
+                        element.getidItem == currentState.selectedIdItem &&
+                        element.getinvoice.toLowerCase().contains(
+                          event.search.toLowerCase(),
+                        ),
+                  )
+                  .toList()
+            : currentState.dataItemBatch
+                  .where(
+                    (element) =>
+                        element.getidItem == currentState.selectedIdItem,
+                  )
+                  .toList();
+        debugPrint("Log BatchBloc: searchedBatch: ${filteredItemBatch}");
+      } else {
+        filteredItem = event.search.isNotEmpty
+            ? currentState.dataItem
+                  .where(
+                    (element) => element.getnameItem.toLowerCase().contains(
+                      event.search.toLowerCase(),
+                    ),
+                  )
+                  .toList()
+            : currentState.dataItem;
+      }
+      emit(
+        currentState.copyWith(
+          detailSelectedItem: currentState.detailSelectedItem,
+          selectedIdItem: currentState.selectedIdItem,
+          filteredItem: filteredItem,
+          dataItemByIdItem: filteredItemBatch,
+        ),
+      );
     }
   }
 }

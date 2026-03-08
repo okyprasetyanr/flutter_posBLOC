@@ -32,7 +32,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc(this.repoCache) : super(SettingsInital()) {
     on<SettingsProfile>(_onProfile);
     on<SettingsFeature>(_onFeature);
-    on<SettingsFeatureFIFO>(_onFeatureFiFO);
+    on<SettingsFeatureFIFO>(_onFeatureFIFO);
+    on<SettingsFeatureSelectedStockMode>(_onSelectedStockMode);
     on<SettingsSyncData>(_onSyncData);
     on<SettingsSelectedSyncData>(_onSelectedSyncData);
     on<SettingPushData>(_onPushData);
@@ -63,13 +64,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsFeature event,
     Emitter<SettingsState> emit,
   ) async {
-    final pref = await SharedPreferences.getInstance();
-    final isFifo = pref.getBool('fifo') ?? false;
-
-    emit(SettingsFeatureLoaded(isFifo: isFifo));
+    debugPrint(
+      "Log SettingsBloc: selectedMode Init: ${UserSession.getSelectedStockMode()}",
+    );
+    emit(
+      SettingsFeatureLoaded(
+        isFifo: UserSession.getStatusFifo(),
+        selectedMode: UserSession.getSelectedStockMode(),
+      ),
+    );
   }
 
-  Future<void> _onFeatureFiFO(
+  Future<void> _onFeatureFIFO(
     SettingsFeatureFIFO event,
     Emitter<SettingsState> emit,
   ) async {
@@ -82,6 +88,20 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     debugPrint("Log Settings: Feature Fifo: $isFifo");
     emit(currentState.copyWith(isFifo: !isFifo));
+  }
+
+  Future<void> _onSelectedStockMode(
+    SettingsFeatureSelectedStockMode event,
+    Emitter<SettingsState> emit,
+  ) async {
+    final currentState = state as SettingsFeatureLoaded;
+    final selectedStockMode = event.stockMode;
+
+    final pref = await SharedPreferences.getInstance();
+    pref.setString('stockMode', selectedStockMode.name);
+    UserSession.init(repoCache);
+
+    emit(currentState.copyWith(stockMode: selectedStockMode));
   }
 
   FutureOr<void> _onSyncData(

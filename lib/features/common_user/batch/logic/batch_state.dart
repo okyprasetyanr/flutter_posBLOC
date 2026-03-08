@@ -59,5 +59,6 @@ class BatchLoaded extends BatchState with EquatableMixin {
     dataItemBatch,
     selectedIdItem,
     detailSelectedItem,
+    dataItemByIdItem,
   ];
 }

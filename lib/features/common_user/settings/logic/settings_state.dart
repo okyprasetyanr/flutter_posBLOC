@@ -13,11 +13,15 @@ class SettingsInital extends SettingsState {}
 
 class SettingsFeatureLoaded extends SettingsState {
   final bool isFifo;
+  final StockMode selectedMode;
 
-  SettingsFeatureLoaded({this.isFifo = false});
+  SettingsFeatureLoaded({this.isFifo = false, required this.selectedMode});
 
-  SettingsFeatureLoaded copyWith({bool? isFifo}) {
-    return SettingsFeatureLoaded(isFifo: isFifo ?? this.isFifo);
+  SettingsFeatureLoaded copyWith({bool? isFifo, StockMode? stockMode}) {
+    return SettingsFeatureLoaded(
+      isFifo: isFifo ?? this.isFifo,
+      selectedMode: stockMode ?? this.selectedMode,
+    );
   }
 }
 

@@ -326,6 +326,14 @@ extension ErrorTypeX on ErrorTypeApp {
   }
 }
 
+enum StockMode { FIFO, FEFO, FIFOFEFO }
+
+extension StockModeX on StockMode {
+  static StockMode? fromString(String value) {
+    return StockMode.values.firstWhere((e) => e.name == value);
+  }
+}
+
 enum LabelPaymentMethod { Cash, Debit, QRIS, Split }
 
 extension LabelPaymentMethodX on LabelPaymentMethod {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,12 +46,16 @@ String formatDisc(int disc) {
 class UserSession {
   static DataUserRepositoryCache? repo;
   static String uid_owner = "";
-  static bool fifo = false;
+  static bool? fifo;
+  static StockMode? selectedStockMode;
 
   static Future<void> init(DataUserRepositoryCache? repo) async {
     final pref = await SharedPreferences.getInstance();
     uid_owner = pref.getString("uid_owner")!;
     fifo = pref.getBool("fifo") ?? false;
+    selectedStockMode = StockModeX.fromString(
+      pref.getString("stockMode") ?? StockMode.FIFO.name,
+    )!;
     if (repo != null) {
       await repo.initData();
     }
@@ -60,9 +65,39 @@ class UserSession {
     return uid_owner;
   }
 
-  static bool getStatusFifo() {
-    return fifo;
+  static StockMode getSelectedStockMode() {
+    return selectedStockMode!;
   }
+
+  static bool getStatusFifo() {
+    return fifo!;
+  }
+}
+
+List<ModelItemBatch> sortStockMode(List<ModelItemBatch> data) {
+  return data..sort((a, b) {
+    switch (UserSession.getSelectedStockMode()) {
+      case StockMode.FEFO:
+        if (a.getexpiredDate == null && b.getexpiredDate == null) return 0;
+        if (a.getexpiredDate == null) return 1;
+        if (b.getexpiredDate == null) return -1;
+        return a.getexpiredDate!.compareTo(b.getexpiredDate!);
+      case StockMode.FIFO:
+        return a.getdateBuy.compareTo(b.getdateBuy);
+      case StockMode.FIFOFEFO:
+        int buyCompare = a.getdateBuy.compareTo(b.getdateBuy);
+
+        if (buyCompare != 0) {
+          return buyCompare;
+        }
+
+        if (a.getexpiredDate == null && b.getexpiredDate == null) return 0;
+        if (a.getexpiredDate == null) return 1;
+        if (b.getexpiredDate == null) return -1;
+
+        return a.getexpiredDate!.compareTo(b.getexpiredDate!);
+    }
+  });
 }
 
 String generateInvoice({
@@ -71,7 +106,6 @@ String generateInvoice({
   int? queue,
   bool? saved,
 }) {
-  ;
   final branch = branchId!.substring(0, 4);
   final uuid = saved != null ? "Saved" : Uuid().v4().substring(0, 4);
   final operator = idOP.substring(0, 4);

@@ -46,7 +46,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Hive.initFlutter();
   Hive.registerAdapter(TransactionSavedHiveAdapter());
-
   await Future.wait([
     Hive.openBox('firestoreQueue'),
     Hive.openBox<TransactionSavedHive>('saved_transaction'),

@@ -576,7 +576,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                         "Sudah diBatalkan!",
                                       )
                                     : confirmCancel(transaction.getitemsOrdered)
-                              : UserSession.fifo
+                              : UserSession.getStatusFifo()
                               ? context
                                         .read<DataUserRepositoryCache>()
                                         .dataBatch

@@ -116,13 +116,17 @@ class _UiBatchState extends State<UiBatch> {
               BlocSelector<
                 BatchBloc,
                 BatchState,
-                (List<ModelItem>, List<ModelItemBatch>)
+                (List<ModelItem>, List<ModelItemBatch>, bool)
               >(
                 selector: (state) {
                   if (state is BatchLoaded) {
-                    return (state.filteredItem, state.dataItemByIdItem ?? []);
+                    return (
+                      state.filteredItem,
+                      state.dataItemByIdItem ?? [],
+                      state.selectedIdItem == null,
+                    );
                   }
-                  return ([], []);
+                  return ([], [], false);
                 },
                 builder: (context, state) {
                   debugPrint("Log UIBatch: itemBatch: $state");
@@ -134,7 +138,7 @@ class _UiBatchState extends State<UiBatch> {
                             style: lv05TextStyle,
                           ),
                         )
-                      : itemById.isEmpty
+                      : state.$3
                       ? GridView.builder(
                           padding: const EdgeInsets.only(
                             left: 10,
@@ -159,6 +163,7 @@ class _UiBatchState extends State<UiBatch> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(8),
                                 onTap: () {
+                                  searchController.clear();
                                   context.read<BatchBloc>().add(
                                     BatchSelectedIdItem(
                                       selectedIdItem: state.$1[index].getidItem,
@@ -336,6 +341,7 @@ class _UiBatchState extends State<UiBatch> {
                           ),
                           onPressed: () {
                             context.read<BatchBloc>().add(BatchReset());
+                            searchController.clear();
                             _initData();
                           },
                         ),

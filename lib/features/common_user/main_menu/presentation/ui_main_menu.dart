@@ -485,6 +485,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
           left: 0,
           right: 0,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 height: 75,
@@ -494,7 +495,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                   children: [
                     GridView.count(
                       crossAxisCount: 3,
-                      childAspectRatio: 1.5,
+                      childAspectRatio: 1.6,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
                       children: [
@@ -553,7 +554,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     GridView.count(
                       crossAxisCount: 3,
                       shrinkWrap: true,
-                      childAspectRatio: 1.5,
+                      childAspectRatio: 1.6,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
 
@@ -613,7 +614,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     GridView.count(
                       crossAxisCount: 3,
                       shrinkWrap: true,
-                      childAspectRatio: 1.5,
+                      childAspectRatio: 1.6,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
 
@@ -772,7 +773,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
                         ),
                   ),
                 ),
-
               const SizedBox(height: 5),
               Align(
                 alignment: Alignment.centerRight,
@@ -1089,7 +1089,7 @@ Widget summaryLayoutList<T>({
         Padding(
           padding: EdgeInsets.all(5),
           child: item != null
-              ? Text("${getCount(item)}", style: lv3TextStyle)
+              ? Text("${getCount(item)}", style: lv2TextStyle)
               : Center(child: Text("-", style: lv4TextStyle)),
         ),
       ],
