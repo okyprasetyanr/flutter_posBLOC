@@ -137,7 +137,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                 selectedItemCondiment =
                                                     ModelItemOrdered(
                                                       priceItemBuy: state[index]
-                                                          .getpriceItemBuyByBatch,
+                                                          .getpriceItemBuybyBatch,
                                                       itemOrderedBatch: [],
                                                       priceItemFinal:
                                                           state[index]
@@ -190,7 +190,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                                 selectedItemCondiment =
                                                     ModelItemOrdered(
                                                       priceItemBuy: state[index]
-                                                          .getpriceItemBuyByBatch,
+                                                          .getpriceItemBuybyBatch,
                                                       itemOrderedBatch: [],
                                                       priceItemFinal:
                                                           state[index]

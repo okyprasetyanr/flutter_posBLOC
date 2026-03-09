@@ -110,7 +110,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         break;
     }
     debugPrint(
-      "Log InventoryBloc: filterItem: ${list.isNotEmpty ? list.first.getpriceItemByBatch : "No Data"}",
+      "Log InventoryBloc: filterItem: ${list.isNotEmpty ? list.first.getpriceItembyBatch : "No Data"}",
     );
     return list;
   }
@@ -232,7 +232,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     final item = ModelItem(
       priceItemByBatch: 0,
-      priceItemBuyByBatch: 0,
+      priceItemBuybyBatch: 0,
       qtyItem: 0,
       nameItem: event.name,
       idItem: idUser,

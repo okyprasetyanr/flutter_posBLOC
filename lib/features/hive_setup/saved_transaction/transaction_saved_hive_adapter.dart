@@ -1,4 +1,4 @@
-import 'package:flutter_pos/features/hive_setup/model_transaction_save.dart';
+import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:hive/hive.dart';
 
 class TransactionSavedHiveAdapter extends TypeAdapter<TransactionSavedHive> {

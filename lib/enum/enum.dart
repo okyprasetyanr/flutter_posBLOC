@@ -345,3 +345,19 @@ extension LabelPaymentMethodX on LabelPaymentMethod {
     }
   }
 }
+
+enum HiveBoxesCollection {
+  batch,
+  category,
+  companies,
+  counter,
+  financial,
+  items,
+  partners,
+  transaction_buy,
+  transaction_income,
+  transaction_expense,
+  transaction_sell,
+  saved_transaction,
+  users,
+}

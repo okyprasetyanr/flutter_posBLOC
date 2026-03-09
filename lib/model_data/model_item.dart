@@ -4,57 +4,52 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 
 class ModelItem extends Equatable {
-  final String _nameItem,
-      _idItem,
-      _idCategoryItem,
-      _urlImage,
-      _idBranch,
-      _barcode;
-  final DateTime _date;
-  final double _priceItem, _qtyItem, _priceItemBuybyBatch, _priceItemByBatch;
-  final StatusData _statusCondiment, _statusItem;
+  final String idItem;
+  final String nameItem;
+  final String idCategoryItem;
+  final String urlImage;
+  final String idBranch;
+  final String barcode;
 
-  ModelItem({
-    required double qtyItem,
-    required String nameItem,
-    required String idItem,
-    required double priceItem,
-    required double priceItemByBatch,
-    required double priceItemBuyByBatch,
-    required String idCategoryItem,
-    required StatusData statusCondiment,
-    required String urlImage,
-    required String idBranch,
-    required String barcode,
-    required StatusData statusItem,
-    required DateTime date,
-  }) : _nameItem = nameItem,
-       _idItem = idItem,
-       _priceItem = priceItem,
-       _priceItemBuybyBatch = priceItemBuyByBatch,
-       _priceItemByBatch = priceItemByBatch,
-       _idCategoryItem = idCategoryItem,
-       _statusCondiment = statusCondiment,
-       _urlImage = urlImage,
-       _idBranch = idBranch,
-       _barcode = barcode,
-       _qtyItem = qtyItem,
-       _statusItem = statusItem,
-       _date = date;
+  final DateTime date;
 
-  double get getpriceItemBuyByBatch => _priceItemBuybyBatch;
-  double get getpriceItemByBatch => _priceItemByBatch;
-  String get getnameItem => _nameItem;
-  String get getidItem => _idItem;
-  double get getpriceItem => _priceItem;
-  String get getidCategoryiItem => _idCategoryItem;
-  StatusData get getstatusCondiment => _statusCondiment;
-  String get geturlImage => _urlImage;
-  double get getqtyItem => _qtyItem;
-  String get getidBranch => _idBranch;
-  String get getBarcode => _barcode;
-  StatusData get getStatusItem => _statusItem;
-  DateTime get getDateItem => _date;
+  final double priceItem;
+  final double qtyItem;
+  final double priceItemBuybyBatch;
+  final double priceItemByBatch;
+
+  final StatusData statusCondiment;
+  final StatusData statusItem;
+
+  const ModelItem({
+    required this.qtyItem,
+    required this.nameItem,
+    required this.idItem,
+    required this.priceItem,
+    required this.priceItemByBatch,
+    required this.priceItemBuybyBatch,
+    required this.idCategoryItem,
+    required this.statusCondiment,
+    required this.urlImage,
+    required this.idBranch,
+    required this.barcode,
+    required this.statusItem,
+    required this.date,
+  });
+
+  double get getpriceItemBuybyBatch => priceItemBuybyBatch;
+  double get getpriceItembyBatch => priceItemByBatch;
+  String get getnameItem => nameItem;
+  String get getidItem => idItem;
+  double get getpriceItem => priceItem;
+  String get getidCategoryiItem => idCategoryItem;
+  StatusData get getstatusCondiment => statusCondiment;
+  String get geturlImage => urlImage;
+  double get getqtyItem => qtyItem;
+  String get getidBranch => idBranch;
+  String get getBarcode => barcode;
+  StatusData get getStatusItem => statusItem;
+  DateTime get getDateItem => date;
 
   ModelItem copyWith({
     double? qtyItem,
@@ -72,59 +67,41 @@ class ModelItem extends Equatable {
     DateTime? date,
   }) {
     return ModelItem(
-      priceItemByBatch: priceItemByBatch ?? _priceItemByBatch,
-      priceItemBuyByBatch: priceItemBuyByBatch ?? _priceItemBuybyBatch,
-      qtyItem: qtyItem ?? _qtyItem,
-      nameItem: nameItem ?? _nameItem,
-      idItem: idItem ?? _idItem,
-      priceItem: priceItem ?? _priceItem,
-      idCategoryItem: idCategoryItem ?? _idCategoryItem,
-      statusCondiment: statusCondiment ?? _statusCondiment,
-      urlImage: urlImage ?? _urlImage,
-      idBranch: idBranch ?? _idBranch,
-      barcode: barcode ?? _barcode,
-      statusItem: statusItem ?? _statusItem,
-      date: date ?? _date,
+      priceItemByBatch: priceItemByBatch ?? this.priceItemByBatch,
+      priceItemBuybyBatch: priceItemBuyByBatch ?? priceItemBuybyBatch,
+      qtyItem: qtyItem ?? this.qtyItem,
+      nameItem: nameItem ?? this.nameItem,
+      idItem: idItem ?? this.idItem,
+      priceItem: priceItem ?? this.priceItem,
+      idCategoryItem: idCategoryItem ?? this.idCategoryItem,
+      statusCondiment: statusCondiment ?? this.statusCondiment,
+      urlImage: urlImage ?? this.urlImage,
+      idBranch: idBranch ?? this.idBranch,
+      barcode: barcode ?? this.barcode,
+      statusItem: statusItem ?? this.statusItem,
+      date: date ?? this.date,
     );
   }
 
   Future<void> pushDataItem() async {
     await FirebaseFirestore.instance
         .collection("items")
-        .doc(_idItem)
-        .set(
-          convertToMapItem(
-            ModelItem(
-              priceItemByBatch: _priceItemByBatch,
-              priceItemBuyByBatch: _priceItemBuybyBatch,
-              qtyItem: _qtyItem,
-              nameItem: _nameItem,
-              idItem: _idItem,
-              priceItem: _priceItem,
-              idCategoryItem: _idCategoryItem,
-              statusCondiment: _statusCondiment,
-              urlImage: _urlImage,
-              idBranch: _idBranch,
-              barcode: _barcode,
-              statusItem: _statusItem,
-              date: _date,
-            ),
-          ),
-        );
+        .doc(idItem)
+        .set(convertToMapItem(this));
   }
 
   @override
   List<Object?> get props => [
-    _nameItem,
-    _idItem,
-    _priceItem,
-    _idCategoryItem,
-    _statusCondiment,
-    _urlImage,
-    _idBranch,
-    _barcode,
-    _qtyItem,
-    _statusItem,
-    _date,
+    nameItem,
+    idItem,
+    priceItem,
+    idCategoryItem,
+    statusCondiment,
+    urlImage,
+    idBranch,
+    barcode,
+    qtyItem,
+    statusItem,
+    date,
   ];
 }

@@ -42,7 +42,7 @@ class UITransactionGridViewItem extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = state.$1[index];
             debugPrint(
-              "Log UITransactionGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItemByBatch}",
+              "Log UITransactionGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItembyBatch}",
             );
             return Material(
               color: AppPropertyColor.white,
@@ -56,7 +56,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                     onTap: () {
                       final idOrdered = Uuid().v4();
                       ModelItemOrdered selectedItem = ModelItemOrdered(
-                        priceItemBuy: item.getpriceItemBuyByBatch,
+                        priceItemBuy: item.getpriceItemBuybyBatch,
                         itemOrderedBatch: [],
                         priceItemFinal: item.getpriceItem,
                         subTotal: item.getpriceItem,
@@ -130,11 +130,11 @@ class UITransactionGridViewItem extends StatelessWidget {
                               formatPriceRp(
                                 state.$2
                                     ? UserSession.getStatusFifo()
-                                          ? item.getpriceItemByBatch == 0
+                                          ? item.getpriceItembyBatch == 0
                                                 ? item.getpriceItem
-                                                : item.getpriceItemByBatch
+                                                : item.getpriceItembyBatch
                                           : item.getpriceItem
-                                    : item.getpriceItemBuyByBatch,
+                                    : item.getpriceItemBuybyBatch,
                               ),
                               style: lv05textStylePrice,
                               textAlign: TextAlign.left,

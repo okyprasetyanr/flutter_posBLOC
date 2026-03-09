@@ -38,7 +38,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = items[index];
             debugPrint(
-              "Log UIInventoryGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItemByBatch}",
+              "Log UIInventoryGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItembyBatch}",
             );
             return Material(
               color: AppPropertyColor.white,
@@ -53,8 +53,8 @@ class UIInventoryGridViewItem extends StatelessWidget {
                       context.read<InventoryBloc>().add(
                         InventorySelectedItem(
                           selectedItem: ModelItem(
-                            priceItemByBatch: item.getpriceItemByBatch,
-                            priceItemBuyByBatch: item.getpriceItemBuyByBatch,
+                            priceItemByBatch: item.getpriceItembyBatch,
+                            priceItemBuybyBatch: item.getpriceItemBuybyBatch,
                             qtyItem: item.getqtyItem,
                             nameItem: item.getnameItem,
                             idItem: item.getidItem,
@@ -121,9 +121,9 @@ class UIInventoryGridViewItem extends StatelessWidget {
                             child: Text(
                               formatPriceRp(
                                 UserSession.getStatusFifo()
-                                    ? item.getpriceItemByBatch == 0
+                                    ? item.getpriceItembyBatch == 0
                                           ? item.getpriceItem
-                                          : item.getpriceItemByBatch
+                                          : item.getpriceItembyBatch
                                     : item.getpriceItem,
                               ),
                               style: lv05textStylePrice,

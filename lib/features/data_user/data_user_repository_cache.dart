@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
+import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/features/hive_setup/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -244,6 +244,6 @@ class DataUserRepositoryCache {
   }
 
   Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
-    return await Hive.openBox<TransactionSavedHive>('saved_transaction');
+    return await Hive.box<TransactionSavedHive>('saved_transaction');
   }
 }
