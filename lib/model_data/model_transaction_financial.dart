@@ -19,7 +19,6 @@ class ModelTransactionFinancial extends Equatable {
     required this.date,
     required this.note,
     required this.amount,
-    re,
   });
 
   String get getinvoice => invoice;

@@ -25,6 +25,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/transaction_saved_hive_adapter.dart';
 import 'package:flutter_pos/firebase_options.dart';
+import 'package:flutter_pos/service/isar_service.dart';
 import 'package:flutter_pos/service/service_printer.dart';
 import 'package:flutter_pos/routes/routes.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -50,7 +51,7 @@ void main() async {
     Hive.openBox('firestoreQueue'),
     Hive.openBox<TransactionSavedHive>('saved_transaction'),
   ]);
-
+  await IsarService.initIsar();
   if (!kIsWeb) {
     Workmanager().initialize(callbackDispatcher);
     Workmanager().registerPeriodicTask(
@@ -97,15 +98,13 @@ void main() async {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    // Gunakan try-catch di dalam worker agar jika gagal tidak membuat crash aplikasi utama
     try {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
       await Hive.initFlutter();
-
-      // Cek apakah adapter sudah terdaftar (menghindari error duplicated adapter)
+      await IsarService.initIsar();
       if (!Hive.isAdapterRegistered(TransactionSavedHiveAdapter().typeId)) {
         Hive.registerAdapter(TransactionSavedHiveAdapter());
       }

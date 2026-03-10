@@ -70,14 +70,12 @@ const ModelItemIsarSchema = CollectionSchema(
     r'statusCondiment': PropertySchema(
       id: 10,
       name: r'statusCondiment',
-      type: IsarType.byte,
-      enumMap: _ModelItemIsarstatusCondimentEnumValueMap,
+      type: IsarType.string,
     ),
     r'statusItem': PropertySchema(
       id: 11,
       name: r'statusItem',
-      type: IsarType.byte,
-      enumMap: _ModelItemIsarstatusItemEnumValueMap,
+      type: IsarType.string,
     ),
     r'urlImage': PropertySchema(
       id: 12,
@@ -124,6 +122,8 @@ int _modelItemIsarEstimateSize(
   bytesCount += 3 + object.idCategoryItem.length * 3;
   bytesCount += 3 + object.idItem.length * 3;
   bytesCount += 3 + object.nameItem.length * 3;
+  bytesCount += 3 + object.statusCondiment.length * 3;
+  bytesCount += 3 + object.statusItem.length * 3;
   bytesCount += 3 + object.urlImage.length * 3;
   return bytesCount;
 }
@@ -144,8 +144,8 @@ void _modelItemIsarSerialize(
   writer.writeDouble(offsets[7], object.priceItemBuybyBatch);
   writer.writeDouble(offsets[8], object.priceItemByBatch);
   writer.writeDouble(offsets[9], object.qtyItem);
-  writer.writeByte(offsets[10], object.statusCondiment.index);
-  writer.writeByte(offsets[11], object.statusItem.index);
+  writer.writeString(offsets[10], object.statusCondiment);
+  writer.writeString(offsets[11], object.statusItem);
   writer.writeString(offsets[12], object.urlImage);
 }
 
@@ -167,12 +167,8 @@ ModelItemIsar _modelItemIsarDeserialize(
   object.priceItemBuybyBatch = reader.readDouble(offsets[7]);
   object.priceItemByBatch = reader.readDouble(offsets[8]);
   object.qtyItem = reader.readDouble(offsets[9]);
-  object.statusCondiment = _ModelItemIsarstatusCondimentValueEnumMap[
-          reader.readByteOrNull(offsets[10])] ??
-      StatusData.Aktif;
-  object.statusItem = _ModelItemIsarstatusItemValueEnumMap[
-          reader.readByteOrNull(offsets[11])] ??
-      StatusData.Aktif;
+  object.statusCondiment = reader.readString(offsets[10]);
+  object.statusItem = reader.readString(offsets[11]);
   object.urlImage = reader.readString(offsets[12]);
   return object;
 }
@@ -205,36 +201,15 @@ P _modelItemIsarDeserializeProp<P>(
     case 9:
       return (reader.readDouble(offset)) as P;
     case 10:
-      return (_ModelItemIsarstatusCondimentValueEnumMap[
-              reader.readByteOrNull(offset)] ??
-          StatusData.Aktif) as P;
+      return (reader.readString(offset)) as P;
     case 11:
-      return (_ModelItemIsarstatusItemValueEnumMap[
-              reader.readByteOrNull(offset)] ??
-          StatusData.Aktif) as P;
+      return (reader.readString(offset)) as P;
     case 12:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
-
-const _ModelItemIsarstatusCondimentEnumValueMap = {
-  'Aktif': 0,
-  'Nonaktif': 1,
-};
-const _ModelItemIsarstatusCondimentValueEnumMap = {
-  0: StatusData.Aktif,
-  1: StatusData.Nonaktif,
-};
-const _ModelItemIsarstatusItemEnumValueMap = {
-  'Aktif': 0,
-  'Nonaktif': 1,
-};
-const _ModelItemIsarstatusItemValueEnumMap = {
-  0: StatusData.Aktif,
-  1: StatusData.Nonaktif,
-};
 
 Id _modelItemIsarGetId(ModelItemIsar object) {
   return object.isarId;
@@ -1487,49 +1462,58 @@ extension ModelItemIsarQueryFilter
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
-      statusCondimentEqualTo(StatusData value) {
+      statusCondimentEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'statusCondiment',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
       statusCondimentGreaterThan(
-    StatusData value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'statusCondiment',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
       statusCondimentLessThan(
-    StatusData value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'statusCondiment',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
       statusCondimentBetween(
-    StatusData lower,
-    StatusData upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1538,54 +1522,134 @@ extension ModelItemIsarQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
-      statusItemEqualTo(StatusData value) {
+      statusCondimentStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'statusCondiment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusCondimentEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'statusCondiment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusCondimentContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'statusCondiment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusCondimentMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'statusCondiment',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusCondimentIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'statusCondiment',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusCondimentIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'statusCondiment',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusItemEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'statusItem',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
       statusItemGreaterThan(
-    StatusData value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'statusItem',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
       statusItemLessThan(
-    StatusData value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'statusItem',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
       statusItemBetween(
-    StatusData lower,
-    StatusData upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1594,6 +1658,77 @@ extension ModelItemIsarQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusItemStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'statusItem',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusItemEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'statusItem',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusItemContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'statusItem',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusItemMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'statusItem',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusItemIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'statusItem',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QAfterFilterCondition>
+      statusItemIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'statusItem',
+        value: '',
       ));
     });
   }
@@ -2168,15 +2303,17 @@ extension ModelItemIsarQueryWhereDistinct
   }
 
   QueryBuilder<ModelItemIsar, ModelItemIsar, QDistinct>
-      distinctByStatusCondiment() {
+      distinctByStatusCondiment({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'statusCondiment');
+      return query.addDistinctBy(r'statusCondiment',
+          caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ModelItemIsar, ModelItemIsar, QDistinct> distinctByStatusItem() {
+  QueryBuilder<ModelItemIsar, ModelItemIsar, QDistinct> distinctByStatusItem(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'statusItem');
+      return query.addDistinctBy(r'statusItem', caseSensitive: caseSensitive);
     });
   }
 
@@ -2259,15 +2396,14 @@ extension ModelItemIsarQueryProperty
     });
   }
 
-  QueryBuilder<ModelItemIsar, StatusData, QQueryOperations>
+  QueryBuilder<ModelItemIsar, String, QQueryOperations>
       statusCondimentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'statusCondiment');
     });
   }
 
-  QueryBuilder<ModelItemIsar, StatusData, QQueryOperations>
-      statusItemProperty() {
+  QueryBuilder<ModelItemIsar, String, QQueryOperations> statusItemProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'statusItem');
     });
