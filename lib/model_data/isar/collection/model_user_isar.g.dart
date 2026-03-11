@@ -17,54 +17,128 @@ const ModelUserIsarSchema = CollectionSchema(
   name: r'ModelUserIsar',
   id: 9150131632075427021,
   properties: {
-    r'createdUser': PropertySchema(
+    r'Data_Operator': PropertySchema(
       id: 0,
+      name: r'Data_Operator',
+      type: IsarType.bool,
+    ),
+    r'Data_Pelanggan': PropertySchema(
+      id: 1,
+      name: r'Data_Pelanggan',
+      type: IsarType.bool,
+    ),
+    r'Data_Pemasok': PropertySchema(
+      id: 2,
+      name: r'Data_Pemasok',
+      type: IsarType.bool,
+    ),
+    r'Data_Pemasukan': PropertySchema(
+      id: 3,
+      name: r'Data_Pemasukan',
+      type: IsarType.bool,
+    ),
+    r'Data_Pengeluaran': PropertySchema(
+      id: 4,
+      name: r'Data_Pengeluaran',
+      type: IsarType.bool,
+    ),
+    r'Inventory': PropertySchema(
+      id: 5,
+      name: r'Inventory',
+      type: IsarType.bool,
+    ),
+    r'Laporan': PropertySchema(
+      id: 6,
+      name: r'Laporan',
+      type: IsarType.bool,
+    ),
+    r'Pembelian': PropertySchema(
+      id: 7,
+      name: r'Pembelian',
+      type: IsarType.bool,
+    ),
+    r'Pendapatan': PropertySchema(
+      id: 8,
+      name: r'Pendapatan',
+      type: IsarType.bool,
+    ),
+    r'Pengeluaran': PropertySchema(
+      id: 9,
+      name: r'Pengeluaran',
+      type: IsarType.bool,
+    ),
+    r'Penjualan': PropertySchema(
+      id: 10,
+      name: r'Penjualan',
+      type: IsarType.bool,
+    ),
+    r'Riwayat_Pembelian': PropertySchema(
+      id: 11,
+      name: r'Riwayat_Pembelian',
+      type: IsarType.bool,
+    ),
+    r'Riwayat_Pendapatan': PropertySchema(
+      id: 12,
+      name: r'Riwayat_Pendapatan',
+      type: IsarType.bool,
+    ),
+    r'Riwayat_Pengeluaran': PropertySchema(
+      id: 13,
+      name: r'Riwayat_Pengeluaran',
+      type: IsarType.bool,
+    ),
+    r'Riwayat_Penjualan': PropertySchema(
+      id: 14,
+      name: r'Riwayat_Penjualan',
+      type: IsarType.bool,
+    ),
+    r'Stok': PropertySchema(
+      id: 15,
+      name: r'Stok',
+      type: IsarType.bool,
+    ),
+    r'createdUser': PropertySchema(
+      id: 16,
       name: r'createdUser',
       type: IsarType.dateTime,
     ),
     r'emailUser': PropertySchema(
-      id: 1,
+      id: 17,
       name: r'emailUser',
       type: IsarType.string,
     ),
     r'idBranchUser': PropertySchema(
-      id: 2,
+      id: 18,
       name: r'idBranchUser',
       type: IsarType.string,
     ),
     r'idUser': PropertySchema(
-      id: 3,
+      id: 19,
       name: r'idUser',
       type: IsarType.string,
     ),
     r'nameUser': PropertySchema(
-      id: 4,
+      id: 20,
       name: r'nameUser',
       type: IsarType.string,
     ),
     r'noteUser': PropertySchema(
-      id: 5,
+      id: 21,
       name: r'noteUser',
       type: IsarType.string,
     ),
-    r'permissionsUser': PropertySchema(
-      id: 6,
-      name: r'permissionsUser',
-      type: IsarType.objectList,
-      target: r'ModelPermissionUserIsar',
-    ),
     r'phoneUser': PropertySchema(
-      id: 7,
+      id: 22,
       name: r'phoneUser',
       type: IsarType.string,
     ),
     r'roleUser': PropertySchema(
-      id: 8,
+      id: 23,
       name: r'roleUser',
       type: IsarType.string,
     ),
     r'statusUser': PropertySchema(
-      id: 9,
+      id: 24,
       name: r'statusUser',
       type: IsarType.string,
     )
@@ -103,7 +177,7 @@ const ModelUserIsarSchema = CollectionSchema(
     )
   },
   links: {},
-  embeddedSchemas: {r'ModelPermissionUserIsar': ModelPermissionUserIsarSchema},
+  embeddedSchemas: {},
   getId: _modelUserIsarGetId,
   getLinks: _modelUserIsarGetLinks,
   attach: _modelUserIsarAttach,
@@ -131,15 +205,6 @@ int _modelUserIsarEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.permissionsUser.length * 3;
-  {
-    final offsets = allOffsets[ModelPermissionUserIsar]!;
-    for (var i = 0; i < object.permissionsUser.length; i++) {
-      final value = object.permissionsUser[i];
-      bytesCount += ModelPermissionUserIsarSchema.estimateSize(
-          value, offsets, allOffsets);
-    }
-  }
   bytesCount += 3 + object.phoneUser.length * 3;
   bytesCount += 3 + object.roleUser.length * 3;
   bytesCount += 3 + object.statusUser.length * 3;
@@ -152,21 +217,31 @@ void _modelUserIsarSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.createdUser);
-  writer.writeString(offsets[1], object.emailUser);
-  writer.writeString(offsets[2], object.idBranchUser);
-  writer.writeString(offsets[3], object.idUser);
-  writer.writeString(offsets[4], object.nameUser);
-  writer.writeString(offsets[5], object.noteUser);
-  writer.writeObjectList<ModelPermissionUserIsar>(
-    offsets[6],
-    allOffsets,
-    ModelPermissionUserIsarSchema.serialize,
-    object.permissionsUser,
-  );
-  writer.writeString(offsets[7], object.phoneUser);
-  writer.writeString(offsets[8], object.roleUser);
-  writer.writeString(offsets[9], object.statusUser);
+  writer.writeBool(offsets[0], object.Data_Operator);
+  writer.writeBool(offsets[1], object.Data_Pelanggan);
+  writer.writeBool(offsets[2], object.Data_Pemasok);
+  writer.writeBool(offsets[3], object.Data_Pemasukan);
+  writer.writeBool(offsets[4], object.Data_Pengeluaran);
+  writer.writeBool(offsets[5], object.Inventory);
+  writer.writeBool(offsets[6], object.Laporan);
+  writer.writeBool(offsets[7], object.Pembelian);
+  writer.writeBool(offsets[8], object.Pendapatan);
+  writer.writeBool(offsets[9], object.Pengeluaran);
+  writer.writeBool(offsets[10], object.Penjualan);
+  writer.writeBool(offsets[11], object.Riwayat_Pembelian);
+  writer.writeBool(offsets[12], object.Riwayat_Pendapatan);
+  writer.writeBool(offsets[13], object.Riwayat_Pengeluaran);
+  writer.writeBool(offsets[14], object.Riwayat_Penjualan);
+  writer.writeBool(offsets[15], object.Stok);
+  writer.writeDateTime(offsets[16], object.createdUser);
+  writer.writeString(offsets[17], object.emailUser);
+  writer.writeString(offsets[18], object.idBranchUser);
+  writer.writeString(offsets[19], object.idUser);
+  writer.writeString(offsets[20], object.nameUser);
+  writer.writeString(offsets[21], object.noteUser);
+  writer.writeString(offsets[22], object.phoneUser);
+  writer.writeString(offsets[23], object.roleUser);
+  writer.writeString(offsets[24], object.statusUser);
 }
 
 ModelUserIsar _modelUserIsarDeserialize(
@@ -176,23 +251,32 @@ ModelUserIsar _modelUserIsarDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ModelUserIsar();
-  object.createdUser = reader.readDateTimeOrNull(offsets[0]);
-  object.emailUser = reader.readString(offsets[1]);
-  object.idBranchUser = reader.readStringOrNull(offsets[2]);
-  object.idUser = reader.readString(offsets[3]);
+  object.Data_Operator = reader.readBool(offsets[0]);
+  object.Data_Pelanggan = reader.readBool(offsets[1]);
+  object.Data_Pemasok = reader.readBool(offsets[2]);
+  object.Data_Pemasukan = reader.readBool(offsets[3]);
+  object.Data_Pengeluaran = reader.readBool(offsets[4]);
+  object.Inventory = reader.readBool(offsets[5]);
+  object.Laporan = reader.readBool(offsets[6]);
+  object.Pembelian = reader.readBool(offsets[7]);
+  object.Pendapatan = reader.readBool(offsets[8]);
+  object.Pengeluaran = reader.readBool(offsets[9]);
+  object.Penjualan = reader.readBool(offsets[10]);
+  object.Riwayat_Pembelian = reader.readBool(offsets[11]);
+  object.Riwayat_Pendapatan = reader.readBool(offsets[12]);
+  object.Riwayat_Pengeluaran = reader.readBool(offsets[13]);
+  object.Riwayat_Penjualan = reader.readBool(offsets[14]);
+  object.Stok = reader.readBool(offsets[15]);
+  object.createdUser = reader.readDateTimeOrNull(offsets[16]);
+  object.emailUser = reader.readString(offsets[17]);
+  object.idBranchUser = reader.readStringOrNull(offsets[18]);
+  object.idUser = reader.readString(offsets[19]);
   object.isarId = id;
-  object.nameUser = reader.readString(offsets[4]);
-  object.noteUser = reader.readStringOrNull(offsets[5]);
-  object.permissionsUser = reader.readObjectList<ModelPermissionUserIsar>(
-        offsets[6],
-        ModelPermissionUserIsarSchema.deserialize,
-        allOffsets,
-        ModelPermissionUserIsar(),
-      ) ??
-      [];
-  object.phoneUser = reader.readString(offsets[7]);
-  object.roleUser = reader.readString(offsets[8]);
-  object.statusUser = reader.readString(offsets[9]);
+  object.nameUser = reader.readString(offsets[20]);
+  object.noteUser = reader.readStringOrNull(offsets[21]);
+  object.phoneUser = reader.readString(offsets[22]);
+  object.roleUser = reader.readString(offsets[23]);
+  object.statusUser = reader.readString(offsets[24]);
   return object;
 }
 
@@ -204,30 +288,54 @@ P _modelUserIsarDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 6:
-      return (reader.readObjectList<ModelPermissionUserIsar>(
-            offset,
-            ModelPermissionUserIsarSchema.deserialize,
-            allOffsets,
-            ModelPermissionUserIsar(),
-          ) ??
-          []) as P;
+      return (reader.readBool(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 9:
+      return (reader.readBool(offset)) as P;
+    case 10:
+      return (reader.readBool(offset)) as P;
+    case 11:
+      return (reader.readBool(offset)) as P;
+    case 12:
+      return (reader.readBool(offset)) as P;
+    case 13:
+      return (reader.readBool(offset)) as P;
+    case 14:
+      return (reader.readBool(offset)) as P;
+    case 15:
+      return (reader.readBool(offset)) as P;
+    case 16:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 17:
+      return (reader.readString(offset)) as P;
+    case 18:
+      return (reader.readStringOrNull(offset)) as P;
+    case 19:
+      return (reader.readString(offset)) as P;
+    case 20:
+      return (reader.readString(offset)) as P;
+    case 21:
+      return (reader.readStringOrNull(offset)) as P;
+    case 22:
+      return (reader.readString(offset)) as P;
+    case 23:
+      return (reader.readString(offset)) as P;
+    case 24:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -496,6 +604,166 @@ extension ModelUserIsarQueryWhere
 
 extension ModelUserIsarQueryFilter
     on QueryBuilder<ModelUserIsar, ModelUserIsar, QFilterCondition> {
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      data_OperatorEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Data_Operator',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      data_PelangganEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Data_Pelanggan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      data_PemasokEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Data_Pemasok',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      data_PemasukanEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Data_Pemasukan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      data_PengeluaranEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Data_Pengeluaran',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      inventoryEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Inventory',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      laporanEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Laporan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      pembelianEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Pembelian',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      pendapatanEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Pendapatan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      pengeluaranEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Pengeluaran',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      penjualanEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Penjualan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      riwayat_PembelianEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Riwayat_Pembelian',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      riwayat_PendapatanEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Riwayat_Pendapatan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      riwayat_PengeluaranEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Riwayat_Pengeluaran',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      riwayat_PenjualanEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Riwayat_Penjualan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition> stokEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Stok',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
       createdUserIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -1343,95 +1611,6 @@ extension ModelUserIsarQueryFilter
   }
 
   QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
-      permissionsUserLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'permissionsUser',
-        length,
-        true,
-        length,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
-      permissionsUserIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'permissionsUser',
-        0,
-        true,
-        0,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
-      permissionsUserIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'permissionsUser',
-        0,
-        false,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
-      permissionsUserLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'permissionsUser',
-        0,
-        true,
-        length,
-        include,
-      );
-    });
-  }
-
-  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
-      permissionsUserLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'permissionsUser',
-        length,
-        include,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
-      permissionsUserLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'permissionsUser',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
-    });
-  }
-
-  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
       phoneUserEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1841,20 +2020,228 @@ extension ModelUserIsarQueryFilter
 }
 
 extension ModelUserIsarQueryObject
-    on QueryBuilder<ModelUserIsar, ModelUserIsar, QFilterCondition> {
-  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
-      permissionsUserElement(FilterQuery<ModelPermissionUserIsar> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'permissionsUser');
-    });
-  }
-}
+    on QueryBuilder<ModelUserIsar, ModelUserIsar, QFilterCondition> {}
 
 extension ModelUserIsarQueryLinks
     on QueryBuilder<ModelUserIsar, ModelUserIsar, QFilterCondition> {}
 
 extension ModelUserIsarQuerySortBy
     on QueryBuilder<ModelUserIsar, ModelUserIsar, QSortBy> {
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_Operator() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Operator', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_OperatorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Operator', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_Pelanggan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pelanggan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_PelangganDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pelanggan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_Pemasok() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasok', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_PemasokDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasok', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_Pemasukan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasukan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_PemasukanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasukan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_Pengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pengeluaran', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByData_PengeluaranDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pengeluaran', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByInventory() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Inventory', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByInventoryDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Inventory', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByLaporan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Laporan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByLaporanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Laporan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByPembelian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pembelian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByPembelianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pembelian', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByPendapatan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pendapatan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByPendapatanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pendapatan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByPengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pengeluaran', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByPengeluaranDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pengeluaran', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByPenjualan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penjualan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByPenjualanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penjualan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_Pembelian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pembelian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_PembelianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pembelian', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_Pendapatan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pendapatan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_PendapatanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pendapatan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_Pengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pengeluaran', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_PengeluaranDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pengeluaran', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_Penjualan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penjualan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByRiwayat_PenjualanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penjualan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByStok() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Stok', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByStokDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Stok', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByCreatedUser() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdUser', Sort.asc);
@@ -1975,6 +2362,221 @@ extension ModelUserIsarQuerySortBy
 
 extension ModelUserIsarQuerySortThenBy
     on QueryBuilder<ModelUserIsar, ModelUserIsar, QSortThenBy> {
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_Operator() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Operator', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_OperatorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Operator', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_Pelanggan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pelanggan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_PelangganDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pelanggan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_Pemasok() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasok', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_PemasokDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasok', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_Pemasukan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasukan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_PemasukanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pemasukan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_Pengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pengeluaran', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByData_PengeluaranDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Data_Pengeluaran', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByInventory() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Inventory', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByInventoryDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Inventory', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByLaporan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Laporan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByLaporanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Laporan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByPembelian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pembelian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByPembelianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pembelian', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByPendapatan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pendapatan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByPendapatanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pendapatan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByPengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pengeluaran', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByPengeluaranDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Pengeluaran', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByPenjualan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penjualan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByPenjualanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penjualan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_Pembelian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pembelian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_PembelianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pembelian', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_Pendapatan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pendapatan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_PendapatanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pendapatan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_Pengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pengeluaran', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_PengeluaranDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Pengeluaran', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_Penjualan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penjualan', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByRiwayat_PenjualanDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penjualan', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByStok() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Stok', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByStokDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Stok', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByCreatedUser() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdUser', Sort.asc);
@@ -2108,6 +2710,112 @@ extension ModelUserIsarQuerySortThenBy
 extension ModelUserIsarQueryWhereDistinct
     on QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct> {
   QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByData_Operator() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Data_Operator');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByData_Pelanggan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Data_Pelanggan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByData_Pemasok() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Data_Pemasok');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByData_Pemasukan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Data_Pemasukan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByData_Pengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Data_Pengeluaran');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct> distinctByInventory() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Inventory');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct> distinctByLaporan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Laporan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct> distinctByPembelian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Pembelian');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct> distinctByPendapatan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Pendapatan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByPengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Pengeluaran');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct> distinctByPenjualan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Penjualan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByRiwayat_Pembelian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Riwayat_Pembelian');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByRiwayat_Pendapatan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Riwayat_Pendapatan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByRiwayat_Pengeluaran() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Riwayat_Pengeluaran');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByRiwayat_Penjualan() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Riwayat_Penjualan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct> distinctByStok() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Stok');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
       distinctByCreatedUser() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdUser');
@@ -2179,6 +2887,107 @@ extension ModelUserIsarQueryProperty
     });
   }
 
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> Data_OperatorProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Data_Operator');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> Data_PelangganProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Data_Pelanggan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> Data_PemasokProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Data_Pemasok');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> Data_PemasukanProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Data_Pemasukan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations>
+      Data_PengeluaranProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Data_Pengeluaran');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> InventoryProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Inventory');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> LaporanProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Laporan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> PembelianProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Pembelian');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> PendapatanProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Pendapatan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> PengeluaranProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Pengeluaran');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> PenjualanProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Penjualan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations>
+      Riwayat_PembelianProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Riwayat_Pembelian');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations>
+      Riwayat_PendapatanProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Riwayat_Pendapatan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations>
+      Riwayat_PengeluaranProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Riwayat_Pengeluaran');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations>
+      Riwayat_PenjualanProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Riwayat_Penjualan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> StokProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Stok');
+    });
+  }
+
   QueryBuilder<ModelUserIsar, DateTime?, QQueryOperations>
       createdUserProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -2214,13 +3023,6 @@ extension ModelUserIsarQueryProperty
   QueryBuilder<ModelUserIsar, String?, QQueryOperations> noteUserProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'noteUser');
-    });
-  }
-
-  QueryBuilder<ModelUserIsar, List<ModelPermissionUserIsar>, QQueryOperations>
-      permissionsUserProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'permissionsUser');
     });
   }
 

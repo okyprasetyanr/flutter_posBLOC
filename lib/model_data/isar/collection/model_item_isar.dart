@@ -7,11 +7,12 @@ class ModelItemIsar {
   Id isarId = Isar.autoIncrement;
   @Index(unique: true)
   late String idItem;
+  @Index()
+  late String idBranch;
 
   late String nameItem;
   late String idCategoryItem;
   late String urlImage;
-  late String idBranch;
   late String barcode;
   late DateTime date;
   late double priceItem;

@@ -57,6 +57,19 @@ const ModelBatchIsarSchema = CollectionSchema(
           caseSensitive: true,
         )
       ],
+    ),
+    r'idBranch': IndexSchema(
+      id: 4331900883289279112,
+      name: r'idBranch',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'idBranch',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
     )
   },
   links: {},
@@ -336,6 +349,51 @@ extension ModelBatchIsarQueryWhere
               indexName: r'invoice',
               lower: [],
               upper: [invoice],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ModelBatchIsar, ModelBatchIsar, QAfterWhereClause>
+      idBranchEqualTo(String idBranch) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'idBranch',
+        value: [idBranch],
+      ));
+    });
+  }
+
+  QueryBuilder<ModelBatchIsar, ModelBatchIsar, QAfterWhereClause>
+      idBranchNotEqualTo(String idBranch) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'idBranch',
+              lower: [],
+              upper: [idBranch],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'idBranch',
+              lower: [idBranch],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'idBranch',
+              lower: [idBranch],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'idBranch',
+              lower: [],
+              upper: [idBranch],
               includeUpper: false,
             ));
       }

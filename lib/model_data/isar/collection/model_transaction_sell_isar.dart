@@ -11,10 +11,8 @@ class ModelTransactionSellIsar extends ModelTransactionIsarBase {
   Id isarId = Isar.autoIncrement;
 
   @Index(unique: true)
-  @override
   late String invoice;
 
   @Index()
-  @override
   late String idBranch;
 }

@@ -8,8 +8,9 @@ class ModelBatchIsar {
   Id isarId = Isar.autoIncrement;
   @Index(unique: true)
   late String invoice;
+  @Index()
   late String idBranch;
-  late DateTime dateBuy;
 
+  late DateTime dateBuy;
   List<ModelItemBatchIsar> itemsBatch = [];
 }

@@ -17,7 +17,6 @@ import 'package:flutter_pos/model_data/isar/embedded/model_branch_isar.dart';
 import 'package:flutter_pos/model_data/isar/embedded/model_item_batch_isar.dart';
 import 'package:flutter_pos/model_data/isar/embedded/model_item_ordered_batch_isar.dart';
 import 'package:flutter_pos/model_data/isar/embedded/model_item_ordered_isar.dart';
-import 'package:flutter_pos/model_data/isar/embedded/model_permission_user_isar.dart';
 import 'package:flutter_pos/model_data/isar/embedded/model_split_isar.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -322,27 +321,22 @@ Future<void> saveUser_Isar(ModelUser user) async {
     ..phoneUser = user.getPhoneUser
     ..createdUser = user.getCreatedUser
     ..noteUser = user.getNoteUser
-    ..permissionsUser = [
-      ModelPermissionUserIsar()
-        ..Stok = permissions[Permission.Stok] ?? false
-        ..Inventory = permissions[Permission.Inventory] ?? false
-        ..Penjualan = permissions[Permission.Penjualan] ?? false
-        ..Pembelian = permissions[Permission.Pembelian] ?? false
-        ..Pendapatan = permissions[Permission.Pendapatan] ?? false
-        ..Pengeluaran = permissions[Permission.Pengeluaran] ?? false
-        ..Data_Pelanggan = permissions[Permission.Data_Pelanggan] ?? false
-        ..Data_Pemasok = permissions[Permission.Data_Pemasok] ?? false
-        ..Data_Pemasukan = permissions[Permission.Data_Pemasukan] ?? false
-        ..Data_Pengeluaran = permissions[Permission.Data_Pengeluaran] ?? false
-        ..Data_Operator = permissions[Permission.Data_Operator] ?? false
-        ..Riwayat_Penjualan = permissions[Permission.Riwayat_Penjualan] ?? false
-        ..Riwayat_Pembelian = permissions[Permission.Riwayat_Pembelian] ?? false
-        ..Riwayat_Pendapatan =
-            permissions[Permission.Riwayat_Pendapatan] ?? false
-        ..Riwayat_Pengeluaran =
-            permissions[Permission.Riwayat_Pengeluaran] ?? false
-        ..Laporan = permissions[Permission.Laporan] ?? false,
-    ];
+    ..Stok = permissions[Permission.Stok] ?? false
+    ..Inventory = permissions[Permission.Inventory] ?? false
+    ..Penjualan = permissions[Permission.Penjualan] ?? false
+    ..Pembelian = permissions[Permission.Pembelian] ?? false
+    ..Pendapatan = permissions[Permission.Pendapatan] ?? false
+    ..Pengeluaran = permissions[Permission.Pengeluaran] ?? false
+    ..Data_Pelanggan = permissions[Permission.Data_Pelanggan] ?? false
+    ..Data_Pemasok = permissions[Permission.Data_Pemasok] ?? false
+    ..Data_Pemasukan = permissions[Permission.Data_Pemasukan] ?? false
+    ..Data_Pengeluaran = permissions[Permission.Data_Pengeluaran] ?? false
+    ..Data_Operator = permissions[Permission.Data_Operator] ?? false
+    ..Riwayat_Penjualan = permissions[Permission.Riwayat_Penjualan] ?? false
+    ..Riwayat_Pembelian = permissions[Permission.Riwayat_Pembelian] ?? false
+    ..Riwayat_Pendapatan = permissions[Permission.Riwayat_Pendapatan] ?? false
+    ..Riwayat_Pengeluaran = permissions[Permission.Riwayat_Pengeluaran] ?? false
+    ..Laporan = permissions[Permission.Laporan] ?? false;
 
   await isar.writeTxn(() async {
     await isar.modelUserIsars.put(data);

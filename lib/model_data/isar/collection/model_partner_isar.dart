@@ -8,8 +8,8 @@ class ModelPartnerIsar {
   late String id;
   @Index()
   late String idBranch;
-  late String type;
 
+  late String type;
   late String name;
   late String phone;
   late String email;
