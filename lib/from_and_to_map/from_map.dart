@@ -80,13 +80,13 @@ ModelItem fromMapItem(Map<String, dynamic> data, String id) {
 ModelPartner fromMapPartner(Map<String, dynamic> data, String id) {
   debugPrint("Log fromMap: $data");
   return ModelPartner(
-    idBranch: data[FieldDataPartner.id_branch.name],
-    id: id,
-    name: data[FieldDataPartner.name_partner.name],
-    phone: data[FieldDataPartner.phone_partner.name],
-    email: data[FieldDataPartner.email_partner.name],
-    balance: data[FieldDataPartner.balance_partner.name],
-    type: PartnerType.values.firstWhere(
+    idBranchPartner: data[FieldDataPartner.id_branch.name],
+    idPartner: id,
+    namePartner: data[FieldDataPartner.name_partner.name],
+    phonePartner: data[FieldDataPartner.phone_partner.name],
+    emailPartner: data[FieldDataPartner.email_partner.name],
+    balancePartner: data[FieldDataPartner.balance_partner.name],
+    typePartner: PartnerType.values.firstWhere(
       (element) => element.name == data[FieldDataPartner.type.name],
       orElse: () => PartnerType.customer,
     ),

@@ -17,9 +17,9 @@ const ModelPartnerIsarSchema = CollectionSchema(
   name: r'ModelPartnerIsar',
   id: 1790861042924731863,
   properties: {
-    r'balance': PropertySchema(
+    r'balancePartner': PropertySchema(
       id: 0,
-      name: r'balance',
+      name: r'balancePartner',
       type: IsarType.double,
     ),
     r'date': PropertySchema(
@@ -27,34 +27,34 @@ const ModelPartnerIsarSchema = CollectionSchema(
       name: r'date',
       type: IsarType.dateTime,
     ),
-    r'email': PropertySchema(
+    r'emailPartner': PropertySchema(
       id: 2,
-      name: r'email',
-      type: IsarType.string,
-    ),
-    r'id': PropertySchema(
-      id: 3,
-      name: r'id',
+      name: r'emailPartner',
       type: IsarType.string,
     ),
     r'idBranch': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'idBranch',
       type: IsarType.string,
     ),
-    r'name': PropertySchema(
+    r'idPartner': PropertySchema(
+      id: 4,
+      name: r'idPartner',
+      type: IsarType.string,
+    ),
+    r'namePartner': PropertySchema(
       id: 5,
-      name: r'name',
+      name: r'namePartner',
       type: IsarType.string,
     ),
-    r'phone': PropertySchema(
+    r'phonePartner': PropertySchema(
       id: 6,
-      name: r'phone',
+      name: r'phonePartner',
       type: IsarType.string,
     ),
-    r'type': PropertySchema(
+    r'typePartner': PropertySchema(
       id: 7,
-      name: r'type',
+      name: r'typePartner',
       type: IsarType.string,
     )
   },
@@ -64,14 +64,14 @@ const ModelPartnerIsarSchema = CollectionSchema(
   deserializeProp: _modelPartnerIsarDeserializeProp,
   idName: r'isarId',
   indexes: {
-    r'id': IndexSchema(
-      id: -3268401673993471357,
-      name: r'id',
+    r'idPartner': IndexSchema(
+      id: -2302069033028856625,
+      name: r'idPartner',
       unique: true,
       replace: false,
       properties: [
         IndexPropertySchema(
-          name: r'id',
+          name: r'idPartner',
           type: IndexType.hash,
           caseSensitive: true,
         )
@@ -105,12 +105,12 @@ int _modelPartnerIsarEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.email.length * 3;
-  bytesCount += 3 + object.id.length * 3;
+  bytesCount += 3 + object.emailPartner.length * 3;
   bytesCount += 3 + object.idBranch.length * 3;
-  bytesCount += 3 + object.name.length * 3;
-  bytesCount += 3 + object.phone.length * 3;
-  bytesCount += 3 + object.type.length * 3;
+  bytesCount += 3 + object.idPartner.length * 3;
+  bytesCount += 3 + object.namePartner.length * 3;
+  bytesCount += 3 + object.phonePartner.length * 3;
+  bytesCount += 3 + object.typePartner.length * 3;
   return bytesCount;
 }
 
@@ -120,14 +120,14 @@ void _modelPartnerIsarSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDouble(offsets[0], object.balance);
+  writer.writeDouble(offsets[0], object.balancePartner);
   writer.writeDateTime(offsets[1], object.date);
-  writer.writeString(offsets[2], object.email);
-  writer.writeString(offsets[3], object.id);
-  writer.writeString(offsets[4], object.idBranch);
-  writer.writeString(offsets[5], object.name);
-  writer.writeString(offsets[6], object.phone);
-  writer.writeString(offsets[7], object.type);
+  writer.writeString(offsets[2], object.emailPartner);
+  writer.writeString(offsets[3], object.idBranch);
+  writer.writeString(offsets[4], object.idPartner);
+  writer.writeString(offsets[5], object.namePartner);
+  writer.writeString(offsets[6], object.phonePartner);
+  writer.writeString(offsets[7], object.typePartner);
 }
 
 ModelPartnerIsar _modelPartnerIsarDeserialize(
@@ -137,15 +137,15 @@ ModelPartnerIsar _modelPartnerIsarDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ModelPartnerIsar();
-  object.balance = reader.readDouble(offsets[0]);
+  object.balancePartner = reader.readDouble(offsets[0]);
   object.date = reader.readDateTime(offsets[1]);
-  object.email = reader.readString(offsets[2]);
-  object.id = reader.readString(offsets[3]);
-  object.idBranch = reader.readString(offsets[4]);
+  object.emailPartner = reader.readString(offsets[2]);
+  object.idBranch = reader.readString(offsets[3]);
+  object.idPartner = reader.readString(offsets[4]);
   object.isarId = id;
-  object.name = reader.readString(offsets[5]);
-  object.phone = reader.readString(offsets[6]);
-  object.type = reader.readString(offsets[7]);
+  object.namePartner = reader.readString(offsets[5]);
+  object.phonePartner = reader.readString(offsets[6]);
+  object.typePartner = reader.readString(offsets[7]);
   return object;
 }
 
@@ -191,57 +191,58 @@ void _modelPartnerIsarAttach(
 }
 
 extension ModelPartnerIsarByIndex on IsarCollection<ModelPartnerIsar> {
-  Future<ModelPartnerIsar?> getById(String id) {
-    return getByIndex(r'id', [id]);
+  Future<ModelPartnerIsar?> getByIdPartner(String idPartner) {
+    return getByIndex(r'idPartner', [idPartner]);
   }
 
-  ModelPartnerIsar? getByIdSync(String id) {
-    return getByIndexSync(r'id', [id]);
+  ModelPartnerIsar? getByIdPartnerSync(String idPartner) {
+    return getByIndexSync(r'idPartner', [idPartner]);
   }
 
-  Future<bool> deleteById(String id) {
-    return deleteByIndex(r'id', [id]);
+  Future<bool> deleteByIdPartner(String idPartner) {
+    return deleteByIndex(r'idPartner', [idPartner]);
   }
 
-  bool deleteByIdSync(String id) {
-    return deleteByIndexSync(r'id', [id]);
+  bool deleteByIdPartnerSync(String idPartner) {
+    return deleteByIndexSync(r'idPartner', [idPartner]);
   }
 
-  Future<List<ModelPartnerIsar?>> getAllById(List<String> idValues) {
-    final values = idValues.map((e) => [e]).toList();
-    return getAllByIndex(r'id', values);
+  Future<List<ModelPartnerIsar?>> getAllByIdPartner(
+      List<String> idPartnerValues) {
+    final values = idPartnerValues.map((e) => [e]).toList();
+    return getAllByIndex(r'idPartner', values);
   }
 
-  List<ModelPartnerIsar?> getAllByIdSync(List<String> idValues) {
-    final values = idValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'id', values);
+  List<ModelPartnerIsar?> getAllByIdPartnerSync(List<String> idPartnerValues) {
+    final values = idPartnerValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'idPartner', values);
   }
 
-  Future<int> deleteAllById(List<String> idValues) {
-    final values = idValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'id', values);
+  Future<int> deleteAllByIdPartner(List<String> idPartnerValues) {
+    final values = idPartnerValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'idPartner', values);
   }
 
-  int deleteAllByIdSync(List<String> idValues) {
-    final values = idValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'id', values);
+  int deleteAllByIdPartnerSync(List<String> idPartnerValues) {
+    final values = idPartnerValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'idPartner', values);
   }
 
-  Future<Id> putById(ModelPartnerIsar object) {
-    return putByIndex(r'id', object);
+  Future<Id> putByIdPartner(ModelPartnerIsar object) {
+    return putByIndex(r'idPartner', object);
   }
 
-  Id putByIdSync(ModelPartnerIsar object, {bool saveLinks = true}) {
-    return putByIndexSync(r'id', object, saveLinks: saveLinks);
+  Id putByIdPartnerSync(ModelPartnerIsar object, {bool saveLinks = true}) {
+    return putByIndexSync(r'idPartner', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllById(List<ModelPartnerIsar> objects) {
-    return putAllByIndex(r'id', objects);
+  Future<List<Id>> putAllByIdPartner(List<ModelPartnerIsar> objects) {
+    return putAllByIndex(r'idPartner', objects);
   }
 
-  List<Id> putAllByIdSync(List<ModelPartnerIsar> objects,
+  List<Id> putAllByIdPartnerSync(List<ModelPartnerIsar> objects,
       {bool saveLinks = true}) {
-    return putAllByIndexSync(r'id', objects, saveLinks: saveLinks);
+    return putAllByIndexSync(r'idPartner', objects, saveLinks: saveLinks);
   }
 }
 
@@ -324,45 +325,45 @@ extension ModelPartnerIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterWhereClause> idEqualTo(
-      String id) {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterWhereClause>
+      idPartnerEqualTo(String idPartner) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'id',
-        value: [id],
+        indexName: r'idPartner',
+        value: [idPartner],
       ));
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterWhereClause>
-      idNotEqualTo(String id) {
+      idPartnerNotEqualTo(String idPartner) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'id',
+              indexName: r'idPartner',
               lower: [],
-              upper: [id],
+              upper: [idPartner],
               includeUpper: false,
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'id',
-              lower: [id],
+              indexName: r'idPartner',
+              lower: [idPartner],
               includeLower: false,
               upper: [],
             ));
       } else {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'id',
-              lower: [id],
+              indexName: r'idPartner',
+              lower: [idPartner],
               includeLower: false,
               upper: [],
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'id',
+              indexName: r'idPartner',
               lower: [],
-              upper: [id],
+              upper: [idPartner],
               includeUpper: false,
             ));
       }
@@ -418,13 +419,13 @@ extension ModelPartnerIsarQueryWhere
 extension ModelPartnerIsarQueryFilter
     on QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QFilterCondition> {
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      balanceEqualTo(
+      balancePartnerEqualTo(
     double value, {
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'balance',
+        property: r'balancePartner',
         value: value,
         epsilon: epsilon,
       ));
@@ -432,7 +433,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      balanceGreaterThan(
+      balancePartnerGreaterThan(
     double value, {
     bool include = false,
     double epsilon = Query.epsilon,
@@ -440,7 +441,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'balance',
+        property: r'balancePartner',
         value: value,
         epsilon: epsilon,
       ));
@@ -448,7 +449,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      balanceLessThan(
+      balancePartnerLessThan(
     double value, {
     bool include = false,
     double epsilon = Query.epsilon,
@@ -456,7 +457,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'balance',
+        property: r'balancePartner',
         value: value,
         epsilon: epsilon,
       ));
@@ -464,7 +465,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      balanceBetween(
+      balancePartnerBetween(
     double lower,
     double upper, {
     bool includeLower = true,
@@ -473,7 +474,7 @@ extension ModelPartnerIsarQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'balance',
+        property: r'balancePartner',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -540,13 +541,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailEqualTo(
+      emailPartnerEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'email',
+        property: r'emailPartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -554,7 +555,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailGreaterThan(
+      emailPartnerGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -562,7 +563,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'email',
+        property: r'emailPartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -570,7 +571,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailLessThan(
+      emailPartnerLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -578,7 +579,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'email',
+        property: r'emailPartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -586,7 +587,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailBetween(
+      emailPartnerBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -595,7 +596,7 @@ extension ModelPartnerIsarQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'email',
+        property: r'emailPartner',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -606,13 +607,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailStartsWith(
+      emailPartnerStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'email',
+        property: r'emailPartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -620,13 +621,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailEndsWith(
+      emailPartnerEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'email',
+        property: r'emailPartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -634,10 +635,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailContains(String value, {bool caseSensitive = true}) {
+      emailPartnerContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'email',
+        property: r'emailPartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -645,10 +646,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailMatches(String pattern, {bool caseSensitive = true}) {
+      emailPartnerMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'email',
+        property: r'emailPartner',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -656,156 +657,20 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailIsEmpty() {
+      emailPartnerIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'email',
+        property: r'emailPartner',
         value: '',
       ));
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      emailIsNotEmpty() {
+      emailPartnerIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'email',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'id',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      idIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'id',
+        property: r'emailPartner',
         value: '',
       ));
     });
@@ -948,6 +813,142 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'idPartner',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'idPartner',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'idPartner',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'idPartner',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'idPartner',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'idPartner',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'idPartner',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'idPartner',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'idPartner',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
+      idPartnerIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'idPartner',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
       isarIdEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1004,13 +1005,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameEqualTo(
+      namePartnerEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
+        property: r'namePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1018,7 +1019,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameGreaterThan(
+      namePartnerGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1026,7 +1027,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'name',
+        property: r'namePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1034,7 +1035,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameLessThan(
+      namePartnerLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1042,7 +1043,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'name',
+        property: r'namePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1050,7 +1051,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameBetween(
+      namePartnerBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1059,7 +1060,7 @@ extension ModelPartnerIsarQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'name',
+        property: r'namePartner',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1070,13 +1071,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameStartsWith(
+      namePartnerStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'name',
+        property: r'namePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1084,13 +1085,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameEndsWith(
+      namePartnerEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'name',
+        property: r'namePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1098,10 +1099,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameContains(String value, {bool caseSensitive = true}) {
+      namePartnerContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'name',
+        property: r'namePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1109,10 +1110,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameMatches(String pattern, {bool caseSensitive = true}) {
+      namePartnerMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'name',
+        property: r'namePartner',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -1120,33 +1121,33 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameIsEmpty() {
+      namePartnerIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
+        property: r'namePartner',
         value: '',
       ));
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      nameIsNotEmpty() {
+      namePartnerIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'name',
+        property: r'namePartner',
         value: '',
       ));
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneEqualTo(
+      phonePartnerEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'phone',
+        property: r'phonePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1154,7 +1155,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneGreaterThan(
+      phonePartnerGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1162,7 +1163,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'phone',
+        property: r'phonePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1170,7 +1171,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneLessThan(
+      phonePartnerLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1178,7 +1179,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'phone',
+        property: r'phonePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1186,7 +1187,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneBetween(
+      phonePartnerBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1195,7 +1196,7 @@ extension ModelPartnerIsarQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'phone',
+        property: r'phonePartner',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1206,13 +1207,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneStartsWith(
+      phonePartnerStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'phone',
+        property: r'phonePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1220,13 +1221,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneEndsWith(
+      phonePartnerEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'phone',
+        property: r'phonePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1234,10 +1235,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneContains(String value, {bool caseSensitive = true}) {
+      phonePartnerContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'phone',
+        property: r'phonePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1245,10 +1246,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneMatches(String pattern, {bool caseSensitive = true}) {
+      phonePartnerMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'phone',
+        property: r'phonePartner',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -1256,33 +1257,33 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneIsEmpty() {
+      phonePartnerIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'phone',
+        property: r'phonePartner',
         value: '',
       ));
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      phoneIsNotEmpty() {
+      phonePartnerIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'phone',
+        property: r'phonePartner',
         value: '',
       ));
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeEqualTo(
+      typePartnerEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'type',
+        property: r'typePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1290,7 +1291,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeGreaterThan(
+      typePartnerGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1298,7 +1299,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'type',
+        property: r'typePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1306,7 +1307,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeLessThan(
+      typePartnerLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1314,7 +1315,7 @@ extension ModelPartnerIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'type',
+        property: r'typePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1322,7 +1323,7 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeBetween(
+      typePartnerBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1331,7 +1332,7 @@ extension ModelPartnerIsarQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'type',
+        property: r'typePartner',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1342,13 +1343,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeStartsWith(
+      typePartnerStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'type',
+        property: r'typePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1356,13 +1357,13 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeEndsWith(
+      typePartnerEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'type',
+        property: r'typePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1370,10 +1371,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeContains(String value, {bool caseSensitive = true}) {
+      typePartnerContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'type',
+        property: r'typePartner',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -1381,10 +1382,10 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeMatches(String pattern, {bool caseSensitive = true}) {
+      typePartnerMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'type',
+        property: r'typePartner',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -1392,20 +1393,20 @@ extension ModelPartnerIsarQueryFilter
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeIsEmpty() {
+      typePartnerIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'type',
+        property: r'typePartner',
         value: '',
       ));
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterFilterCondition>
-      typeIsNotEmpty() {
+      typePartnerIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'type',
+        property: r'typePartner',
         value: '',
       ));
     });
@@ -1421,16 +1422,16 @@ extension ModelPartnerIsarQueryLinks
 extension ModelPartnerIsarQuerySortBy
     on QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QSortBy> {
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      sortByBalance() {
+      sortByBalancePartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'balance', Sort.asc);
+      return query.addSortBy(r'balancePartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      sortByBalanceDesc() {
+      sortByBalancePartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'balance', Sort.desc);
+      return query.addSortBy(r'balancePartner', Sort.desc);
     });
   }
 
@@ -1447,29 +1448,17 @@ extension ModelPartnerIsarQuerySortBy
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> sortByEmail() {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      sortByEmailPartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'email', Sort.asc);
+      return query.addSortBy(r'emailPartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      sortByEmailDesc() {
+      sortByEmailPartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'email', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> sortById() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      sortByIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.desc);
+      return query.addSortBy(r'emailPartner', Sort.desc);
     });
   }
 
@@ -1487,42 +1476,59 @@ extension ModelPartnerIsarQuerySortBy
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> sortByName() {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      sortByIdPartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
+      return query.addSortBy(r'idPartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      sortByNameDesc() {
+      sortByIdPartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> sortByPhone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'phone', Sort.asc);
+      return query.addSortBy(r'idPartner', Sort.desc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      sortByPhoneDesc() {
+      sortByNamePartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'phone', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> sortByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
+      return query.addSortBy(r'namePartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      sortByTypeDesc() {
+      sortByNamePartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
+      return query.addSortBy(r'namePartner', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      sortByPhonePartner() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phonePartner', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      sortByPhonePartnerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'phonePartner', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      sortByTypePartner() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'typePartner', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      sortByTypePartnerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'typePartner', Sort.desc);
     });
   }
 }
@@ -1530,16 +1536,16 @@ extension ModelPartnerIsarQuerySortBy
 extension ModelPartnerIsarQuerySortThenBy
     on QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QSortThenBy> {
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      thenByBalance() {
+      thenByBalancePartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'balance', Sort.asc);
+      return query.addSortBy(r'balancePartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      thenByBalanceDesc() {
+      thenByBalancePartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'balance', Sort.desc);
+      return query.addSortBy(r'balancePartner', Sort.desc);
     });
   }
 
@@ -1556,29 +1562,17 @@ extension ModelPartnerIsarQuerySortThenBy
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> thenByEmail() {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      thenByEmailPartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'email', Sort.asc);
+      return query.addSortBy(r'emailPartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      thenByEmailDesc() {
+      thenByEmailPartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'email', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> thenById() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      thenByIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.desc);
+      return query.addSortBy(r'emailPartner', Sort.desc);
     });
   }
 
@@ -1597,6 +1591,20 @@ extension ModelPartnerIsarQuerySortThenBy
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      thenByIdPartner() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idPartner', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      thenByIdPartnerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'idPartner', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
       thenByIsarId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isarId', Sort.asc);
@@ -1610,42 +1618,45 @@ extension ModelPartnerIsarQuerySortThenBy
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> thenByName() {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      thenByNamePartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
+      return query.addSortBy(r'namePartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      thenByNameDesc() {
+      thenByNamePartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> thenByPhone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'phone', Sort.asc);
+      return query.addSortBy(r'namePartner', Sort.desc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      thenByPhoneDesc() {
+      thenByPhonePartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'phone', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy> thenByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
+      return query.addSortBy(r'phonePartner', Sort.asc);
     });
   }
 
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
-      thenByTypeDesc() {
+      thenByPhonePartnerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
+      return query.addSortBy(r'phonePartner', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      thenByTypePartner() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'typePartner', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QAfterSortBy>
+      thenByTypePartnerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'typePartner', Sort.desc);
     });
   }
 }
@@ -1653,9 +1664,9 @@ extension ModelPartnerIsarQuerySortThenBy
 extension ModelPartnerIsarQueryWhereDistinct
     on QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct> {
   QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct>
-      distinctByBalance() {
+      distinctByBalancePartner() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'balance');
+      return query.addDistinctBy(r'balancePartner');
     });
   }
 
@@ -1665,17 +1676,10 @@ extension ModelPartnerIsarQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct> distinctByEmail(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct>
+      distinctByEmailPartner({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'email', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct> distinctById(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'id', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'emailPartner', caseSensitive: caseSensitive);
     });
   }
 
@@ -1686,24 +1690,31 @@ extension ModelPartnerIsarQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct> distinctByName(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct>
+      distinctByIdPartner({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'idPartner', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct> distinctByPhone(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct>
+      distinctByNamePartner({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'phone', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'namePartner', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct> distinctByType(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct>
+      distinctByPhonePartner({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'type', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'phonePartner', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, ModelPartnerIsar, QDistinct>
+      distinctByTypePartner({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'typePartner', caseSensitive: caseSensitive);
     });
   }
 }
@@ -1716,9 +1727,10 @@ extension ModelPartnerIsarQueryProperty
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, double, QQueryOperations> balanceProperty() {
+  QueryBuilder<ModelPartnerIsar, double, QQueryOperations>
+      balancePartnerProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'balance');
+      return query.addPropertyName(r'balancePartner');
     });
   }
 
@@ -1728,15 +1740,10 @@ extension ModelPartnerIsarQueryProperty
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, String, QQueryOperations> emailProperty() {
+  QueryBuilder<ModelPartnerIsar, String, QQueryOperations>
+      emailPartnerProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'email');
-    });
-  }
-
-  QueryBuilder<ModelPartnerIsar, String, QQueryOperations> idProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'id');
+      return query.addPropertyName(r'emailPartner');
     });
   }
 
@@ -1746,21 +1753,30 @@ extension ModelPartnerIsarQueryProperty
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, String, QQueryOperations> nameProperty() {
+  QueryBuilder<ModelPartnerIsar, String, QQueryOperations> idPartnerProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'name');
+      return query.addPropertyName(r'idPartner');
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, String, QQueryOperations> phoneProperty() {
+  QueryBuilder<ModelPartnerIsar, String, QQueryOperations>
+      namePartnerProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'phone');
+      return query.addPropertyName(r'namePartner');
     });
   }
 
-  QueryBuilder<ModelPartnerIsar, String, QQueryOperations> typeProperty() {
+  QueryBuilder<ModelPartnerIsar, String, QQueryOperations>
+      phonePartnerProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'type');
+      return query.addPropertyName(r'phonePartner');
+    });
+  }
+
+  QueryBuilder<ModelPartnerIsar, String, QQueryOperations>
+      typePartnerProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'typePartner');
     });
   }
 }

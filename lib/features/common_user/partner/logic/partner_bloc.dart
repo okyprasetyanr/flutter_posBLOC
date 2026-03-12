@@ -37,7 +37,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         ? repoCache.getCustomer(idBranch)
         : repoCache.getSupplier(idBranch);
 
-    partner.sort((a, b) => a.getname.compareTo(b.getname));
+    partner.sort((a, b) => a.getnamePartner.compareTo(b.getnamePartner));
     emit(
       currentState.copyWith(
         filteredPartner: partner,
@@ -66,15 +66,16 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     final currentState = state;
     if (currentState is PartnerLoaded) {
       final idPartner =
-          currentState.selectedPartner?.getid ?? Uuid().v4().substring(0, 8);
+          currentState.selectedPartner?.getidPartner ??
+          Uuid().v4().substring(0, 8);
       final partner = ModelPartner(
-        idBranch: currentState.idBranch!,
-        id: idPartner,
-        name: event.name,
-        phone: event.phone,
-        email: event.email,
-        balance: 0,
-        type: currentState.isCustomer
+        idBranchPartner: currentState.idBranch!,
+        idPartner: idPartner,
+        namePartner: event.name,
+        phonePartner: event.phone,
+        emailPartner: event.email,
+        balancePartner: 0,
+        typePartner: currentState.isCustomer
             ? PartnerType.customer
             : PartnerType.supplier,
         date: parseDate(date: DateTime.now()),
@@ -82,7 +83,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
 
       await partner.pushDataPartner();
       final indexCategory = repoCache.dataPartner.indexWhere(
-        (element) => element.getid == partner.getid,
+        (element) => element.getidPartner == partner.getidPartner,
       );
 
       if (indexCategory != -1) {
@@ -144,11 +145,13 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     await deleteDataPartner(event.id);
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      repoCache.dataPartner.removeWhere((element) => element.getid == event.id);
+      repoCache.dataPartner.removeWhere(
+        (element) => element.getidPartner == event.id,
+      );
       final dataPartner = event.type.name == "customer"
           ? await repoCache.getCustomer(currentState.idBranch!)
           : await repoCache.getSupplier(currentState.idBranch!);
-      dataPartner.sort((a, b) => a.getname.compareTo(b.getname));
+      dataPartner.sort((a, b) => a.getnamePartner.compareTo(b.getnamePartner));
       emit(currentState.copyWith(dataPartner: dataPartner));
     }
   }
@@ -158,13 +161,15 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     final filteredPartner = event.search.isNotEmpty
         ? currentState.dataPartner!
               .where(
-                (element) => element.getname.toLowerCase().contains(
+                (element) => element.getnamePartner.toLowerCase().contains(
                   event.search.toLowerCase(),
                 ),
               )
               .toList()
         : currentState.dataPartner!.toList();
-    filteredPartner.sort((a, b) => a.getname.compareTo(b.getname));
+    filteredPartner.sort(
+      (a, b) => a.getnamePartner.compareTo(b.getnamePartner),
+    );
     emit(currentState.copyWith(filteredPartner: filteredPartner));
   }
 }

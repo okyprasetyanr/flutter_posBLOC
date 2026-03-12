@@ -241,11 +241,11 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                             ),
                                           ),
                                           title: Text(
-                                            state[index].getname,
+                                            state[index].getnamePartner,
                                             style: lv05TextStyle,
                                           ),
                                           subtitle: Text(
-                                            "${state[index].getphone}",
+                                            "${state[index].getphonePartner}",
                                             style: lv05TextStyle,
                                           ),
                                           onTap: () {
@@ -299,12 +299,12 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                     (value) => value.state is TransactionLoaded
                         ? (value.state as TransactionLoaded)
                                       .selectedPartner
-                                      ?.getid ==
+                                      ?.getidPartner ==
                                   ""
                               ? "Kontak"
                               : (value.state as TransactionLoaded)
                                         .selectedPartner
-                                        ?.getname ??
+                                        ?.getnamePartner ??
                                     "Kontak"
                         : "Kontak",
                   ),

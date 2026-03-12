@@ -200,13 +200,13 @@ Map<String, dynamic> convertToMapItemBatch(
 
 Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
   return {
-    FieldDataPartner.id_branch.name: partner.getidBranch,
+    FieldDataPartner.id_branch.name: partner.getidBranchPartner,
     FieldDataPartner.uid_owner.name: UserSession.getUidOwner(),
-    FieldDataPartner.name_partner.name: partner.getname,
-    FieldDataPartner.phone_partner.name: partner.getphone,
-    FieldDataPartner.email_partner.name: partner.getemail,
-    FieldDataPartner.balance_partner.name: partner.getbalance,
-    FieldDataPartner.type.name: partner.gettype.name,
+    FieldDataPartner.name_partner.name: partner.getnamePartner,
+    FieldDataPartner.phone_partner.name: partner.getphonePartner,
+    FieldDataPartner.email_partner.name: partner.getemailPartner,
+    FieldDataPartner.balance_partner.name: partner.getbalancePartner,
+    FieldDataPartner.type.name: partner.gettypePartner.name,
     FieldDataPartner.date.name: formatDate(date: partner.getdate),
   };
 }

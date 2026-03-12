@@ -190,17 +190,17 @@ class ExcelBackupService {
     ]);
 
     for (final partner in repo.dataPartner.where(
-      (element) => element.gettype == PartnerType.customer,
+      (element) => element.gettypePartner == PartnerType.customer,
     )) {
       sheetCustomer.appendRow([
         TextCellValue(uidOwner),
-        TextCellValue(partner.getidBranch),
-        TextCellValue(partner.getid),
-        TextCellValue(partner.getname),
-        TextCellValue(partner.getemail),
-        TextCellValue(partner.getphone),
-        DoubleCellValue(partner.getbalance),
-        TextCellValue(partner.gettype.name),
+        TextCellValue(partner.getidBranchPartner),
+        TextCellValue(partner.getidPartner),
+        TextCellValue(partner.getnamePartner),
+        TextCellValue(partner.getemailPartner),
+        TextCellValue(partner.getphonePartner),
+        DoubleCellValue(partner.getbalancePartner),
+        TextCellValue(partner.gettypePartner.name),
         TextCellValue(formatDate(date: partner.getdate, minute: false)),
       ]);
     }
@@ -220,17 +220,17 @@ class ExcelBackupService {
     ]);
 
     for (final partner in repo.dataPartner.where(
-      (element) => element.gettype == PartnerType.supplier,
+      (element) => element.gettypePartner == PartnerType.supplier,
     )) {
       sheetSupplier.appendRow([
         TextCellValue(uidOwner),
-        TextCellValue(partner.getidBranch),
-        TextCellValue(partner.getid),
-        TextCellValue(partner.getname),
-        TextCellValue(partner.getemail),
-        TextCellValue(partner.getphone),
-        DoubleCellValue(partner.getbalance),
-        TextCellValue(partner.gettype.name),
+        TextCellValue(partner.getidBranchPartner),
+        TextCellValue(partner.getidPartner),
+        TextCellValue(partner.getnamePartner),
+        TextCellValue(partner.getemailPartner),
+        TextCellValue(partner.getphonePartner),
+        DoubleCellValue(partner.getbalancePartner),
+        TextCellValue(partner.gettypePartner.name),
         TextCellValue(formatDate(date: partner.getdate, minute: false)),
       ]);
     }

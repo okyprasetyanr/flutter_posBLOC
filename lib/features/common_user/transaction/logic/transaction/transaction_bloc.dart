@@ -561,11 +561,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           selectedPartner:
               repoCache.dataPartner.any(
                 (element) =>
-                    element.getid == event.currentTransaction.getidPartner,
+                    element.getidPartner ==
+                    event.currentTransaction.getidPartner,
               )
               ? repoCache.dataPartner.firstWhere(
                   (element) =>
-                      element.getid == event.currentTransaction.getidPartner,
+                      element.getidPartner ==
+                      event.currentTransaction.getidPartner,
                 )
               : ModelPartner.empty(),
           selectedTransaction: event.currentTransaction,

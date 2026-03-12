@@ -186,7 +186,8 @@ class DataUserRepositoryCache {
   List<ModelPartner> getCustomer(String idBranch) {
     return dataPartner
         .where(
-          (element) => element.isCustomer && element.getidBranch == idBranch,
+          (element) =>
+              element.isCustomer && element.getidBranchPartner == idBranch,
         )
         .toList();
   }
@@ -208,7 +209,8 @@ class DataUserRepositoryCache {
   List<ModelPartner> getSupplier(String idBranch) {
     return dataPartner
         .where(
-          (element) => element.isSupplier && element.getidBranch == idBranch,
+          (element) =>
+              element.isSupplier && element.getidBranchPartner == idBranch,
         )
         .toList();
   }

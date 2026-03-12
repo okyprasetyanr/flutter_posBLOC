@@ -174,14 +174,14 @@ class _UIPartnerState extends State<UIPartner> {
                           deleteData: (deleteData) {
                             context.read<PartnerBloc>().add(
                               PartnerDeletePartner(
-                                type: deleteData.gettype,
-                                id: deleteData.getid,
+                                type: deleteData.gettypePartner,
+                                id: deleteData.getidPartner,
                               ),
                             );
                             Navigator.pop(context, true);
                           },
-                          getId: (data) => data.getid,
-                          getName: (data) => data.getname,
+                          getId: (data) => data.getidPartner,
+                          getName: (data) => data.getnamePartner,
                           selectedData: (selectedData) =>
                               context.read<PartnerBloc>().add(
                                 PartnerSelectedPartner(
@@ -225,10 +225,12 @@ class _UIPartnerState extends State<UIPartner> {
           listener: (context, state) {
             if (state is PartnerLoaded) {
               if (state.selectedPartner != null) {
-                namePartnerController.text = state.selectedPartner!.getname;
-                phonePartnerController.text = state.selectedPartner!.getphone;
+                namePartnerController.text =
+                    state.selectedPartner!.getnamePartner;
+                phonePartnerController.text =
+                    state.selectedPartner!.getphonePartner;
                 emailPartnerController.text =
-                    state.selectedPartner?.getemail ?? "";
+                    state.selectedPartner?.getemailPartner ?? "";
               } else if (state.selectedPartner == null) {
                 namePartnerController.clear();
                 phonePartnerController.clear();

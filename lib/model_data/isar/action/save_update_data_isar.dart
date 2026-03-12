@@ -144,13 +144,13 @@ Future<void> saveItem_Isar(ModelItem item) async {
 
 Future<void> savePartner_Isar(ModelPartner partner) async {
   final data = ModelPartnerIsar()
-    ..id = partner.getid
-    ..idBranch = partner.getidBranch
-    ..type = partner.gettype.name
-    ..name = partner.getname
-    ..phone = partner.getphone
-    ..email = partner.getemail
-    ..balance = partner.getbalance
+    ..idPartner = partner.getidPartner
+    ..idBranch = partner.getidBranchPartner
+    ..typePartner = partner.gettypePartner.name
+    ..namePartner = partner.getnamePartner
+    ..phonePartner = partner.getphonePartner
+    ..emailPartner = partner.getemailPartner
+    ..balancePartner = partner.getbalancePartner
     ..date = partner.getdate;
 
   await isar.writeTxn(() async {

@@ -5,14 +5,14 @@ part 'model_partner_isar.g.dart';
 class ModelPartnerIsar {
   Id isarId = Isar.autoIncrement;
   @Index(unique: true)
-  late String id;
+  late String idPartner;
   @Index()
   late String idBranch;
 
-  late String type;
-  late String name;
-  late String phone;
-  late String email;
-  late double balance;
+  late String typePartner;
+  late String namePartner;
+  late String phonePartner;
+  late String emailPartner;
+  late double balancePartner;
   late DateTime date;
 }
