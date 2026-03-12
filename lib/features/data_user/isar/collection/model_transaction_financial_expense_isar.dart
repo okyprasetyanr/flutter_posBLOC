@@ -1,9 +1,9 @@
-import 'package:flutter_pos/model_data/isar/ModelBase/model_transaction_financial_isar_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_financial_base_isar.dart';
 import 'package:isar/isar.dart';
-part 'model_transaction_financial_income_isar.g.dart';
+part 'model_transaction_financial_expense_isar.g.dart';
 
 @collection
-class ModelTransactionFinancialIncomeIsar
+class ModelTransactionFinancialExpenseIsar
     extends ModelTransactionFinancialBaseIsar {
   Id isarId = Isar.autoIncrement;
   @Index(unique: true)

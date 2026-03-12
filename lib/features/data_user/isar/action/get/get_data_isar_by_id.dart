@@ -1,16 +1,16 @@
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_batch_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_category_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_company_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_counter_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_financial_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_item_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_partner_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_buy_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_financial_expense_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_financial_income_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_sell_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_financial_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_customer_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_buy_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -68,7 +68,11 @@ Future<List<ModelBatch>> getBatchIsar(String idBranch) async {
 }
 
 Future<List<ModelCategory>> getCategoryIsar(String idBranch) async {
-  final allCategory = await isar.modelCategoryIsars.where().findAll();
+  final allCategory = await isar.modelCategoryIsars
+      .filter()
+      .idBranchEqualTo(idBranch)
+      .findAll();
+
   return allCategory
       .map(
         (element) => ModelCategory(
@@ -163,28 +167,28 @@ Future<List<ModelItem>> getItemIsar(String idBranch) async {
       .toList();
 }
 
-Future<List<ModelPartner>> getPartnerIsar(String idBranch) async {
-  final allPartner = await isar.modelPartnerIsars
-      .where()
-      .idBranchEqualTo(idBranch)
-      .findAll();
-  return allPartner
-      .map(
-        (e) => ModelPartner(
-          idBranchPartner: e.idBranch,
-          idPartner: e.idPartner,
-          namePartner: e.namePartner,
-          phonePartner: e.phonePartner,
-          emailPartner: e.emailPartner,
-          balancePartner: e.balancePartner,
-          typePartner: PartnerType.values.firstWhere(
-            (element) => element.name == e.typePartner,
-          ),
-          date: e.date,
-        ),
-      )
-      .toList();
-}
+// Future<List<ModelPartner>> getPartnerIsar(String idBranch) async {
+//   final allPartner = await isar.modelPartnerIsars
+//       .where()
+//       .idBranchEqualTo(idBranch)
+//       .findAll();
+//   return allPartner
+//       .map(
+//         (e) => ModelPartner(
+//           idBranchPartner: e.idBranch,
+//           idPartner: e.idPartner,
+//           namePartner: e.namePartner,
+//           phonePartner: e.phonePartner,
+//           emailPartner: e.emailPartner,
+//           balancePartner: e.balancePartner,
+//           typePartner: PartnerType.values.firstWhere(
+//             (element) => element.name == e.typePartner,
+//           ),
+//           date: e.date,
+//         ),
+//       )
+//       .toList();
+// }
 
 Future<List<ModelTransaction>> getTransactionBuy(String idBranch) async {
   final allTransactionBuy = await isar.modelTransactionBuyIsars

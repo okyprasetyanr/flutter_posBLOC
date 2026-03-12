@@ -1,4 +1,4 @@
-import 'package:flutter_pos/model_data/isar/embedded/model_item_ordered_batch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_batch_isar.dart';
 import 'package:isar/isar.dart';
 part 'model_item_ordered_isar.g.dart';
 

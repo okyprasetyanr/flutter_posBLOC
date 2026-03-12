@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
@@ -46,9 +49,7 @@ class DataUserRepositoryCache {
   }
 
   Future<bool> initData() async {
-    // await Future.wait([
-    // ]);
-
+    await deleteAllDataIsar();
     await initCompany();
     await initFinancial();
     await initTransFinancial();
@@ -59,42 +60,15 @@ class DataUserRepositoryCache {
     await initBatch();
     await initUser();
 
+    await saveToIsar();
+
     notifyChanged();
-
-    for (var a in dataItem) {
-      debugPrint("Log DataUserRepositoryCache item: $a");
-    }
-    for (var a in dataCategory) {
-      debugPrint("Log DataUserRepositoryCache Category: $a");
-    }
-    for (var a in dataTransSell) {
-      debugPrint("Log DataUserRepositoryCache transactionSell: $a");
-    }
-    for (var a in dataTransBuy) {
-      debugPrint("Log DataUserRepositoryCache transactionBuy: $a");
-    }
-    for (var a in dataBatch) {
-      debugPrint("Log DataUserRepositoryCache dataItemBatch: $a");
-    }
-    for (var a in dataPartner) {
-      debugPrint("Log DataUserRepositoryCache dataPartner: $a");
-    }
-
-    debugPrint("Log DataUserRepositoryCache User: $dataAccount");
 
     return true;
   }
 
   Future<void> initCompany() async {
     dataCompany = await repo.getCompany();
-    // dataAccount?.getIdBranchUser != null
-    //     ? listBranch
-    //           .where(
-    //             (element) =>
-    //                 element.getidBranch == dataAccount!.getIdBranchUser,
-    //           )
-    //           .toList()
-    //     : listBranch;
   }
 
   Future<void> initFinancial() async {
@@ -145,21 +119,19 @@ class DataUserRepositoryCache {
   }
 
   ModelUser getAccount() {
-    return dataAccount!;
+    return getAccount()!;
   }
 
   ModelCompany getCompany() {
-    return dataCompany!;
+    return getCompany()!;
   }
 
   List<ModelBranch> getBranch() {
-    return dataCompany!.getListBranch.toList();
+    return getBranch();
   }
 
   List<ModelItem> getItem(String idBranch) {
-    final dataItemFinal = dataItem
-        .where((element) => element.getidBranch == idBranch)
-        .toList();
+    final dataItemFinal = getItem(idBranch);
 
     for (int i = 0; i < dataItemFinal.length; i++) {
       final item = dataItemFinal[i];
@@ -177,42 +149,24 @@ class DataUserRepositoryCache {
     return dataItemFinal;
   }
 
-  List<ModelCategory> getCategory(String idBranch) {
-    return dataCategory
-        .where((element) => element.getidBranch == idBranch)
-        .toList();
-  }
-
-  List<ModelPartner> getCustomer(String idBranch) {
-    return dataPartner
-        .where(
-          (element) =>
-              element.isCustomer && element.getidBranchPartner == idBranch,
-        )
-        .toList();
+  Future<List<ModelCategory>> getCategory(String idBranch) async {
+    return await getCategoryIsar(idBranch);
   }
 
   List<ModelFinancial> getIncome(String idBranch) {
-    return dataFinancial
-        .where((element) => element.isIncome && element.getidBranch == idBranch)
-        .toList();
+    return getIncome(idBranch);
   }
 
   List<ModelFinancial> getExpense(String idBranch) {
-    return dataFinancial
-        .where(
-          (element) => element.isExpense && element.getidBranch == idBranch,
-        )
-        .toList();
+    return getExpense(idBranch);
+  }
+
+  List<ModelPartner> getCustomer(String idBranch) {
+    return getCustomer(idBranch);
   }
 
   List<ModelPartner> getSupplier(String idBranch) {
-    return dataPartner
-        .where(
-          (element) =>
-              element.isSupplier && element.getidBranchPartner == idBranch,
-        )
-        .toList();
+    return [];
   }
 
   List<ModelTransaction> getTransactionSell(String idBranch) {
@@ -247,5 +201,29 @@ class DataUserRepositoryCache {
 
   Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
     return await Hive.box<TransactionSavedHive>('saved_transaction');
+  }
+
+  Future<void> saveToIsar() async {
+    dataItem.forEach((element) async => await saveItem_Isar(element));
+    dataCategory.forEach((element) async => await saveCategory_Isar(element));
+    // dataPartner.forEach((element) async => await savePartner_Isar(element));
+    dataTransSell.forEach(
+      (element) async => await saveTransactionSell_Isar(element),
+    );
+    dataTransBuy.forEach(
+      (element) async => await saveTransactionBuy_Isar(element),
+    );
+    dataBatch.forEach((element) async => await saveBatch_Isar(element));
+    dataFinancial.forEach((element) async => await saveFinancial_Isar(element));
+    dataTransIncome.forEach(
+      (element) async => await saveTransactionFinancialncome_Isar(element),
+    );
+    dataTransExpense.forEach(
+      (element) async => await saveTransactionFinancialExpense_Isar(element),
+    );
+    dataUser.forEach((element) async => await saveUser_Isar(element));
+    dataCounter.forEach((element) async => await saveCounter_Isar(element));
+    saveAccount_Isar(dataAccount!);
+    saveCompany_Isar(dataCompany!);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_pos/enum/enum.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_user_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';

@@ -1,23 +1,26 @@
 import 'package:flutter_pos/enum/enum.dart';
-import 'package:flutter_pos/model_data/isar/ModelBase/model_transaction_base_isar.dart';
-import 'package:flutter_pos/model_data/isar/ModelBase/model_transaction_financial_isar_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_batch_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_category_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_company_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_counter_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_financial_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_item_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_partner_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_buy_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_financial_expense_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_financial_income_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_transaction_sell_isar.dart';
-import 'package:flutter_pos/model_data/isar/collection/model_user_isar.dart';
-import 'package:flutter_pos/model_data/isar/embedded/model_branch_isar.dart';
-import 'package:flutter_pos/model_data/isar/embedded/model_item_batch_isar.dart';
-import 'package:flutter_pos/model_data/isar/embedded/model_item_ordered_batch_isar.dart';
-import 'package:flutter_pos/model_data/isar/embedded/model_item_ordered_isar.dart';
-import 'package:flutter_pos/model_data/isar/embedded/model_split_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_base_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_financial_base_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_financial_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_customer_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_supplier_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_buy_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_branch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_batch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_split_isar.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
@@ -142,8 +145,8 @@ Future<void> saveItem_Isar(ModelItem item) async {
   });
 }
 
-Future<void> savePartner_Isar(ModelPartner partner) async {
-  final data = ModelPartnerIsar()
+Future<void> saveSupplier_Isar(ModelPartner partner) async {
+  final data = ModelSupplierIsar()
     ..idPartner = partner.getidPartner
     ..idBranch = partner.getidBranchPartner
     ..typePartner = partner.gettypePartner.name
@@ -154,7 +157,7 @@ Future<void> savePartner_Isar(ModelPartner partner) async {
     ..date = partner.getdate;
 
   await isar.writeTxn(() async {
-    await isar.modelPartnerIsars.put(data);
+    await isar.modelSupplierIsars.put(data);
   });
 }
 
@@ -174,7 +177,7 @@ Future<void> saveTransactionSell_Isar(ModelTransaction trx) async {
   });
 }
 
-T convertTransaction<T extends ModelTransactionIsarBase>(
+T convertTransaction<T extends ModelTransactionBaseIsar>(
   ModelTransaction trx,
   T Function() creator,
 ) {
@@ -309,9 +312,26 @@ T convertTransactionFinancial<T extends ModelTransactionFinancialBaseIsar>(
 }
 
 Future<void> saveUser_Isar(ModelUser user) async {
-  final permissions = user.getPermissionsUser;
+  await isar.writeTxn(() async {
+    await isar.modelUserIsars.put(await convertUser(user, ModelUserIsar.new));
+  });
+}
 
-  final data = ModelUserIsar()
+Future<void> saveAccount_Isar(ModelUser user) async {
+  await isar.writeTxn(
+    () async => await isar.modelAccountIsars.put(
+      await convertUser(user, ModelAccountIsar.new),
+    ),
+  );
+}
+
+Future<T> convertUser<T extends ModelUserBaseIsar>(
+  ModelUser user,
+  T Function() creator,
+) async {
+  final object = creator();
+  final permissions = user.getPermissionsUser;
+  return object
     ..idUser = user.getIdUser!
     ..idBranchUser = user.getIdBranchUser
     ..statusUser = user.getstatusUser.name
@@ -337,8 +357,4 @@ Future<void> saveUser_Isar(ModelUser user) async {
     ..Riwayat_Pendapatan = permissions[Permission.Riwayat_Pendapatan] ?? false
     ..Riwayat_Pengeluaran = permissions[Permission.Riwayat_Pengeluaran] ?? false
     ..Laporan = permissions[Permission.Laporan] ?? false;
-
-  await isar.writeTxn(() async {
-    await isar.modelUserIsars.put(data);
-  });
 }

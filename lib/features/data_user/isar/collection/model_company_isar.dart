@@ -1,4 +1,4 @@
-import 'package:flutter_pos/model_data/isar/embedded/model_branch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_branch_isar.dart';
 import 'package:isar/isar.dart';
 part 'model_company_isar.g.dart';
 

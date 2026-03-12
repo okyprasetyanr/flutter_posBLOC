@@ -1,13 +1,5 @@
-import 'package:isar/isar.dart';
-
-part 'model_user_isar.g.dart';
-
-@collection
-class ModelUserIsar {
-  Id isarId = Isar.autoIncrement;
-  @Index(unique: true)
+abstract class ModelUserBaseIsar {
   late String idUser;
-  @Index()
   late String? idBranchUser;
 
   late String statusUser;

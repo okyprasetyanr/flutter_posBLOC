@@ -64,7 +64,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     List<ModelCategory> listCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
-      ...repoCache.getCategory(idBranch),
+      ...await repoCache.getCategory(idBranch),
     ];
 
     List<ModelPartner> partner = currentState.isSell

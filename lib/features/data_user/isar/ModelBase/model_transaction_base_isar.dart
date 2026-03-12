@@ -1,7 +1,7 @@
-import 'package:flutter_pos/model_data/isar/embedded/model_item_ordered_isar.dart';
-import 'package:flutter_pos/model_data/isar/embedded/model_split_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/embedded/model_split_isar.dart';
 
-abstract class ModelTransactionIsarBase {
+abstract class ModelTransactionBaseIsar {
   late String invoice;
   late String idBranch;
   late String statusTransaction;

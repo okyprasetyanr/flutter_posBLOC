@@ -167,7 +167,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     final dataItem = repoCache.getItem(idBranch);
     debugPrint("Log InventoryBloc: items: $dataItem");
-    final dataCategory = repoCache.getCategory(idBranch);
+    final dataCategory = await repoCache.getCategory(idBranch);
     final filteredDataCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...dataCategory,
