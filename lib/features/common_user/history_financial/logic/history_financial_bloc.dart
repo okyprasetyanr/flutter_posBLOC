@@ -6,6 +6,8 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_event.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -41,13 +43,13 @@ class HistoryFinancialBloc
         ? dateYMDEndBLOC(event.dateEnd)
         : dateYMDEndBLOC(currentState.dateEnd);
 
-    final dataBranch = await repoCache.getBranch();
+    final dataBranch = await getListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isIncome = event.isIncome ?? currentState.isIncome;
     final dataTransaction = isIncome
-        ? await repoCache.getTransactionIncome(idBranch)
-        : await repoCache.getTransactionExpense(idBranch);
+        ? await getTransactionFinancialIncome(idBranch)
+        : await getTransactionFinancialExpense(idBranch);
     final filteredData = dataTransaction.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&

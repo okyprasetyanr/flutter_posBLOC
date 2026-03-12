@@ -1,20 +1,20 @@
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_supplier_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_financial_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_income_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_customer_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_buy_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_expense_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
+import 'package:flutter_pos/from_and_to_map/from_isar.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
-import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -30,41 +30,21 @@ import 'package:hive/hive.dart';
 import 'package:isar/isar.dart';
 
 Future<List<ModelBatch>> getBatchIsar(String idBranch) async {
-  final allBatch = await isar.modelBatchIsars
+  return fromIsarBatch(
+    await isar.modelBatchIsars.where().idBranchEqualTo(idBranch).findAll(),
+  );
+}
+
+Future<List<ModelItemBatch>> getItemBatchIsar(String idBranch) async {
+  final itemBatchProperty = await isar.modelBatchIsars
       .where()
-      .idBranchNotEqualTo(idBranch)
+      .idBranchEqualTo(idBranch)
+      .itemsBatchProperty()
       .findAll();
-  return allBatch
-      .map(
-        (e) => ModelBatch(
-          invoice: e.invoice,
-          idBranch: e.idBranch,
-          date_buy: e.dateBuy,
-          items_batch: e.itemsBatch
-              .map(
-                (item) => ModelItemBatch(
-                  priceitemBuy: item.priceitemBuy,
-                  invoice: item.invoice,
-                  nameItem: item.nameItem,
-                  idBranch: item.idBranch,
-                  idItem: item.idItem,
-                  idOrdered: item.idOrdered,
-                  idCategoryItem: item.idCategoryItem,
-                  note: item.note,
-                  date_buy: item.date_buy,
-                  expiredDate: item.expiredDate,
-                  discountItem: item.discountItem,
-                  qtyItem_in: item.qtyItem_in,
-                  qtyItem_out: item.qtyItem_out,
-                  priceItem: item.priceItem,
-                  subTotal: item.subTotal,
-                  priceItemFinal: item.priceItemFinal,
-                ),
-              )
-              .toList(),
-        ),
-      )
-      .toList();
+
+  final flatData = itemBatchProperty.expand((list) => list).toList();
+
+  return await fromIsarItemBatch(flatData);
 }
 
 Future<List<ModelCategory>> getCategoryIsar(String idBranch) async {
@@ -84,27 +64,6 @@ Future<List<ModelCategory>> getCategoryIsar(String idBranch) async {
       .toList();
 }
 
-Future<ModelCompany> getCompanyIsar(String idBranch) async {
-  final company = await isar.modelCompanyIsars.where().findFirst();
-  return ModelCompany(
-    listBranch: company!.listBranch
-        .map(
-          (e) => ModelBranch(
-            nameBranch: e.nameBranch,
-            numTelpBranch: e.numTelpBranch,
-            addressBranch: e.addressBranch,
-            idBranch: e.idBranch,
-          ),
-        )
-        .toList(),
-    footer: company.footer,
-    header: company.header,
-    nameCompany: company.nameCompany,
-    phoneCompany: company.phoneCompany,
-    created: company.created,
-  );
-}
-
 Future<ModelCounter> getCounterIsar(String idBranch) async {
   final allCounter = await isar.modelCounterIsars
       .where()
@@ -122,75 +81,97 @@ Future<ModelCounter> getCounterIsar(String idBranch) async {
   );
 }
 
-Future<List<ModelFinancial>> getFinancialIsar(String idBranch) async {
-  final allFianncial = await isar.modelFinancialIsars
+Future<List<ModelFinancial>> getIncomeIsar(String idBranch) async {
+  final allIncome = await isar.modelIncomeIsars.where().findAll();
+  return convertFinancial(income: true, object: allIncome);
+}
+
+Future<List<ModelFinancial>> getExpenseIsar(String idBranch) async {
+  final allExpense = await isar.modelExpenseIsars
       .where()
       .idBranchEqualTo(idBranch)
       .findAll();
-  return allFianncial
+  return convertFinancial(income: false, object: allExpense);
+}
+
+List<ModelFinancial> convertFinancial<T>({
+  required bool income,
+  required List<T> object,
+}) {
+  return (income
+          ? object as List<ModelIncomeIsar>
+          : object as List<ModelExpenseIsar>)
       .map(
-        (financial) => ModelFinancial(
+        (e) => ModelFinancial(
           type: FinancialType.values.firstWhere(
-            (element) => element.name == financial.type,
+            (element) => element.name == e.type,
           ),
-          idFinancial: financial.idFinancial,
-          nameFinancial: financial.nameFinancial,
-          idBranch: financial.idBranch,
+          idFinancial: e.idFinancial,
+          nameFinancial: e.nameFinancial,
+          idBranch: e.idBranch,
         ),
       )
       .toList();
 }
 
 Future<List<ModelItem>> getItemIsar(String idBranch) async {
-  final allItem = await isar.modelItemIsars
+  final allItem = await fromIsarItem(
+    await isar.modelItemIsars.where().idBranchEqualTo(idBranch).findAll(),
+  );
+  for (int i = 0; i < allItem.length; i++) {
+    final item = allItem[i];
+    double qty = item.getqtyItem;
+    final batch = await getBatchIsar(idBranch);
+    final allBatchItems = batch
+        .expand((batch) => batch.getitems_batch)
+        .where((element) => element.getidItem == item.getidItem);
+
+    for (final itemBatch in allBatchItems) {
+      qty += itemBatch.getqtyItem_in - itemBatch.getqtyItem_out;
+    }
+    allItem[i] = item.copyWith(qtyItem: qty);
+  }
+  return allItem;
+}
+
+Future<List<ModelPartner>> getCustomerIsar(String idBranch) async {
+  final allCustomer = await isar.modelCustomerIsars
       .where()
       .idBranchEqualTo(idBranch)
       .findAll();
-  return allItem
+  return fromPartner(customer: true, object: allCustomer);
+}
+
+Future<List<ModelPartner>> getSupplierIsar(String idBranch) async {
+  final allSupplier = await isar.modelSupplierIsars
+      .where()
+      .idBranchEqualTo(idBranch)
+      .findAll();
+  return fromPartner(customer: false, object: allSupplier);
+}
+
+List<ModelPartner> fromPartner<T>({required bool customer, required T object}) {
+  return (customer
+          ? object as List<ModelCustomerIsar>
+          : object as List<ModelSupplierIsar>)
       .map(
-        (element) => ModelItem(
-          qtyItem: element.qtyItem,
-          nameItem: element.nameItem,
-          idItem: element.idItem,
-          priceItem: element.priceItem,
-          priceItemByBatch: element.priceItemByBatch,
-          priceItemBuybyBatch: element.priceItemBuybyBatch,
-          idCategoryItem: element.idCategoryItem,
-          statusCondiment: StatusDataX.fromString(element.statusCondiment),
-          urlImage: element.urlImage,
-          idBranch: element.idBranch,
-          barcode: element.barcode,
-          statusItem: StatusDataX.fromString(element.statusItem),
-          date: element.date,
+        (e) => ModelPartner(
+          idBranchPartner: e.idBranch,
+          idPartner: e.idPartner,
+          namePartner: e.namePartner,
+          phonePartner: e.phonePartner,
+          emailPartner: e.emailPartner,
+          balancePartner: e.balancePartner,
+          typePartner: PartnerType.values.firstWhere(
+            (element) => element.name == e.typePartner,
+          ),
+          date: e.date,
         ),
       )
       .toList();
 }
 
-// Future<List<ModelPartner>> getPartnerIsar(String idBranch) async {
-//   final allPartner = await isar.modelPartnerIsars
-//       .where()
-//       .idBranchEqualTo(idBranch)
-//       .findAll();
-//   return allPartner
-//       .map(
-//         (e) => ModelPartner(
-//           idBranchPartner: e.idBranch,
-//           idPartner: e.idPartner,
-//           namePartner: e.namePartner,
-//           phonePartner: e.phonePartner,
-//           emailPartner: e.emailPartner,
-//           balancePartner: e.balancePartner,
-//           typePartner: PartnerType.values.firstWhere(
-//             (element) => element.name == e.typePartner,
-//           ),
-//           date: e.date,
-//         ),
-//       )
-//       .toList();
-// }
-
-Future<List<ModelTransaction>> getTransactionBuy(String idBranch) async {
+Future<List<ModelTransaction>> getTransactionBuyIsar(String idBranch) async {
   final allTransactionBuy = await isar.modelTransactionBuyIsars
       .where()
       .idBranchEqualTo(idBranch)
@@ -198,7 +179,7 @@ Future<List<ModelTransaction>> getTransactionBuy(String idBranch) async {
   return fromTransactionIsar(object: allTransactionBuy, sell: false);
 }
 
-Future<List<ModelTransaction>> getTransactionSell(String idBranch) async {
+Future<List<ModelTransaction>> getTransactionSellIsar(String idBranch) async {
   final allTransactionSell = await isar.modelTransactionSellIsars
       .where()
       .idBranchEqualTo(idBranch)
@@ -333,7 +314,7 @@ Future<List<ModelTransactionFinancial>> getTransactionFinancialExpense(
       .findAll();
   return fromTransactionFinancialIsar(
     object: allTransactionFinancialExpense,
-    income: true,
+    income: false,
   );
 }
 

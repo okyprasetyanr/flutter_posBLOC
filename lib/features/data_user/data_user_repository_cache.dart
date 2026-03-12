@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
-import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
@@ -118,87 +116,6 @@ class DataUserRepositoryCache {
     );
   }
 
-  ModelUser getAccount() {
-    return getAccount()!;
-  }
-
-  ModelCompany getCompany() {
-    return getCompany()!;
-  }
-
-  List<ModelBranch> getBranch() {
-    return getBranch();
-  }
-
-  List<ModelItem> getItem(String idBranch) {
-    final dataItemFinal = getItem(idBranch);
-
-    for (int i = 0; i < dataItemFinal.length; i++) {
-      final item = dataItemFinal[i];
-      double qty = item.getqtyItem;
-      final allBatchItems = dataBatch
-          .expand((batch) => batch.getitems_batch)
-          .where((element) => element.getidItem == item.getidItem);
-
-      for (final itemBatch in allBatchItems) {
-        qty += itemBatch.getqtyItem_in - itemBatch.getqtyItem_out;
-      }
-      dataItemFinal[i] = item.copyWith(qtyItem: qty);
-    }
-    debugPrint("Log DataUserRepositoryCache: getItem: ${dataItemFinal}");
-    return dataItemFinal;
-  }
-
-  Future<List<ModelCategory>> getCategory(String idBranch) async {
-    return await getCategoryIsar(idBranch);
-  }
-
-  List<ModelFinancial> getIncome(String idBranch) {
-    return getIncome(idBranch);
-  }
-
-  List<ModelFinancial> getExpense(String idBranch) {
-    return getExpense(idBranch);
-  }
-
-  List<ModelPartner> getCustomer(String idBranch) {
-    return getCustomer(idBranch);
-  }
-
-  List<ModelPartner> getSupplier(String idBranch) {
-    return [];
-  }
-
-  List<ModelTransaction> getTransactionSell(String idBranch) {
-    return dataTransSell
-        .where((element) => element.getidBranch == idBranch)
-        .toList();
-  }
-
-  List<ModelTransaction> getTransactionBuy(String idBranch) {
-    return dataTransBuy
-        .where((element) => element.getidBranch == idBranch)
-        .toList();
-  }
-
-  List<ModelBatch> getBatch(String idBranch) {
-    return dataBatch
-        .where((element) => element.getidBranch == idBranch)
-        .toList();
-  }
-
-  List<ModelTransactionFinancial> getTransactionIncome(String idBranch) {
-    return dataTransIncome
-        .where((element) => element.getidBranch == idBranch)
-        .toList();
-  }
-
-  List<ModelTransactionFinancial> getTransactionExpense(String idBranch) {
-    return dataTransExpense
-        .where((element) => element.getidBranch == idBranch)
-        .toList();
-  }
-
   Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
     return await Hive.box<TransactionSavedHive>('saved_transaction');
   }
@@ -206,7 +123,12 @@ class DataUserRepositoryCache {
   Future<void> saveToIsar() async {
     dataItem.forEach((element) async => await saveItem_Isar(element));
     dataCategory.forEach((element) async => await saveCategory_Isar(element));
-    // dataPartner.forEach((element) async => await savePartner_Isar(element));
+    dataPartner
+        .where((element) => element.isCustomer)
+        .forEach((element) async => await saveCustomer_Isar(element));
+    dataPartner
+        .where((element) => element.isSupplier)
+        .forEach((element) async => await saveSupplier_Isar(element));
     dataTransSell.forEach(
       (element) async => await saveTransactionSell_Isar(element),
     );
@@ -214,7 +136,12 @@ class DataUserRepositoryCache {
       (element) async => await saveTransactionBuy_Isar(element),
     );
     dataBatch.forEach((element) async => await saveBatch_Isar(element));
-    dataFinancial.forEach((element) async => await saveFinancial_Isar(element));
+    dataFinancial
+        .where((element) => element.isIncome)
+        .forEach((element) async => await saveIncome_Isar(element));
+    dataFinancial
+        .where((element) => element.isExpense)
+        .forEach((element) async => await saveExpense_Isar(element));
     dataTransIncome.forEach(
       (element) async => await saveTransactionFinancialncome_Isar(element),
     );

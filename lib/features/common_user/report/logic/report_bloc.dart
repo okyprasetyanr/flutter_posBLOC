@@ -6,6 +6,8 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_report.dart';
 import 'package:flutter_pos/model_data/model_report_summary.dart';
@@ -17,7 +19,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     on<ReportIsSell>(_onIsSell);
   }
 
-  FutureOr<void> _onGetData(ReportGetData event, Emitter<ReportState> emit) {
+  Future<void> _onGetData(
+    ReportGetData event,
+    Emitter<ReportState> emit,
+  ) async {
     final currentState = state is ReportLoaded
         ? state as ReportLoaded
         : ReportLoaded();
@@ -25,25 +30,20 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     final dateEnd = dateYMDEndBLOC(event.dateEnd);
 
-    final dataBranch = repoCache.getBranch();
+    final dataBranch = await getListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
 
     final dataTransaction = event.isSell ?? currentState.isSell
-        ? repoCache.getTransactionSell(idBranch).where((element) {
-            return (element.getdate.isAtSameMomentAs(dateStart) ||
-                    element.getdate.isAfter(dateStart)) &&
-                (element.getdate.isAtSameMomentAs(dateEnd) ||
-                    element.getdate.isBefore(dateEnd)) &&
-                element.getstatusTransaction == ListStatusTransaction.Sukses;
-          }).toList()
-        : repoCache.getTransactionBuy(idBranch).where((element) {
-            return (element.getdate.isAtSameMomentAs(dateStart) ||
-                    element.getdate.isAfter(dateStart)) &&
-                (element.getdate.isAtSameMomentAs(dateEnd) ||
-                    element.getdate.isBefore(dateEnd)) &&
-                element.getstatusTransaction == ListStatusTransaction.Sukses;
-          }).toList();
+        ? await getTransactionSellIsar(idBranch)
+        : await getTransactionBuyIsar(idBranch);
+    final finalDataTransaction = dataTransaction.where((element) {
+      return (element.getdate.isAtSameMomentAs(dateStart) ||
+              element.getdate.isAfter(dateStart)) &&
+          (element.getdate.isAtSameMomentAs(dateEnd) ||
+              element.getdate.isBefore(dateEnd)) &&
+          element.getstatusTransaction == ListStatusTransaction.Sukses;
+    }).toList();
 
     double qris = 0;
     double debit = 0;
@@ -53,7 +53,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     double ppnAmount = 0;
     double chargeAmount = 0;
     double discountAmount = 0;
-    for (final transaction in dataTransaction) {
+    for (final transaction in finalDataTransaction) {
       final total = transaction.gettotal;
       switch (transaction.getpaymentMethod) {
         case LabelPaymentMethod.Cash:
@@ -99,9 +99,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     double expense = 0.0;
     final summary = ModelReportSummary(cash: cash, qris: qris, debit: debit);
 
-    final incomeTrans = repoCache.getTransactionIncome(idBranch).where((
-      element,
-    ) {
+    final incomeTrans = await getTransactionFinancialIncome(idBranch);
+    final finalIncomeTrans = incomeTrans.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -109,9 +108,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
-    final expenseTrans = repoCache.getTransactionExpense(idBranch).where((
-      element,
-    ) {
+    final expenseTrans = await getTransactionFinancialIncome(idBranch);
+    final finalexpenseTrans = expenseTrans.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -119,10 +117,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
-    for (final e in incomeTrans) {
+    for (final e in finalIncomeTrans) {
       income += e.getamount;
     }
-    for (final e in expenseTrans) {
+    for (final e in finalexpenseTrans) {
       expense += e.getamount;
     }
 
@@ -139,7 +137,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       expense: expense,
     );
 
-    debugPrint("Log ReportBloc: report: $dataTransaction");
+    debugPrint("Log ReportBloc: report: $finalDataTransaction");
     final isSell = event.isSell ?? currentState.isSell;
 
     emit(

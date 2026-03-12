@@ -5,6 +5,8 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -152,7 +154,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? state as InventoryLoaded
         : InventoryLoaded();
-    final dataBranch = currentState.dataBranch ?? repoCache.getBranch();
+    final dataBranch = currentState.dataBranch ?? await getListBranchIsar();
 
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
@@ -165,23 +167,16 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final filterType = currentState.filterTypeItem;
     final filterByCategory = currentState.indexFilterByCategoryItem;
 
-    final dataItem = repoCache.getItem(idBranch);
+    final dataItem = await getItemIsar(idBranch);
     debugPrint("Log InventoryBloc: items: $dataItem");
-    final dataCategory = await repoCache.getCategory(idBranch);
+    final dataCategory = await getCategoryIsar(idBranch);
     final filteredDataCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...dataCategory,
     ];
     dataCategory.sort((a, b) => a.getnameCategory.compareTo(b.getnameCategory));
 
-    List<ModelItemBatch> dataItemBatch = [];
-    repoCache
-        .getBatch(idBranch)
-        .forEach(
-          (element) => element.getitems_batch.forEach(
-            (element) => dataItemBatch.add(element),
-          ),
-        );
+    List<ModelItemBatch> dataItemBatch = await getItemBatchIsar(idBranch);
 
     final fifoMap = buildFifoBatchMap(dataItemBatch: dataItemBatch);
 

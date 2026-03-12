@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/request/delete_data.dart';
@@ -22,18 +24,21 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     on<FinancialSearch>(_onSearch, transformer: debounceRestartable());
   }
 
-  void _onGetData(FinancialGetData event, Emitter<FinancialState> emit) {
+  Future<void> _onGetData(
+    FinancialGetData event,
+    Emitter<FinancialState> emit,
+  ) async {
     final currentState = state is FinancialLoaded
         ? state as FinancialLoaded
         : FinancialLoaded();
 
-    final dataBranch = currentState.dataBranch ?? repoCache.getBranch();
+    final dataBranch = currentState.dataBranch ?? await getListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isIncome = event.isIncome ?? currentState.isIncome;
     final dataFinancial = isIncome
-        ? repoCache.getIncome(idBranch)
-        : repoCache.getExpense(idBranch);
+        ? await getIncomeIsar(idBranch)
+        : await getExpenseIsar(idBranch);
     emit(
       FinancialLoaded(
         dataBranch: dataBranch,

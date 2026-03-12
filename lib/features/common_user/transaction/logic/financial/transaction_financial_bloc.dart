@@ -7,6 +7,8 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -23,20 +25,20 @@ class TransFinancialBloc
     on<TransFinancialSearch>(_onSearch, transformer: debounceRestartable());
   }
 
-  FutureOr<void> _onGetData(
+  Future<void> _onGetData(
     TransFinancialGetData event,
     Emitter<TransFinancialState> emit,
-  ) {
+  ) async {
     final currentState = state is TransFinancialLoaded
         ? state as TransFinancialLoaded
         : TransFinancialLoaded();
-    final dataBranch = currentState.dataBranch ?? repoCache.getBranch();
+    final dataBranch = currentState.dataBranch ?? await getListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isIncome = event.isIncome ?? currentState.isIncome;
     final dataFinancial = isIncome
-        ? repoCache.getIncome(idBranch)
-        : repoCache.getExpense(idBranch);
+        ? await getIncomeIsar(idBranch)
+        : await getExpenseIsar(idBranch);
     dataFinancial.sort(
       (a, b) => a.getnameFinancial.compareTo(b.getnameFinancial),
     );

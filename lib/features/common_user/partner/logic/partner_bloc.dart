@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
@@ -24,18 +26,21 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     on<PartnerSearch>(_onSearch, transformer: debounceRestartable());
   }
 
-  FutureOr<void> _onGetData(PartnerGetData event, Emitter<PartnerState> emit) {
+  Future<void> _onGetData(
+    PartnerGetData event,
+    Emitter<PartnerState> emit,
+  ) async {
     final currentState = state is PartnerLoaded
         ? state as PartnerLoaded
         : PartnerLoaded();
 
-    final branch = currentState.dataBranch ?? repoCache.getBranch();
+    final branch = currentState.dataBranch ?? await getListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? branch.first.getidBranch;
     final isCustomer = event.isCustomer ?? currentState.isCustomer;
     List<ModelPartner> partner = isCustomer
-        ? repoCache.getCustomer(idBranch)
-        : repoCache.getSupplier(idBranch);
+        ? await getCustomerIsar(idBranch)
+        : await getSupplierIsar(idBranch);
 
     partner.sort((a, b) => a.getnamePartner.compareTo(b.getnamePartner));
     emit(
@@ -148,9 +153,9 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
       repoCache.dataPartner.removeWhere(
         (element) => element.getidPartner == event.id,
       );
-      final dataPartner = event.type.name == "customer"
-          ? await repoCache.getCustomer(currentState.idBranch!)
-          : await repoCache.getSupplier(currentState.idBranch!);
+      final dataPartner = event.type.name == PartnerType.customer
+          ? await getCustomerIsar(currentState.idBranch!)
+          : await getSupplierIsar(currentState.idBranch!);
       dataPartner.sort((a, b) => a.getnamePartner.compareTo(b.getnamePartner));
       emit(currentState.copyWith(dataPartner: dataPartner));
     }

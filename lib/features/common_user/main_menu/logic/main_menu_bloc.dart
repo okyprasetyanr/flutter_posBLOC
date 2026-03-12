@@ -6,6 +6,8 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -39,16 +41,14 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     final dateStart = dateNowYMDBLOC(statusEnd: false);
     final dateEnd = dateNowYMDBLOC(statusEnd: true);
 
-    final dataBranch = await repoCache.getBranch();
+    final dataBranch = await getListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
-    final dataTransaction = await repoCache
-        .getTransactionSell(idBranch)
-        .where(
-          (element) =>
-              element.getstatusTransaction == ListStatusTransaction.Sukses,
-        );
-    final dataTransactionByDate = dataTransaction.where((element) {
+    final dataTransaction = await getTransactionSellIsar(idBranch);
+    final finalDataTransaction = dataTransaction.where(
+      (element) => element.getstatusTransaction == ListStatusTransaction.Sukses,
+    );
+    final dataTransactionByDate = finalDataTransaction.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -75,9 +75,8 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
       totalItemTransaction += element.getitemsOrdered.length;
     }
 
-    final incomeTrans = await repoCache.getTransactionIncome(idBranch).where((
-      element,
-    ) {
+    final incomeTrans = await getTransactionFinancialIncome(idBranch);
+    final finalIncomeTrans = incomeTrans.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -85,9 +84,8 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
           element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
-    final expenseTrans = await repoCache.getTransactionExpense(idBranch).where((
-      element,
-    ) {
+    final expenseTrans = await getTransactionFinancialIncome(idBranch);
+    final finalexpenseTrans = expenseTrans.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -95,22 +93,24 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
           element.getstatusTransaction == ListStatusTransaction.Sukses;
     });
 
-    for (final e in incomeTrans) {
+    for (final e in finalIncomeTrans) {
       income += e.getamount;
     }
-    for (final e in expenseTrans) {
+    for (final e in finalexpenseTrans) {
       expense += e.getamount;
     }
 
     debugPrint("Log MainMenuBloc: cek");
 
-    final dataItem = await repoCache.getItem(idBranch);
+    final dataItem = await getItemIsar(idBranch);
     ModelItem? bestSeller = null;
     ModelItem? worstSeller = null;
     ModelItem? lowStockItems = null;
-    if (dataTransaction.isNotEmpty && dataItem.isNotEmpty) {
+    if (finalDataTransaction.isNotEmpty && dataItem.isNotEmpty) {
       final Map<String, double> qtyPerItem = {};
-      dataTransaction.expand((e) => e.getitemsOrdered).forEach((item) async {
+      finalDataTransaction.expand((e) => e.getitemsOrdered).forEach((
+        item,
+      ) async {
         await qtyPerItem.update(
           item.getidItem,
           (value) => value + item.getqtyItem,
@@ -148,34 +148,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     }
     final now = DateTime.now();
     Map<String, ModelExpiredItemBatch> almostExpiredItem = {};
-    final dataItemExpired = repoCache
-        .getBatch(idBranch)
-        .expand((element) => element.getitems_batch);
-
-    dataItemExpired
-        .where(
-          (item) =>
-              item.getexpiredDate != null &&
-              item.getexpiredDate != "-" &&
-              item.getexpiredDate!.isBefore(
-                DateTime.now().subtract(const Duration(days: 5)),
-              ),
-        )
-        .forEach((element) {
-          if (!almostExpiredItem.containsKey(element.getidItem)) {
-            almostExpiredItem[element.getidItem] = ModelExpiredItemBatch(
-              nameItem: element.getnameItem,
-              idItem: element.getidItem,
-              totalExpired: 0,
-              invoiceList: [],
-            );
-          }
-          almostExpiredItem[element.getidItem]!.invoiceList.add(
-            element.getinvoice,
-          );
-
-          almostExpiredItem[element.getidItem]!.totalExpired += 1;
-        });
+    final dataItemExpired = await getItemBatchIsar(idBranch);
 
     Map<String, ModelExpiredItemBatch> expiredItem = {};
     dataItemExpired

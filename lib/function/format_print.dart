@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/service/service_printer.dart';
-import 'package:flutter_pos/main.dart' as UserSession;
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_report.dart';
@@ -34,8 +34,8 @@ class ReceiptBuilder {
         : PosFontType.fontB;
     final gen = Generator(paper, profile);
     final List<int> bytes = [];
-    final user = UserSession.repo.getAccount();
-    final company = UserSession.repo.getCompany();
+    final user = await getAccountIsar();
+    final company = await getCompanyIsar();
     ModelBranch branch = ModelBranch.empty();
     if (user.getIdBranchUser != null) {
       branch = company.getListBranch.firstWhere(

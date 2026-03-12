@@ -1,4 +1,6 @@
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/isar/ModelBase/model_financial_base_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/ModelBase/model_partner_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_financial_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
@@ -7,7 +9,8 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_financial_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_income_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_customer_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_supplier_isar.dart';
@@ -112,16 +115,32 @@ Future<void> saveCounter_Isar(ModelCounter counter) async {
   });
 }
 
-Future<void> saveFinancial_Isar(ModelFinancial financial) async {
-  final data = ModelFinancialIsar()
+Future<void> saveIncome_Isar(ModelFinancial income) async {
+  return await isar.writeTxn(() async {
+    await isar.modelIncomeIsars.put(
+      await convertFinancial(income, ModelIncomeIsar.new),
+    );
+  });
+}
+
+Future<void> saveExpense_Isar(ModelFinancial expense) async {
+  return await isar.writeTxn(() async {
+    await isar.modelExpenseIsars.put(
+      await convertFinancial(expense, ModelExpenseIsar.new),
+    );
+  });
+}
+
+T convertFinancial<T extends ModelFinancialBaseIsar>(
+  ModelFinancial financial,
+  T Function() creator,
+) {
+  final object = creator();
+  return object
     ..idFinancial = financial.getidFinancial
     ..idBranch = financial.getidBranch
     ..type = financial.getfinancialType.name
     ..nameFinancial = financial.getnameFinancial;
-
-  await isar.writeTxn(() async {
-    await isar.modelFinancialIsars.put(data);
-  });
 }
 
 Future<void> saveItem_Isar(ModelItem item) async {
@@ -141,12 +160,32 @@ Future<void> saveItem_Isar(ModelItem item) async {
     ..statusItem = item.getStatusItem.name;
 
   await isar.writeTxn(() async {
-    await isar.modelItemIsars.put(user); // put = insert/update
+    await isar.modelItemIsars.put(user);
   });
 }
 
 Future<void> saveSupplier_Isar(ModelPartner partner) async {
-  final data = ModelSupplierIsar()
+  await isar.writeTxn(() async {
+    await isar.modelSupplierIsars.put(
+      await convertPartner(partner, ModelSupplierIsar.new),
+    );
+  });
+}
+
+Future<void> saveCustomer_Isar(ModelPartner partner) async {
+  await isar.writeTxn(() async {
+    await isar.modelCustomerIsars.put(
+      await convertPartner(partner, ModelCustomerIsar.new),
+    );
+  });
+}
+
+T convertPartner<T extends ModelPartnerBaseIsar>(
+  ModelPartner partner,
+  T Function() creator,
+) {
+  final object = creator();
+  return object
     ..idPartner = partner.getidPartner
     ..idBranch = partner.getidBranchPartner
     ..typePartner = partner.gettypePartner.name
@@ -155,10 +194,6 @@ Future<void> saveSupplier_Isar(ModelPartner partner) async {
     ..emailPartner = partner.getemailPartner
     ..balancePartner = partner.getbalancePartner
     ..date = partner.getdate;
-
-  await isar.writeTxn(() async {
-    await isar.modelSupplierIsars.put(data);
-  });
 }
 
 Future<void> saveTransactionBuy_Isar(ModelTransaction trx) async {

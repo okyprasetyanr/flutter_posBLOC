@@ -8,6 +8,8 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -47,22 +49,24 @@ class HistoryTransactionBloc
         ? dateYMDEndBLOC(event.dateEnd)
         : dateYMDEndBLOC(currentState.dateEnd);
 
-    final dataBranch = repoCache.getBranch();
+    final dataBranch = await getListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
-    final isIncome = event.isSell ?? currentState.isSell;
-    final dataTransaction = isIncome
-        ? repoCache
-              .getTransactionSell(idBranch)
+    final isSell = event.isSell ?? currentState.isSell;
+    final dataTransaction = isSell
+        ? await getTransactionSellIsar(idBranch)
+        : await getTransactionBuyIsar(idBranch);
+    final finalDataTransaction = isSell
+        ? dataTransaction
               .where(
                 (element) =>
                     element.getstatusTransaction !=
                     ListStatusTransaction.Tersimpan,
               )
               .toList()
-        : repoCache.getTransactionBuy(idBranch);
+        : dataTransaction;
 
-    final filteredData = dataTransaction.where((element) {
+    final filteredData = finalDataTransaction.where((element) {
       return (element.getdate.isAtSameMomentAs(dateStart) ||
               element.getdate.isAfter(dateStart)) &&
           (element.getdate.isAtSameMomentAs(dateEnd) ||
@@ -83,12 +87,12 @@ class HistoryTransactionBloc
 
     emit(
       HistoryTransactionLoaded(
-        isSell: isIncome,
+        isSell: isSell,
         dateStart: dateStart,
         dateEnd: dateEnd,
         idBranch: idBranch,
         filteredData: filteredData,
-        dataTransaction: dataTransaction,
+        dataTransaction: finalDataTransaction,
         displayDate: displayDate,
       ),
     );

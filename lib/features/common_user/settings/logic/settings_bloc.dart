@@ -7,6 +7,7 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/service/backup_restore/excel_backup.dart';
 import 'package:flutter_pos/service/backup_restore/excel_restore.dart';
@@ -49,12 +50,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsReset>(_onReset);
   }
 
-  FutureOr<void> _onProfile(
+  Future<void> _onProfile(
     SettingsProfile event,
     Emitter<SettingsState> emit,
-  ) {
-    final dataCompany = repoCache.getCompany();
-    final dataAccount = repoCache.getAccount();
+  ) async {
+    final dataCompany = await getCompanyIsar();
+    final dataAccount = await getAccountIsar();
     emit(
       SettingsProfileLoaded(dataAccount: dataAccount, dataCompany: dataCompany),
     );

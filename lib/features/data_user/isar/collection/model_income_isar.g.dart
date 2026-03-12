@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'model_financial_isar.dart';
+part of 'model_income_isar.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,14 +9,13 @@ part of 'model_financial_isar.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetModelFinancialIsarCollection on Isar {
-  IsarCollection<ModelFinancialIsar> get modelFinancialIsars =>
-      this.collection();
+extension GetModelIncomeIsarCollection on Isar {
+  IsarCollection<ModelIncomeIsar> get modelIncomeIsars => this.collection();
 }
 
-const ModelFinancialIsarSchema = CollectionSchema(
-  name: r'ModelFinancialIsar',
-  id: -2248413851824063895,
+const ModelIncomeIsarSchema = CollectionSchema(
+  name: r'ModelIncomeIsar',
+  id: -2012724509743442600,
   properties: {
     r'idBranch': PropertySchema(
       id: 0,
@@ -39,10 +38,10 @@ const ModelFinancialIsarSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _modelFinancialIsarEstimateSize,
-  serialize: _modelFinancialIsarSerialize,
-  deserialize: _modelFinancialIsarDeserialize,
-  deserializeProp: _modelFinancialIsarDeserializeProp,
+  estimateSize: _modelIncomeIsarEstimateSize,
+  serialize: _modelIncomeIsarSerialize,
+  deserialize: _modelIncomeIsarDeserialize,
+  deserializeProp: _modelIncomeIsarDeserializeProp,
   idName: r'isarId',
   indexes: {
     r'idFinancial': IndexSchema(
@@ -74,14 +73,14 @@ const ModelFinancialIsarSchema = CollectionSchema(
   },
   links: {},
   embeddedSchemas: {},
-  getId: _modelFinancialIsarGetId,
-  getLinks: _modelFinancialIsarGetLinks,
-  attach: _modelFinancialIsarAttach,
+  getId: _modelIncomeIsarGetId,
+  getLinks: _modelIncomeIsarGetLinks,
+  attach: _modelIncomeIsarAttach,
   version: '3.1.0+1',
 );
 
-int _modelFinancialIsarEstimateSize(
-  ModelFinancialIsar object,
+int _modelIncomeIsarEstimateSize(
+  ModelIncomeIsar object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -93,8 +92,8 @@ int _modelFinancialIsarEstimateSize(
   return bytesCount;
 }
 
-void _modelFinancialIsarSerialize(
-  ModelFinancialIsar object,
+void _modelIncomeIsarSerialize(
+  ModelIncomeIsar object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -105,13 +104,13 @@ void _modelFinancialIsarSerialize(
   writer.writeString(offsets[3], object.type);
 }
 
-ModelFinancialIsar _modelFinancialIsarDeserialize(
+ModelIncomeIsar _modelIncomeIsarDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = ModelFinancialIsar();
+  final object = ModelIncomeIsar();
   object.idBranch = reader.readString(offsets[0]);
   object.idFinancial = reader.readString(offsets[1]);
   object.isarId = id;
@@ -120,7 +119,7 @@ ModelFinancialIsar _modelFinancialIsarDeserialize(
   return object;
 }
 
-P _modelFinancialIsarDeserializeProp<P>(
+P _modelIncomeIsarDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -140,26 +139,25 @@ P _modelFinancialIsarDeserializeProp<P>(
   }
 }
 
-Id _modelFinancialIsarGetId(ModelFinancialIsar object) {
+Id _modelIncomeIsarGetId(ModelIncomeIsar object) {
   return object.isarId;
 }
 
-List<IsarLinkBase<dynamic>> _modelFinancialIsarGetLinks(
-    ModelFinancialIsar object) {
+List<IsarLinkBase<dynamic>> _modelIncomeIsarGetLinks(ModelIncomeIsar object) {
   return [];
 }
 
-void _modelFinancialIsarAttach(
-    IsarCollection<dynamic> col, Id id, ModelFinancialIsar object) {
+void _modelIncomeIsarAttach(
+    IsarCollection<dynamic> col, Id id, ModelIncomeIsar object) {
   object.isarId = id;
 }
 
-extension ModelFinancialIsarByIndex on IsarCollection<ModelFinancialIsar> {
-  Future<ModelFinancialIsar?> getByIdFinancial(String idFinancial) {
+extension ModelIncomeIsarByIndex on IsarCollection<ModelIncomeIsar> {
+  Future<ModelIncomeIsar?> getByIdFinancial(String idFinancial) {
     return getByIndex(r'idFinancial', [idFinancial]);
   }
 
-  ModelFinancialIsar? getByIdFinancialSync(String idFinancial) {
+  ModelIncomeIsar? getByIdFinancialSync(String idFinancial) {
     return getByIndexSync(r'idFinancial', [idFinancial]);
   }
 
@@ -171,13 +169,13 @@ extension ModelFinancialIsarByIndex on IsarCollection<ModelFinancialIsar> {
     return deleteByIndexSync(r'idFinancial', [idFinancial]);
   }
 
-  Future<List<ModelFinancialIsar?>> getAllByIdFinancial(
+  Future<List<ModelIncomeIsar?>> getAllByIdFinancial(
       List<String> idFinancialValues) {
     final values = idFinancialValues.map((e) => [e]).toList();
     return getAllByIndex(r'idFinancial', values);
   }
 
-  List<ModelFinancialIsar?> getAllByIdFinancialSync(
+  List<ModelIncomeIsar?> getAllByIdFinancialSync(
       List<String> idFinancialValues) {
     final values = idFinancialValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'idFinancial', values);
@@ -193,37 +191,36 @@ extension ModelFinancialIsarByIndex on IsarCollection<ModelFinancialIsar> {
     return deleteAllByIndexSync(r'idFinancial', values);
   }
 
-  Future<Id> putByIdFinancial(ModelFinancialIsar object) {
+  Future<Id> putByIdFinancial(ModelIncomeIsar object) {
     return putByIndex(r'idFinancial', object);
   }
 
-  Id putByIdFinancialSync(ModelFinancialIsar object, {bool saveLinks = true}) {
+  Id putByIdFinancialSync(ModelIncomeIsar object, {bool saveLinks = true}) {
     return putByIndexSync(r'idFinancial', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByIdFinancial(List<ModelFinancialIsar> objects) {
+  Future<List<Id>> putAllByIdFinancial(List<ModelIncomeIsar> objects) {
     return putAllByIndex(r'idFinancial', objects);
   }
 
-  List<Id> putAllByIdFinancialSync(List<ModelFinancialIsar> objects,
+  List<Id> putAllByIdFinancialSync(List<ModelIncomeIsar> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'idFinancial', objects, saveLinks: saveLinks);
   }
 }
 
-extension ModelFinancialIsarQueryWhereSort
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QWhere> {
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhere>
-      anyIsarId() {
+extension ModelIncomeIsarQueryWhereSort
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QWhere> {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhere> anyIsarId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension ModelFinancialIsarQueryWhere
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QWhereClause> {
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+extension ModelIncomeIsarQueryWhere
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QWhereClause> {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       isarIdEqualTo(Id isarId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -233,7 +230,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       isarIdNotEqualTo(Id isarId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -256,7 +253,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       isarIdGreaterThan(Id isarId, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -265,7 +262,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       isarIdLessThan(Id isarId, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -274,7 +271,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       isarIdBetween(
     Id lowerIsarId,
     Id upperIsarId, {
@@ -291,7 +288,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       idFinancialEqualTo(String idFinancial) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
@@ -301,7 +298,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       idFinancialNotEqualTo(String idFinancial) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -336,7 +333,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       idBranchEqualTo(String idBranch) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
@@ -346,7 +343,7 @@ extension ModelFinancialIsarQueryWhere
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterWhereClause>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterWhereClause>
       idBranchNotEqualTo(String idBranch) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -382,9 +379,9 @@ extension ModelFinancialIsarQueryWhere
   }
 }
 
-extension ModelFinancialIsarQueryFilter
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QFilterCondition> {
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+extension ModelIncomeIsarQueryFilter
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QFilterCondition> {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -398,7 +395,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchGreaterThan(
     String value, {
     bool include = false,
@@ -414,7 +411,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchLessThan(
     String value, {
     bool include = false,
@@ -430,7 +427,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchBetween(
     String lower,
     String upper, {
@@ -450,7 +447,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -464,7 +461,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -478,7 +475,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -489,7 +486,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -500,7 +497,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -510,7 +507,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idBranchIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -520,7 +517,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -534,7 +531,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialGreaterThan(
     String value, {
     bool include = false,
@@ -550,7 +547,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialLessThan(
     String value, {
     bool include = false,
@@ -566,7 +563,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialBetween(
     String lower,
     String upper, {
@@ -586,7 +583,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -600,7 +597,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -614,7 +611,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -625,7 +622,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -636,7 +633,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -646,7 +643,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       idFinancialIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -656,7 +653,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       isarIdEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -666,7 +663,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       isarIdGreaterThan(
     Id value, {
     bool include = false,
@@ -680,7 +677,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       isarIdLessThan(
     Id value, {
     bool include = false,
@@ -694,7 +691,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       isarIdBetween(
     Id lower,
     Id upper, {
@@ -712,7 +709,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -726,7 +723,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialGreaterThan(
     String value, {
     bool include = false,
@@ -742,7 +739,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialLessThan(
     String value, {
     bool include = false,
@@ -758,7 +755,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialBetween(
     String lower,
     String upper, {
@@ -778,7 +775,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -792,7 +789,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -806,7 +803,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -817,7 +814,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -828,7 +825,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -838,7 +835,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       nameFinancialIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -848,7 +845,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -862,7 +859,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeGreaterThan(
     String value, {
     bool include = false,
@@ -878,7 +875,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeLessThan(
     String value, {
     bool include = false,
@@ -894,7 +891,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeBetween(
     String lower,
     String upper, {
@@ -914,7 +911,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -928,7 +925,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -942,7 +939,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -953,7 +950,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -964,7 +961,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -974,7 +971,7 @@ extension ModelFinancialIsarQueryFilter
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterFilterCondition>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterFilterCondition>
       typeIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -985,64 +982,63 @@ extension ModelFinancialIsarQueryFilter
   }
 }
 
-extension ModelFinancialIsarQueryObject
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QFilterCondition> {}
+extension ModelIncomeIsarQueryObject
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QFilterCondition> {}
 
-extension ModelFinancialIsarQueryLinks
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QFilterCondition> {}
+extension ModelIncomeIsarQueryLinks
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QFilterCondition> {}
 
-extension ModelFinancialIsarQuerySortBy
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QSortBy> {
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+extension ModelIncomeIsarQuerySortBy
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QSortBy> {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       sortByIdBranch() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idBranch', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       sortByIdBranchDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idBranch', Sort.desc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       sortByIdFinancial() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idFinancial', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       sortByIdFinancialDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idFinancial', Sort.desc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       sortByNameFinancial() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'nameFinancial', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       sortByNameFinancialDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'nameFinancial', Sort.desc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
-      sortByType() {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy> sortByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       sortByTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.desc);
@@ -1050,72 +1046,70 @@ extension ModelFinancialIsarQuerySortBy
   }
 }
 
-extension ModelFinancialIsarQuerySortThenBy
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QSortThenBy> {
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+extension ModelIncomeIsarQuerySortThenBy
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QSortThenBy> {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByIdBranch() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idBranch', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByIdBranchDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idBranch', Sort.desc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByIdFinancial() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idFinancial', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByIdFinancialDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idFinancial', Sort.desc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
-      thenByIsarId() {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy> thenByIsarId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isarId', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByIsarIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isarId', Sort.desc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByNameFinancial() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'nameFinancial', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByNameFinancialDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'nameFinancial', Sort.desc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
-      thenByType() {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy> thenByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QAfterSortBy>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QAfterSortBy>
       thenByTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.desc);
@@ -1123,23 +1117,23 @@ extension ModelFinancialIsarQuerySortThenBy
   }
 }
 
-extension ModelFinancialIsarQueryWhereDistinct
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QDistinct> {
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QDistinct>
-      distinctByIdBranch({bool caseSensitive = true}) {
+extension ModelIncomeIsarQueryWhereDistinct
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QDistinct> {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QDistinct> distinctByIdBranch(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'idBranch', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QDistinct>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QDistinct>
       distinctByIdFinancial({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'idFinancial', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QDistinct>
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QDistinct>
       distinctByNameFinancial({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'nameFinancial',
@@ -1147,44 +1141,43 @@ extension ModelFinancialIsarQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QDistinct>
-      distinctByType({bool caseSensitive = true}) {
+  QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QDistinct> distinctByType(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'type', caseSensitive: caseSensitive);
     });
   }
 }
 
-extension ModelFinancialIsarQueryProperty
-    on QueryBuilder<ModelFinancialIsar, ModelFinancialIsar, QQueryProperty> {
-  QueryBuilder<ModelFinancialIsar, int, QQueryOperations> isarIdProperty() {
+extension ModelIncomeIsarQueryProperty
+    on QueryBuilder<ModelIncomeIsar, ModelIncomeIsar, QQueryProperty> {
+  QueryBuilder<ModelIncomeIsar, int, QQueryOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isarId');
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, String, QQueryOperations>
-      idBranchProperty() {
+  QueryBuilder<ModelIncomeIsar, String, QQueryOperations> idBranchProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'idBranch');
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, String, QQueryOperations>
+  QueryBuilder<ModelIncomeIsar, String, QQueryOperations>
       idFinancialProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'idFinancial');
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, String, QQueryOperations>
+  QueryBuilder<ModelIncomeIsar, String, QQueryOperations>
       nameFinancialProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'nameFinancial');
     });
   }
 
-  QueryBuilder<ModelFinancialIsar, String, QQueryOperations> typeProperty() {
+  QueryBuilder<ModelIncomeIsar, String, QQueryOperations> typeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'type');
     });

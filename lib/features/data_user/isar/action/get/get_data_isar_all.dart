@@ -1,5 +1,9 @@
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
@@ -38,4 +42,58 @@ Future<List<ModelUser>> getUserIsar() async {
       },
     );
   }).toList();
+}
+
+Future<ModelCompany> getCompanyIsar() async {
+  final company = await isar.modelCompanyIsars.where().findFirst();
+  return ModelCompany(
+    listBranch: company!.listBranch
+        .map(
+          (e) => ModelBranch(
+            nameBranch: e.nameBranch,
+            numTelpBranch: e.numTelpBranch,
+            addressBranch: e.addressBranch,
+            idBranch: e.idBranch,
+          ),
+        )
+        .toList(),
+    footer: company.footer,
+    header: company.header,
+    nameCompany: company.nameCompany,
+    phoneCompany: company.phoneCompany,
+    created: company.created,
+  );
+}
+
+Future<ModelUser> getAccountIsar() async {
+  final account = await isar.modelAccountIsars.where().findFirst();
+  return ModelUser(
+    nameUser: account!.nameUser,
+    emailUser: account.emailUser,
+    phoneUser: account.phoneUser,
+    roleUser: RoleTypeX.fromString(account.roleUser)!,
+    permissionsUser: {
+      Permission.Stok: account.Stok,
+      Permission.Inventory: account.Inventory,
+      Permission.Penjualan: account.Penjualan,
+      Permission.Pembelian: account.Pembelian,
+      Permission.Pendapatan: account.Pendapatan,
+      Permission.Pengeluaran: account.Pengeluaran,
+      Permission.Data_Pelanggan: account.Data_Pelanggan,
+      Permission.Data_Pemasok: account.Data_Pemasok,
+      Permission.Data_Pemasukan: account.Data_Pemasukan,
+      Permission.Data_Pengeluaran: account.Data_Pengeluaran,
+      Permission.Data_Operator: account.Data_Operator,
+      Permission.Riwayat_Penjualan: account.Riwayat_Penjualan,
+      Permission.Riwayat_Pembelian: account.Riwayat_Pembelian,
+      Permission.Riwayat_Pendapatan: account.Riwayat_Pendapatan,
+      Permission.Riwayat_Pengeluaran: account.Riwayat_Pengeluaran,
+      Permission.Laporan: account.Laporan,
+    },
+  );
+}
+
+Future<List<ModelBranch>> getListBranchIsar() async {
+  final company = await getCompanyIsar();
+  return company.getListBranch;
 }

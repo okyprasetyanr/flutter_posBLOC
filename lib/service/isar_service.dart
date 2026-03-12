@@ -3,7 +3,8 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_financial_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_income_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_customer_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_supplier_isar.dart';
@@ -27,7 +28,8 @@ class IsarService {
         ModelCategoryIsarSchema,
         ModelCompanyIsarSchema,
         ModelCounterIsarSchema,
-        ModelFinancialIsarSchema,
+        ModelIncomeIsarSchema,
+        ModelExpenseIsarSchema,
         ModelItemIsarSchema,
         ModelTransactionBuyIsarSchema,
         ModelTransactionFinancialExpenseIsarSchema,

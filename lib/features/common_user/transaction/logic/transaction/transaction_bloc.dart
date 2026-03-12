@@ -4,6 +4,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_for_batch.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -53,23 +56,22 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ? (state as TransactionLoaded)
         : TransactionLoaded();
 
-    final listBranch = repoCache.getBranch();
+    final listBranch = await getListBranchIsar();
 
     String idBranch =
         event.idBranch ?? currentState.idBranch ?? listBranch.first.getidBranch;
-    final dataItem = repoCache
-        .getItem(idBranch)
-        .where((element) => element.getStatusItem == StatusData.Aktif)
-        .toList();
-
+    final dataItem = await getItembyStatus(
+      status: StatusData.Aktif,
+      idBranch: idBranch,
+    );
     List<ModelCategory> listCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
-      ...await repoCache.getCategory(idBranch),
+      ...await getCategoryIsar(idBranch),
     ];
 
     List<ModelPartner> partner = currentState.isSell
-        ? repoCache.getCustomer(idBranch)
-        : repoCache.getSupplier(idBranch);
+        ? await getCustomerIsar(idBranch)
+        : await getSupplierIsar(idBranch);
 
     final hiveTransactionSaved = (await repoCache.getHiveSavedTransaction())
         .values
@@ -148,14 +150,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     ModelCategory selectedIdCategory =
         currentState.selectedCategory ?? listCategory.first;
 
-    List<ModelItemBatch> dataItemBatch = [];
-    repoCache
-        .getBatch(idBranch)
-        .forEach(
-          (element) => element.getitems_batch.forEach(
-            (element) => dataItemBatch.add(element),
-          ),
-        );
+    List<ModelItemBatch> dataItemBatch = [...await getItemBatchIsar(idBranch)];
 
     final fifoMap = buildFifoBatchMap(dataItemBatch: dataItemBatch);
 
