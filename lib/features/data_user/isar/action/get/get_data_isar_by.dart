@@ -30,9 +30,35 @@ import 'package:hive/hive.dart';
 import 'package:isar/isar.dart';
 
 Future<List<ModelBatch>> getBatchIsar(String idBranch) async {
-  return fromIsarBatch(
+  return fromIsarBatchToList(
     await isar.modelBatchIsars.where().idBranchEqualTo(idBranch).findAll(),
   );
+}
+
+Future<List<ModelBatchIsar>> getBatchIsarRaw(String idBranch) async {
+  return await isar.modelBatchIsars.where().idBranchEqualTo(idBranch).findAll();
+}
+
+Future<ModelBatchIsar> getBatchIsarByInvoice(String invoice) async {
+  return (await isar.modelBatchIsars
+      .where()
+      .invoiceEqualTo(invoice)
+      .findFirst())!;
+}
+
+Future<List<ModelItem>> getItembyStatus({
+  required StatusData status,
+  required String idBranch,
+}) async {
+  final allItem = await isar.writeTxn(
+    () async => await isar.modelItemIsars
+        .where()
+        .idBranchEqualTo(idBranch)
+        .filter()
+        .statusItemEqualTo(status.name)
+        .findAll(),
+  );
+  return fromIsarItem(allItem, idBranch);
 }
 
 Future<List<ModelItemBatch>> getItemBatchIsar(String idBranch) async {
@@ -44,7 +70,7 @@ Future<List<ModelItemBatch>> getItemBatchIsar(String idBranch) async {
 
   final flatData = itemBatchProperty.expand((list) => list).toList();
 
-  return await fromIsarItemBatch(flatData);
+  return await flatData.map((e) => fromIsarItemBatch(e)).toList();
 }
 
 Future<List<ModelCategory>> getCategoryIsar(String idBranch) async {
@@ -117,20 +143,9 @@ List<ModelFinancial> convertFinancial<T>({
 Future<List<ModelItem>> getItemIsar(String idBranch) async {
   final allItem = await fromIsarItem(
     await isar.modelItemIsars.where().idBranchEqualTo(idBranch).findAll(),
+    idBranch,
   );
-  for (int i = 0; i < allItem.length; i++) {
-    final item = allItem[i];
-    double qty = item.getqtyItem;
-    final batch = await getBatchIsar(idBranch);
-    final allBatchItems = batch
-        .expand((batch) => batch.getitems_batch)
-        .where((element) => element.getidItem == item.getidItem);
 
-    for (final itemBatch in allBatchItems) {
-      qty += itemBatch.getqtyItem_in - itemBatch.getqtyItem_out;
-    }
-    allItem[i] = item.copyWith(qtyItem: qty);
-  }
   return allItem;
 }
 

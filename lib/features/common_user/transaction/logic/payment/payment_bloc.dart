@@ -376,16 +376,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           );
         }
       } else {
-        final bloc = event.context.read<DataUserRepositoryCache>();
         if (currentState.revisionInvoice != null) {
           if (box.get(currentState.revisionInvoice!) != null) {
             await box.delete(currentState.revisionInvoice);
           }
         }
-        await transaction.pushDataTransaction(
-          isSell: currentState.isSell,
-          dataRepo: bloc,
-        );
+        await transaction.pushDataTransaction(isSell: currentState.isSell);
       }
 
       final dataCounter = repoCache.dataCounter;

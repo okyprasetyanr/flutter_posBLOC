@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';

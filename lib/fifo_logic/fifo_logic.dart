@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
+import 'package:flutter_pos/from_and_to_map/from_isar.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_fifo_logic.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
+import 'package:flutter_pos/service/isar_service.dart';
 
 ModelFIFOLogic fifoLogic({
   required TransactionLoaded state,
@@ -352,67 +354,56 @@ double _getGlobalUsedQty(
 }
 
 Future<void> updateExistingBatch(
-  DataUserRepositoryCache dataRepo,
+  List<ModelBatchIsar> dataBatch,
   String invoice,
 ) async {
   final batchRef = FirebaseFirestore.instance.collection("batch").doc(invoice);
-
   final writeBatch = FirebaseFirestore.instance.batch();
 
-  for (final batch in dataRepo.dataBatch) {
-    if (batch.getinvoice != invoice) continue;
+  await isar.writeTxn(() async {
+    for (final batch in dataBatch) {
+      if (batch.invoice != invoice) continue;
 
-    for (final itemBatch in batch.getitems_batch) {
-      final itemDoc = batchRef
-          .collection("items_batch")
-          .doc(itemBatch.getidOrdered);
+      for (final item in batch.itemsBatch) {
+        final itemDoc = batchRef.collection("items_batch").doc(item.idOrdered);
 
-      writeBatch.update(itemDoc, {"qty_item_out": itemBatch.getqtyItem_out});
+        writeBatch.update(itemDoc, {"qty_item_out": item.qtyItem_out});
+      }
+
+      await isar.modelBatchIsars.put(batch);
     }
-  }
+  });
 
   await writeBatch.commit();
 }
 
 void revertFIFOStock({
   required List<ModelItemOrdered> itemsOrdered,
-  required List<ModelBatch> dataBatch,
+  required List<ModelBatchIsar> dataBatch,
 }) {
   for (final item in itemsOrdered) {
     for (final usedBatch in item.getitemOrderedBatch) {
-      bool found = false;
-
       for (int i = 0; i < dataBatch.length; i++) {
         final itemBatch = dataBatch[i];
 
-        final batchIndex = itemBatch.getitems_batch.indexWhere(
+        final batchIndex = itemBatch.itemsBatch.indexWhere(
           (b) =>
-              b.getidItem == item.getidItem &&
-              b.getidOrdered == usedBatch.getid_Ordered,
+              b.idItem == item.getidItem &&
+              b.idOrdered == usedBatch.getid_Ordered,
         );
 
         if (batchIndex == -1) continue;
 
-        final batch = itemBatch.getitems_batch[batchIndex];
+        final batch = itemBatch.itemsBatch[batchIndex];
 
-        final newQtyOut = batch.getqtyItem_out - usedBatch.getqty_item;
+        final newQtyOut = batch.qtyItem_out - usedBatch.getqty_item;
 
-        itemBatch.getitems_batch[batchIndex] = batch.copyWith(
-          qtyItem_out: newQtyOut < 0 ? 0 : newQtyOut,
-        );
-
-        found = true;
-
-        debugPrint(
-          "Revert FIFO → item:${item.getidItem} batch:${batch.getidOrdered} qty:${usedBatch.getqty_item}",
+        itemBatch.itemsBatch[batchIndex] = convertItemBatch(
+          fromIsarItemBatch(
+            batch,
+          ).copyWith(qtyItem_out: newQtyOut < 0 ? 0 : newQtyOut),
         );
         break;
-      }
-
-      if (!found) {
-        debugPrint(
-          "WARNING revertFIFOStock: batch ${usedBatch.getid_Ordered} not found",
-        );
       }
     }
   }

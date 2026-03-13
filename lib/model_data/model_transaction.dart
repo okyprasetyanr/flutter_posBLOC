@@ -2,14 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
-import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/from_and_to_map/from_isar.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
+import 'package:flutter_pos/service/isar_service.dart';
 
 enum PaymentMethod { Cash, Debit, QRIS, Split }
 
@@ -179,7 +183,7 @@ class ModelTransaction extends Equatable {
     );
   }
 
-  Future<void> pushDataBatch(DataUserRepositoryCache dataRepo) async {
+  Future<void> pushDataBatch() async {
     List<ModelItemBatch> convertToItemBatch = [];
     for (final itemordered in _itemsOrdered) {
       debugPrint("Log ModelTransaction: ${itemordered}");
@@ -226,16 +230,16 @@ class ModelTransaction extends Equatable {
       writeBatch.set(itemDoc, convertToMapItemBatch(itemBatch, _invoice));
     }
 
-    await writeBatch.commit();
+    await saveBatch_Isar(newBatch);
 
-    dataRepo.dataBatch.add(newBatch);
+    await writeBatch.commit();
   }
 
   Future<void> pushDataTransaction({
     bool? statusRemove,
     required bool isSell,
-    required DataUserRepositoryCache dataRepo,
   }) async {
+    final dataBatch = await getBatchIsarRaw(_idBranch);
     final remove = statusRemove ?? false;
     final transRef = FirebaseFirestore.instance
         .collection(isSell ? "transaction_sell" : "transaction_buy")
@@ -243,27 +247,26 @@ class ModelTransaction extends Equatable {
 
     if (remove) {
       if (UserSession.getStatusFifo() && isSell) {
-        revertFIFOStock(
-          itemsOrdered: getitemsOrdered,
-          dataBatch: dataRepo.dataBatch,
-        );
-        await updateExistingBatch(dataRepo, _invoice);
+        revertFIFOStock(itemsOrdered: getitemsOrdered, dataBatch: dataBatch);
+        await updateExistingBatch(dataBatch, _invoice);
       }
       transRef.set({
         'status_transaction': _statusTransaction!.name,
       }, SetOptions(merge: true));
     } else {
       if (!isSell) {
-        await pushDataBatch(dataRepo);
+        await pushDataBatch();
       } else {
         if (UserSession.getStatusFifo()) {
-          await commitStockFromOrderedBatch(dataRepo: dataRepo);
+          await commitStockFromOrderedBatch(
+            dataBatch: await fromIsarBatchToList(dataBatch),
+          );
         }
       }
 
       final dataTransaction = isSell
-          ? dataRepo.dataTransSell
-          : dataRepo.dataTransBuy;
+          ? await getTransactionSellIsar(_idBranch)
+          : await getTransactionBuyIsar(_idBranch);
 
       final transaction = ModelTransaction(
         statusTransaction: _statusTransaction,
@@ -358,7 +361,7 @@ class ModelTransaction extends Equatable {
   }
 
   Future<void> commitStockFromOrderedBatch({
-    required DataUserRepositoryCache dataRepo,
+    required List<ModelBatch> dataBatch,
   }) async {
     final firestore = FirebaseFirestore.instance;
     final batchWrite = firestore.batch();
@@ -367,8 +370,10 @@ class ModelTransaction extends Equatable {
         .expand((e) => e.getitemOrderedBatch)
         .toList();
 
+    final List<ModelBatchIsar> updatedIsarBatch = [];
+
     for (final orderedBatch in allOrderedBatch) {
-      final batchIndex = dataRepo.dataBatch.indexWhere(
+      final batchIndex = dataBatch.indexWhere(
         (b) => b.getitems_batch.any(
           (x) =>
               x.getidOrdered == orderedBatch.getid_Ordered &&
@@ -376,42 +381,71 @@ class ModelTransaction extends Equatable {
         ),
       );
 
-      if (batchIndex != -1) {
-        final itemIndex = dataRepo.dataBatch[batchIndex].getitems_batch
-            .indexWhere(
-              (x) =>
-                  x.getidOrdered == orderedBatch.getid_Ordered &&
-                  x.getidItem == orderedBatch.getid_Item,
-            );
+      if (batchIndex == -1) continue;
 
-        if (itemIndex != -1) {
-          final old = dataRepo.dataBatch[batchIndex].getitems_batch[itemIndex];
+      final itemIndex = dataBatch[batchIndex].getitems_batch.indexWhere(
+        (x) =>
+            x.getidOrdered == orderedBatch.getid_Ordered &&
+            x.getidItem == orderedBatch.getid_Item,
+      );
 
-          final updated = old.copyWith(
-            qtyItem_out: old.getqtyItem_out + orderedBatch.getqty_item,
-          );
+      if (itemIndex == -1) continue;
 
-          final newItems = List<ModelItemBatch>.from(
-            dataRepo.dataBatch[batchIndex].getitems_batch,
-          );
-          newItems[itemIndex] = updated;
+      final old = dataBatch[batchIndex].getitems_batch[itemIndex];
 
-          final newBatch = dataRepo.dataBatch[batchIndex].copyWith(
-            items_batch: newItems,
-          );
+      final updated = old.copyWith(
+        qtyItem_out: old.getqtyItem_out + orderedBatch.getqty_item,
+      );
 
-          dataRepo.dataBatch[batchIndex] = newBatch;
+      final newItems = List<ModelItemBatch>.from(
+        dataBatch[batchIndex].getitems_batch,
+      );
 
-          final docRef = firestore
-              .collection("batch")
-              .doc(updated.getinvoice)
-              .collection("items_batch")
-              .doc(updated.getidOrdered);
+      newItems[itemIndex] = updated;
 
-          batchWrite.update(docRef, {'qty_item_out': updated.getqtyItem_out});
-        }
+      final newBatch = dataBatch[batchIndex].copyWith(items_batch: newItems);
+
+      dataBatch[batchIndex] = newBatch;
+
+      final docRef = firestore
+          .collection("batch")
+          .doc(updated.getinvoice)
+          .collection("items_batch")
+          .doc(updated.getidOrdered);
+
+      batchWrite.update(docRef, {'qty_item_out': updated.getqtyItem_out});
+
+      var batchIsarIndex = updatedIsarBatch.indexWhere(
+        (e) => e.invoice == updated.getinvoice,
+      );
+
+      ModelBatchIsar batchIsar;
+
+      if (batchIsarIndex == -1) {
+        batchIsar = await getBatchIsarByInvoice(updated.getinvoice);
+        updatedIsarBatch.add(batchIsar);
+      } else {
+        batchIsar = updatedIsarBatch[batchIsarIndex];
       }
+
+      final items = fromIsarBatch(batchIsar).getitems_batch;
+
+      final index = items.indexWhere(
+        (e) => e.getidOrdered == updated.getidOrdered,
+      );
+
+      if (index != -1) {
+        items[index] = items[index].copyWith(
+          qtyItem_out: updated.getqtyItem_out,
+        );
+      }
+
+      batchIsar.itemsBatch = items.map((e) => convertItemBatch(e)).toList();
     }
+
+    await isar.writeTxn(() async {
+      await isar.modelBatchIsars.putAll(updatedIsarBatch);
+    });
 
     await batchWrite.commit();
   }

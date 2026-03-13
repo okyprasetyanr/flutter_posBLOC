@@ -9,7 +9,7 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by_id.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -147,7 +147,6 @@ class HistoryTransactionBloc
       await dataTransaction[indexdataTrans].pushDataTransaction(
         statusRemove: true,
         isSell: currentState.isSell,
-        dataRepo: repoCache,
       );
 
       add(HistoryTransactionGetData());

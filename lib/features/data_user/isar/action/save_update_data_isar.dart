@@ -30,6 +30,7 @@ import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -42,30 +43,32 @@ Future<void> saveBatch_Isar(ModelBatch batch) async {
     ..idBranch = batch.getidBranch
     ..dateBuy = batch.getdate_buy
     ..itemsBatch = batch.getitems_batch
-        .map(
-          (item) => ModelItemBatchIsar()
-            ..invoice = item.getinvoice
-            ..idOrdered = item.getidOrdered
-            ..priceitemBuy = item.getpriceItemBuy
-            ..nameItem = item.getnameItem
-            ..idBranch = item.getidBranch
-            ..idItem = item.getidItem
-            ..idCategoryItem = item.getidCategoryItem
-            ..note = item.getnote
-            ..date_buy = item.getdateBuy
-            ..expiredDate = item.getexpiredDate
-            ..discountItem = item.getdiscountItem
-            ..qtyItem_in = item.getqtyItem_in
-            ..qtyItem_out = item.getqtyItem_out
-            ..priceItem = item.getpriceItem
-            ..subTotal = item.getsubTotal
-            ..priceItemFinal = item.getpriceItemFinal,
-        )
+        .map((e) => convertItemBatch(e))
         .toList();
 
   await isar.writeTxn(() async {
     await isar.modelBatchIsars.put(data);
   });
+}
+
+ModelItemBatchIsar convertItemBatch(ModelItemBatch data) {
+  return ModelItemBatchIsar()
+    ..invoice = data.getinvoice
+    ..idOrdered = data.getidOrdered
+    ..priceitemBuy = data.getpriceItemBuy
+    ..nameItem = data.getnameItem
+    ..idBranch = data.getidBranch
+    ..idItem = data.getidItem
+    ..idCategoryItem = data.getidCategoryItem
+    ..note = data.getnote
+    ..date_buy = data.getdateBuy
+    ..expiredDate = data.getexpiredDate
+    ..discountItem = data.getdiscountItem
+    ..qtyItem_in = data.getqtyItem_in
+    ..qtyItem_out = data.getqtyItem_out
+    ..priceItem = data.getpriceItem
+    ..subTotal = data.getsubTotal
+    ..priceItemFinal = data.getpriceItemFinal;
 }
 
 Future<void> saveCategory_Isar(ModelCategory category) async {
