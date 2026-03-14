@@ -28,7 +28,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
     final currentState = state is BatchLoaded
         ? state as BatchLoaded
         : BatchLoaded();
-    final dataBranch = await getListBranchIsar();
+    final dataBranch = await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final dataBatch = await getBatchIsar(idBranch);

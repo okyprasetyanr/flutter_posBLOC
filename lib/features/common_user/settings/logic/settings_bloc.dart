@@ -7,7 +7,9 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by_collection.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/service/backup_restore/excel_backup.dart';
 import 'package:flutter_pos/service/backup_restore/excel_restore.dart';
@@ -54,8 +56,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsProfile event,
     Emitter<SettingsState> emit,
   ) async {
-    final dataCompany = await getCompanyIsar();
-    final dataAccount = await getAccountIsar();
+    final dataCompany = await getAllCompanyIsar();
+    final dataAccount = await getAllAccountIsar();
     emit(
       SettingsProfileLoaded(dataAccount: dataAccount, dataCompany: dataCompany),
     );
@@ -193,25 +195,26 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(currentState.copyWith(isCancelled: true));
   }
 
-  FutureOr<void> _onLogoHeaderFooterInit(
+  Future<void> _onLogoHeaderFooterInit(
     SettingsLogoHeaderFooterInit event,
     Emitter<SettingsState> emit,
-  ) {
+  ) async {
+    final company = await getAllCompanyIsar();
     emit(
       SettingsLogoHeaderFooterLoaded(
-        footer: repoCache.dataCompany!.getFooter,
-        header: repoCache.dataCompany!.getHeader,
+        footer: company.getFooter,
+        header: company.getHeader,
       ),
     );
   }
 
-  FutureOr<void> _onLogoHeaderFooterUpdate(
+  Future<void> _onLogoHeaderFooterUpdate(
     SettingsLogoHeaderFooterUpdate event,
     Emitter<SettingsState> emit,
-  ) {
-    repoCache.dataCompany = repoCache.dataCompany!.copyWith(
-      footer: event.footer,
-      header: event.header,
+  ) async {
+    final company = await getAllCompanyIsar();
+    await saveCompany_Isar(
+      company.copyWith(footer: event.footer, header: event.header),
     );
     updateLogoHeaderFoter(header: event.header, footer: event.footer);
     add(SettingsLogoHeaderFooterInit());
@@ -254,13 +257,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     await ExcelRestoreService(
       file: currentState.selectedFile as File,
       handlers: {
-        ListDataHeaderExcel.Akun.name: (sheet) => restoreSheet<ModelUser>(
+        ListDataHeaderExcel.Akun.name: (sheet) async => restoreSheet<ModelUser>(
           sheet: sheet,
           id: FieldDataUser.id_user.name,
-          listDataRepo: repoCache.dataUser,
-          getMap: (data) {
-            if (data[FieldDataUser.id_user.name] ==
-                repoCache.dataAccount!.idUser) {
+          listDataRepo: await getAllUserIsar(),
+          getMap: (data) async {
+            final dataAccount = await getAllAccountIsar();
+            if (data[FieldDataUser.id_user.name] == dataAccount.idUser) {
               isCorrect = true;
             }
           },
@@ -371,57 +374,59 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           //       listDataRepo: repoCache.dataUser,
           //       fromMap: (data, id) => fromMapUser(data, id),
           //     ),
-          ListDataHeaderExcel.Usaha.name: (sheet) => restoreSheet<ModelCompany>(
-            sheet: sheet,
-            id: FieldDataCompany.id_company.name,
-            dataRepo: repoCache.dataCompany,
-            fromMap: (data, id) => fromMapCompany(data, id),
-          ),
+          ListDataHeaderExcel.Usaha.name: (sheet) async =>
+              restoreSheet<ModelCompany>(
+                sheet: sheet,
+                id: FieldDataCompany.id_company.name,
+                dataRepo: await getAllCompanyIsar(),
+                fromMap: (data, id) => fromMapCompany(data, id),
+              ),
 
-          ListDataHeaderExcel.Item.name: (sheet) => restoreSheet<ModelItem>(
-            sheet: sheet,
-            id: FieldDataItem.id_item.name,
-            listDataRepo: repoCache.dataItem,
-            fromMap: (data, id) => fromMapItem(data, id),
-          ),
+          ListDataHeaderExcel.Item.name: (sheet) async =>
+              restoreSheet<ModelItem>(
+                sheet: sheet,
+                id: FieldDataItem.id_item.name,
+                listDataRepo: await getAllItemIsar(),
+                fromMap: (data, id) => fromMapItem(data, id),
+              ),
 
-          ListDataHeaderExcel.Kategori.name: (sheet) =>
+          ListDataHeaderExcel.Kategori.name: (sheet) async =>
               restoreSheet<ModelCategory>(
                 sheet: sheet,
                 id: FieldDataCategory.id_category.name,
-                listDataRepo: repoCache.dataCategory,
+                listDataRepo: await getAllCategoryIsar(),
                 fromMap: (data, id) => fromMapCategory(data, id),
               ),
 
-          ListDataHeaderExcel.Pelanggan.name: (sheet) =>
+          ListDataHeaderExcel.Pelanggan.name: (sheet) async =>
               restoreSheet<ModelPartner>(
                 sheet: sheet,
                 id: FieldDataPartner.id_partner.name,
-                listDataRepo: repoCache.dataPartner,
+                listDataRepo: await getAllCustomer_Isar(),
                 fromMap: (data, id) => fromMapPartner(data, id),
               ),
 
-          ListDataHeaderExcel.Pemasok.name: (sheet) =>
+          ListDataHeaderExcel.Pemasok.name: (sheet) async =>
               restoreSheet<ModelPartner>(
                 sheet: sheet,
                 id: FieldDataPartner.id_partner.name,
-                listDataRepo: repoCache.dataPartner,
+                listDataRepo: await getAllSupplier_Isar(),
                 fromMap: (data, id) => fromMapPartner(data, id),
               ),
 
-          ListDataHeaderExcel.Pendapatan.name: (sheet) =>
+          ListDataHeaderExcel.Pendapatan.name: (sheet) async =>
               restoreSheet<ModelFinancial>(
                 sheet: sheet,
                 id: FieldDataFinancial.id_financial.name,
-                listDataRepo: repoCache.dataFinancial,
+                listDataRepo: await getAllIncome_Isar(),
                 fromMap: (data, id) => fromMapFinancial(data, id),
               ),
 
-          ListDataHeaderExcel.Pengeluaran.name: (sheet) =>
+          ListDataHeaderExcel.Pengeluaran.name: (sheet) async =>
               restoreSheet<ModelFinancial>(
                 sheet: sheet,
                 id: FieldDataFinancial.id_financial.name,
-                listDataRepo: repoCache.dataFinancial,
+                listDataRepo: await getAllExpense_Isar(),
                 fromMap: (data, id) => fromMapFinancial(data, id),
               ),
 
@@ -435,10 +440,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           ListDataHeaderExcel.Riwayat_Penjualan.name.replaceAll(
             " ",
             "_",
-          ): (sheet) => restoreSheet<ModelTransaction>(
+          ): (sheet) async => restoreSheet<ModelTransaction>(
             sheet: sheet,
             id: FieldDataTransaction.invoice.name,
-            listDataRepo: repoCache.dataTransSell,
+            listDataRepo: await getAllTransactionSell_Isar(),
             fromMap: (data, id) => fromMapTransaction(
               data,
               itemsOrdered
@@ -452,10 +457,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           ListDataHeaderExcel.Riwayat_Pembelian.name.replaceAll(
             " ",
             "_",
-          ): (sheet) => restoreSheet<ModelTransaction>(
+          ): (sheet) async => restoreSheet<ModelTransaction>(
             sheet: sheet,
             id: FieldDataTransaction.invoice.name,
-            listDataRepo: repoCache.dataTransBuy,
+            listDataRepo: await getAllTransactionBuy_Isar(),
             fromMap: (data, id) => fromMapTransaction(
               data,
               itemsOrdered
@@ -469,20 +474,20 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           ListDataHeaderExcel.Riwayat_Pendapatan.name.replaceAll(
             " ",
             "_",
-          ): (sheet) => restoreSheet<ModelTransactionFinancial>(
+          ): (sheet) async => restoreSheet<ModelTransactionFinancial>(
             sheet: sheet,
             id: FieldDataTransFinancial.id_financial.name,
-            listDataRepo: repoCache.dataTransIncome,
+            listDataRepo: await getAllTransactionIncome_Isar(),
             fromMap: (data, id) => fromMapTransFinancial(data, id),
           ),
 
           ListDataHeaderExcel.Riwayat_Pengeluaran.name.replaceAll(
             " ",
             "_",
-          ): (sheet) => restoreSheet<ModelTransactionFinancial>(
+          ): (sheet) async => restoreSheet<ModelTransactionFinancial>(
             sheet: sheet,
             id: FieldDataTransFinancial.id_financial.name,
-            listDataRepo: repoCache.dataTransIncome,
+            listDataRepo: await getAllTransactionExpense_Isar(),
             fromMap: (data, id) => fromMapTransFinancial(data, id),
           ),
         },
@@ -510,17 +515,20 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     ], text: 'Backup data item');
   }
 
-  FutureOr<void> _onReset(SettingsReset event, Emitter<SettingsState> emit) {
-    repoCache.dataBatch.clear();
-    repoCache.dataCategory.clear();
-    repoCache.dataItem.clear();
-    repoCache.dataPartner.clear();
-    repoCache.dataCounter.clear();
-    repoCache.dataFinancial.clear();
-    repoCache.dataTransSell.clear();
-    repoCache.dataTransBuy.clear();
-    repoCache.dataTransIncome.clear();
-    repoCache.dataTransExpense.clear();
-    repoCache.notifyChanged();
+  Future<void> _onReset(
+    SettingsReset event,
+    Emitter<SettingsState> emit,
+  ) async {
+    await deleteBatchCollection();
+    await deleteCategoryCollection();
+    await deleteItemCollection();
+    await deletePartnerCollection();
+    await deleteCounterCollection();
+    await deleteFinancialCollection();
+    await deleteTransactionBuyCollection();
+    await deleteTransactionSellCollection();
+    await deleteTransactionFinancialIncomeCollection();
+    await deleteTransactionFinancialExpenseCollection();
+    // repoCache.notifyChanged();
   }
 }

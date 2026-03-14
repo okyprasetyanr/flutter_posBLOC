@@ -30,7 +30,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     final dateEnd = dateYMDEndBLOC(event.dateEnd);
 
-    final dataBranch = await getListBranchIsar();
+    final dataBranch = await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
 

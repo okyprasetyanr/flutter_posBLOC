@@ -9,6 +9,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/financial/tra
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_state.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -32,7 +33,7 @@ class TransFinancialBloc
     final currentState = state is TransFinancialLoaded
         ? state as TransFinancialLoaded
         : TransFinancialLoaded();
-    final dataBranch = currentState.dataBranch ?? await getListBranchIsar();
+    final dataBranch = currentState.dataBranch ?? await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isIncome = event.isIncome ?? currentState.isIncome;
@@ -72,9 +73,8 @@ class TransFinancialBloc
     final isIncome = currentState.isIncome;
 
     final selectedData = currentState.selectedFinancial!;
-    final counter = repoCache.dataCounter.firstWhere(
-      (element) => element.getidBranch == selectedData.idBranch,
-    );
+    final counter = await getCounterIsar(currentState.idBranch!);
+    final dataAccount = await getAllAccountIsar();
 
     final data = ModelTransactionFinancial(
       statusTransaction: ListStatusTransaction.Sukses,
@@ -82,7 +82,7 @@ class TransFinancialBloc
       nameFinancial: selectedData.getnameFinancial,
       idBranch: selectedData.getidBranch,
       invoice: generateInvoice(
-        idOP: repoCache.dataAccount!.getNameUser,
+        idOP: dataAccount.getNameUser,
         branchId: selectedData.getidBranch,
         queue: isIncome
             ? counter.getcounterIncome + 1
@@ -93,22 +93,20 @@ class TransFinancialBloc
       amount: double.tryParse(event.amount)!,
     );
 
-    data.pushDataFinancial(isIncome);
-
-    final dataCounter = repoCache.dataCounter;
-
-    final counterIndex = dataCounter.indexWhere(
-      (element) => element.getidBranch == data.getidBranch,
-    );
-
-    dataCounter[counterIndex] = dataCounter[counterIndex].copyWith(
+    final finalCounter = counter.copyWith(
       counterIncome: currentState.isIncome
-          ? dataCounter[counterIndex].getcounterIncome + 1
+          ? counter.getcounterIncome + 1
           : null,
       counterExpense: currentState.isIncome
           ? null
-          : dataCounter[counterIndex].getcounterExpense + 1,
+          : counter.getcounterExpense + 1,
     );
+
+    await saveCounter_Isar(finalCounter);
+
+    isIncome
+        ? await saveTransactionFinancialncome_Isar(data)
+        : await saveTransactionFinancialExpense_Isar(data);
 
     await FirebaseFirestore.instance
         .collection('counter')
@@ -120,13 +118,9 @@ class TransFinancialBloc
               FieldValue.increment(1),
         });
 
-    final updateLocal = isIncome
-        ? repoCache.dataTransIncome
-        : repoCache.dataTransExpense;
-    updateLocal.add(data);
-
+    await data.pushDataFinancial(isIncome);
     add(TransFinancialResetSelected());
-    repoCache.notifyChanged();
+    // repoCache.notifyChanged();
   }
 
   FutureOr<void> _onResetSelected(

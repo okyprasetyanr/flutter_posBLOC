@@ -9,6 +9,7 @@ import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.da
 import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_state.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -57,12 +58,11 @@ class _UIOperatorState extends State<UIOperator> {
 
   bool isOwner = false;
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
     _initData();
-    isOwner =
-        context.read<DataUserRepositoryCache>().dataAccount!.getIdUser ==
-        UserSession.uid_owner;
+    final dataAccount = await getAllAccountIsar();
+    isOwner = dataAccount.getIdUser == UserSession.uid_owner;
     roleFilterTypeList = [
       for (final role
           in isOwner

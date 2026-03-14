@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
@@ -30,7 +31,6 @@ class DataUserRepositoryCache {
   List<ModelTransactionFinancial> dataTransExpense = [];
   List<ModelUser> dataUser = [];
   List<ModelCounter> dataCounter = [];
-  ModelUser? dataAccount;
   ModelCompany? dataCompany;
   final DataUserRepository repo;
 
@@ -106,13 +106,14 @@ class DataUserRepositoryCache {
 
   Future<void> initUser() async {
     dataUser = [];
-    if (dataAccount!.getRoleUser == RoleType.Pemilik) {
-      dataUser.add(dataAccount!);
+    final dataAccount = await getAllAccountIsar();
+    if (dataAccount.getRoleUser == RoleType.Pemilik) {
+      dataUser.add(dataAccount);
     }
     dataUser.addAll(await repo.getUser());
 
     debugPrint(
-      "Log DataUserRepositoryCache: dataUser: ${dataUser.map((e) => e.getNameUser)}, roleAccount: ${dataAccount!.getRoleUser}",
+      "Log DataUserRepositoryCache: dataUser: ${dataUser.map((e) => e.getNameUser)}, roleAccount: ${dataAccount.getRoleUser}",
     );
   }
 
@@ -150,7 +151,6 @@ class DataUserRepositoryCache {
     );
     dataUser.forEach((element) async => await saveUser_Isar(element));
     dataCounter.forEach((element) async => await saveCounter_Isar(element));
-    saveAccount_Isar(dataAccount!);
     saveCompany_Isar(dataCompany!);
   }
 }

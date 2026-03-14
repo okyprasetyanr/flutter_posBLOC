@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
@@ -24,26 +26,27 @@ Future<UserCredential?> authenticatorAccount({
     customSnackBar(context, "Tidak ada koneksi!");
     return null;
   }
-  try {
-    if (signup) {
-      return await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } else {
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  // try {
+  if (signup) {
+    return await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  } else {
+    final userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      final uidUser = userCredential.user!.uid;
-      final data = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(uidUser)
-          .get();
-      final uidOwner = data['uid_owner'] ?? uidUser;
-      final map = data.data()!;
-      context.read<DataUserRepositoryCache>().dataAccount = await ModelUser(
+    final uidUser = userCredential.user!.uid;
+    final data = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uidUser)
+        .get();
+    final uidOwner = data['uid_owner'] ?? uidUser;
+    final map = data.data()!;
+    await saveAccount_Isar(
+      await ModelUser(
         idUser: uidUser,
         statusUser: StatusDataX.fromString(map[FieldDataUser.status_user.name]),
         nameUser: map[FieldDataUser.name_user.name],
@@ -65,29 +68,34 @@ Future<UserCredential?> authenticatorAccount({
           minute: false,
         ),
         noteUser: map[FieldDataUser.note_user.name],
-      );
+      ),
+    );
 
-      final pref = await SharedPreferences.getInstance();
-      await pref.setString('uid_owner', uidOwner);
+    // debugPrint(
+    //   "Log AuthenticationAccount: dataAccount: ${await getAllAccountIsar()}",
+    // );
 
-      final repo = context.read<DataUserRepositoryCache>();
-      await UserSession.init(repo);
+    final pref = await SharedPreferences.getInstance();
+    await pref.setString('uid_owner', uidOwner);
 
-      Navigator.pop(context);
-      navUpDownTransition(context, '/mainmenu', true);
-      return userCredential;
-    }
-  } on FirebaseAuthException catch (e) {
-    customSnackBar(context, "Terjadi kesalahan! Silahkan coba kembali.");
-    customSnackBar(context, _mapFirebaseAuthCodeToKey(e));
+    final repo = context.read<DataUserRepositoryCache>();
+    await UserSession.init(repo);
+
     Navigator.pop(context);
-    return null;
-  } catch (e) {
-    customSnackBar(context, "Terjadi kesalahan");
-    debugPrint("Log AuthAccont : $e");
-    Navigator.pop(context);
-    return null;
+    // navUpDownTransition(context, '/mainmenu', true);
+    return userCredential;
   }
+  // } on FirebaseAuthException catch (e) {
+  //   customSnackBar(context, "Terjadi kesalahan! Silahkan coba kembali.");
+  //   customSnackBar(context, _mapFirebaseAuthCodeToKey(e));
+  //   Navigator.pop(context);
+  //   return null;
+  // } catch (e) {
+  //   customSnackBar(context, "Terjadi kesalahan");
+  //   debugPrint("Log AuthAccont : $e");
+  //   Navigator.pop(context);
+  //   return null;
+  // }
 }
 
 String _mapFirebaseAuthCodeToKey(FirebaseAuthException e) {

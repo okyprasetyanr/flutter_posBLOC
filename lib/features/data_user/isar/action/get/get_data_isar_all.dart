@@ -1,99 +1,124 @@
-import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_customer_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_income_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_supplier_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_buy_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
+import 'package:flutter_pos/from_and_to_map/from_isar.dart';
+import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
+import 'package:flutter_pos/model_data/model_financial.dart';
+import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_partner.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
 
-Future<List<ModelUser>> getUserIsar() async {
+Future<List<ModelUser>> getAllUserIsar() async {
   final allUser = await isar.modelUserIsars.where().findAll();
 
-  return allUser.map((e) {
-    return ModelUser(
-      idUser: e.idUser,
-      nameUser: e.nameUser,
-      emailUser: e.emailUser,
-      phoneUser: e.phoneUser,
-      roleUser: RoleTypeX.fromString(e.roleUser)!,
-      idBranchUser: e.idBranchUser,
-      createdUser: e.createdUser,
-      noteUser: e.noteUser,
-      statusUser: StatusDataX.fromString(e.statusUser),
-      permissionsUser: {
-        Permission.Stok: e.Stok,
-        Permission.Inventory: e.Inventory,
-        Permission.Penjualan: e.Penjualan,
-        Permission.Pembelian: e.Pembelian,
-        Permission.Pendapatan: e.Pendapatan,
-        Permission.Pengeluaran: e.Pengeluaran,
-        Permission.Data_Pelanggan: e.Data_Pelanggan,
-        Permission.Data_Pemasok: e.Data_Pemasok,
-        Permission.Data_Pemasukan: e.Data_Pemasukan,
-        Permission.Data_Pengeluaran: e.Data_Pengeluaran,
-        Permission.Data_Operator: e.Data_Operator,
-        Permission.Riwayat_Penjualan: e.Riwayat_Penjualan,
-        Permission.Riwayat_Pembelian: e.Riwayat_Pembelian,
-        Permission.Riwayat_Pendapatan: e.Riwayat_Pendapatan,
-        Permission.Riwayat_Pengeluaran: e.Riwayat_Pengeluaran,
-        Permission.Laporan: e.Laporan,
-      },
-    );
-  }).toList();
+  return await allUser.map((e) => fromIsarUser(e)).toList();
 }
 
-Future<ModelCompany> getCompanyIsar() async {
+Future<ModelCompany> getAllCompanyIsar() async {
   final company = await isar.modelCompanyIsars.where().findFirst();
-  return ModelCompany(
-    listBranch: company!.listBranch
-        .map(
-          (e) => ModelBranch(
-            nameBranch: e.nameBranch,
-            numTelpBranch: e.numTelpBranch,
-            addressBranch: e.addressBranch,
-            idBranch: e.idBranch,
-          ),
-        )
-        .toList(),
-    footer: company.footer,
-    header: company.header,
-    nameCompany: company.nameCompany,
-    phoneCompany: company.phoneCompany,
-    created: company.created,
-  );
+  return await fromIsarCompany(company!);
 }
 
-Future<ModelUser> getAccountIsar() async {
+Future<ModelUser> getAllAccountIsar() async {
   final account = await isar.modelAccountIsars.where().findFirst();
-  return ModelUser(
-    nameUser: account!.nameUser,
-    emailUser: account.emailUser,
-    phoneUser: account.phoneUser,
-    roleUser: RoleTypeX.fromString(account.roleUser)!,
-    permissionsUser: {
-      Permission.Stok: account.Stok,
-      Permission.Inventory: account.Inventory,
-      Permission.Penjualan: account.Penjualan,
-      Permission.Pembelian: account.Pembelian,
-      Permission.Pendapatan: account.Pendapatan,
-      Permission.Pengeluaran: account.Pengeluaran,
-      Permission.Data_Pelanggan: account.Data_Pelanggan,
-      Permission.Data_Pemasok: account.Data_Pemasok,
-      Permission.Data_Pemasukan: account.Data_Pemasukan,
-      Permission.Data_Pengeluaran: account.Data_Pengeluaran,
-      Permission.Data_Operator: account.Data_Operator,
-      Permission.Riwayat_Penjualan: account.Riwayat_Penjualan,
-      Permission.Riwayat_Pembelian: account.Riwayat_Pembelian,
-      Permission.Riwayat_Pendapatan: account.Riwayat_Pendapatan,
-      Permission.Riwayat_Pengeluaran: account.Riwayat_Pengeluaran,
-      Permission.Laporan: account.Laporan,
-    },
+
+  return await fromIsarUser(account!);
+}
+
+Future<List<ModelBranch>> getAllListBranchIsar() async {
+  final company = await getAllCompanyIsar();
+  return await company.getListBranch;
+}
+
+Future<List<ModelBatch>> getAllBatchIsar() async {
+  return await fromIsarBatchToList(
+    await isar.modelBatchIsars.where().findAll(),
   );
 }
 
-Future<List<ModelBranch>> getListBranchIsar() async {
-  final company = await getCompanyIsar();
-  return company.getListBranch;
+Future<List<ModelItem>> getAllItemIsar() async {
+  return await fromIsarItem(
+    await isar.modelItemIsars.where().findAll(),
+    null,
+    getAll: false,
+  );
+}
+
+Future<List<ModelCategory>> getAllCategoryIsar() async {
+  final dataCategory = await isar.modelCategoryIsars.where().findAll();
+  return await dataCategory.map((e) => fromIsarCategory(e)).toList();
+}
+
+Future<List<ModelPartner>> getAllCustomer_Isar() async {
+  final dataCustomer = await isar.modelCustomerIsars.where().findAll();
+  return await dataCustomer.map((e) => fromIsarPartner(object: e)).toList();
+}
+
+Future<List<ModelPartner>> getAllSupplier_Isar() async {
+  final dataSupplier = await isar.modelSupplierIsars.where().findAll();
+  return await dataSupplier.map((e) => fromIsarPartner(object: e)).toList();
+}
+
+Future<List<ModelFinancial>> getAllIncome_Isar() async {
+  final dataIncome = await isar.modelIncomeIsars.where().findAll();
+  return await dataIncome.map((e) => fromIsarFinancial(object: e)).toList();
+}
+
+Future<List<ModelFinancial>> getAllExpense_Isar() async {
+  final dataExpense = await isar.modelExpenseIsars.where().findAll();
+  return await dataExpense.map((e) => fromIsarFinancial(object: e)).toList();
+}
+
+Future<List<ModelTransaction>> getAllTransactionSell_Isar() async {
+  final dataTransactionSell = await isar.modelTransactionSellIsars
+      .where()
+      .findAll();
+  return await dataTransactionSell
+      .map((e) => fromTransactionIsar(object: e))
+      .toList();
+}
+
+Future<List<ModelTransaction>> getAllTransactionBuy_Isar() async {
+  final dataTransactionBuy = await isar.modelTransactionBuyIsars
+      .where()
+      .findAll();
+  return await dataTransactionBuy
+      .map((e) => fromTransactionIsar(object: e))
+      .toList();
+}
+
+Future<List<ModelTransactionFinancial>> getAllTransactionIncome_Isar() async {
+  final dataIncome = await isar.modelTransactionFinancialIncomeIsars
+      .where()
+      .findAll();
+  return await dataIncome
+      .map((e) => fromTransactionFinancialIsar(object: e))
+      .toList();
+}
+
+Future<List<ModelTransactionFinancial>> getAllTransactionExpense_Isar() async {
+  final dataExpense = await isar.modelTransactionFinancialExpenseIsars
+      .where()
+      .findAll();
+  return await dataExpense
+      .map((e) => fromTransactionFinancialIsar(object: e))
+      .toList();
 }

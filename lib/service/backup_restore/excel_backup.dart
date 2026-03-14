@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -81,7 +82,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataUser.created_user.name),
     ]);
 
-    final account = repo.dataAccount!;
+    final account = await getAllAccountIsar();
     sheetAccount.appendRow([
       TextCellValue(uidOwner),
       TextCellValue(account.getIdBranchUser ?? uidOwner),
@@ -103,7 +104,7 @@ class ExcelBackupService {
     sheetWidthStyle(FieldDataUser.values, sheetAccount, wrapColumns: {9});
 
     //Company
-    final company = repo.dataCompany!;
+    final company = await getAllCompanyIsar();
     sheetCompany.appendRow([
       TextCellValue(FieldDataCompany.id_company.name),
       TextCellValue(FieldDataCompany.name_company.name),
@@ -140,7 +141,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataItem.price_item_buy_by_batch.name),
     ]);
 
-    for (final item in repo.dataItem) {
+    for (final item in await getAllItemIsar()) {
       sheetItem.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(item.getidBranch),
@@ -166,7 +167,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataCategory.name_category.name),
     ]);
 
-    for (final category in repo.dataCategory) {
+    for (final category in await getAllCategoryIsar()) {
       sheetCategory.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(category.getidBranch),
@@ -189,9 +190,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataPartner.date.name),
     ]);
 
-    for (final partner in repo.dataPartner.where(
-      (element) => element.gettypePartner == PartnerType.customer,
-    )) {
+    for (final partner in await getAllCustomer_Isar()) {
       sheetCustomer.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(partner.getidBranchPartner),
@@ -219,9 +218,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataPartner.date.name),
     ]);
 
-    for (final partner in repo.dataPartner.where(
-      (element) => element.gettypePartner == PartnerType.supplier,
-    )) {
+    for (final partner in await getAllSupplier_Isar()) {
       sheetSupplier.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(partner.getidBranchPartner),
@@ -245,9 +242,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataFinancial.type.name),
     ]);
 
-    for (final financial in repo.dataFinancial.where(
-      (element) => element.getfinancialType == FinancialType.Income,
-    )) {
+    for (final financial in await getAllIncome_Isar()) {
       sheetIncome.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(financial.getidBranch),
@@ -267,9 +262,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataFinancial.type.name),
     ]);
 
-    for (final financial in repo.dataFinancial.where(
-      (element) => element.getfinancialType == FinancialType.Expense,
-    )) {
+    for (final financial in await getAllExpense_Isar()) {
       sheetExpense.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(financial.getidBranch),
@@ -295,7 +288,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataUser.created_user.name),
     ]);
 
-    for (final operator in repo.dataUser) {
+    for (final operator in await getAllUserIsar()) {
       sheetUser.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(operator.getIdBranchUser!),
@@ -345,7 +338,9 @@ class ExcelBackupService {
       TextCellValue(FieldDataTransaction.id_operator.name),
     ]);
 
-    for (final item in repo.dataTransSell) {
+    final dataTransactionSell = await getAllTransactionSell_Isar();
+
+    for (final item in dataTransactionSell) {
       sheetHistorySell.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(item.getinvoice),
@@ -381,7 +376,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataSplit.payment_total.name),
     ]);
 
-    repo.dataTransSell.expand((element) => element.getdataSplit).forEach((
+    dataTransactionSell.expand((element) => element.getdataSplit).forEach((
       element,
     ) {
       sheetHistorySplitPayment.appendRow([
@@ -408,7 +403,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataItemOrdered.note.name),
     ]);
 
-    repo.dataTransSell.expand((element) => element.getitemsOrdered).forEach((
+    dataTransactionSell.expand((element) => element.getitemsOrdered).forEach((
       element,
     ) {
       sheetHistorySellItem.appendRow([
@@ -442,7 +437,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataItemOrdered.note.name),
     ]);
 
-    repo.dataTransSell
+    dataTransactionSell
         .expand((element) => element.getitemsOrdered)
         .expand((element) => element.getCondiment)
         .forEach((element) {
@@ -488,7 +483,8 @@ class ExcelBackupService {
       TextCellValue(FieldDataTransaction.id_operator.name),
     ]);
 
-    for (final item in repo.dataTransBuy) {
+    final dataTransactionBuy = await getAllTransactionBuy_Isar();
+    for (final item in dataTransactionBuy) {
       sheetHistoryBuy.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(item.getinvoice),
@@ -531,7 +527,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataItemOrdered.note.name),
     ]);
 
-    for (final transBuyItem in repo.dataTransBuy) {
+    for (final transBuyItem in dataTransactionBuy) {
       for (final item in transBuyItem.getitemsOrdered) {
         sheetHistoryBuyItem.appendRow([
           TextCellValue(uidOwner),
@@ -562,7 +558,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataTransFinancial.date.name),
     ]);
 
-    for (final transIncome in repo.dataTransIncome) {
+    for (final transIncome in await getAllTransactionIncome_Isar()) {
       sheetHistoryIncome.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(transIncome.getidBranch),
@@ -588,7 +584,7 @@ class ExcelBackupService {
       TextCellValue(FieldDataTransFinancial.date.name),
     ]);
 
-    for (final transExpense in repo.dataTransExpense) {
+    for (final transExpense in await getAllTransactionExpense_Isar()) {
       sheetHistoryExpense.appendRow([
         TextCellValue(uidOwner),
         TextCellValue(transExpense.getidBranch),

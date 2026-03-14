@@ -34,8 +34,8 @@ class ReceiptBuilder {
         : PosFontType.fontB;
     final gen = Generator(paper, profile);
     final List<int> bytes = [];
-    final user = await getAccountIsar();
-    final company = await getCompanyIsar();
+    final user = await getAllAccountIsar();
+    final company = await getAllCompanyIsar();
     ModelBranch branch = ModelBranch.empty();
     if (user.getIdBranchUser != null) {
       branch = company.getListBranch.firstWhere(

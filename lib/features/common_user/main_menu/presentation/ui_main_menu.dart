@@ -16,10 +16,13 @@ import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/report_algoritm.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
@@ -36,19 +39,16 @@ class _UIMainMenuState extends State<UIMainMenu> {
   final currentPage = PageController();
   final selectedMenu = ValueNotifier<String>("Dashboard");
   Map<Permission, bool> getPermission = {};
-
+  ModelUser? dataAccount;
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
     context.read<DataReportBloc>().add(DataReportGetData());
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _listenConnection();
     });
-
-    getPermission = context
-        .read<DataUserRepositoryCache>()
-        .dataAccount!
-        .getPermissionsUser;
+    dataAccount = await getAllAccountIsar();
+    getPermission = dataAccount!.getPermissionsUser;
   }
 
   Future<void> _listenConnection() async {
@@ -174,7 +174,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
           ),
           child: Center(
             child: Text(
-              "Halo ${context.read<DataUserRepositoryCache>().dataAccount!.getNameUser}, jualan lagi kita!",
+              "Halo ${dataAccount!.getNameUser}, jualan lagi kita!",
               style: lv05TextStyle,
               overflow: TextOverflow.ellipsis,
             ),

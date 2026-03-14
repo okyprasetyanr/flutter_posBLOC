@@ -6,9 +6,13 @@ import 'package:flutter_pos/features/common_user/financial/logic/financial_state
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_income_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/request/delete_data.dart';
+import 'package:flutter_pos/service/isar_service.dart';
 import 'package:uuid/uuid.dart';
 
 class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
@@ -32,7 +36,7 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
         ? state as FinancialLoaded
         : FinancialLoaded();
 
-    final dataBranch = currentState.dataBranch ?? await getListBranchIsar();
+    final dataBranch = currentState.dataBranch ?? await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isIncome = event.isIncome ?? currentState.isIncome;
@@ -58,10 +62,10 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     emit(currentState.copyWith(selectedFinancial: event.selectedFinancial));
   }
 
-  FutureOr<void> _onUploadata(
+  Future<void> _onUploadata(
     FinancialUploadDataFinancial event,
     Emitter<FinancialState> emit,
-  ) {
+  ) async {
     final currentState = state as FinancialLoaded;
     final idFinancial =
         currentState.selectedFinancial?.getidFinancial ?? Uuid().v4();
@@ -76,16 +80,12 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
 
     data.pushDataFinancial();
 
-    final dataFinancial = repoCache.dataFinancial;
-    final indexData = dataFinancial.indexWhere(
-      (element) => element.getidFinancial == idFinancial,
+    await isar.writeTxn(
+      () async => currentState.isIncome
+          ? saveIncome_Isar(data)
+          : saveExpense_Isar(data),
     );
 
-    if (indexData != -1) {
-      dataFinancial[indexData] = data;
-    } else {
-      dataFinancial.add(data);
-    }
     add(FinancialResetSelectedFinancial());
     add(FinancialGetData());
   }
@@ -106,18 +106,23 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
     emit(currentState.copyWith(selectedFinancial: null));
   }
 
-  FutureOr<void> _onDelete(
+  Future<void> _onDelete(
     FinancialDeleteFinancial event,
     Emitter<FinancialState> emit,
-  ) {
-    final selectedFinancial = event.data;
-    deleteDataFinancial(selectedFinancial.getidFinancial);
-    final dataFinancial = repoCache.dataFinancial;
-    final indexData = dataFinancial.indexWhere(
-      (element) => element.getidFinancial == selectedFinancial.getidFinancial,
-    );
-    if (indexData != -1) {
-      dataFinancial.removeAt(indexData);
+  ) async {
+    final currentState = state;
+    if (currentState is FinancialLoaded) {
+      final selectedFinancial = event.data;
+      deleteDataFinancial(selectedFinancial.getidFinancial);
+      await isar.writeTxn(
+        () async => currentState.isIncome
+            ? isar.modelIncomeIsars.deleteByIdFinancial(
+                selectedFinancial.getidFinancial,
+              )
+            : isar.modelExpenseIsars.deleteByIdFinancial(
+                selectedFinancial.getidFinancial,
+              ),
+      );
     }
   }
 

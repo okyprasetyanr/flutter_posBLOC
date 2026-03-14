@@ -21,6 +21,7 @@ import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/category_page/bottom_page/button_category.dart';
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/category_page/bottom_page/text_field_and_branch.dart';
 import 'package:flutter_pos/features/common_user/inventory/presentation/widgets/category_page/top_page/list_view_category.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -98,13 +99,11 @@ class _UIInventoryState extends State<UIInventory> {
   Map<Permission, bool> getPermission = {};
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
     _initData();
-    getPermission = context
-        .read<DataUserRepositoryCache>()
-        .dataAccount!
-        .getPermissionsUser;
+    final dataAccount = await getAllAccountIsar();
+    getPermission = dataAccount.getPermissionsUser;
   }
 
   Future<void> _initData() async {

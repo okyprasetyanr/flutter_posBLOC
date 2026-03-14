@@ -8,6 +8,7 @@ import 'package:flutter_pos/features/common_user/history_financial/logic/history
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_state.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -43,7 +44,7 @@ class HistoryFinancialBloc
         ? dateYMDEndBLOC(event.dateEnd)
         : dateYMDEndBLOC(currentState.dateEnd);
 
-    final dataBranch = await getListBranchIsar();
+    final dataBranch = await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isIncome = event.isIncome ?? currentState.isIncome;
@@ -128,17 +129,20 @@ class HistoryFinancialBloc
     final currentState = state as HistoryFinancialLoaded;
     final isIncome = currentState.isIncome;
     final dataTrans = currentState.isIncome
-        ? repoCache.dataTransIncome
-        : repoCache.dataTransExpense;
+        ? await getTransactionFinancialIncome(currentState.idBranch!)
+        : await getTransactionFinancialExpense(currentState.idBranch!);
     final index = dataTrans.indexWhere(
       (element) => element.getinvoice == currentState.selectedData!.getinvoice,
     );
     dataTrans[index] = dataTrans[index].copyWith(
       statusTransaction: ListStatusTransaction.Batal,
     );
+    isIncome
+        ? await saveTransactionFinancialncome_Isar(dataTrans[index])
+        : await saveTransactionFinancialExpense_Isar(dataTrans[index]);
     await dataTrans[index].updateCancelDataFinancial(isIncome);
     add(HistoryFinancialGetData());
-    repoCache.notifyChanged();
+    // repoCache.notifyChanged();
   }
 
   FutureOr<void> _onSelectedFilter(

@@ -8,7 +8,10 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/delete_data.dart';
@@ -65,12 +68,12 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         ? state as OperatorLoaded
         : OperatorLoaded();
 
-    final dataBranch = currentState.dataBranch ?? await getListBranchIsar();
+    final dataBranch = currentState.dataBranch ?? await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final roleUser = event.roleUser ?? currentState.filterRoleUser;
     final statusUser = event.statusUser ?? currentState.filterStatusUser;
-    final dataUser = await repoCache.dataUser;
+    final dataUser = await getAllUserIsar();
     final filteredData = filterData(
       idBranch: idBranch,
       dataUser: dataUser,
@@ -140,19 +143,13 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     emit(currentState.copyWith(filteredData: dataFiltered));
   }
 
-  FutureOr<void> _onRemove(
+  Future<void> _onRemove(
     OperatorRemoveData event,
     Emitter<OperatorState> emit,
-  ) {
-    final selectedData = event.data.getIdUser;
-    deleteDataUser(selectedData!);
-    final dataOperator = repoCache.dataUser;
-    final indexOperator = dataOperator.indexWhere(
-      (element) => element.getIdUser == selectedData,
-    );
-    if (indexOperator != -1) {
-      dataOperator.removeAt(indexOperator);
-    }
+  ) async {
+    final idUser = event.data.getIdUser;
+    await deleteUserById_Isar(idUser!);
+    await deleteDataUser(idUser);
 
     add(OperatorGetData());
   }
@@ -191,7 +188,6 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       },
     );
     final currentState = state as OperatorLoaded;
-    final dataOperator = repoCache.dataUser;
     ModelUser data = ModelUser(
       idUser: currentState.selectedData?.idUser,
       permissionsUser: currentState.selectedPermission,
@@ -203,12 +199,8 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       statusUser: currentState.selectedStatus,
       noteUser: event.note,
     );
-    final indexOperator = dataOperator.indexWhere(
-      (element) => element.getIdUser == currentState.selectedData?.getIdUser,
-    );
-    if (indexOperator != -1) {
-      dataOperator[indexOperator] = data;
-    } else {
+
+    if (await checkUserById_Isar(currentState.selectedData!.getIdUser!)) {
       final credential = await authenticatorAccount(
         context: context,
         email: data.getEmailUser,
@@ -217,10 +209,10 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       );
       if (credential == null) return Navigator.of(context).pop();
       final uid = credential.user!.uid;
-
       data = data.copyWith(idBranchUser: currentState.idBranch, idUser: uid);
-      dataOperator.add(data);
     }
+
+    await saveUser_Isar(data);
     debugPrint("Log OperatorBloc: upload: ${data}");
     await data.pushDataUser();
     add(OperatorGetData());

@@ -17,7 +17,7 @@ class WidgetDropdownBranch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<ModelBranch>>(
-      future: getListBranchIsar(),
+      future: getAllListBranchIsar(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LinearProgressIndicator();

@@ -8,6 +8,7 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
@@ -49,7 +50,7 @@ class HistoryTransactionBloc
         ? dateYMDEndBLOC(event.dateEnd)
         : dateYMDEndBLOC(currentState.dateEnd);
 
-    final dataBranch = await getListBranchIsar();
+    final dataBranch = await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final isSell = event.isSell ?? currentState.isSell;
@@ -106,35 +107,24 @@ class HistoryTransactionBloc
     if (currentState is HistoryTransactionLoaded) {
       final invoice = currentState.selectedData!.getinvoice;
       final dataTransaction = currentState.isSell
-          ? repoCache.dataTransSell
-          : repoCache.dataTransBuy;
+          ? await getTransactionSellIsar(currentState.idBranch!)
+          : await getTransactionBuyIsar(currentState.idBranch!);
       final indexdataTrans = dataTransaction.indexWhere(
         (element) => element.getinvoice == invoice,
       );
 
       final itemOrdered = dataTransaction[indexdataTrans].getitemsOrdered;
-      // final dateNow = parseDate(date: DateTime.now(), minute: false);
-      // for (int i = 0; i < itemOrdered.length; i++) {
-      //   for (final item in event.dateExpired) {
-      //     if (itemOrdered[i].getidOrdered == item['id_ordered']) {
-      //       itemOrdered[i] = itemOrdered[i].copyWith(
-      //         dateBuy: dateNow,
-      //         expiredDate: parseDate(date: item['expired_date']),
-      //       );
-      //     }
-      //   }
-      // }
+
       if (!currentState.isSell) {
+        final dataBatch = await getBatchIsar(currentState.idBranch!);
         await deleteDataBatch(
           invoice: invoice,
-          itemBatch: repoCache.dataBatch
+          itemBatch: dataBatch
               .where((element) => element.getinvoice == invoice)
               .expand((element) => element.getitems_batch)
               .toList(),
         );
-        repoCache.dataBatch.removeWhere(
-          (element) => element.getinvoice == invoice,
-        );
+        await deleteBatchByInvoice_Isar(invoice);
       }
 
       dataTransaction[indexdataTrans] = dataTransaction[indexdataTrans]
@@ -150,7 +140,7 @@ class HistoryTransactionBloc
       );
 
       add(HistoryTransactionGetData());
-      repoCache.notifyChanged();
+      // repoCache.notifyChanged();
     }
   }
 

@@ -15,7 +15,9 @@ import 'package:flutter_pos/features/common_user/settings/presentation/ui_sync_d
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 
@@ -38,6 +40,13 @@ class _UISettingsState extends State<UISettings> {
     headerController.dispose();
     nameBackupController.dispose();
     super.dispose();
+  }
+
+  ModelUser? dataAccount;
+  @override
+  Future<void> initState() async {
+    super.initState();
+    dataAccount = await getAllAccountIsar();
   }
 
   @override
@@ -181,10 +190,7 @@ class _UISettingsState extends State<UISettings> {
                       text2: "Ubah ke Excel atau hapus Data",
                       text1: "Manajemen Data",
                       onTap: () async {
-                        final nameOperator = context
-                            .read<DataUserRepositoryCache>()
-                            .dataAccount!
-                            .getNameUser;
+                        final nameOperator = dataAccount!.getNameUser;
                         nameBackupController.text =
                             '${nameOperator.length < 5 ? nameOperator : nameOperator.substring(0, 5)}_${formatDate(date: DateTime.now(), minute: true)}';
 

@@ -5,8 +5,10 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -154,7 +156,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final currentState = state is InventoryLoaded
         ? state as InventoryLoaded
         : InventoryLoaded();
-    final dataBranch = currentState.dataBranch ?? await getListBranchIsar();
+    final dataBranch = currentState.dataBranch ?? await getAllListBranchIsar();
 
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
@@ -248,15 +250,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     await item.pushDataItem();
 
     debugPrint("Log InventoryBloc: PushData: ${item}");
-    final indexCategory = repoCache.dataItem.indexWhere(
-      (element) => element.getidItem == item.getidItem,
-    );
-
-    if (indexCategory != -1) {
-      repoCache.dataItem[indexCategory] = item;
-    } else {
-      repoCache.dataItem.add(item);
-    }
+    saveItem_Isar(item);
     add(InventoryGetData());
   }
 
@@ -275,16 +269,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         idBranch: currentState.idBranch!,
       );
 
+      await saveCategory_Isar(category);
       await category.pushDataCategory();
-      final indexCategory = repoCache.dataCategory.indexWhere(
-        (element) => element.getidCategory == category.getidCategory,
-      );
-
-      if (indexCategory != -1) {
-        repoCache.dataCategory[indexCategory] = category;
-      } else {
-        repoCache.dataCategory.add(category);
-      }
 
       add(InventoryGetData());
     }
@@ -393,10 +379,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     InventoryDeleteCategory event,
     Emitter<InventoryState> emit,
   ) async {
+    await deleteCategoryById_Isar(event.id);
     await deleteDataCategory(event.id);
-    repoCache.dataCategory.removeWhere(
-      (element) => element.getidCategory == event.id,
-    );
     add(InventoryGetData());
   }
 
@@ -404,8 +388,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     InventoryDeleteItem event,
     Emitter<InventoryState> emit,
   ) async {
+    await deleteItemById_Isar(event.id);
     await deleteDataitem(event.id);
-    repoCache.dataItem.removeWhere((element) => element.getidItem == event.id);
     add(InventoryGetData());
   }
 

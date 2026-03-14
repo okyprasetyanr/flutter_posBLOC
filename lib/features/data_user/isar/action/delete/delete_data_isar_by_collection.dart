@@ -18,7 +18,7 @@ Future<void> deleteBatchCollection() async {
   });
 }
 
-Future<void> deleteCategoryhCollection() async {
+Future<void> deleteCategoryCollection() async {
   await isar.writeTxn(() async {
     await isar.modelCategoryIsars.clear();
   });

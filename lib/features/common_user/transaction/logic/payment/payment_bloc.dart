@@ -10,6 +10,9 @@ import 'package:flutter_pos/features/common_user/transaction/logic/payment/payme
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
@@ -217,12 +220,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     final discount = isNewTransaction ? 0 : dataRevisiOrSaved.getdiscount;
     final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
 
-    debugPrint("Log PaymentBloc: isSell: ${repoCache.dataAccount!}");
-    final counter = repoCache.dataCounter.firstWhere(
-      (element) => element.getidBranch == sellState.idBranch,
-    );
+    final counter = await getCounterIsar(sellState.idBranch!);
 
-    final dataOperator = repoCache.dataAccount!;
+    final dataOperator = await getAllAccountIsar();
 
     final invoice = generateInvoice(
       idOP: dataOperator.getNameUser,
@@ -311,10 +311,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     final sellState = event.context.read<TransactionBloc>();
     final currentState = state;
     final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
+    final dataAccount = await getAllAccountIsar();
     if (currentState is PaymentLoaded) {
-      final counter = repoCache.dataCounter.firstWhere(
-        (element) =>
-            element.getidBranch == currentState.transaction_sell!.getidBranch,
+      final counter = await getCounterIsar(
+        currentState.transaction_sell!.getidBranch,
       );
 
       debugPrint(
@@ -328,7 +328,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
                 )
                 ? currentState.revisionInvoice
                 : generateInvoice(
-                    idOP: repoCache.dataAccount!.getNameUser,
+                    idOP: dataAccount.getNameUser,
                     branchId: currentState.transaction_sell?.getidBranch,
                     queue: counter.getcounterSellSaved + 1,
                   )
@@ -384,28 +384,20 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         await transaction.pushDataTransaction(isSell: currentState.isSell);
       }
 
-      final dataCounter = repoCache.dataCounter;
-
-      final counterIndex = dataCounter.indexWhere(
-        (element) => element.getidBranch == transaction.getidBranch,
-      );
-
-      dataCounter[counterIndex] = dataCounter[counterIndex].copyWith(
+      final finalCounter = counter.copyWith(
         counterSell: saved
             ? null
             : currentState.isSell
-            ? dataCounter[counterIndex].getcounterSell + 1
+            ? counter.getcounterSell + 1
             : null,
         counterBuy: saved
             ? null
             : currentState.isSell
             ? null
-            : dataCounter[counterIndex].getcounterBuy + 1,
+            : counter.getcounterBuy + 1,
       );
 
-      debugPrint(
-        "Log PaymentProcess: check Counter: dataCounter: $dataCounter, saved: $saved",
-      );
+      await saveCounter_Isar(finalCounter);
 
       await FirebaseFirestore.instance
           .collection('counter')
@@ -426,7 +418,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         ),
       );
     }
-    repoCache.notifyChanged();
+
+    // repoCache.notifyChanged();
     if (saved) {
       Navigator.pop(event.context);
     }

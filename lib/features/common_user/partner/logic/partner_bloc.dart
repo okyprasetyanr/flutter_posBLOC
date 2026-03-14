@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
@@ -34,7 +36,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         ? state as PartnerLoaded
         : PartnerLoaded();
 
-    final branch = currentState.dataBranch ?? await getListBranchIsar();
+    final branch = currentState.dataBranch ?? await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? branch.first.getidBranch;
     final isCustomer = event.isCustomer ?? currentState.isCustomer;
@@ -86,16 +88,10 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
         date: parseDate(date: DateTime.now()),
       );
 
+      currentState.isCustomer
+          ? await saveCustomer_Isar(partner)
+          : await saveSupplier_Isar(partner);
       await partner.pushDataPartner();
-      final indexCategory = repoCache.dataPartner.indexWhere(
-        (element) => element.getidPartner == partner.getidPartner,
-      );
-
-      if (indexCategory != -1) {
-        repoCache.dataPartner[indexCategory] = partner;
-      } else {
-        repoCache.dataPartner.add(partner);
-      }
 
       add(PartnerResetSelectedPartner());
       add(PartnerGetData());
@@ -150,9 +146,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     await deleteDataPartner(event.id);
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      repoCache.dataPartner.removeWhere(
-        (element) => element.getidPartner == event.id,
-      );
+      await deletePartnerById_Isar(event.id);
       final dataPartner = event.type.name == PartnerType.customer
           ? await getCustomerIsar(currentState.idBranch!)
           : await getSupplierIsar(currentState.idBranch!);

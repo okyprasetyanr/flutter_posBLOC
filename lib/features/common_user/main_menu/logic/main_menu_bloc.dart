@@ -41,7 +41,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     final dateStart = dateNowYMDBLOC(statusEnd: false);
     final dateEnd = dateNowYMDBLOC(statusEnd: true);
 
-    final dataBranch = await getListBranchIsar();
+    final dataBranch = await getAllListBranchIsar();
     final idBranch =
         event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final dataTransaction = await getTransactionSellIsar(idBranch);

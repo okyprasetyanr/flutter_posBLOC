@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -55,7 +56,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         ? (state as TransactionLoaded)
         : TransactionLoaded();
 
-    final listBranch = await getListBranchIsar();
+    final listBranch = await getAllListBranchIsar();
 
     String idBranch =
         event.idBranch ?? currentState.idBranch ?? listBranch.first.getidBranch;
@@ -80,15 +81,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       "Log transactionBloc: Hive Data: ${hiveTransactionSaved.toString()}",
     );
 
-    final counter = repoCache.dataCounter;
-    final index = counter.indexWhere(
-      (element) => element.getidBranch == idBranch,
+    final counter = await getCounterIsar(idBranch);
+
+    await saveCounter_Isar(
+      counter.copyWith(counterSellSaved: hiveTransactionSaved.length),
     );
-    if (index != -1) {
-      counter[index] = counter[index].copyWith(
-        counterSellSaved: hiveTransactionSaved.length,
-      );
-    }
+
     List<ModelTransaction> dataTransactionSaved = [];
     hiveTransactionSaved.forEach((element) {
       final rawItems = element.datatransactionSaved['items_ordered'] as List?;
@@ -519,10 +517,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  FutureOr<void> _onTransactionLoadTransaction(
+  Future<void> _onTransactionLoadTransaction(
     TransactionLoadTransaction event,
     Emitter<TransactionState> emit,
-  ) {
+  ) async {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       final itemOrdered = event.currentTransaction.getitemsOrdered;
@@ -549,16 +547,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         itemOrderedFinal.add(item);
       }
       add(TransactionAddOrderedItem(orderedItem: itemOrderedFinal));
+      final dataPartner = currentState.isSell
+          ? await getCustomerIsar(event.currentTransaction.getidBranch)
+          : await getSupplierIsar(event.currentTransaction.getidBranch);
 
       emit(
         currentState.copyWith(
           selectedPartner:
-              repoCache.dataPartner.any(
+              dataPartner.any(
                 (element) =>
                     element.getidPartner ==
                     event.currentTransaction.getidPartner,
               )
-              ? repoCache.dataPartner.firstWhere(
+              ? dataPartner.firstWhere(
                   (element) =>
                       element.getidPartner ==
                       event.currentTransaction.getidPartner,
