@@ -47,7 +47,7 @@ class DataUserRepositoryCache {
   }
 
   Future<bool> initData() async {
-    await deleteAllDataIsar();
+    await deleteAllCommonDataIsar();
     await initCompany();
     await initFinancial();
     await initTransFinancial();
@@ -60,7 +60,7 @@ class DataUserRepositoryCache {
 
     await saveToIsar();
 
-    notifyChanged();
+    // notifyChanged();
 
     return true;
   }

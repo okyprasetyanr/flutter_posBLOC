@@ -180,6 +180,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
         bestSeller: bestSeller,
         expiredItem: expiredItem.values.toList(),
         almostExpiredItem: almostExpiredItem.values.toList(),
+        modelAccount: await getAllAccountIsar(),
         lowStock: lowStockItems,
         worstSeller: worstSeller,
         dataBranch: dataBranch,

@@ -12,7 +12,6 @@ import 'package:flutter_pos/features/common_user/settings/presentation/ui_logo_h
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_profil.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_feature.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_sync_data.dart';
-import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';

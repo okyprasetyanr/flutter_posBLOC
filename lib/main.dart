@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_pos/features/common_user/history_financial/logic/history
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
+import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
@@ -158,21 +160,19 @@ class _MainAppState extends State<ScreenLogin> {
 
   @override
   Widget build(BuildContext context) {
-    // return
-    // StreamBuilder<User?>(
-    //   stream: FirebaseAuth.instance.authStateChanges(),
-    //   builder: (context, snapshot) {
-    //     if (snapshot.hasData) {
-    //       WidgetsBinding.instance.addPostFrameCallback((_) {
-    //         Nav_slide_up_down_transition(context, MainMenu(), true);
-    //       }
-    //       );
-    //       return SizedBox();
-    //     } else {
-    return _login();
-    //     }
-    //   },
-    // );
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            navUpDownTransition(context, '/mainmenu', true);
+          });
+          return SizedBox();
+        } else {
+          return _login();
+        }
+      },
+    );
   }
 
   Widget _login() {

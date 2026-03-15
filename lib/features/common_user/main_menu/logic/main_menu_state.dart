@@ -3,12 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_user.dart';
 
 class DataReportState {}
 
 class DataReportInitial extends DataReportState {}
 
 class DataReportLoaded extends DataReportState with EquatableMixin {
+  final ModelUser? dataAccount;
   final List<ModelBranch> dataBranch;
   final String? idBranch;
   final double totalNeto;
@@ -24,6 +26,7 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
   final ModelItem? worstSeller;
 
   DataReportLoaded({
+    this.dataAccount,
     this.expiredItem = const [],
     this.almostExpiredItem = const [],
     this.lowStock,
@@ -53,8 +56,10 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     ModelItem? lowStock,
     ModelItem? bestSeller,
     ModelItem? worstSeller,
+    ModelUser? modelAccount,
   }) {
     return DataReportLoaded(
+      dataAccount: dataAccount ?? this.dataAccount,
       bestSeller: bestSeller,
       expiredItem: expiredItem ?? [],
       almostExpiredItem: almostExpiredItem ?? [],
@@ -73,6 +78,7 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
 
   @override
   List<Object?> get props => [
+    dataAccount,
     expiredItem,
     almostExpiredItem,
     lowStock,

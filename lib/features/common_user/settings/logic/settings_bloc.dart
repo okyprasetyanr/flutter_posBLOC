@@ -7,6 +7,7 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by_collection.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
@@ -519,16 +520,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsReset event,
     Emitter<SettingsState> emit,
   ) async {
-    await deleteBatchCollection();
-    await deleteCategoryCollection();
-    await deleteItemCollection();
-    await deletePartnerCollection();
-    await deleteCounterCollection();
-    await deleteFinancialCollection();
-    await deleteTransactionBuyCollection();
-    await deleteTransactionSellCollection();
-    await deleteTransactionFinancialIncomeCollection();
-    await deleteTransactionFinancialExpenseCollection();
+    deleteAllCommonDataIsar();
     // repoCache.notifyChanged();
   }
 }

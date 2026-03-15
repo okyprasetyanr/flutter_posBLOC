@@ -16,13 +16,10 @@ import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/function/report_algoritm.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
@@ -38,17 +35,13 @@ class UIMainMenu extends StatefulWidget {
 class _UIMainMenuState extends State<UIMainMenu> {
   final currentPage = PageController();
   final selectedMenu = ValueNotifier<String>("Dashboard");
-  Map<Permission, bool> getPermission = {};
-  ModelUser? dataAccount;
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
     context.read<DataReportBloc>().add(DataReportGetData());
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _listenConnection();
     });
-    dataAccount = await getAllAccountIsar();
-    getPermission = dataAccount!.getPermissionsUser;
   }
 
   Future<void> _listenConnection() async {
@@ -173,10 +166,15 @@ class _UIMainMenuState extends State<UIMainMenu> {
             ],
           ),
           child: Center(
-            child: Text(
-              "Halo ${dataAccount!.getNameUser}, jualan lagi kita!",
-              style: lv05TextStyle,
-              overflow: TextOverflow.ellipsis,
+            child: BlocSelector<DataReportBloc, DataReportState, String>(
+              selector: (state) => state is DataReportLoaded
+                  ? state.dataAccount!.getNameUser
+                  : "Mohon Tunggu",
+              builder: (context, state) => Text(
+                "Halo ${state}, jualan lagi kita!",
+                style: lv05TextStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ),
@@ -489,175 +487,199 @@ class _UIMainMenuState extends State<UIMainMenu> {
             children: [
               SizedBox(
                 height: 75,
-                child: PageView(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: currentPage,
-                  children: [
-                    GridView.count(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.6,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      children: [
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Inventory]!
-                                ? navUpDownTransition(
-                                    context,
-                                    '/inventory',
-                                    false,
-                                  )
-                                : getPermission[Permission.Stok]!
-                                ? navUpDownTransition(context, '/batch', false)
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.inventory,
-                            color: AppPropertyColor.black,
+                child:
+                    BlocSelector<
+                      DataReportBloc,
+                      DataReportState,
+                      Map<Permission, bool>
+                    >(
+                      selector: (state) => state is DataReportLoaded
+                          ? state.dataAccount!.getPermissionsUser
+                          : {
+                              for (final permission in Permission.values)
+                                permission: false,
+                            },
+                      builder: (context, state) => PageView(
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: currentPage,
+                        children: [
+                          GridView.count(
+                            crossAxisCount: 3,
+                            childAspectRatio: 1.6,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            children: [
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Inventory]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/inventory',
+                                          false,
+                                        )
+                                      : state[Permission.Stok]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/batch',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.inventory,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Inventori",
+                              ),
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Penjualan]! ||
+                                          state[Permission.Pembelian]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/sell',
+                                          false,
+                                        )
+                                      : state[Permission.Pendapatan]! ||
+                                            state[Permission.Pengeluaran]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/transfinancial',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.shopping_cart,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Transaksi",
+                              ),
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Laporan]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/report',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.assignment_outlined,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Laporan",
+                              ),
+                            ],
                           ),
-                          "Inventori",
-                        ),
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Penjualan]! ||
-                                    getPermission[Permission.Pembelian]!
-                                ? navUpDownTransition(context, '/sell', false)
-                                : getPermission[Permission.Pendapatan]! ||
-                                      getPermission[Permission.Pengeluaran]!
-                                ? navUpDownTransition(
-                                    context,
-                                    '/transfinancial',
-                                    false,
-                                  )
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.shopping_cart,
-                            color: AppPropertyColor.black,
-                          ),
-                          "Transaksi",
-                        ),
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Laporan]!
-                                ? navUpDownTransition(context, '/report', false)
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.assignment_outlined,
-                            color: AppPropertyColor.black,
-                          ),
-                          "Laporan",
-                        ),
-                      ],
-                    ),
-                    GridView.count(
-                      crossAxisCount: 3,
-                      shrinkWrap: true,
-                      childAspectRatio: 1.6,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
+                          GridView.count(
+                            crossAxisCount: 3,
+                            shrinkWrap: true,
+                            childAspectRatio: 1.6,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
 
-                      children: [
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Data_Pelanggan]! ||
-                                    getPermission[Permission.Data_Pemasok]!
-                                ? navUpDownTransition(
-                                    context,
-                                    '/partner',
-                                    false,
-                                  )
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.inventory,
-                            color: AppPropertyColor.black,
+                            children: [
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Data_Pelanggan]! ||
+                                          state[Permission.Data_Pemasok]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/partner',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.inventory,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Data Kontak",
+                              ),
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Data_Pemasukan]! ||
+                                          state[Permission.Data_Pengeluaran]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/financial',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.shopping_cart,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Data Alur Kas",
+                              ),
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Data_Operator]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/operator',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.shopping_cart,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Data Operator",
+                              ),
+                            ],
                           ),
-                          "Data Kontak",
-                        ),
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Data_Pemasukan]! ||
-                                    getPermission[Permission.Data_Pengeluaran]!
-                                ? navUpDownTransition(
-                                    context,
-                                    '/financial',
-                                    false,
-                                  )
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.shopping_cart,
-                            color: AppPropertyColor.black,
-                          ),
-                          "Data Alur Kas",
-                        ),
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Data_Operator]!
-                                ? navUpDownTransition(
-                                    context,
-                                    '/operator',
-                                    false,
-                                  )
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.shopping_cart,
-                            color: AppPropertyColor.black,
-                          ),
-                          "Data Operator",
-                        ),
-                      ],
-                    ),
-                    GridView.count(
-                      crossAxisCount: 3,
-                      shrinkWrap: true,
-                      childAspectRatio: 1.6,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
+                          GridView.count(
+                            crossAxisCount: 3,
+                            shrinkWrap: true,
+                            childAspectRatio: 1.6,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
 
-                      children: [
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Riwayat_Penjualan]! ||
-                                    getPermission[Permission.Riwayat_Pembelian]!
-                                ? navUpDownTransition(
-                                    context,
-                                    '/historytransaction',
-                                    false,
-                                  )
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.inventory,
-                            color: AppPropertyColor.black,
+                            children: [
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Riwayat_Penjualan]! ||
+                                          state[Permission.Riwayat_Pembelian]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/historytransaction',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.inventory,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Riwayat Treansaksi",
+                              ),
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Riwayat_Pendapatan]! ||
+                                          state[Permission.Riwayat_Pengeluaran]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/historyfinancial',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.assignment_outlined,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Riwayat Kas",
+                              ),
+                            ],
                           ),
-                          "Riwayat Treansaksi",
-                        ),
-                        gridViewMenu(
-                          () {
-                            getPermission[Permission.Riwayat_Pendapatan]! ||
-                                    getPermission[Permission
-                                        .Riwayat_Pengeluaran]!
-                                ? navUpDownTransition(
-                                    context,
-                                    '/historyfinancial',
-                                    false,
-                                  )
-                                : customSnackBarAccess(context: context);
-                          },
-                          const Icon(
-                            Icons.assignment_outlined,
-                            color: AppPropertyColor.black,
-                          ),
-                          "Riwayat Kas",
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ],
-                ),
               ),
               if (!hideContent)
                 Expanded(

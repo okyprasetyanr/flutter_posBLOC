@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -45,35 +46,38 @@ Future<UserCredential?> authenticatorAccount({
         .get();
     final uidOwner = data['uid_owner'] ?? uidUser;
     final map = data.data()!;
-    await saveAccount_Isar(
-      await ModelUser(
-        idUser: uidUser,
-        statusUser: StatusDataX.fromString(map[FieldDataUser.status_user.name]),
-        nameUser: map[FieldDataUser.name_user.name],
-        emailUser: map[FieldDataUser.email_user.name],
-        phoneUser: map[FieldDataUser.phone_user.name],
-        roleUser: RoleTypeX.fromString(map[FieldDataUser.role_user.name])!,
-        idBranchUser: map[FieldDataUser.id_branch.name],
-        permissionsUser: {
-          for (final permission in Permission.values)
-            permission:
-                StatusDataX.fromString(map[FieldDataUser.status_user.name]) ==
-                    StatusData.Aktif
-                ? map[FieldDataUser.permissions_user.name][permission.name] ??
-                      false
-                : false,
-        },
-        createdUser: parseDate(
-          date: map[FieldDataUser.created_user.name],
-          minute: false,
+    if (await checkUserById_Isar(uidUser) == false) {
+      await saveAccount_Isar(
+        ModelUser(
+          idUser: uidUser,
+          statusUser: StatusDataX.fromString(
+            map[FieldDataUser.status_user.name],
+          ),
+          nameUser: map[FieldDataUser.name_user.name],
+          emailUser: map[FieldDataUser.email_user.name],
+          phoneUser: map[FieldDataUser.phone_user.name],
+          roleUser: RoleTypeX.fromString(map[FieldDataUser.role_user.name])!,
+          idBranchUser: map[FieldDataUser.id_branch.name],
+          permissionsUser: {
+            for (final permission in Permission.values)
+              permission:
+                  StatusDataX.fromString(map[FieldDataUser.status_user.name]) ==
+                      StatusData.Aktif
+                  ? map[FieldDataUser.permissions_user.name][permission.name] ??
+                        false
+                  : false,
+          },
+          createdUser: parseDate(
+            date: map[FieldDataUser.created_user.name],
+            minute: false,
+          ),
+          noteUser: map[FieldDataUser.note_user.name],
         ),
-        noteUser: map[FieldDataUser.note_user.name],
-      ),
+      );
+    }
+    debugPrint(
+      "Log AuthenticationAccount: dataAccount: ${await getAllAccountIsar()}",
     );
-
-    // debugPrint(
-    //   "Log AuthenticationAccount: dataAccount: ${await getAllAccountIsar()}",
-    // );
 
     final pref = await SharedPreferences.getInstance();
     await pref.setString('uid_owner', uidOwner);
