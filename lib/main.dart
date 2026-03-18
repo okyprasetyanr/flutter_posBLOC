@@ -163,14 +163,14 @@ class _MainAppState extends State<ScreenLogin> {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            navUpDownTransition(context, '/mainmenu', true);
-          });
-          return SizedBox();
-        } else {
-          return _login();
-        }
+        // if (snapshot.hasData) {
+        //   WidgetsBinding.instance.addPostFrameCallback((_) {
+        //     navUpDownTransition(context, '/mainmenu', true);
+        //   });
+        // return SizedBox();
+        // } else {
+        return _login();
+        // }
       },
     );
   }
@@ -344,22 +344,27 @@ class _MainAppState extends State<ScreenLogin> {
                                               ),
                                             ),
                                           );
-                                          final result =
-                                              await authenticatorAccount(
-                                                email: "demo@gmail.com",
-                                                password: "123456",
-                                                context: context,
-                                                signup: false,
-                                              );
-                                          if (result != null) {
-                                            if (mounted) {
-                                              navUpDownTransition(
-                                                context,
-                                                '/mainmenu',
-                                                true,
-                                              );
-                                            }
+                                          // try {
+                                          await authenticatorAccount(
+                                            email: "demo@gmail.com",
+                                            password: "123456",
+                                            context: context,
+                                            signup: false,
+                                          );
+
+                                          if (mounted) {
+                                            Navigator.pop(context);
+                                            navUpDownTransition(
+                                              context,
+                                              '/mainmenu',
+                                              true,
+                                            );
                                           }
+                                          // } catch (e) {
+                                          //   if (mounted) {
+                                          //     Navigator.pop(context);
+                                          //   }
+                                          // }
                                         },
                                       ),
                                       const SizedBox(width: 10),
