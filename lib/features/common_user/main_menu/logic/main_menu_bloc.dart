@@ -100,7 +100,8 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
       expense += e.getamount;
     }
 
-    debugPrint("Log MainMenuBloc: cek");
+    final dataAccount = await getAllAccountIsar();
+    debugPrint("Log MainMenuBloc: caccount: $dataAccount");
 
     final dataItem = await getItemIsar(idBranch);
     ModelItem? bestSeller = null;
@@ -174,13 +175,13 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
 
           expiredItem[element.getidItem]!.totalExpired += 1;
         });
-
+    debugPrint("Log MainMenuBloc: datAcount: $dataAccount");
     emit(
       currentState.copyWith(
         bestSeller: bestSeller,
         expiredItem: expiredItem.values.toList(),
         almostExpiredItem: almostExpiredItem.values.toList(),
-        modelAccount: await getAllAccountIsar(),
+        dataAccount: dataAccount,
         lowStock: lowStockItems,
         worstSeller: worstSeller,
         dataBranch: dataBranch,

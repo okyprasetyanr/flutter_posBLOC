@@ -139,7 +139,7 @@ Future<List<ModelTransaction>> getTransactionBuyIsar(String idBranch) async {
       .where()
       .idBranchEqualTo(idBranch)
       .findAll();
-  return allTransactionBuy.map((e) => fromTransactionIsar(object: e)).toList();
+  return allTransactionBuy.map((e) => fromIsarTransaction(object: e)).toList();
 }
 
 Future<List<ModelTransaction>> getTransactionSellIsar(String idBranch) async {
@@ -147,7 +147,7 @@ Future<List<ModelTransaction>> getTransactionSellIsar(String idBranch) async {
       .where()
       .idBranchEqualTo(idBranch)
       .findAll();
-  return allTransactionSell.map((e) => fromTransactionIsar(object: e)).toList();
+  return allTransactionSell.map((e) => fromIsarTransaction(object: e)).toList();
 }
 
 Future<List<ModelTransactionFinancial>> getTransactionFinancialIncome(
@@ -159,7 +159,7 @@ Future<List<ModelTransactionFinancial>> getTransactionFinancialIncome(
       .idBranchEqualTo(idBranch)
       .findAll();
   return allTransactionFinancialIncome
-      .map((e) => fromTransactionFinancialIsar(object: e))
+      .map((e) => fromIsarTransactionFinancial(object: e))
       .toList();
 }
 
@@ -172,6 +172,6 @@ Future<List<ModelTransactionFinancial>> getTransactionFinancialExpense(
       .idBranchEqualTo(idBranch)
       .findAll();
   return allTransactionFinancialExpense
-      .map((e) => fromTransactionFinancialIsar(object: e))
+      .map((e) => fromIsarTransactionFinancial(object: e))
       .toList();
 }

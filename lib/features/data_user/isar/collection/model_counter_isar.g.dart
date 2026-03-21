@@ -57,7 +57,7 @@ const ModelCounterIsarSchema = CollectionSchema(
     r'idBranch': IndexSchema(
       id: 4331900883289279112,
       name: r'idBranch',
-      unique: true,
+      unique: false,
       replace: false,
       properties: [
         IndexPropertySchema(
@@ -152,62 +152,6 @@ List<IsarLinkBase<dynamic>> _modelCounterIsarGetLinks(ModelCounterIsar object) {
 void _modelCounterIsarAttach(
     IsarCollection<dynamic> col, Id id, ModelCounterIsar object) {
   object.isarId = id;
-}
-
-extension ModelCounterIsarByIndex on IsarCollection<ModelCounterIsar> {
-  Future<ModelCounterIsar?> getByIdBranch(String idBranch) {
-    return getByIndex(r'idBranch', [idBranch]);
-  }
-
-  ModelCounterIsar? getByIdBranchSync(String idBranch) {
-    return getByIndexSync(r'idBranch', [idBranch]);
-  }
-
-  Future<bool> deleteByIdBranch(String idBranch) {
-    return deleteByIndex(r'idBranch', [idBranch]);
-  }
-
-  bool deleteByIdBranchSync(String idBranch) {
-    return deleteByIndexSync(r'idBranch', [idBranch]);
-  }
-
-  Future<List<ModelCounterIsar?>> getAllByIdBranch(
-      List<String> idBranchValues) {
-    final values = idBranchValues.map((e) => [e]).toList();
-    return getAllByIndex(r'idBranch', values);
-  }
-
-  List<ModelCounterIsar?> getAllByIdBranchSync(List<String> idBranchValues) {
-    final values = idBranchValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'idBranch', values);
-  }
-
-  Future<int> deleteAllByIdBranch(List<String> idBranchValues) {
-    final values = idBranchValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'idBranch', values);
-  }
-
-  int deleteAllByIdBranchSync(List<String> idBranchValues) {
-    final values = idBranchValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'idBranch', values);
-  }
-
-  Future<Id> putByIdBranch(ModelCounterIsar object) {
-    return putByIndex(r'idBranch', object);
-  }
-
-  Id putByIdBranchSync(ModelCounterIsar object, {bool saveLinks = true}) {
-    return putByIndexSync(r'idBranch', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByIdBranch(List<ModelCounterIsar> objects) {
-    return putAllByIndex(r'idBranch', objects);
-  }
-
-  List<Id> putAllByIdBranchSync(List<ModelCounterIsar> objects,
-      {bool saveLinks = true}) {
-    return putAllByIndexSync(r'idBranch', objects, saveLinks: saveLinks);
-  }
 }
 
 extension ModelCounterIsarQueryWhereSort

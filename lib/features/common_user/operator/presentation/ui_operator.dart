@@ -58,9 +58,13 @@ class _UIOperatorState extends State<UIOperator> {
 
   bool isOwner = false;
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
     _initData();
+    _initRole();
+  }
+
+  Future<void> _initRole() async {
     final dataAccount = await getAllAccountIsar();
     isOwner = dataAccount.getIdUser == UserSession.uid_owner;
     roleFilterTypeList = [

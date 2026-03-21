@@ -50,16 +50,13 @@ class UserSession {
   static bool? fifo;
   static StockMode? selectedStockMode;
 
-  static Future<void> init(DataUserRepositoryCache? repo) async {
+  static Future<void> init() async {
     final pref = await SharedPreferences.getInstance();
     uid_owner = pref.getString("uid_owner")!;
     fifo = pref.getBool("fifo") ?? false;
     selectedStockMode = StockModeX.fromString(
       pref.getString("stockMode") ?? StockMode.FIFO.name,
     )!;
-    if (repo != null) {
-      await Future.wait([repo.initData()]);
-    }
   }
 
   static String getUidOwner() {

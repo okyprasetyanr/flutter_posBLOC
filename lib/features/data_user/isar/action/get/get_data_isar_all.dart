@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
@@ -28,8 +29,9 @@ import 'package:isar/isar.dart';
 
 Future<List<ModelUser>> getAllUserIsar() async {
   final allUser = await isar.modelUserIsars.where().findAll();
-
-  return await allUser.map((e) => fromIsarUser(e)).toList();
+  final finalAllUser = await allUser.map((e) => fromIsarUser(e)).toList();
+  finalAllUser.add(await getAllAccountIsar());
+  return await finalAllUser;
 }
 
 Future<ModelCompany> getAllCompanyIsar() async {
@@ -39,7 +41,6 @@ Future<ModelCompany> getAllCompanyIsar() async {
 
 Future<ModelUser> getAllAccountIsar() async {
   final account = await isar.modelAccountIsars.where().findFirst();
-
   return await fromIsarUser(account!);
 }
 
@@ -92,7 +93,7 @@ Future<List<ModelTransaction>> getAllTransactionSell_Isar() async {
       .where()
       .findAll();
   return await dataTransactionSell
-      .map((e) => fromTransactionIsar(object: e))
+      .map((e) => fromIsarTransaction(object: e))
       .toList();
 }
 
@@ -101,7 +102,7 @@ Future<List<ModelTransaction>> getAllTransactionBuy_Isar() async {
       .where()
       .findAll();
   return await dataTransactionBuy
-      .map((e) => fromTransactionIsar(object: e))
+      .map((e) => fromIsarTransaction(object: e))
       .toList();
 }
 
@@ -110,7 +111,7 @@ Future<List<ModelTransactionFinancial>> getAllTransactionIncome_Isar() async {
       .where()
       .findAll();
   return await dataIncome
-      .map((e) => fromTransactionFinancialIsar(object: e))
+      .map((e) => fromIsarTransactionFinancial(object: e))
       .toList();
 }
 
@@ -119,6 +120,6 @@ Future<List<ModelTransactionFinancial>> getAllTransactionExpense_Isar() async {
       .where()
       .findAll();
   return await dataExpense
-      .map((e) => fromTransactionFinancialIsar(object: e))
+      .map((e) => fromIsarTransactionFinancial(object: e))
       .toList();
 }

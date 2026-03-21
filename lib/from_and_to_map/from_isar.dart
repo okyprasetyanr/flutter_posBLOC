@@ -178,7 +178,7 @@ ModelPartner fromIsarPartner<T extends ModelPartnerBaseIsar>({
   );
 }
 
-ModelTransactionFinancial fromTransactionFinancialIsar<
+ModelTransactionFinancial fromIsarTransactionFinancial<
   T extends ModelTransactionFinancialBaseIsar
 >({required T object}) {
   return ModelTransactionFinancial(
@@ -195,7 +195,7 @@ ModelTransactionFinancial fromTransactionFinancialIsar<
   );
 }
 
-ModelTransaction fromTransactionIsar<T extends ModelTransactionBaseIsar>({
+ModelTransaction fromIsarTransaction<T extends ModelTransactionBaseIsar>({
   required T object,
 }) {
   return ModelTransaction(
@@ -304,6 +304,11 @@ ModelFinancial fromIsarFinancial<T extends ModelFinancialBaseIsar>({
 
 ModelUser fromIsarUser<T extends ModelUserBaseIsar>(T object) {
   return ModelUser(
+    idUser: object.idUser,
+    createdUser: object.createdUser,
+    idBranchUser: object.idBranchUser,
+    noteUser: object.noteUser,
+    statusUser: StatusDataX.fromString(object.statusUser),
     nameUser: object.nameUser,
     emailUser: object.emailUser,
     phoneUser: object.phoneUser,

@@ -14,6 +14,7 @@ import 'package:flutter_pos/features/common_user/settings/presentation/ui_featur
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_sync_data.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -41,11 +42,9 @@ class _UISettingsState extends State<UISettings> {
     super.dispose();
   }
 
-  ModelUser? dataAccount;
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
-    dataAccount = await getAllAccountIsar();
   }
 
   @override
@@ -181,34 +180,37 @@ class _UISettingsState extends State<UISettings> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    WidgetCustomTextMenu(
-                      icon: Icon(
-                        Icons.archive_rounded,
-                        color: AppPropertyColor.white,
+                    FutureBuilder(
+                      future: getAllAccountIsar(),
+                      builder: (context, snapshot) => WidgetCustomTextMenu(
+                        icon: Icon(
+                          Icons.archive_rounded,
+                          color: AppPropertyColor.white,
+                        ),
+                        text2: "Ubah ke Excel atau hapus Data",
+                        text1: "Manajemen Data",
+                        onTap: () async {
+                          final nameOperator = snapshot.data!.getNameUser;
+                          nameBackupController.text =
+                              '${nameOperator.length < 5 ? nameOperator : nameOperator.substring(0, 5)}_${formatDate(date: DateTime.now(), minute: true)}';
+
+                          context.read<SettingsBloc>().add(
+                            SettingsBackupRestoreinit(),
+                          );
+
+                          customBottomSheet(
+                            context: context,
+                            resetItemForm: null,
+                            content: (scrollController) {
+                              return UiBackupRestore(
+                                controller: scrollController,
+                                nameBackupController: nameBackupController,
+                                formKey: _formKey,
+                              );
+                            },
+                          );
+                        },
                       ),
-                      text2: "Ubah ke Excel atau hapus Data",
-                      text1: "Manajemen Data",
-                      onTap: () async {
-                        final nameOperator = dataAccount!.getNameUser;
-                        nameBackupController.text =
-                            '${nameOperator.length < 5 ? nameOperator : nameOperator.substring(0, 5)}_${formatDate(date: DateTime.now(), minute: true)}';
-
-                        context.read<SettingsBloc>().add(
-                          SettingsBackupRestoreinit(),
-                        );
-
-                        customBottomSheet(
-                          context: context,
-                          resetItemForm: null,
-                          content: (scrollController) {
-                            return UiBackupRestore(
-                              controller: scrollController,
-                              nameBackupController: nameBackupController,
-                              formKey: _formKey,
-                            );
-                          },
-                        );
-                      },
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
@@ -240,6 +242,7 @@ class _UISettingsState extends State<UISettings> {
                     label: Text("Keluar", style: lv05TextStyleWhite),
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
+                      await deleteAllDataIsar();
                       navUpDownTransition(context, '/login', true);
                     },
                   ),

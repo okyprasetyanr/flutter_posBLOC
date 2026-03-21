@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
@@ -328,6 +330,8 @@ class _ScreenSignupState extends State<ScreenSignup> {
               );
 
               final userCredential = await authenticatorAccount(
+                repo: context.read<DataUserRepositoryCache>(),
+
                 context: context,
                 email: emailCompanyController.text,
                 password: passwordController.text,

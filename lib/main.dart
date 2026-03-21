@@ -12,7 +12,6 @@ import 'package:flutter_pos/features/common_user/history_financial/logic/history
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
-import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
@@ -167,7 +166,7 @@ class _MainAppState extends State<ScreenLogin> {
         //   WidgetsBinding.instance.addPostFrameCallback((_) {
         //     navUpDownTransition(context, '/mainmenu', true);
         //   });
-        // return SizedBox();
+        //   return SizedBox();
         // } else {
         return _login();
         // }
@@ -344,27 +343,25 @@ class _MainAppState extends State<ScreenLogin> {
                                               ),
                                             ),
                                           );
-                                          // try {
-                                          await authenticatorAccount(
-                                            email: "demo@gmail.com",
-                                            password: "123456",
-                                            context: context,
-                                            signup: false,
-                                          );
+                                          final result =
+                                              await authenticatorAccount(
+                                                repo: context
+                                                    .read<
+                                                      DataUserRepositoryCache
+                                                    >(),
+                                                context: context,
+                                                email: "demo@gmail.com",
+                                                password: "123456",
+                                                signup: false,
+                                              );
 
-                                          if (mounted) {
-                                            Navigator.pop(context);
+                                          if (result != null) {
                                             navUpDownTransition(
                                               context,
                                               '/mainmenu',
                                               true,
                                             );
                                           }
-                                          // } catch (e) {
-                                          //   if (mounted) {
-                                          //     Navigator.pop(context);
-                                          //   }
-                                          // }
                                         },
                                       ),
                                       const SizedBox(width: 10),

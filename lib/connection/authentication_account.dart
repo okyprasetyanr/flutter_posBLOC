@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
@@ -10,13 +9,14 @@ import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
-import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 Future<UserCredential?> authenticatorAccount({
+  required DataUserRepositoryCache repo,
   required BuildContext context,
   required String email,
   required String password,
@@ -76,14 +76,13 @@ Future<UserCredential?> authenticatorAccount({
       );
     }
     debugPrint(
-      "Log AuthenticationAccount: dataAccount: ${await getAllAccountIsar()}",
+      "Log AuthenticationAccount: dataAccount: ${await getAllAccountIsar()}, idUser: $uidUser, created: ${parseDate(date: map[FieldDataUser.created_user.name], minute: false)}",
     );
 
     final pref = await SharedPreferences.getInstance();
     await pref.setString('uid_owner', uidOwner);
-
-    final repo = context.read<DataUserRepositoryCache>();
-    await UserSession.init(repo);
+    await UserSession.init();
+    await repo.initData();
 
     return userCredential;
   }

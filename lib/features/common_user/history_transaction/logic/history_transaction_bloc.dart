@@ -8,9 +8,11 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
+import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -106,14 +108,12 @@ class HistoryTransactionBloc
     final currentState = state;
     if (currentState is HistoryTransactionLoaded) {
       final invoice = currentState.selectedData!.getinvoice;
-      final dataTransaction = currentState.isSell
-          ? await getTransactionSellIsar(currentState.idBranch!)
-          : await getTransactionBuyIsar(currentState.idBranch!);
-      final indexdataTrans = dataTransaction.indexWhere(
-        (element) => element.getinvoice == invoice,
+      final dataTransaction = await checkTransactionById_Isar(
+        invoice,
+        isSell: currentState.isSell,
       );
 
-      final itemOrdered = dataTransaction[indexdataTrans].getitemsOrdered;
+      final itemOrdered = dataTransaction!.getitemsOrdered;
 
       if (!currentState.isSell) {
         final dataBatch = await getBatchIsar(currentState.idBranch!);
@@ -127,14 +127,17 @@ class HistoryTransactionBloc
         await deleteBatchByInvoice_Isar(invoice);
       }
 
-      dataTransaction[indexdataTrans] = dataTransaction[indexdataTrans]
-          .copyWith(
-            statusTransaction: ListStatusTransaction.Batal,
-            bankName: dataTransaction[indexdataTrans].getbankName,
-            itemsOrdered: itemOrdered,
-          );
+      final finaldataTransaction = dataTransaction.copyWith(
+        statusTransaction: ListStatusTransaction.Batal,
+        bankName: dataTransaction.getbankName,
+        itemsOrdered: itemOrdered,
+      );
 
-      await dataTransaction[indexdataTrans].pushDataTransaction(
+      currentState.isSell
+          ? await saveTransactionSell_Isar(finaldataTransaction)
+          : await saveTransactionBuy_Isar(finaldataTransaction);
+
+      await finaldataTransaction.pushDataTransaction(
         statusRemove: true,
         isSell: currentState.isSell,
       );

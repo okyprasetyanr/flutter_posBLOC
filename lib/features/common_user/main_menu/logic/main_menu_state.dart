@@ -56,7 +56,7 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     ModelItem? lowStock,
     ModelItem? bestSeller,
     ModelItem? worstSeller,
-    ModelUser? modelAccount,
+    ModelUser? dataAccount,
   }) {
     return DataReportLoaded(
       dataAccount: dataAccount ?? this.dataAccount,

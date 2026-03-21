@@ -105,16 +105,7 @@ class DataUserRepositoryCache {
   }
 
   Future<void> initUser() async {
-    dataUser = [];
-    final dataAccount = await getAllAccountIsar();
-    if (dataAccount.getRoleUser == RoleType.Pemilik) {
-      dataUser.add(dataAccount);
-    }
-    dataUser.addAll(await repo.getUser());
-
-    debugPrint(
-      "Log DataUserRepositoryCache: dataUser: ${dataUser.map((e) => e.getNameUser)}, roleAccount: ${dataAccount.getRoleUser}",
-    );
+    dataUser = await repo.getUser();
   }
 
   Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
@@ -122,35 +113,60 @@ class DataUserRepositoryCache {
   }
 
   Future<void> saveToIsar() async {
-    dataItem.forEach((element) async => await saveItem_Isar(element));
-    dataCategory.forEach((element) async => await saveCategory_Isar(element));
-    dataPartner
-        .where((element) => element.isCustomer)
-        .forEach((element) async => await saveCustomer_Isar(element));
-    dataPartner
-        .where((element) => element.isSupplier)
-        .forEach((element) async => await saveSupplier_Isar(element));
-    dataTransSell.forEach(
-      (element) async => await saveTransactionSell_Isar(element),
-    );
-    dataTransBuy.forEach(
-      (element) async => await saveTransactionBuy_Isar(element),
-    );
-    dataBatch.forEach((element) async => await saveBatch_Isar(element));
-    dataFinancial
-        .where((element) => element.isIncome)
-        .forEach((element) async => await saveIncome_Isar(element));
-    dataFinancial
-        .where((element) => element.isExpense)
-        .forEach((element) async => await saveExpense_Isar(element));
-    dataTransIncome.forEach(
-      (element) async => await saveTransactionFinancialncome_Isar(element),
-    );
-    dataTransExpense.forEach(
-      (element) async => await saveTransactionFinancialExpense_Isar(element),
-    );
-    dataUser.forEach((element) async => await saveUser_Isar(element));
-    dataCounter.forEach((element) async => await saveCounter_Isar(element));
-    saveCompany_Isar(dataCompany!);
+    for (final element in dataItem) {
+      await saveItem_Isar(element);
+    }
+
+    for (final element in dataCategory) {
+      await saveCategory_Isar(element);
+    }
+
+    for (final element in dataPartner.where((e) => e.isCustomer)) {
+      await saveCustomer_Isar(element);
+    }
+
+    for (final element in dataPartner.where((e) => e.isSupplier)) {
+      await saveSupplier_Isar(element);
+    }
+
+    for (final element in dataTransSell) {
+      await saveTransactionSell_Isar(element);
+    }
+
+    for (final element in dataTransBuy) {
+      await saveTransactionBuy_Isar(element);
+    }
+
+    for (final element in dataBatch) {
+      await saveBatch_Isar(element);
+    }
+
+    for (final element in dataFinancial.where((e) => e.isIncome)) {
+      await saveIncome_Isar(element);
+    }
+
+    for (final element in dataFinancial.where((e) => e.isExpense)) {
+      await saveExpense_Isar(element);
+    }
+
+    for (final element in dataTransIncome) {
+      await saveTransactionFinancialncome_Isar(element);
+    }
+
+    for (final element in dataTransExpense) {
+      await saveTransactionFinancialExpense_Isar(element);
+    }
+
+    for (final element in dataUser) {
+      await saveUser_Isar(element);
+    }
+
+    for (final element in dataCounter) {
+      await saveCounter_Isar(element);
+    }
+
+    if (dataCompany != null) {
+      await saveCompany_Isar(dataCompany!);
+    }
   }
 }

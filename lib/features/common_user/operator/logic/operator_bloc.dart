@@ -202,6 +202,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
 
     if (await checkUserById_Isar(currentState.selectedData!.getIdUser!)) {
       final credential = await authenticatorAccount(
+        repo: context.read<DataUserRepositoryCache>(),
         context: context,
         email: data.getEmailUser,
         password: event.password,

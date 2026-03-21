@@ -88,7 +88,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     final pref = await SharedPreferences.getInstance();
     pref.setBool('fifo', !isFifo);
-    UserSession.init(repoCache);
+    UserSession.init();
 
     debugPrint("Log Settings: Feature Fifo: $isFifo");
     emit(currentState.copyWith(isFifo: !isFifo));
@@ -103,7 +103,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     final pref = await SharedPreferences.getInstance();
     pref.setString('stockMode', selectedStockMode.name);
-    UserSession.init(repoCache);
+    UserSession.init();
 
     emit(currentState.copyWith(stockMode: selectedStockMode));
   }
@@ -520,7 +520,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsReset event,
     Emitter<SettingsState> emit,
   ) async {
-    deleteAllCommonDataIsar();
+    await deleteAllCommonDataIsar();
     // repoCache.notifyChanged();
   }
 }

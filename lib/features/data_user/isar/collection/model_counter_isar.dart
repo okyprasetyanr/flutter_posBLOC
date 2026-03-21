@@ -5,7 +5,7 @@ part 'model_counter_isar.g.dart';
 @collection
 class ModelCounterIsar {
   Id isarId = Isar.autoIncrement;
-  @Index(unique: true)
+  @Index()
   late String idBranch;
 
   late int counterSell;

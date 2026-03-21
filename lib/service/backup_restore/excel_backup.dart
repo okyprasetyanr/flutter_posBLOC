@@ -8,8 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_financial.dart';
-import 'package:flutter_pos/model_data/model_partner.dart';
 
 bool _isPickingFile = false;
 

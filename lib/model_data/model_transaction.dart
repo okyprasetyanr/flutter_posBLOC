@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
@@ -264,9 +265,10 @@ class ModelTransaction extends Equatable {
         }
       }
 
-      final dataTransaction = isSell
-          ? await getTransactionSellIsar(_idBranch)
-          : await getTransactionBuyIsar(_idBranch);
+      final dataTransaction = await checkTransactionById_Isar(
+        _invoice,
+        isSell: isSell,
+      );
 
       final transaction = ModelTransaction(
         statusTransaction: _statusTransaction,
@@ -293,25 +295,25 @@ class ModelTransaction extends Equatable {
         dataSplit: [],
       );
 
-      final index = dataTransaction.indexWhere(
-        (element) => element.getinvoice == _invoice,
-      );
+      ModelTransaction? finaldataTransaction = null;
 
-      index != -1
-          ? dataTransaction[index] = dataTransaction[index].copyWith(
+      dataTransaction != null
+          ? finaldataTransaction = dataTransaction.copyWith(
               itemsOrdered: _itemsOrdered,
               dataSplit: _dataSplit,
               statusTransaction: _statusTransaction,
             )
-          : dataTransaction.add(
-              transaction.copyWith(
-                itemsOrdered: _itemsOrdered,
-                dataSplit: _dataSplit,
-                statusTransaction: _statusTransaction,
-              ),
+          : finaldataTransaction = transaction.copyWith(
+              itemsOrdered: _itemsOrdered,
+              dataSplit: _dataSplit,
+              statusTransaction: _statusTransaction,
             );
 
       debugPrint("Log ModelTransaction: Cek Transaksi: $dataTransaction");
+
+      isSell
+          ? await saveTransactionSell_Isar(finaldataTransaction)
+          : await saveTransactionBuy_Isar(finaldataTransaction);
 
       final writeBatch = FirebaseFirestore.instance.batch();
       writeBatch.set(transRef, convertToMapTransaction(transaction));
