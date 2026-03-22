@@ -17,7 +17,6 @@ import 'package:flutter_pos/features/common_user/settings/presentation/ui_print.
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 

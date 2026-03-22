@@ -8,7 +8,6 @@ import 'package:flutter_pos/features/common_user/settings/logic/settings_event.d
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by_collection.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
