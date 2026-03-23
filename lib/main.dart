@@ -6,19 +6,12 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
-import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
-import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
-import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
-import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
-import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
@@ -66,18 +59,11 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => InventoryBloc(repo)),
         BlocProvider(create: (_) => TransactionBloc(repo)),
         BlocProvider(create: (_) => PaymentBloc(repo)),
         BlocProvider(create: (_) => PartnerBloc(repo)),
-        BlocProvider(create: (_) => BatchBloc(repo)),
         BlocProvider(create: (_) => HistoryTransactionBloc(repo)),
-        BlocProvider(create: (_) => ReportBloc(repo)),
-        BlocProvider(create: (_) => FinancialBloc(repo)),
-        BlocProvider(create: (_) => TransFinancialBloc(repo)),
         BlocProvider(create: (_) => HistoryFinancialBloc(repo)),
-        BlocProvider(create: (_) => OperatorBloc(repo)),
-        BlocProvider(create: (_) => DataReportBloc(repo)),
         if (!kIsWeb) BlocProvider(create: (_) => SettingsBloc(repo)),
         BlocProvider(
           lazy: false,

@@ -10,7 +10,6 @@ import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
