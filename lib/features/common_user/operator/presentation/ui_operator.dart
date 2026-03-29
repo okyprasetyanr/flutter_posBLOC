@@ -60,7 +60,6 @@ class _UIOperatorState extends State<UIOperator> {
   @override
   void initState() {
     super.initState();
-    _initData();
     _initRole();
   }
 
@@ -80,10 +79,6 @@ class _UIOperatorState extends State<UIOperator> {
       ))
         role,
     ];
-  }
-
-  void _initData() {
-    context.read<OperatorBloc>().add(OperatorGetData());
   }
 
   @override

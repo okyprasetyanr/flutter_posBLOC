@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/presentation/ui_batch.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/common_user/financial/presentation/ui_financial.dart';
 import 'package:flutter_pos/features/common_user/history_financial/presentation/ui_history_financial.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/presentation/ui_history_transaction.dart';
@@ -9,11 +10,15 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.
 import 'package:flutter_pos/features/common_user/inventory/presentation/page/ui_inventory.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
+import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/common_user/operator/presentation/ui_operator.dart';
+import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/presentation/ui_partner.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/presentation/ui_report.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_financial.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_payment.dart';
@@ -25,15 +30,16 @@ import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_
 
 final routesPage = {
   '/operator': (context) => BlocProvider(
-    create: (context) => OperatorBloc(context.read()),
+    create: (context) => OperatorBloc(context.read())..add(OperatorGetData()),
     child: UIOperator(),
   ),
   '/transfinancial': (context) => BlocProvider(
-    create: (context) => TransFinancialBloc(context.read()),
+    create: (context) =>
+        TransFinancialBloc(context.read())..add(TransFinancialGetData()),
     child: UITransactionFinancial(),
   ),
   '/financial': (context) => BlocProvider(
-    create: (context) => FinancialBloc(context.read()),
+    create: (context) => FinancialBloc(context.read())..add(FinancialGetData()),
     child: UiFinancial(),
   ),
   '/report': (context) => BlocProvider(
@@ -52,8 +58,14 @@ final routesPage = {
     create: (context) => InventoryBloc(context.read()),
     child: UIInventory(),
   ),
-  '/partner': (context) => const UIPartner(),
-  '/sell': (context) => const UITransaction(),
+  '/partner': (context) => BlocProvider(
+    create: (context) => PartnerBloc(context.read()),
+    child: UIPartner(),
+  ),
+  '/sell': (context) => BlocProvider(
+    create: (context) => TransactionBloc(context.read()),
+    child: UITransaction(),
+  ),
   '/sellpayment': (context) => const UITransactionPayment(),
   '/settings': (context) => const UISettings(),
   '/historyfinancial': (context) => const UiHistoryFinancial(),

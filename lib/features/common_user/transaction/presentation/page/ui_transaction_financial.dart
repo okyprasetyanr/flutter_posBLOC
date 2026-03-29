@@ -45,11 +45,6 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
   @override
   void initState() {
     super.initState();
-    _initData();
-  }
-
-  void _initData() {
-    context.read<TransFinancialBloc>().add(TransFinancialGetData());
   }
 
   @override

@@ -33,7 +33,6 @@ class _UiFinancialState extends State<UiFinancial> {
   @override
   void initState() {
     super.initState();
-    _initData();
   }
 
   void _initData() {
