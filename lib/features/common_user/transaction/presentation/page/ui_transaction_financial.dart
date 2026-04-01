@@ -321,7 +321,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
 
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initFinancial();
-    _initData();
+    context.read<TransFinancialBloc>().add(TransFinancialGetData());
   }
 
   Widget navigationGesture() {

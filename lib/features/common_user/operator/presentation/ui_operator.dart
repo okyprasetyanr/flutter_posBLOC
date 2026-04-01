@@ -622,7 +622,7 @@ class _UIOperatorState extends State<UIOperator> {
 
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initUser();
-    _initData();
+    context.read<OperatorBloc>().add(OperatorGetData());
   }
 
   List<RoleType> roleTypeListOwner() {

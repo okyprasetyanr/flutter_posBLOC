@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
+import 'package:flutter_pos/features/common_user/partner/presentation/ui_partner.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -264,7 +265,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                           ),
 
                           customButtonIcon(
-                            backgroundColor: context.colorTrans,
+                            backgroundColor: AppPropertyColor.primary,
                             icon: const Icon(
                               Icons.add,
                               color: AppPropertyColor.white,
@@ -274,18 +275,28 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                               style: lv05TextStyleWhite,
                             ),
                             onPressed: () async {
-                              context.read<PartnerBloc>().add(
-                                PartnerStatusPartner(
-                                  isCustomer:
-                                      (context.read<TransactionBloc>().state
-                                              as TransactionLoaded)
-                                          .isSell,
-                                ),
-                              );
-                              await navUpDownTransition(
+                              navUpDownTransition(
                                 context,
                                 '/partner',
                                 false,
+                                builder: (context) => BlocProvider(
+                                  create: (context) =>
+                                      context.read<PartnerBloc>()
+                                        ..add(PartnerGetData())
+                                        ..add(
+                                          PartnerStatusPartner(
+                                            isCustomer:
+                                                (context
+                                                            .read<
+                                                              TransactionBloc
+                                                            >()
+                                                            .state
+                                                        as TransactionLoaded)
+                                                    .isSell,
+                                          ),
+                                        ),
+                                  child: const UIPartner(),
+                                ),
                               );
                             },
                           ),
@@ -294,22 +305,22 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                     },
                   );
                 },
-                label: Text(
-                  context.select<TransactionBloc, String>(
-                    (value) => value.state is TransactionLoaded
-                        ? (value.state as TransactionLoaded)
-                                      .selectedPartner
-                                      ?.getidPartner ==
-                                  ""
-                              ? "Kontak"
-                              : (value.state as TransactionLoaded)
-                                        .selectedPartner
-                                        ?.getnamePartner ??
-                                    "Kontak"
-                        : "Kontak",
-                  ),
-                  style: lv1TextStyleWhite,
-                  overflow: TextOverflow.ellipsis,
+                label: BlocSelector<TransactionBloc, TransactionState, String>(
+                  selector: (state) {
+                    if (state is TransactionLoaded) {
+                      final partner = state.selectedPartner;
+                      if (partner?.getidPartner == "") return "Kontak";
+                      return partner?.getnamePartner ?? "Kontak";
+                    }
+                    return "Kontak";
+                  },
+                  builder: (context, text) {
+                    return Text(
+                      text,
+                      style: lv1TextStyleWhite,
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
                 ),
                 icon: const Icon(
                   Icons.contacts_rounded,
@@ -371,6 +382,32 @@ class TransactionListViewOrderedItem extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class TransactionContactButton extends StatelessWidget {
+  const TransactionContactButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<TransactionBloc>().state;
+
+    String label = "Kontak";
+    if (state is TransactionLoaded) {
+      final partner = state.selectedPartner;
+      if (partner?.getidPartner != "") {
+        label = partner?.getnamePartner ?? "Kontak";
+      }
+    }
+
+    return customButtonIcon(
+      backgroundColor: context.colorTrans,
+      icon: const Icon(Icons.contacts_rounded, color: AppPropertyColor.white),
+      label: Text(label),
+      onPressed: () {
+        // buka bottomsheet
+      },
     );
   }
 }

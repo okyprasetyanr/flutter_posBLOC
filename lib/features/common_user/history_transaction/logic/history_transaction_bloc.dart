@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
@@ -196,16 +197,23 @@ class HistoryTransactionBloc
     HistoryTransactionRevisionData event,
     Emitter<HistoryTransactionState> emit,
   ) {
-    final sellState = event.context.read<TransactionBloc>();
     final currentState = state as HistoryTransactionLoaded;
-
-    sellState.add(
-      TransactionLoadTransaction(
-        currentTransaction: currentState.selectedData!,
-        revision: true,
+    navUpDownTransition(
+      event.context,
+      '/sell',
+      false,
+      builder: (context) => BlocProvider(
+        create: (context) => TransactionBloc(context.read())
+          ..add(TransactionGetData())
+          ..add(
+            TransactionLoadTransaction(
+              currentTransaction: currentState.selectedData!,
+              revision: true,
+            ),
+          ),
+        child: const UITransaction(),
       ),
     );
-    navUpDownTransition(event.context, '/sell', false);
   }
 
   FutureOr<void> _onSelectedFilter(
