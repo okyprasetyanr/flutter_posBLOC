@@ -45,11 +45,13 @@ extension AppThemeExtension on BuildContext {
   Color getDynamicColor<T extends BlocBase<Object?>>(
     bool Function(Object? state) selector,
   ) {
-    final bool condition = select<T, bool>((bloc) => selector(bloc.state));
+    // final bool condition = select<T, bool>((bloc) => selector(bloc.state));
 
-    return condition
-        ? AppPropertyColor.primary
-        : AppPropertyColor.secondPrimary;
+    return
+    // condition
+    //     ?
+    AppPropertyColor.primary;
+    // : AppPropertyColor.secondPrimary;
   }
 
   Color get colorTrans => getDynamicColor<TransactionBloc>(

@@ -202,17 +202,7 @@ class HistoryTransactionBloc
       event.context,
       '/sell',
       false,
-      builder: (context) => BlocProvider(
-        create: (context) => TransactionBloc(context.read())
-          ..add(TransactionGetData())
-          ..add(
-            TransactionLoadTransaction(
-              currentTransaction: currentState.selectedData!,
-              revision: true,
-            ),
-          ),
-        child: const UITransaction(),
-      ),
+      arguments: {"revision": true, "transaction": currentState.selectedData!},
     );
   }
 

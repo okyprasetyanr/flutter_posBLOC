@@ -1,24 +1,24 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_pos/routes/routes.dart';
 
 final Map<String, WidgetBuilder> appRoutes = routesPage;
 
 Future navUpDownTransition(
   BuildContext context,
-  String? routeName,
+  String routeName,
   bool replace, {
-  WidgetBuilder? builder,
+  Object? arguments,
 }) {
-  final routeBuilder = builder ?? appRoutes[routeName];
+  final routeBuilder = appRoutes[routeName];
 
   if (routeBuilder == null) {
     throw Exception("Route tidak ditemukan");
   }
 
   final route = PageRouteBuilder(
-    settings: RouteSettings(name: routeName),
+    settings: RouteSettings(name: routeName, arguments: arguments),
     pageBuilder: (context, animation, secondaryAnimation) {
-      return Builder(builder: (innerContext) => routeBuilder(innerContext));
+      return routeBuilder(context);
     },
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);

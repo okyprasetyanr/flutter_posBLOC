@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
@@ -72,15 +73,40 @@ final routesPage = {
     create: (context) => InventoryBloc(context.read())..add(InventoryGetData()),
     child: const UIInventory(),
   ),
-  '/partner': (context) => BlocProvider(
-    create: (context) => PartnerBloc(context.read())..add(PartnerGetData()),
-    child: const UIPartner(),
-  ),
-  '/sell': (context) => BlocProvider(
-    create: (context) =>
-        TransactionBloc(context.read())..add(TransactionGetData()),
-    child: const UITransaction(),
-  ),
+  '/partner': (context) {
+    final isCustomer = ModalRoute.of(context)!.settings.arguments as bool;
+
+    return BlocProvider(
+      create: (context) => PartnerBloc(context.read())
+        ..add(PartnerGetData())
+        ..add(PartnerStatusPartner(isCustomer: isCustomer)),
+      child: const UIPartner(),
+    );
+  },
+  '/sell': (context) {
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+
+    final revision = args?['revision'] ?? false;
+    final transaction = args?['transaction'];
+
+    return BlocProvider(
+      create: (context) {
+        final bloc = TransactionBloc(context.read())..add(TransactionGetData());
+
+        if (revision && transaction != null) {
+          bloc.add(
+            TransactionLoadTransaction(
+              currentTransaction: transaction,
+              revision: revision,
+            ),
+          );
+        }
+
+        return bloc;
+      },
+      child: const UITransaction(),
+    );
+  },
   '/historyfinancial': (context) => BlocProvider(
     create: (context) =>
         HistoryFinancialBloc(context.read())..add(HistoryFinancialGetData()),
@@ -92,26 +118,21 @@ final routesPage = {
           ..add(HistoryTransactionGetData()),
     child: const UIHistoryTransaction(),
   ),
-  '/sellpayment': (context) {
-    final transactionBloc = context.read<TransactionBloc>();
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: transactionBloc),
-        BlocProvider(
-          create: (context) => PaymentBloc(
-            context.read<DataUserRepositoryCache>(),
-            transactionBloc,
-          )..add(PaymentGetTransaction()),
-        ),
-      ],
-      child: const UITransactionPayment(),
-    );
-  },
   '/selltransactionsuccess': (context) => BlocProvider.value(
     value: context.read<PaymentBloc>(),
     child: const UITransactionSuccess(),
   ),
+  '/sellpayment': (context) {
+    final transactionBloc =
+        ModalRoute.of(context)!.settings.arguments as TransactionBloc;
+    return BlocProvider(
+      create: (context) =>
+          PaymentBloc(context.read<DataUserRepositoryCache>(), transactionBloc)
+            ..add(PaymentGetTransaction()),
+      child: const UITransactionPayment(),
+    );
+  },
 
   '/settings': (context) => const UISettings(),
   '/login': (context) => const ScreenLogin(),

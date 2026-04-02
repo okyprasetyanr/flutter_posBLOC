@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
-import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
-import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
-import 'package:flutter_pos/features/common_user/partner/presentation/ui_partner.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -210,97 +207,90 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                     context: context,
                     resetItemForm: () {},
                     content: (scrollController) {
-                      return Column(
-                        children: [
-                          Text("Pilih Kontak", style: lv1TextStyleBold),
+                      return BlocProvider.value(
+                        value: context.read<TransactionBloc>(),
+                        child: Column(
+                          children: [
+                            Text("Pilih Kontak", style: lv1TextStyleBold),
 
-                          Expanded(
-                            child:
-                                BlocSelector<
-                                  TransactionBloc,
-                                  TransactionState,
-                                  List<ModelPartner>?
-                                >(
-                                  selector: (state) {
-                                    if (state is TransactionLoaded) {
-                                      return state.dataPartner ?? const [];
-                                    }
-                                    return const [];
-                                  },
-                                  builder: (context, state) {
-                                    return ListView.builder(
-                                      controller: scrollController,
-                                      itemCount: state!.length,
-                                      itemBuilder: (context, index) {
-                                        return ListTile(
-                                          leading: CircleAvatar(
-                                            backgroundColor: context.colorTrans,
-                                            child: Icon(
-                                              Icons.person,
-                                              size: lv2IconSize,
-                                              color: AppPropertyColor.white,
-                                            ),
-                                          ),
-                                          title: Text(
-                                            state[index].getnamePartner,
-                                            style: lv05TextStyle,
-                                          ),
-                                          subtitle: Text(
-                                            "${state[index].getphonePartner}",
-                                            style: lv05TextStyle,
-                                          ),
-                                          onTap: () {
-                                            context.read<TransactionBloc>().add(
-                                              TransactionSelectedPartner(
-                                                selectedPartner: state[index],
+                            Expanded(
+                              child:
+                                  BlocSelector<
+                                    TransactionBloc,
+                                    TransactionState,
+                                    List<ModelPartner>?
+                                  >(
+                                    selector: (state) {
+                                      if (state is TransactionLoaded) {
+                                        return state.dataPartner ?? const [];
+                                      }
+                                      return const [];
+                                    },
+                                    builder: (context, state) {
+                                      return ListView.builder(
+                                        controller: scrollController,
+                                        itemCount: state!.length,
+                                        itemBuilder: (context, index) {
+                                          return ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundColor:
+                                                  AppPropertyColor.primary,
+                                              child: Icon(
+                                                Icons.person,
+                                                size: lv2IconSize,
+                                                color: AppPropertyColor.white,
                                               ),
-                                            );
-                                            Navigator.pop(context);
-                                          },
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                          ),
+                                            ),
+                                            title: Text(
+                                              state[index].getnamePartner,
+                                              style: lv05TextStyle,
+                                            ),
+                                            subtitle: Text(
+                                              "${state[index].getphonePartner}",
+                                              style: lv05TextStyle,
+                                            ),
+                                            onTap: () {
+                                              context
+                                                  .read<TransactionBloc>()
+                                                  .add(
+                                                    TransactionSelectedPartner(
+                                                      selectedPartner:
+                                                          state[index],
+                                                    ),
+                                                  );
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                            ),
 
-                          customButtonIcon(
-                            backgroundColor: AppPropertyColor.primary,
-                            icon: const Icon(
-                              Icons.add,
-                              color: AppPropertyColor.white,
+                            customButtonIcon(
+                              backgroundColor: AppPropertyColor.primary,
+                              icon: const Icon(
+                                Icons.add,
+                                color: AppPropertyColor.white,
+                              ),
+                              label: Text(
+                                "Tambah Kontak Baru",
+                                style: lv05TextStyleWhite,
+                              ),
+                              onPressed: () async {
+                                navUpDownTransition(
+                                  context,
+                                  '/partner',
+                                  false,
+                                  arguments:
+                                      (context.read<TransactionBloc>().state
+                                              as TransactionLoaded)
+                                          .isSell,
+                                );
+                              },
                             ),
-                            label: Text(
-                              "Tambah Kontak Baru",
-                              style: lv05TextStyleWhite,
-                            ),
-                            onPressed: () async {
-                              navUpDownTransition(
-                                context,
-                                '/partner',
-                                false,
-                                builder: (context) => BlocProvider(
-                                  create: (context) =>
-                                      context.read<PartnerBloc>()
-                                        ..add(PartnerGetData())
-                                        ..add(
-                                          PartnerStatusPartner(
-                                            isCustomer:
-                                                (context
-                                                            .read<
-                                                              TransactionBloc
-                                                            >()
-                                                            .state
-                                                        as TransactionLoaded)
-                                                    .isSell,
-                                          ),
-                                        ),
-                                  child: const UIPartner(),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   );
@@ -326,7 +316,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   Icons.contacts_rounded,
                   color: AppPropertyColor.white,
                 ),
-                backgroundColor: context.colorTrans,
+                backgroundColor: AppPropertyColor.primary,
               ),
             ),
             const SizedBox(width: 10),
@@ -370,13 +360,18 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                     }
                   }
 
-                  navUpDownTransition(context, '/sellpayment', false);
+                  navUpDownTransition(
+                    context,
+                    '/sellpayment',
+                    false,
+                    arguments: context.read<TransactionBloc>(),
+                  );
                 },
                 child: Icon(
                   Icons.attach_money_rounded,
                   color: AppPropertyColor.white,
                 ),
-                backgroundColor: context.colorTrans,
+                backgroundColor: AppPropertyColor.primary,
               ),
             ),
           ],
@@ -402,7 +397,7 @@ class TransactionContactButton extends StatelessWidget {
     }
 
     return customButtonIcon(
-      backgroundColor: context.colorTrans,
+      backgroundColor: AppPropertyColor.primary,
       icon: const Icon(Icons.contacts_rounded, color: AppPropertyColor.white),
       label: Text(label),
       onPressed: () {
