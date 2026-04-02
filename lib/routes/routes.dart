@@ -28,12 +28,14 @@ import 'package:flutter_pos/features/common_user/report/presentation/ui_report.d
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_financial.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_success.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/main.dart';
 import 'package:flutter_pos/screen_signup.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/page/ui_setting_menu.dart';
@@ -90,10 +92,22 @@ final routesPage = {
           ..add(HistoryTransactionGetData()),
     child: const UIHistoryTransaction(),
   ),
-  '/sellpayment': (context) => BlocProvider.value(
-    value: context.read<TransactionBloc>()..add(TransactionGetData()),
-    child: const UITransactionPayment(),
-  ),
+  '/sellpayment': (context) {
+    final transactionBloc = context.read<TransactionBloc>();
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: transactionBloc),
+        BlocProvider(
+          create: (context) => PaymentBloc(
+            context.read<DataUserRepositoryCache>(),
+            transactionBloc,
+          )..add(PaymentGetTransaction()),
+        ),
+      ],
+      child: const UITransactionPayment(),
+    );
+  },
   '/selltransactionsuccess': (context) => BlocProvider.value(
     value: context.read<PaymentBloc>(),
     child: const UITransactionSuccess(),

@@ -103,7 +103,9 @@ class UITransactionGridViewItem extends StatelessWidget {
                           "FIFO: Stok sudah mencapai batas",
                         );
                       }
-
+                      debugPrint(
+                        "Log UITransaction: selectedItem: $selectedItem",
+                      );
                       context.read<TransactionBloc>().add(
                         TransactionSelectedItem(
                           selectedItem: selectedItem,

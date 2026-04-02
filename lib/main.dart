@@ -59,11 +59,6 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => TransactionBloc(repo)),
-        BlocProvider(create: (_) => PaymentBloc(repo)),
-        BlocProvider(create: (_) => PartnerBloc(repo)),
-        BlocProvider(create: (_) => HistoryTransactionBloc(repo)),
-        BlocProvider(create: (_) => HistoryFinancialBloc(repo)),
         if (!kIsWeb) BlocProvider(create: (_) => SettingsBloc(repo)),
         BlocProvider(
           lazy: false,

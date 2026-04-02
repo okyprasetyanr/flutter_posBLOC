@@ -23,7 +23,9 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   DataUserRepositoryCache repoCache;
-  PaymentBloc(this.repoCache) : super(PaymentInitial()) {
+  final TransactionBloc transactionBloc;
+
+  PaymentBloc(this.repoCache, this.transactionBloc) : super(PaymentInitial()) {
     on<PaymentGetTransaction>(_onGetTransaction);
     on<PaymentAdjust>(_onAdjust, transformer: debounceRestartable());
     on<PaymentProcess>(_onPaymentProcess);
@@ -184,8 +186,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     PaymentGetTransaction event,
     Emitter<PaymentState> emit,
   ) async {
-    final sellState =
-        event.context.read<TransactionBloc>().state as TransactionLoaded;
+    final sellState = this.transactionBloc.state as TransactionLoaded;
     debugPrint(
       "Log PaymentBloc: dataRevisiOrSaved: ${sellState.selectedTransaction}",
     );
@@ -308,7 +309,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     PaymentProcess event,
     Emitter<PaymentState> emit,
   ) async {
-    final sellState = event.context.read<TransactionBloc>();
+    final sellState = this.transactionBloc;
     final currentState = state;
     final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
     final dataAccount = await getAllAccountIsar();

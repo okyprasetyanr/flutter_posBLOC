@@ -399,7 +399,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         );
       }
 
-      debugPrint("Log TransactionBloc: SelectedItem: ${item.getpriceItemBuy}");
+      debugPrint("Log TransactionBloc: SelectedItem: $item");
       emit(
         currentState.copyWith(selectedItem: item, editSelectedItem: event.edit),
       );

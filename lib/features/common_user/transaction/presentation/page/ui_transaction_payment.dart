@@ -55,7 +55,6 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
   @override
   void initState() {
     super.initState();
-    context.read<PaymentBloc>().add(PaymentGetTransaction(context: context));
   }
 
   final pageController = PageController();

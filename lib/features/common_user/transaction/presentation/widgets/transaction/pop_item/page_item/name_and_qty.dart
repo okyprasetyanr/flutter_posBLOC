@@ -43,17 +43,20 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                       BlocSelector<
                         TransactionBloc,
                         TransactionState,
-                        ModelItemOrdered?
+                        (ModelItemOrdered?, String?)
                       >(
                         selector: (state) {
                           if (state is TransactionLoaded) {
-                            return state.selectedItem;
+                            return (state.selectedItem, state.idBranch);
                           }
-                          return null;
+                          return (null, "");
                         },
                         builder: (context, state) {
+                          debugPrint(
+                            "Log UITransaction: NameAndQty: idBranch: ${state.$2}",
+                          );
                           return Text(
-                            state?.getnameItem ?? "",
+                            state.$1?.getnameItem ?? "",
                             style: lv1TextStyleWhiteBold,
                             overflow: TextOverflow.ellipsis,
                           );

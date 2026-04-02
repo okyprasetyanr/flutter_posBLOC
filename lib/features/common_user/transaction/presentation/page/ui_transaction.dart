@@ -213,15 +213,24 @@ class _UITransactionState extends State<UITransaction> {
                   curr.selectedItem!.getidOrdered !=
                       prev.selectedItem?.getidOrdered,
               listener: (context, state) {
-                customBottomSheet(
-                  context: context,
-                  resetItemForm: () {
-                    context.read<TransactionBloc>().add(
-                      TransactionResetSelectedItem(),
-                    );
-                  },
-                  content: (_) => UITransactionPopUpItem(),
-                );
+                if (state is TransactionLoaded && state.selectedItem != null) {
+                  debugPrint(
+                    "Log UITransaction: PopUpItem: SelectedItem: ${state.selectedItem}",
+                  );
+
+                  customBottomSheet(
+                    context: context,
+                    resetItemForm: () {
+                      context.read<TransactionBloc>().add(
+                        TransactionResetSelectedItem(),
+                      );
+                    },
+                    content: (_) => BlocProvider.value(
+                      value: context.read<TransactionBloc>(),
+                      child: const UITransactionPopUpItem(),
+                    ),
+                  );
+                }
               },
               child: const SizedBox.shrink(),
             ),
