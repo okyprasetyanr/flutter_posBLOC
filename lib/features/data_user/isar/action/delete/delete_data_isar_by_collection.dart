@@ -10,6 +10,7 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_expense_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 
 Future<void> deleteBatchCollection() async {
@@ -47,6 +48,12 @@ Future<void> deletePartnerCollection() async {
   await isar.writeTxn(() async {
     await isar.modelSupplierIsars.clear();
     await isar.modelCustomerIsars.clear();
+  });
+}
+
+Future<void> deleteOperatorCollection() async {
+  await isar.writeTxn(() async {
+    await isar.modelUserIsars.clear();
   });
 }
 

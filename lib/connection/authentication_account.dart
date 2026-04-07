@@ -89,6 +89,7 @@ Future<UserCredential?> authenticatorAccount({
       return userCredential;
     }
   } on FirebaseAuthException catch (e) {
+    debugPrint("Log AuthAccont : Firebase Error: $e");
     customSnackBar(context, "Terjadi kesalahan! Silahkan coba kembali.");
     customSnackBar(context, _mapFirebaseAuthCodeToKey(e));
     Navigator.pop(context);

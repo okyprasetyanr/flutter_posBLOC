@@ -350,8 +350,50 @@ T convertTransactionFinancial<T extends ModelTransactionFinancialBaseIsar>(
 }
 
 Future<void> saveUser_Isar(ModelUser user) async {
+  ModelUserIsar? operator = await isar.modelUserIsars.getByIdUser(
+    user.getIdUser!,
+  );
+  if (operator != null) {
+    operator
+      ..idUser = user.getIdUser!
+      ..idBranchUser = user.getIdBranchUser
+      ..statusUser = user.getstatusUser.name
+      ..roleUser = user.getRoleUser.name
+      ..nameUser = user.getNameUser
+      ..emailUser = user.getEmailUser
+      ..phoneUser = user.getPhoneUser
+      ..createdUser = user.getCreatedUser
+      ..noteUser = user.getNoteUser
+      ..Stok = user.getPermissionsUser[Permission.Stok] ?? false
+      ..Inventory = user.getPermissionsUser[Permission.Inventory] ?? false
+      ..Penjualan = user.getPermissionsUser[Permission.Penjualan] ?? false
+      ..Pembelian = user.getPermissionsUser[Permission.Pembelian] ?? false
+      ..Pendapatan = user.getPermissionsUser[Permission.Pendapatan] ?? false
+      ..Pengeluaran = user.getPermissionsUser[Permission.Pengeluaran] ?? false
+      ..Data_Pelanggan =
+          user.getPermissionsUser[Permission.Data_Pelanggan] ?? false
+      ..Data_Pemasok = user.getPermissionsUser[Permission.Data_Pemasok] ?? false
+      ..Data_Pemasukan =
+          user.getPermissionsUser[Permission.Data_Pemasukan] ?? false
+      ..Data_Pengeluaran =
+          user.getPermissionsUser[Permission.Data_Pengeluaran] ?? false
+      ..Data_Operator =
+          user.getPermissionsUser[Permission.Data_Operator] ?? false
+      ..Riwayat_Penjualan =
+          user.getPermissionsUser[Permission.Riwayat_Penjualan] ?? false
+      ..Riwayat_Pembelian =
+          user.getPermissionsUser[Permission.Riwayat_Pembelian] ?? false
+      ..Riwayat_Pendapatan =
+          user.getPermissionsUser[Permission.Riwayat_Pendapatan] ?? false
+      ..Riwayat_Pengeluaran =
+          user.getPermissionsUser[Permission.Riwayat_Pengeluaran] ?? false
+      ..Laporan = user.getPermissionsUser[Permission.Laporan] ?? false;
+  } else {
+    operator = await convertUser(user, ModelUserIsar.new);
+  }
+
   await isar.writeTxn(() async {
-    await isar.modelUserIsars.put(await convertUser(user, ModelUserIsar.new));
+    await isar.modelUserIsars.put(operator!);
   });
 }
 

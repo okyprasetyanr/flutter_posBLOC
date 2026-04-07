@@ -1,35 +1,26 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
-import 'package:flutter_pos/model_data/model_batch.dart';
-import 'package:flutter_pos/model_data/model_company.dart';
-import 'package:flutter_pos/model_data/model_counter.dart';
-import 'package:flutter_pos/model_data/model_financial.dart';
-import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_category.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
-import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
-import 'package:flutter_pos/model_data/model_transaction_financial.dart';
+
 import 'package:hive/hive.dart';
 
 class DataUserRepositoryCache {
-  List<ModelItem> dataItem = [];
-  List<ModelCategory> dataCategory = [];
-  List<ModelPartner> dataPartner = [];
-  List<ModelTransaction> dataTransSell = [];
-  List<ModelTransaction> dataTransBuy = [];
-  List<ModelBatch> dataBatch = [];
-  List<ModelFinancial> dataFinancial = [];
-  List<ModelTransactionFinancial> dataTransIncome = [];
-  List<ModelTransactionFinancial> dataTransExpense = [];
-  List<ModelUser> dataUser = [];
-  List<ModelCounter> dataCounter = [];
-  ModelCompany? dataCompany;
+  // List<ModelItem> dataItem = [];
+  // List<ModelCategory> dataCategory = [];
+  // List<ModelPartner> dataPartner = [];
+  // List<ModelTransaction> dataTransSell = [];
+  // List<ModelTransaction> dataTransBuy = [];
+  // List<ModelBatch> dataBatch = [];
+  // List<ModelFinancial> dataFinancial = [];
+  // List<ModelTransactionFinancial> dataTransIncome = [];
+  // List<ModelTransactionFinancial> dataTransExpense = [];
+  // List<ModelUser> dataUser = [];
+  // List<ModelCounter> dataCounter = [];
+  // ModelCompany? dataCompany;
   final DataUserRepository repo;
 
   DataUserRepositoryCache(this.repo);
@@ -56,89 +47,17 @@ class DataUserRepositoryCache {
     await initBatch();
     await initUser();
 
-    await saveToIsar();
-
     // notifyChanged();
 
     return true;
   }
 
   Future<void> initCompany() async {
-    dataCompany = await repo.getCompany();
+    await saveCompany_Isar(await repo.getCompany());
   }
 
   Future<void> initFinancial() async {
-    dataFinancial = await repo.getFinancial();
-  }
-
-  Future<void> initTransFinancial() async {
-    dataTransIncome = await repo.getTransIncome();
-    dataTransExpense = await repo.getTransExpense();
-    dataCounter = await repo.getCounter(dataCompany);
-  }
-
-  Future<void> initTransaction() async {
-    dataTransSell = await repo.getTransactionSell();
-    dataTransBuy = await repo.getTransactionBuy();
-    dataCounter = await repo.getCounter(dataCompany);
-  }
-
-  Future<void> initItem() async {
-    dataItem = await repo.getItem();
-  }
-
-  Future<void> initCategory() async {
-    dataCategory = await repo.getCategory();
-  }
-
-  Future<void> initPartner() async {
-    dataPartner = await repo.getPartner();
-    for (var a in dataPartner) {
-      debugPrint("Log DataUserRepositoryCache partner: $a");
-    }
-  }
-
-  Future<void> initBatch() async {
-    dataBatch = await repo.getBatch();
-  }
-
-  Future<void> initUser() async {
-    dataUser = await repo.getUser();
-  }
-
-  Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
-    return await Hive.box<TransactionSavedHive>('saved_transaction');
-  }
-
-  Future<void> saveToIsar() async {
-    for (final element in dataItem) {
-      await saveItem_Isar(element);
-    }
-
-    for (final element in dataCategory) {
-      await saveCategory_Isar(element);
-    }
-
-    for (final element in dataPartner.where((e) => e.isCustomer)) {
-      await saveCustomer_Isar(element);
-    }
-
-    for (final element in dataPartner.where((e) => e.isSupplier)) {
-      await saveSupplier_Isar(element);
-    }
-
-    for (final element in dataTransSell) {
-      await saveTransactionSell_Isar(element);
-    }
-
-    for (final element in dataTransBuy) {
-      await saveTransactionBuy_Isar(element);
-    }
-
-    for (final element in dataBatch) {
-      await saveBatch_Isar(element);
-    }
-
+    final dataFinancial = await repo.getFinancial();
     for (final element in dataFinancial.where((e) => e.isIncome)) {
       await saveIncome_Isar(element);
     }
@@ -146,25 +65,72 @@ class DataUserRepositoryCache {
     for (final element in dataFinancial.where((e) => e.isExpense)) {
       await saveExpense_Isar(element);
     }
+  }
 
-    for (final element in dataTransIncome) {
+  Future<void> initTransFinancial() async {
+    for (final element in await repo.getTransIncome()) {
       await saveTransactionFinancialncome_Isar(element);
     }
 
-    for (final element in dataTransExpense) {
+    for (final element in await repo.getTransExpense()) {
       await saveTransactionFinancialExpense_Isar(element);
     }
+    await saveCounterToIsar();
+  }
 
-    for (final element in dataUser) {
+  Future<void> initTransaction() async {
+    for (final element in await repo.getTransactionSell()) {
+      await saveTransactionSell_Isar(element);
+    }
+
+    for (final element in await repo.getTransactionBuy()) {
+      await saveTransactionBuy_Isar(element);
+    }
+    await saveCounterToIsar();
+  }
+
+  Future<void> initItem() async {
+    for (final element in await repo.getItem()) {
+      await saveItem_Isar(element);
+    }
+  }
+
+  Future<void> initCategory() async {
+    for (final element in await repo.getCategory()) {
+      await saveCategory_Isar(element);
+    }
+  }
+
+  Future<void> initPartner() async {
+    final dataPartner = await repo.getPartner();
+    for (final element in dataPartner.where((e) => e.isCustomer)) {
+      await saveCustomer_Isar(element);
+    }
+    for (final element in dataPartner.where((e) => e.isSupplier)) {
+      await saveSupplier_Isar(element);
+    }
+  }
+
+  Future<void> initBatch() async {
+    for (final element in await repo.getBatch()) {
+      await saveBatch_Isar(element);
+    }
+  }
+
+  Future<void> initUser() async {
+    for (final element in await repo.getUser()) {
       await saveUser_Isar(element);
     }
+  }
 
-    for (final element in dataCounter) {
+  Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
+    return await Hive.box<TransactionSavedHive>('saved_transaction');
+  }
+
+  Future<void> saveCounterToIsar() async {
+    final data = await repo.getCounter(await getAllCompanyIsar());
+    for (final element in data) {
       await saveCounter_Isar(element);
-    }
-
-    if (dataCompany != null) {
-      await saveCompany_Isar(dataCompany!);
     }
   }
 }

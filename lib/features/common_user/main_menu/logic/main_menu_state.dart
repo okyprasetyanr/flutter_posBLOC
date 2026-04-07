@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
@@ -24,8 +25,16 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
   final ModelItem? lowStock;
   final ModelItem? bestSeller;
   final ModelItem? worstSeller;
+  final List<String> labels;
+  final double maxY;
+  final double smartInterval;
+  final List<FlSpot> spot;
 
   DataReportLoaded({
+    this.labels = const [],
+    this.maxY = 4,
+    this.smartInterval = 1,
+    this.spot = const [],
     this.dataAccount,
     this.expiredItem = const [],
     this.almostExpiredItem = const [],
@@ -57,8 +66,16 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     ModelItem? bestSeller,
     ModelItem? worstSeller,
     ModelUser? dataAccount,
+    List<String>? labels,
+    double? maxY,
+    double? smartInterval,
+    List<FlSpot>? spot,
   }) {
     return DataReportLoaded(
+      labels: labels ?? this.labels,
+      maxY: maxY ?? this.maxY,
+      smartInterval: smartInterval ?? this.smartInterval,
+      spot: spot ?? this.spot,
       dataAccount: dataAccount ?? this.dataAccount,
       bestSeller: bestSeller,
       expiredItem: expiredItem ?? [],
@@ -92,5 +109,9 @@ class DataReportLoaded extends DataReportState with EquatableMixin {
     totalNeto,
     totalSell,
     totalTransaction,
+    labels,
+    maxY,
+    smartInterval,
+    spot,
   ];
 }

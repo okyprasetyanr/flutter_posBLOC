@@ -15,9 +15,8 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
-import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/function/report_algoritm.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -102,14 +101,13 @@ class _UIMainMenuState extends State<UIMainMenu> {
                         ],
                       ),
                       child: Center(
-                        child: Text(
-                          context
-                                  .read<DataUserRepositoryCache>()
-                                  .dataCompany
-                                  ?.getnameCompany ??
-                              "Mohon Tunggu...",
-                          overflow: TextOverflow.ellipsis,
-                          style: titleTextStyleWhite,
+                        child: FutureBuilder(
+                          future: getAllCompanyIsar(),
+                          builder: (context, snapshot) => Text(
+                            snapshot.data?.nameCompany ?? "Mohon Tunggu...",
+                            overflow: TextOverflow.ellipsis,
+                            style: titleTextStyleWhite,
+                          ),
                         ),
                       ),
                     ),
@@ -432,27 +430,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
   }
 
   Widget widgetBottom(bool hideContent) {
-    final dataSell = context
-        .read<DataUserRepositoryCache>()
-        .dataTransSell
-        .where(
-          (element) =>
-              element.getstatusTransaction != ListStatusTransaction.Batal,
-        )
-        .toList();
-    final spots = (dataSell.isEmpty)
-        ? [const FlSpot(0, 0)]
-        : buildWeeklyTransactionSpots(dataSell);
-
-    final labels = buildWeeklyLabels();
-    double rawMaxY = spots.isEmpty
-        ? 0
-        : spots.map((e) => e.y).reduce((a, b) => a > b ? a : b);
-    final maxY = rawMaxY == 0 ? 1000.0 : rawMaxY;
-    double smartInterval = calculateSmartInterval(rawMaxY);
-    double adjustedMaxY = (rawMaxY / smartInterval).ceil() * smartInterval;
-    if (adjustedMaxY == 0) adjustedMaxY = smartInterval * 4;
-
     return Stack(
       children: [
         Positioned(
@@ -816,121 +793,143 @@ class _UIMainMenuState extends State<UIMainMenu> {
               ),
               SizedBox(
                 height: 100,
-                child: Card(
-                  color: AppPropertyColor.white,
-                  margin: EdgeInsets.zero,
-                  elevation: 4,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      bottom: 2,
-                      left: 8,
-                      top: 8,
-                      right: 20,
-                    ),
-                    child: LineChart(
-                      LineChartData(
-                        backgroundColor: AppPropertyColor.white,
-                        minX: 0,
-                        maxX: 6,
-                        minY: 0,
-                        maxY: maxY * 1.2,
-                        gridData: FlGridData(
-                          show: true,
-                          drawVerticalLine: false,
-                        ),
-
-                        borderData: FlBorderData(
-                          show: true,
-                          border: Border.all(color: AppPropertyColor.greyLight),
-                        ),
-
-                        titlesData: FlTitlesData(
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              reservedSize: 30,
-                              showTitles: true,
-                              interval: smartInterval,
-                              getTitlesWidget: (double value, TitleMeta meta) {
-                                String text;
-                                if (value >= 1000000) {
-                                  text =
-                                      '${(value / 1000000).toStringAsFixed(1)}jt';
-                                } else if (value >= 1000) {
-                                  text = '${(value / 1000).toInt()}k';
-                                } else {
-                                  text = value.toInt().toString();
-                                }
-
-                                return SideTitleWidget(
-                                  meta: meta,
-                                  space: 8,
-                                  child: Text(
-                                    text,
-                                    style: lv05TextStyle,
-                                    maxLines: 1,
-                                  ),
-                                );
-                              },
-                            ),
+                child:
+                    BlocSelector<
+                      DataReportBloc,
+                      DataReportState,
+                      (List<String>, double, double, List<FlSpot>)
+                    >(
+                      selector: (state) {
+                        if (state is DataReportLoaded) {
+                          return (
+                            state.labels,
+                            state.maxY,
+                            state.smartInterval,
+                            state.spot,
+                          );
+                        }
+                        return ([], 0, 0, []);
+                      },
+                      builder: (context, state) => Card(
+                        color: AppPropertyColor.white,
+                        margin: EdgeInsets.zero,
+                        elevation: 4,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 2,
+                            left: 8,
+                            top: 8,
+                            right: 20,
                           ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (value, meta) {
-                                final index = value.toInt();
-                                if (index < 0 || index >= labels.length) {
-                                  return const SizedBox.shrink();
-                                }
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: Text(
-                                    labels[index],
-                                    style: lv05TextStyle,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          rightTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          topTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                        ),
-
-                        lineTouchData: LineTouchData(
-                          touchTooltipData: LineTouchTooltipData(
-                            getTooltipItems: (touchedSpots) {
-                              return touchedSpots.map((spot) {
-                                return LineTooltipItem(
-                                  formatPriceRp(spot.y),
-                                  lv05TextStyleWhite,
-                                );
-                              }).toList();
-                            },
-                          ),
-                        ),
-
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: spots,
-                            isCurved: true,
-                            barWidth: 3,
-                            color: AppPropertyColor.primary,
-                            dotData: FlDotData(show: true),
-                            belowBarData: BarAreaData(
-                              show: true,
-                              color: AppPropertyColor.primary.withValues(
-                                alpha: 0.15,
+                          child: LineChart(
+                            LineChartData(
+                              backgroundColor: AppPropertyColor.white,
+                              minX: 0,
+                              maxX: 6,
+                              minY: 0,
+                              maxY: state.$2 * 1.2,
+                              gridData: FlGridData(
+                                show: true,
+                                drawVerticalLine: false,
                               ),
+
+                              borderData: FlBorderData(
+                                show: true,
+                                border: Border.all(
+                                  color: AppPropertyColor.greyLight,
+                                ),
+                              ),
+
+                              titlesData: FlTitlesData(
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    reservedSize: 30,
+                                    showTitles: true,
+                                    interval: state.$3,
+                                    getTitlesWidget:
+                                        (double value, TitleMeta meta) {
+                                          String text;
+                                          if (value >= 1000000) {
+                                            text =
+                                                '${(value / 1000000).toStringAsFixed(1)}jt';
+                                          } else if (value >= 1000) {
+                                            text = '${(value / 1000).toInt()}k';
+                                          } else {
+                                            text = value.toInt().toString();
+                                          }
+
+                                          return SideTitleWidget(
+                                            meta: meta,
+                                            space: 8,
+                                            child: Text(
+                                              text,
+                                              style: lv05TextStyle,
+                                              maxLines: 1,
+                                            ),
+                                          );
+                                        },
+                                  ),
+                                ),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    getTitlesWidget: (value, meta) {
+                                      final index = value.toInt();
+                                      if (index < 0 ||
+                                          index >= state.$1.length) {
+                                        return const SizedBox.shrink();
+                                      }
+                                      return Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          state.$1[index],
+                                          style: lv05TextStyle,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                rightTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                                topTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                              ),
+
+                              lineTouchData: LineTouchData(
+                                touchTooltipData: LineTouchTooltipData(
+                                  getTooltipItems: (touchedSpots) {
+                                    return touchedSpots.map((spot) {
+                                      return LineTooltipItem(
+                                        formatPriceRp(spot.y),
+                                        lv05TextStyleWhite,
+                                      );
+                                    }).toList();
+                                  },
+                                ),
+                              ),
+
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: state.$4,
+                                  isCurved: true,
+                                  barWidth: 3,
+                                  color: AppPropertyColor.primary,
+                                  dotData: FlDotData(show: true),
+                                  belowBarData: BarAreaData(
+                                    show: true,
+                                    color: AppPropertyColor.primary.withValues(
+                                      alpha: 0.15,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
               ),
             ],
           ),
