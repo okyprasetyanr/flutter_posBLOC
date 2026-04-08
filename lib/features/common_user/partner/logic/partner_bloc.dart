@@ -144,10 +144,13 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     Emitter<PartnerState> emit,
   ) async {
     await deleteDataPartner(event.id);
+    event.type == PartnerType.customer
+        ? await deleteCustomerById_Isar(event.id)
+        : await deleteSupplierById_Isar(event.id);
+    debugPrint("Log PartnerBloc: deleteById: ${event.id}");
     final currentState = state;
     if (currentState is PartnerLoaded) {
-      await deletePartnerById_Isar(event.id);
-      final dataPartner = event.type.name == PartnerType.customer
+      final dataPartner = event.type == PartnerType.customer
           ? await getCustomerIsar(currentState.idBranch!)
           : await getSupplierIsar(currentState.idBranch!);
       dataPartner.sort((a, b) => a.getnamePartner.compareTo(b.getnamePartner));

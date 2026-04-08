@@ -222,23 +222,21 @@ class _UIOperatorState extends State<UIOperator> {
         const SizedBox(height: 5),
         Expanded(
           child: BlocListener<OperatorBloc, OperatorState>(
+            listenWhen: (previous, current) {
+              if (previous is OperatorLoaded && current is OperatorLoaded) {
+                return previous.selectedData != current.selectedData;
+              }
+              return true;
+            },
             listener: (context, state) {
-              final currentState = state;
-              if (currentState is OperatorLoaded) {
-                if (currentState.selectedData == null) {
-                  nameController.clear();
-                  phoneController.clear();
-                  emailController.clear();
-                  noteController.clear();
-                  passwordController.clear();
-                } else {
-                  final selectedData = currentState.selectedData;
+              if (state is OperatorLoaded) {
+                if (state.selectedData != null) {
+                  final selectedData = state.selectedData;
                   nameController.text = selectedData?.getNameUser ?? "";
                   phoneController.text = selectedData?.getPhoneUser ?? "";
                   emailController.text = selectedData?.getEmailUser ?? "";
                   noteController.text = selectedData?.getNoteUser ?? "";
                 }
-                debugPrint("Log UIOperator: IDBranch: masuk");
               }
             },
             child: Form(
@@ -447,142 +445,162 @@ class _UIOperatorState extends State<UIOperator> {
           selector: (state) => state is OperatorLoaded
               ? (state.isEdit, state.selectedData)
               : (false, null),
-          builder: (context, state) => Row(
-            children: [
-              Expanded(
-                child: WidgetDropDownFilter(
-                  initialValue:
-                      state.$1 && state.$2!.getRoleUser == RoleType.Pemilik
-                      ? state.$2!.getRoleUser
-                      : RoleType.Kasir,
-                  filters: state.$1 && state.$2!.getRoleUser == RoleType.Pemilik
-                      ? roleTypeListOwner()
-                      : roleTypeList,
-                  text: "Jenis Operator",
-                  selectedValue: (selectedEnum) {
-                    if (state.$2 != null &&
-                        (state.$2?.getRoleUser ?? RoleType.Pemilik) ==
-                            RoleType.Pemilik) {
-                      customSnackBar(
-                        context,
-                        "Status Akun Pemilik tidak dapat Diubah",
-                      );
-
-                      return false;
-                    }
-
-                    context.read<OperatorBloc>().add(
-                      OperatorSelectedData(selectedRole: selectedEnum),
-                    );
-
-                    return true;
-                  },
+          builder: (context, state) {
+            final isowner =
+                state.$2 != null &&
+                (state.$2?.getRoleUser ?? RoleType.Pemilik) == RoleType.Pemilik;
+            return Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: isowner
+                        ? () {
+                            customSnackBar(
+                              context,
+                              "Jenis Akun Pemilik tidak dapat Diubah",
+                            );
+                          }
+                        : null,
+                    child: AbsorbPointer(
+                      absorbing: isowner,
+                      child: WidgetDropDownFilter(
+                        initialValue: state.$1
+                            ? state.$2!.getRoleUser
+                            : RoleType.Kasir,
+                        filters:
+                            state.$1 &&
+                                state.$2!.getRoleUser == RoleType.Pemilik
+                            ? roleTypeListOwner()
+                            : roleTypeList,
+                        text: "Jenis Operator",
+                        selectedValue: (selectedEnum) {
+                          context.read<OperatorBloc>().add(
+                            OperatorSelectedData(selectedRole: selectedEnum),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: WidgetDropDownFilter(
-                  initialValue: state.$1
-                      ? state.$2!.getstatusUser
-                      : StatusData.Aktif,
-                  filters: statusData,
-                  text: "Status",
-                  selectedValue: (selectedEnum) {
-                    state.$2 != null &&
-                            (state.$2?.getRoleUser ?? RoleType.Pemilik) ==
-                                RoleType.Pemilik
-                        ? customSnackBar(
-                            context,
-                            "Status Akun Pemilik tidak dapat Diubah",
-                          )
-                        : context.read<OperatorBloc>().add(
+                const SizedBox(width: 10),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: isowner
+                        ? () {
+                            customSnackBar(
+                              context,
+                              "Status Akun Pemilik tidak dapat Diubah",
+                            );
+                          }
+                        : null,
+
+                    child: AbsorbPointer(
+                      absorbing: isowner,
+                      child: WidgetDropDownFilter(
+                        initialValue: state.$1
+                            ? state.$2!.getstatusUser
+                            : StatusData.Aktif,
+                        filters: statusData,
+                        text: "Status",
+                        selectedValue: (selectedEnum) {
+                          context.read<OperatorBloc>().add(
                             OperatorSelectedData(selectedStatus: selectedEnum),
                           );
-                  },
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                flex: 1,
-                child: customButtonIcon(
-                  backgroundColor: AppPropertyColor.primary,
-                  icon: const Icon(
-                    Icons.check_box_outlined,
-                    color: AppPropertyColor.white,
+                        },
+                      ),
+                    ),
                   ),
-                  label: Text("Ijin Akses", style: lv05TextStyleWhite),
-                  onPressed: () {
-                    state.$2 != null &&
-                            (state.$2?.getRoleUser ?? RoleType.Pemilik) ==
-                                RoleType.Pemilik
-                        ? customSnackBar(
-                            context,
-                            "Akun Pemilik memiliki Akses Penuh! Tidak dapat mengubah.",
-                          )
-                        : customBottomSheet(
-                            context: context,
-                            resetItemForm: () {},
-                            content: (scrollController) => BlocProvider.value(
-                              value: context.read<OperatorBloc>(),
-                              child:
-                                  BlocSelector<
-                                    OperatorBloc,
-                                    OperatorState,
-                                    Map<Permission, bool>?
-                                  >(
-                                    selector: (state) => state is OperatorLoaded
-                                        ? state.selectedPermission
-                                        : null,
-                                    builder: (context, state) => Column(
-                                      children: [
-                                        Text("Ijin Akses", style: lv1TextStyle),
-                                        Expanded(
-                                          child: ListView(
-                                            controller: scrollController,
-                                            shrinkWrap: true,
-                                            children: Permission.values.map((
-                                              permission,
-                                            ) {
-                                              return CheckboxListTile(
-                                                dense: true,
-                                                activeColor:
-                                                    AppPropertyColor.primary,
-                                                checkboxScaleFactor: 0.8,
-                                                title: Text(
-                                                  permission.name.replaceAll(
-                                                    "_",
-                                                    " ",
-                                                  ),
-                                                  style: lv05TextStyle,
-                                                ),
-                                                value:
-                                                    state![permission] ?? false,
-                                                onChanged: (val) {
-                                                  context
-                                                      .read<OperatorBloc>()
-                                                      .add(
-                                                        OperatorSelectedData(
-                                                          selectedPermission: {
-                                                            ...state,
-                                                            permission: val!,
-                                                          },
-                                                        ),
-                                                      );
-                                                },
-                                              );
-                                            }).toList(),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                            ),
-                          );
-                  },
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 1,
+                  child: customButtonIcon(
+                    backgroundColor: AppPropertyColor.primary,
+                    icon: const Icon(
+                      Icons.check_box_outlined,
+                      color: AppPropertyColor.white,
+                    ),
+                    label: Text("Ijin Akses", style: lv05TextStyleWhite),
+                    onPressed: () {
+                      state.$2 != null &&
+                              (state.$2?.getRoleUser ?? RoleType.Pemilik) ==
+                                  RoleType.Pemilik
+                          ? customSnackBar(
+                              context,
+                              "Akun Pemilik memiliki Akses Penuh! Tidak dapat mengubah.",
+                            )
+                          : customBottomSheet(
+                              context: context,
+                              resetItemForm: () {},
+                              content: (scrollController) => BlocProvider.value(
+                                value: context.read<OperatorBloc>(),
+                                child:
+                                    BlocSelector<
+                                      OperatorBloc,
+                                      OperatorState,
+                                      Map<Permission, bool>?
+                                    >(
+                                      selector: (state) =>
+                                          state is OperatorLoaded
+                                          ? state.selectedPermission
+                                          : null,
+                                      builder: (context, state) => Column(
+                                        children: [
+                                          Text(
+                                            "Ijin Akses",
+                                            style: lv1TextStyle,
+                                          ),
+                                          Expanded(
+                                            child: ListView(
+                                              controller: scrollController,
+                                              shrinkWrap: true,
+                                              children: Permission.values.map((
+                                                permission,
+                                              ) {
+                                                return CheckboxListTile(
+                                                  dense: true,
+                                                  activeColor:
+                                                      AppPropertyColor.primary,
+                                                  checkboxScaleFactor: 0.8,
+                                                  title: Text(
+                                                    permission.name.replaceAll(
+                                                      "_",
+                                                      " ",
+                                                    ),
+                                                    style: lv05TextStyle,
+                                                  ),
+                                                  value:
+                                                      state![permission] ??
+                                                      false,
+                                                  onChanged: (val) {
+                                                    context
+                                                        .read<OperatorBloc>()
+                                                        .add(
+                                                          OperatorSelectedData(
+                                                            selectedPermission:
+                                                                {
+                                                                  ...state,
+                                                                  permission:
+                                                                      val!,
+                                                                },
+                                                          ),
+                                                        );
+                                                  },
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                              ),
+                            );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
         ),
 
         SizedBox(
@@ -600,6 +618,11 @@ class _UIOperatorState extends State<UIOperator> {
                   ),
                   label: Text("Bersihkan", style: lv05TextStyle),
                   onPressed: () {
+                    nameController.clear();
+                    phoneController.clear();
+                    emailController.clear();
+                    noteController.clear();
+                    passwordController.clear();
                     context.read<OperatorBloc>().add(OperatorResetForm());
                   },
                 ),

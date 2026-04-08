@@ -35,7 +35,7 @@ Future<void> deleteItemById_Isar(String idItem) async {
   );
 }
 
-Future<void> deletePartnerById_Isar(String idPartner) async {
+Future<void> deleteCustomerById_Isar(String idPartner) async {
   await isar.writeTxn(
     () async => await isar.modelCustomerIsars.deleteByIdPartner(idPartner),
   );

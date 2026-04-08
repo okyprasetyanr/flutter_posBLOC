@@ -74,8 +74,8 @@ final routesPage = {
     child: const UIInventory(),
   ),
   '/partner': (context) {
-    final isCustomer =
-        (ModalRoute.of(context)?.settings.arguments as bool?) ?? false;
+    final isCustomer = ModalRoute.of(context)!.settings.arguments as bool;
+    debugPrint("Log Routes: Partner Arhument: $isCustomer");
 
     return BlocProvider(
       create: (context) => PartnerBloc(context.read())

@@ -12,7 +12,6 @@ import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_is
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
-import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
@@ -220,8 +219,30 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     }
     debugPrint("Log OperatorBloc: upload: ${data}");
     await data.pushDataUser();
+
+    emit(resetData());
     add(OperatorGetData());
     Navigator.of(context).pop();
+  }
+
+  FutureOr<void> _onResetForm(
+    OperatorResetForm event,
+    Emitter<OperatorState> emit,
+  ) {
+    emit(resetData());
+  }
+
+  OperatorLoaded resetData() {
+    final currentState = state as OperatorLoaded;
+    return currentState.copyWith(
+      selectedData: null,
+      isEdit: false,
+      selectedPermission: {
+        for (final permission in Permission.values) permission: false,
+      },
+      selectedStatus: StatusData.Aktif,
+      selectedRole: RoleType.Kasir,
+    );
   }
 
   Future<void> _onResetPassword(
@@ -271,13 +292,5 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         selectedData: selectedData,
       ),
     );
-  }
-
-  FutureOr<void> _onResetForm(
-    OperatorResetForm event,
-    Emitter<OperatorState> emit,
-  ) {
-    final currentState = state as OperatorLoaded;
-    emit(currentState.copyWith(selectedData: null, isEdit: false));
   }
 }

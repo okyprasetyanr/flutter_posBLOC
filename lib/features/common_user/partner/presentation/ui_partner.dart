@@ -178,7 +178,6 @@ class _UIPartnerState extends State<UIPartner> {
                                 id: deleteData.getidPartner,
                               ),
                             );
-                            Navigator.pop(context, true);
                           },
                           getId: (data) => data.getidPartner,
                           getName: (data) => data.getnamePartner,
@@ -208,9 +207,12 @@ class _UIPartnerState extends State<UIPartner> {
             Align(
               alignment: Alignment.centerRight,
               child: customButtonIconReset(
-                onPressed: () => context.read<PartnerBloc>().add(
-                  PartnerResetSelectedPartner(),
-                ),
+                onPressed: () {
+                  context.read<PartnerBloc>().add(
+                    PartnerResetSelectedPartner(),
+                  );
+                  resetForm();
+                },
                 color: context.colorPartner,
               ),
             ),
@@ -231,10 +233,6 @@ class _UIPartnerState extends State<UIPartner> {
                     state.selectedPartner!.getphonePartner;
                 emailPartnerController.text =
                     state.selectedPartner?.getemailPartner ?? "";
-              } else if (state.selectedPartner == null) {
-                namePartnerController.clear();
-                phonePartnerController.clear();
-                emailPartnerController.clear();
               }
             }
           },
@@ -344,6 +342,9 @@ class _UIPartnerState extends State<UIPartner> {
                   debugPrint(
                     "UIPartner: date: ${parseDate(date: formatDate(date: DateTime.now()))},",
                   );
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
                   context.read<PartnerBloc>().add(
                     PartnerUploadDataPartner(
                       email: emailPartnerController.text,
@@ -351,6 +352,8 @@ class _UIPartnerState extends State<UIPartner> {
                       phone: phonePartnerController.text,
                     ),
                   );
+
+                  resetForm();
                 },
                 icon: const Icon(
                   Icons.check_rounded,
@@ -378,5 +381,12 @@ class _UIPartnerState extends State<UIPartner> {
   Future<void> _onRefresh() async {
     await context.read<DataUserRepositoryCache>().initPartner();
     _initData();
+  }
+
+  void resetForm() {
+    _formKey.currentState!.reset();
+    namePartnerController.clear();
+    emailPartnerController.clear();
+    phonePartnerController.clear();
   }
 }

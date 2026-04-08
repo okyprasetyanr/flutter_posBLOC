@@ -80,11 +80,9 @@ class FinancialBloc extends Bloc<FinancialEvent, FinancialState> {
 
     data.pushDataFinancial();
 
-    await isar.writeTxn(
-      () async => currentState.isIncome
-          ? saveIncome_Isar(data)
-          : saveExpense_Isar(data),
-    );
+    currentState.isIncome
+        ? await saveIncome_Isar(data)
+        : await saveExpense_Isar(data);
 
     add(FinancialResetSelectedFinancial());
     add(FinancialGetData());

@@ -172,6 +172,7 @@ class _UiFinancialState extends State<UiFinancial> {
               context.read<FinancialBloc>().add(
                 FinancialResetSelectedFinancial(),
               );
+              resetForm();
             },
             color: context.colorFinance,
           ),
@@ -194,8 +195,6 @@ class _UiFinancialState extends State<UiFinancial> {
                       if (state.selectedFinancial != null) {
                         nameController.text =
                             state.selectedFinancial?.getnameFinancial ?? "";
-                      } else if (state.selectedFinancial == null) {
-                        nameController.clear();
                       }
                     }
                   },
@@ -262,10 +261,13 @@ class _UiFinancialState extends State<UiFinancial> {
                   style: lv05TextStyleWhite,
                 ),
                 onPressed: () {
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
                   context.read<FinancialBloc>().add(
                     FinancialUploadDataFinancial(name: nameController.text),
                   );
-                  nameController.clear();
+                  resetForm();
                 },
               ),
             ),
@@ -278,5 +280,10 @@ class _UiFinancialState extends State<UiFinancial> {
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initFinancial();
     _initData();
+  }
+
+  void resetForm() {
+    _formKey.currentState!.reset();
+    nameController.clear();
   }
 }

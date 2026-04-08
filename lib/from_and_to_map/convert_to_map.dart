@@ -31,7 +31,7 @@ Map<String, dynamic> convertToMapUser(ModelUser user, String? uidUser) {
     FieldDataUser.role_user.name: user.getRoleUser.name,
     FieldDataUser.uid_owner.name: user.getRoleUser == RoleType.Pemilik
         ? null
-        : uidUser,
+        : UserSession.getUidOwner(),
     FieldDataUser.id_branch.name: user.getRoleUser == RoleType.Pemilik
         ? null
         : user.getIdBranchUser,

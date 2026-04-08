@@ -120,18 +120,36 @@ Future<void> saveCounter_Isar(ModelCounter counter) async {
 }
 
 Future<void> saveIncome_Isar(ModelFinancial income) async {
+  final data = await isar.modelIncomeIsars
+      .where()
+      .idFinancialEqualTo(income.getidFinancial)
+      .findFirst();
   return await isar.writeTxn(() async {
-    await isar.modelIncomeIsars.put(
-      await convertFinancial(income, ModelIncomeIsar.new),
-    );
+    if (data != null) {
+      data..nameFinancial = income.getnameFinancial;
+      await isar.modelIncomeIsars.put(data);
+    } else {
+      await isar.modelIncomeIsars.put(
+        await convertFinancial(income, ModelIncomeIsar.new),
+      );
+    }
   });
 }
 
 Future<void> saveExpense_Isar(ModelFinancial expense) async {
+  final data = await isar.modelExpenseIsars
+      .where()
+      .idFinancialEqualTo(expense.getidFinancial)
+      .findFirst();
   return await isar.writeTxn(() async {
-    await isar.modelExpenseIsars.put(
-      await convertFinancial(expense, ModelExpenseIsar.new),
-    );
+    if (data != null) {
+      data..nameFinancial = expense.getnameFinancial;
+      await isar.modelExpenseIsars.put(data);
+    } else {
+      await isar.modelExpenseIsars.put(
+        await convertFinancial(expense, ModelExpenseIsar.new),
+      );
+    }
   });
 }
 
@@ -169,18 +187,42 @@ Future<void> saveItem_Isar(ModelItem item) async {
 }
 
 Future<void> saveSupplier_Isar(ModelPartner partner) async {
+  final data = await isar.modelSupplierIsars
+      .where()
+      .idPartnerEqualTo(partner.getidPartner)
+      .findFirst();
   await isar.writeTxn(() async {
-    await isar.modelSupplierIsars.put(
-      await convertPartner(partner, ModelSupplierIsar.new),
-    );
+    if (data != null) {
+      data
+        ..emailPartner = partner.getemailPartner
+        ..namePartner = partner.getnamePartner
+        ..phonePartner = partner.getphonePartner;
+      await isar.modelSupplierIsars.put(data);
+    } else {
+      await isar.modelSupplierIsars.put(
+        await convertPartner(partner, ModelSupplierIsar.new),
+      );
+    }
   });
 }
 
 Future<void> saveCustomer_Isar(ModelPartner partner) async {
+  final data = await isar.modelCustomerIsars
+      .where()
+      .idPartnerEqualTo(partner.getidPartner)
+      .findFirst();
   await isar.writeTxn(() async {
-    await isar.modelCustomerIsars.put(
-      await convertPartner(partner, ModelCustomerIsar.new),
-    );
+    if (data != null) {
+      data
+        ..emailPartner = partner.getemailPartner
+        ..namePartner = partner.getnamePartner
+        ..phonePartner = partner.getphonePartner;
+      await isar.modelCustomerIsars.put(data);
+    } else {
+      await isar.modelCustomerIsars.put(
+        await convertPartner(partner, ModelCustomerIsar.new),
+      );
+    }
   });
 }
 

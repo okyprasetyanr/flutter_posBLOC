@@ -566,6 +566,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                           context,
                                           '/partner',
                                           false,
+                                          arguments: true,
                                         )
                                       : customSnackBarAccess(context: context);
                                 },
