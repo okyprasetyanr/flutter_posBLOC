@@ -36,6 +36,7 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
+import 'package:isar/isar.dart';
 
 Future<void> saveBatch_Isar(ModelBatch batch) async {
   final data = ModelBatchIsar()
@@ -398,11 +399,21 @@ Future<void> saveUser_Isar(ModelUser user) async {
 }
 
 Future<void> saveAccount_Isar(ModelUser user) async {
-  await isar.writeTxn(
-    () async => await isar.modelAccountIsars.put(
-      await convertUser(user, ModelAccountIsar.new),
-    ),
-  );
+  final data = await isar.modelAccountIsars.where().findFirst();
+
+  await isar.writeTxn(() async {
+    if (data != null) {
+      data
+        ..nameUser = user.getNameUser
+        ..phoneUser = user.getPhoneUser
+        ..noteUser = user.getNoteUser;
+      await isar.modelAccountIsars.put(data);
+    } else {
+      await isar.modelAccountIsars.put(
+        await convertUser(user, ModelAccountIsar.new),
+      );
+    }
+  });
 }
 
 Future<T> convertUser<T extends ModelUserBaseIsar>(
@@ -413,7 +424,9 @@ Future<T> convertUser<T extends ModelUserBaseIsar>(
   final permissions = user.getPermissionsUser;
   return object
     ..idUser = user.getIdUser!
-    ..idBranchUser = user.getIdBranchUser
+    ..idBranchUser = user.getRoleUser == RoleType.Pemilik
+        ? null
+        : user.getIdBranchUser
     ..statusUser = user.getstatusUser.name
     ..roleUser = user.getRoleUser.name
     ..nameUser = user.getNameUser

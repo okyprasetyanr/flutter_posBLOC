@@ -808,7 +808,7 @@ class _UIMainMenuState extends State<UIMainMenu> {
                             state.spot,
                           );
                         }
-                        return ([], 0, 0, []);
+                        return ([], 4, 1, []);
                       },
                       builder: (context, state) => Card(
                         color: AppPropertyColor.white,

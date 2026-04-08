@@ -29,8 +29,12 @@ Map<String, dynamic> convertToMapUser(ModelUser user, String? uidUser) {
     FieldDataUser.email_user.name: user.getEmailUser,
     FieldDataUser.phone_user.name: user.getPhoneUser,
     FieldDataUser.role_user.name: user.getRoleUser.name,
-    FieldDataUser.uid_owner.name: uidUser ?? UserSession.getUidOwner(),
-    FieldDataUser.id_branch.name: user.getIdBranchUser,
+    FieldDataUser.uid_owner.name: user.getRoleUser == RoleType.Pemilik
+        ? null
+        : uidUser,
+    FieldDataUser.id_branch.name: user.getRoleUser == RoleType.Pemilik
+        ? null
+        : user.getIdBranchUser,
     FieldDataUser.permissions_user.name: {
       for (final permission in Permission.values)
         permission.name: user.permissionsUser[permission],

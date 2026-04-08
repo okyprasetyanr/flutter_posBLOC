@@ -12,6 +12,7 @@ import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_is
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
@@ -212,7 +213,11 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       data = data.copyWith(idBranchUser: currentState.idBranch, idUser: uid);
     }
 
-    await saveUser_Isar(data);
+    if (currentState.selectedRole == RoleType.Pemilik) {
+      await saveAccount_Isar(data);
+    } else {
+      await saveUser_Isar(data);
+    }
     debugPrint("Log OperatorBloc: upload: ${data}");
     await data.pushDataUser();
     add(OperatorGetData());

@@ -9,7 +9,10 @@ Widget WidgetDropDownFilter<T extends Enum>({
   Function(T extension)? extension,
   required Function(T selectedEnum) selectedValue,
 }) {
+  final fieldKey = GlobalKey<FormFieldState<T>>();
+  bool _ignore = false;
   return DropdownButtonFormField<T>(
+    key: fieldKey,
     style: lv05TextStyle,
     decoration: InputDecoration(
       focusedBorder: OutlineInputBorder(
@@ -22,6 +25,12 @@ Widget WidgetDropDownFilter<T extends Enum>({
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
     ),
     initialValue: initialValue,
+    validator: (value) {
+      if (value == null) {
+        return "";
+      }
+      return null;
+    },
     items: filters
         .map(
           (map) => DropdownMenuItem(
@@ -36,7 +45,17 @@ Widget WidgetDropDownFilter<T extends Enum>({
         )
         .toList(),
     onChanged: (value) {
-      selectedValue(value!);
+      if (_ignore) return;
+
+      if (value == null) return;
+
+      final allow = selectedValue(value);
+
+      if (!allow) {
+        _ignore = true;
+        fieldKey.currentState?.didChange(initialValue);
+        _ignore = false;
+      }
     },
   );
 }
