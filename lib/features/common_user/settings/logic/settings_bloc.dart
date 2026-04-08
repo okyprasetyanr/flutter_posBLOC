@@ -8,6 +8,7 @@ import 'package:flutter_pos/features/common_user/settings/logic/settings_event.d
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by_collection.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
@@ -159,21 +160,27 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       switch (key) {
         case ListForDatabase.Item:
+          await deleteItemCollection();
           await repoCache.initItem();
           break;
         case ListForDatabase.Kas:
+          await deleteFinancialCollection();
           await repoCache.initFinancial();
           break;
         case ListForDatabase.Kontak:
+          await deletePartnerCollection();
           await repoCache.initPartner();
           break;
         case ListForDatabase.Transaksi:
+          await deleteTransactionSellCollection();
+          await deleteTransactionBuyCollection();
           await Future.wait([
             repoCache.initTransaction(),
             repoCache.initTransFinancial(),
           ]);
           break;
         case ListForDatabase.Operator:
+          await deleteOperatorCollection();
           await repoCache.initUser();
           break;
       }

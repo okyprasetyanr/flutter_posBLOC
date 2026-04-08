@@ -1,16 +1,20 @@
 import 'dart:async';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
+import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/function/report_algoritm.dart';
 import 'package:flutter_pos/model_data/model_expired_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 
 class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
   final DataUserRepositoryCache repoCache;
@@ -49,11 +53,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
       (element) => element.getstatusTransaction == ListStatusTransaction.Sukses,
     );
     final dataTransactionByDate = finalDataTransaction.where((element) {
-      return (element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart)) &&
-          (element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == ListStatusTransaction.Sukses;
+      return isBetween(element.getdate, dateStart, dateEnd);
     }).toList();
 
     double netSales = 0;
@@ -76,22 +76,14 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     }
 
     final incomeTrans = await getTransactionFinancialIncome(idBranch);
-    final finalIncomeTrans = incomeTrans.where((element) {
-      return (element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart)) &&
-          (element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == ListStatusTransaction.Sukses;
-    });
+    final finalIncomeTrans = incomeTrans.where(
+      (e) => isBetween(e.getdate, dateStart, dateEnd),
+    );
 
-    final expenseTrans = await getTransactionFinancialIncome(idBranch);
-    final finalexpenseTrans = expenseTrans.where((element) {
-      return (element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart)) &&
-          (element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isBefore(dateEnd)) &&
-          element.getstatusTransaction == ListStatusTransaction.Sukses;
-    });
+    final expenseTrans = await getTransactionFinancialExpense(idBranch);
+    final finalexpenseTrans = expenseTrans.where(
+      (e) => isBetween(e.getdate, dateStart, dateEnd),
+    );
 
     for (final e in finalIncomeTrans) {
       income += e.getamount;
@@ -101,18 +93,15 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
     }
 
     final dataAccount = await getAllAccountIsar();
-    debugPrint("Log MainMenuBloc: caccount: $dataAccount");
 
     final dataItem = await getItemIsar(idBranch);
-    ModelItem? bestSeller = null;
-    ModelItem? worstSeller = null;
-    ModelItem? lowStockItems = null;
+    ModelItem? bestSeller;
+    ModelItem? worstSeller;
+    ModelItem? lowStockItems;
     if (finalDataTransaction.isNotEmpty && dataItem.isNotEmpty) {
       final Map<String, double> qtyPerItem = {};
-      finalDataTransaction.expand((e) => e.getitemsOrdered).forEach((
-        item,
-      ) async {
-        await qtyPerItem.update(
+      finalDataTransaction.expand((e) => e.getitemsOrdered).forEach((item) {
+        qtyPerItem.update(
           item.getidItem,
           (value) => value + item.getqtyItem,
           ifAbsent: () => item.getqtyItem,
@@ -121,7 +110,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
 
       final Map<String, double> qtyItem = {};
       dataItem.forEach(
-        (element) async => await qtyItem.update(
+        (element) => qtyItem.update(
           element.getidItem,
           (value) => value + element.getqtyItem,
           ifAbsent: () => element.getqtyItem,
@@ -148,34 +137,33 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
       );
     }
     final now = DateTime.now();
-    Map<String, ModelExpiredItemBatch> almostExpiredItem = {};
     final dataItemExpired = await getItemBatchIsar(idBranch);
 
-    Map<String, ModelExpiredItemBatch> expiredItem = {};
-    dataItemExpired
-        .where((item) {
-          if (item.getexpiredDate == null || item.getexpiredDate == "-")
-            return false;
+    Map<String, ModelExpiredItemBatch> almostExpiredItem = getExpiredItem(
+      dataItemExpired: dataItemExpired,
+      almostExpired: true,
+      now: now,
+    );
+    Map<String, ModelExpiredItemBatch> expiredItem = getExpiredItem(
+      dataItemExpired: dataItemExpired,
+      almostExpired: false,
+      now: now,
+    );
 
-          final exp = item.getexpiredDate!;
-          return exp.year == now.year &&
-              exp.month == now.month &&
-              exp.day == now.day;
-        })
-        .forEach((element) {
-          if (!expiredItem.containsKey(element.getidItem)) {
-            expiredItem[element.getidItem] = ModelExpiredItemBatch(
-              nameItem: element.getnameItem,
-              idItem: element.getidItem,
-              totalExpired: 0,
-              invoiceList: [],
-            );
-          }
-          expiredItem[element.getidItem]!.invoiceList.add(element.getinvoice);
-
-          expiredItem[element.getidItem]!.totalExpired += 1;
-        });
     debugPrint("Log MainMenuBloc: datAcount: $dataAccount");
+
+    final spots = (finalDataTransaction.isEmpty)
+        ? [const FlSpot(0, 0)]
+        : buildWeeklyTransactionSpots(finalDataTransaction.toList());
+
+    final labels = buildWeeklyLabels();
+    double rawMaxY = spots.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+    double smartInterval = calculateSmartInterval(rawMaxY);
+    if (smartInterval <= 0) smartInterval = 1;
+
+    double adjustedMaxY = (rawMaxY / smartInterval).ceil() * smartInterval;
+    if (adjustedMaxY <= 0) adjustedMaxY = smartInterval * 4;
+
     emit(
       currentState.copyWith(
         bestSeller: bestSeller,
@@ -192,7 +180,60 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
         totalNeto: netSales,
         totalSell: grossSales,
         totalTransaction: totalTransaction,
+        labels: labels,
+        maxY: adjustedMaxY,
+        smartInterval: smartInterval,
+        spot: spots,
       ),
     );
+  }
+
+  bool isBetween(DateTime date, DateTime start, DateTime end) {
+    return (date.isAtSameMomentAs(start) || date.isAfter(start)) &&
+        (date.isAtSameMomentAs(end) || date.isBefore(end));
+  }
+
+  Map<String, ModelExpiredItemBatch> getExpiredItem({
+    required List<ModelItemBatch> dataItemExpired,
+    required bool almostExpired,
+    required DateTime now,
+  }) {
+    Map<String, ModelExpiredItemBatch> dataExpired = {};
+    final nextMonth = now.add(const Duration(days: 30));
+
+    dataItemExpired
+        .where((item) {
+          if (item.getexpiredDate == null || item.getexpiredDate == "-") {
+            return false;
+          }
+
+          final exp = item.getexpiredDate!;
+
+          if (almostExpired) {
+            // expired dalam 30 hari
+            return exp.isAfter(now) && exp.isBefore(nextMonth);
+          } else {
+            // expired hari ini
+            return exp.year == now.year &&
+                exp.month == now.month &&
+                exp.day == now.day;
+          }
+        })
+        .forEach((element) {
+          dataExpired.putIfAbsent(
+            element.getidItem,
+            () => ModelExpiredItemBatch(
+              nameItem: element.getnameItem,
+              idItem: element.getidItem,
+              totalExpired: 0,
+              invoiceList: [],
+            ),
+          );
+
+          dataExpired[element.getidItem]!.invoiceList.add(element.getinvoice);
+          dataExpired[element.getidItem]!.totalExpired += 1;
+        });
+
+    return dataExpired;
   }
 }

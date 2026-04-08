@@ -11,6 +11,8 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
+import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/from_and_to_map/from_isar.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/service/service_printer.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
@@ -567,7 +569,10 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                           Icons.delete_forever_rounded,
                           color: AppPropertyColor.red,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          final dataBatch = fromIsarBatch(
+                            await getBatchIsarByInvoice(state.$1!.getinvoice),
+                          );
                           state.$2
                               ? transaction.getstatusTransaction ==
                                         ListStatusTransaction.Batal
@@ -577,19 +582,9 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                       )
                                     : confirmCancel(transaction.getitemsOrdered)
                               : UserSession.getStatusFifo()
-                              ? context
-                                        .read<DataUserRepositoryCache>()
-                                        .dataBatch
-                                        .where(
-                                          (batch) =>
-                                              batch.getinvoice ==
-                                              state.$1!.getinvoice,
-                                        )
-                                        .expand((batch) => batch.getitems_batch)
-                                        .every(
-                                          (element) =>
-                                              element.getqtyItem_out == 0,
-                                        )
+                              ? dataBatch.getitems_batch.every(
+                                      (element) => element.getqtyItem_out == 0,
+                                    )
                                     ? confirmCancel(transaction.getitemsOrdered)
                                     : customSnackBar(
                                         context,

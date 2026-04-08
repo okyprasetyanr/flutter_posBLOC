@@ -8,7 +8,6 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_state.dart';
-import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
@@ -200,11 +199,11 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       noteUser: event.note,
     );
 
-    if (await checkUserById_Isar(currentState.selectedData!.getIdUser!)) {
+    if (currentState.selectedData == null) {
       final credential = await authenticatorAccount(
         repo: context.read<DataUserRepositoryCache>(),
         context: context,
-        email: data.getEmailUser,
+        email: event.email,
         password: event.password,
         signup: true,
       );
@@ -253,6 +252,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         ),
       );
     } catch (e) {
+      debugPrint("Log OperatorBloc: ResetPassword Error: ${e.toString()}");
       emit(
         currentState.copyWith(
           resetStatus: ResetPasswordStatus.failure,
