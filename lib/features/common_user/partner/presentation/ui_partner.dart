@@ -12,7 +12,7 @@ import 'package:flutter_pos/features/common_user/partner/logic/partner_state.dar
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
-import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_reset.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';

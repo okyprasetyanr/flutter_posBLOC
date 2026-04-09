@@ -11,6 +11,7 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
 class UIPaymentPPN extends StatelessWidget {
   final TextEditingController customPPNController;
@@ -25,7 +26,7 @@ class UIPaymentPPN extends StatelessWidget {
         }
         return null;
       },
-      builder: (context, state) {
+      builder: (contextBloc, state) {
         if (state == null) {
           return SizedBox.shrink();
         }
@@ -41,34 +42,37 @@ class UIPaymentPPN extends StatelessWidget {
                   spacing: 5,
                   children: [11, 25, 30].map((ppn) {
                     final isSelected = state.getppn == ppn;
-                    return SizedBox(
-                      width: 57,
-                      child: customButtonIcon(
-                        backgroundColor: isSelected
-                            ? AppPropertyColor.primary
-                            : AppPropertyColor.white,
-                        icon: Icon(
-                          Icons.check_rounded,
-                          size: lv05IconSize,
-                          color: isSelected
-                              ? AppPropertyColor.white
-                              : AppPropertyColor.black,
+                    return DynamicColorWrapper(
+                      colorSelector: (context) => context.colorTrans,
+                      builder: (context, color) => SizedBox(
+                        width: 57,
+                        child: customButtonIcon(
+                          backgroundColor: isSelected
+                              ? color
+                              : AppPropertyColor.white,
+                          icon: Icon(
+                            Icons.check_rounded,
+                            size: lv05IconSize,
+                            color: isSelected
+                                ? AppPropertyColor.white
+                                : AppPropertyColor.black,
+                          ),
+                          label: Text(
+                            "$ppn%",
+                            style: isSelected
+                                ? lv05TextStyleWhite
+                                : lv05TextStyle,
+                          ),
+                          onPressed: () {
+                            if (customPPNController.text.isNotEmpty) {
+                              customPPNController.clear();
+                            }
+                            final ppnValue = isSelected ? 0 : ppn;
+                            context.read<PaymentBloc>().add(
+                              PaymentAdjust(ppn: ppnValue),
+                            );
+                          },
                         ),
-                        label: Text(
-                          "$ppn%",
-                          style: isSelected
-                              ? lv05TextStyleWhite
-                              : lv05TextStyle,
-                        ),
-                        onPressed: () {
-                          if (customPPNController.text.isNotEmpty) {
-                            customPPNController.clear();
-                          }
-                          final ppnValue = isSelected ? 0 : ppn;
-                          context.read<PaymentBloc>().add(
-                            PaymentAdjust(ppn: ppnValue),
-                          );
-                        },
                       ),
                     );
                   }).toList(),

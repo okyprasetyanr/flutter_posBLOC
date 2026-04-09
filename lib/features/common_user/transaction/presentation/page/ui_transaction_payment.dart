@@ -20,9 +20,10 @@ import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
-import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
 class UITransactionPayment extends StatefulWidget {
   const UITransactionPayment({super.key});
@@ -79,10 +80,11 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
   Widget build(BuildContext context) {
     return LayoutTopBottom(
       layoutTop: layoutTop(),
-      layoutBottom: layoutBottom(),
+      layoutBottom: layoutBottom(context),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
       title: "Pembayaran",
+      color: context.colorTrans,
     );
   }
 
@@ -186,7 +188,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
     );
   }
 
-  Widget layoutBottom() {
+  Widget layoutBottom(BuildContext context) {
     return Column(
       children: [
         Text("Detail Transaksi", style: titleTextStyle),
@@ -313,7 +315,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       width: double.infinity,
                       child: customButtonIcon(
-                        backgroundColor: AppPropertyColor.primary,
+                        backgroundColor: context.colorTrans,
                         icon: const Icon(
                           Icons.attach_money_rounded,
                           color: AppPropertyColor.white,

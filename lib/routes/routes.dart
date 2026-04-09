@@ -127,11 +127,21 @@ final routesPage = {
   '/sellpayment': (context) {
     final transactionBloc =
         ModalRoute.of(context)!.settings.arguments as TransactionBloc;
-    return BlocProvider(
-      create: (context) =>
-          PaymentBloc(context.read<DataUserRepositoryCache>(), transactionBloc)
-            ..add(PaymentGetTransaction()),
-      child: const UITransactionPayment(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PaymentBloc(
+            context.read<DataUserRepositoryCache>(),
+            transactionBloc,
+          )..add(PaymentGetTransaction()),
+        ),
+        BlocProvider<TransactionBloc>.value(value: transactionBloc),
+      ],
+      child: Builder(
+        builder: (context) {
+          return const UITransactionPayment();
+        },
+      ),
     );
   },
 

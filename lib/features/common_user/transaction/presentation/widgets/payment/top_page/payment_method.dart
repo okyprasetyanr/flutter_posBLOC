@@ -51,7 +51,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
               final isSelected = state.getpaymentMethod == paymentMethod;
               return customButtonIcon(
                 backgroundColor: isSelected
-                    ? AppPropertyColor.primary
+                    ? context.colorTrans
                     : AppPropertyColor.white,
                 icon: Icon(
                   Icons.payment_outlined,

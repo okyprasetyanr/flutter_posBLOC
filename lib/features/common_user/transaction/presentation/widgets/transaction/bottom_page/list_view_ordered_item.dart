@@ -14,6 +14,7 @@ import 'package:flutter_pos/style_and_transition_text/transition_navigator/trans
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
 class TransactionListViewOrderedItem extends StatelessWidget {
   const TransactionListViewOrderedItem({super.key});
@@ -231,34 +232,40 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                         controller: scrollController,
                                         itemCount: state!.length,
                                         itemBuilder: (context, index) {
-                                          return ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundColor:
-                                                  AppPropertyColor.primary,
-                                              child: Icon(
-                                                Icons.person,
-                                                size: lv2IconSize,
-                                                color: AppPropertyColor.white,
-                                              ),
-                                            ),
-                                            title: Text(
-                                              state[index].getnamePartner,
-                                              style: lv05TextStyle,
-                                            ),
-                                            subtitle: Text(
-                                              "${state[index].getphonePartner}",
-                                              style: lv05TextStyle,
-                                            ),
-                                            onTap: () {
-                                              context
-                                                  .read<TransactionBloc>()
-                                                  .add(
-                                                    TransactionSelectedPartner(
-                                                      selectedPartner:
-                                                          state[index],
-                                                    ),
-                                                  );
-                                              Navigator.pop(context);
+                                          return DynamicColorWrapper(
+                                            colorSelector: (context) =>
+                                                context.colorTrans,
+                                            builder: (context, color) {
+                                              return ListTile(
+                                                leading: CircleAvatar(
+                                                  backgroundColor: color,
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    size: lv2IconSize,
+                                                    color:
+                                                        AppPropertyColor.white,
+                                                  ),
+                                                ),
+                                                title: Text(
+                                                  state[index].getnamePartner,
+                                                  style: lv05TextStyle,
+                                                ),
+                                                subtitle: Text(
+                                                  "${state[index].getphonePartner}",
+                                                  style: lv05TextStyle,
+                                                ),
+                                                onTap: () {
+                                                  context
+                                                      .read<TransactionBloc>()
+                                                      .add(
+                                                        TransactionSelectedPartner(
+                                                          selectedPartner:
+                                                              state[index],
+                                                        ),
+                                                      );
+                                                  Navigator.pop(context);
+                                                },
+                                              );
                                             },
                                           );
                                         },
@@ -266,26 +273,30 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                                     },
                                   ),
                             ),
-
-                            customButtonIcon(
-                              backgroundColor: AppPropertyColor.primary,
-                              icon: const Icon(
-                                Icons.add,
-                                color: AppPropertyColor.white,
-                              ),
-                              label: Text(
-                                "Tambah Kontak Baru",
-                                style: lv05TextStyleWhite,
-                              ),
-                              onPressed: () async {
-                                navUpDownTransition(
-                                  context,
-                                  '/partner',
-                                  false,
-                                  arguments:
-                                      (context.read<TransactionBloc>().state
-                                              as TransactionLoaded)
-                                          .isSell,
+                            DynamicColorWrapper(
+                              colorSelector: (context) => context.colorTrans,
+                              builder: (context, color) {
+                                return customButtonIcon(
+                                  backgroundColor: color,
+                                  icon: const Icon(
+                                    Icons.add,
+                                    color: AppPropertyColor.white,
+                                  ),
+                                  label: Text(
+                                    "Tambah Kontak Baru",
+                                    style: lv05TextStyleWhite,
+                                  ),
+                                  onPressed: () async {
+                                    navUpDownTransition(
+                                      context,
+                                      '/partner',
+                                      false,
+                                      arguments:
+                                          (context.read<TransactionBloc>().state
+                                                  as TransactionLoaded)
+                                              .isSell,
+                                    );
+                                  },
                                 );
                               },
                             ),
@@ -316,7 +327,7 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   Icons.contacts_rounded,
                   color: AppPropertyColor.white,
                 ),
-                backgroundColor: AppPropertyColor.primary,
+                backgroundColor: context.colorTrans,
               ),
             ),
             const SizedBox(width: 10),
@@ -371,38 +382,12 @@ class TransactionListViewOrderedItem extends StatelessWidget {
                   Icons.attach_money_rounded,
                   color: AppPropertyColor.white,
                 ),
-                backgroundColor: AppPropertyColor.primary,
+                backgroundColor: context.colorTrans,
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class TransactionContactButton extends StatelessWidget {
-  const TransactionContactButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final state = context.watch<TransactionBloc>().state;
-
-    String label = "Kontak";
-    if (state is TransactionLoaded) {
-      final partner = state.selectedPartner;
-      if (partner?.getidPartner != "") {
-        label = partner?.getnamePartner ?? "Kontak";
-      }
-    }
-
-    return customButtonIcon(
-      backgroundColor: AppPropertyColor.primary,
-      icon: const Icon(Icons.contacts_rounded, color: AppPropertyColor.white),
-      label: Text(label),
-      onPressed: () {
-        // buka bottomsheet
-      },
     );
   }
 }

@@ -18,7 +18,7 @@ import 'package:flutter_pos/service/service_printer.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
-import 'package:flutter_pos/template/layout_top_bottom_standart.dart';
+import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/date_picker.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';

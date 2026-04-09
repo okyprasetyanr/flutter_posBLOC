@@ -118,7 +118,7 @@ class UIPaymentCashPayment extends StatelessWidget {
                               padding: EdgeInsets.symmetric(vertical: 10),
                               child: customButton(
                                 backgroundColor: value == amount
-                                    ? AppPropertyColor.primary
+                                    ? context.colorTrans
                                     : AppPropertyColor.white,
                                 child: Text(
                                   formatPriceRp(amount),

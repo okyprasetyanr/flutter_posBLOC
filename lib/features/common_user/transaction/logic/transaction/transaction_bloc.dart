@@ -503,7 +503,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       // add(TransactionResetSelectedItem());
       add(TransactionResetOrderedItem());
       final newStatus = currentState.isSell;
-      emit(currentState.copyWith(isSell: !newStatus, customPrice: 0));
+      emit(
+        currentState.copyWith(
+          isSell: !newStatus,
+          customPrice: 0,
+          itemOrdered: [],
+        ),
+      );
     }
   }
 

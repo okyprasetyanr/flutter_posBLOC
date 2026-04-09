@@ -11,6 +11,7 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
 class UIPaymentDiscount extends StatelessWidget {
   final TextEditingController customDiscountController;
@@ -41,34 +42,37 @@ class UIPaymentDiscount extends StatelessWidget {
                   spacing: 5,
                   children: [10, 25, 50].map((discount) {
                     final isSelected = state.getdiscount == discount;
-                    return SizedBox(
-                      width: 57,
-                      child: customButtonIcon(
-                        backgroundColor: isSelected
-                            ? AppPropertyColor.primary
-                            : AppPropertyColor.white,
-                        icon: Icon(
-                          Icons.check_rounded,
-                          size: lv05IconSize,
-                          color: isSelected
-                              ? AppPropertyColor.white
-                              : AppPropertyColor.black,
+                    return DynamicColorWrapper(
+                      colorSelector: (context) => context.colorTrans,
+                      builder: (context, color) => SizedBox(
+                        width: 57,
+                        child: customButtonIcon(
+                          backgroundColor: isSelected
+                              ? color
+                              : AppPropertyColor.white,
+                          icon: Icon(
+                            Icons.check_rounded,
+                            size: lv05IconSize,
+                            color: isSelected
+                                ? AppPropertyColor.white
+                                : AppPropertyColor.black,
+                          ),
+                          label: Text(
+                            "$discount%",
+                            style: isSelected
+                                ? lv05TextStyleWhite
+                                : lv05TextStyle,
+                          ),
+                          onPressed: () {
+                            if (customDiscountController.text.isNotEmpty) {
+                              customDiscountController.clear();
+                            }
+                            final discountValue = isSelected ? 0 : discount;
+                            context.read<PaymentBloc>().add(
+                              PaymentAdjust(discount: discountValue),
+                            );
+                          },
                         ),
-                        label: Text(
-                          "$discount%",
-                          style: isSelected
-                              ? lv05TextStyleWhite
-                              : lv05TextStyle,
-                        ),
-                        onPressed: () {
-                          if (customDiscountController.text.isNotEmpty) {
-                            customDiscountController.clear();
-                          }
-                          final discountValue = isSelected ? 0 : discount;
-                          context.read<PaymentBloc>().add(
-                            PaymentAdjust(discount: discountValue),
-                          );
-                        },
                       ),
                     );
                   }).toList(),

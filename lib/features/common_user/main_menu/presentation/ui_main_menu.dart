@@ -22,7 +22,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/style_and_transition_text/wave_animation.dart';
-import 'package:flutter_pos/template/background.dart';
+import 'package:flutter_pos/template/static_background.dart';
 
 class UIMainMenu extends StatefulWidget {
   const UIMainMenu({super.key});

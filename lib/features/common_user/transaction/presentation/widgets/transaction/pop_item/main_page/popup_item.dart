@@ -161,7 +161,7 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                         Expanded(
                           flex: 1,
                           child: customButton(
-                            backgroundColor: AppPropertyColor.primary,
+                            backgroundColor: context.colorTrans,
                             child: const Icon(
                               Icons.shopping_cart_outlined,
                               color: AppPropertyColor.white,
