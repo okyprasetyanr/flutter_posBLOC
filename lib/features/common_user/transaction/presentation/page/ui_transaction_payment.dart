@@ -23,7 +23,6 @@ import 'package:flutter_pos/style_and_transition_text/transition_navigator/trans
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
-import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
 class UITransactionPayment extends StatefulWidget {
   const UITransactionPayment({super.key});
@@ -80,7 +79,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
   Widget build(BuildContext context) {
     return LayoutTopBottom(
       layoutTop: layoutTop(),
-      layoutBottom: layoutBottom(context),
+      layoutBottom: layoutBottom(),
       widgetNavigation: null,
       refreshIndicator: refreshIndicator,
       title: "Pembayaran",
@@ -188,7 +187,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
     );
   }
 
-  Widget layoutBottom(BuildContext context) {
+  Widget layoutBottom() {
     return Column(
       children: [
         Text("Detail Transaksi", style: titleTextStyle),
@@ -356,6 +355,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                             context,
                             '/selltransactionsuccess',
                             false,
+                            arguments: context.read<PaymentBloc>(),
                           );
                         },
                       ),

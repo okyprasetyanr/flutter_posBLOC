@@ -53,7 +53,7 @@ class ModelTransactionFinancial extends Equatable {
     FirebaseFirestore.instance
         .collection(isIncome ? 'transaction_income' : 'transaction_expense')
         .doc(invoice)
-        .update({"status_transaction": statusTransaction});
+        .update({"status_transaction": statusTransaction!.name});
   }
 
   ModelTransactionFinancial copyWith({

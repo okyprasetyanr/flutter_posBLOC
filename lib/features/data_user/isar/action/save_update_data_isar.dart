@@ -352,26 +352,44 @@ T convertTransaction<T extends ModelTransactionBaseIsar>(
 Future<void> saveTransactionFinancialExpense_Isar(
   ModelTransactionFinancial trx,
 ) async {
-  final data = convertTransactionFinancial(
-    trx,
-    ModelTransactionFinancialExpenseIsar.new,
-  );
-
+  final data = await isar.modelTransactionFinancialExpenseIsars
+      .where()
+      .invoiceEqualTo(trx.getinvoice)
+      .findFirst();
   await isar.writeTxn(() async {
-    await isar.modelTransactionFinancialExpenseIsars.put(data);
+    if (data != null) {
+      data..statusTransaction = trx.getstatusTransaction!.name;
+      await isar.modelTransactionFinancialExpenseIsars.put(data);
+    } else {
+      await isar.modelTransactionFinancialExpenseIsars.put(
+        convertTransactionFinancial(
+          trx,
+          ModelTransactionFinancialExpenseIsar.new,
+        ),
+      );
+    }
   });
 }
 
 Future<void> saveTransactionFinancialncome_Isar(
   ModelTransactionFinancial trx,
 ) async {
-  final data = convertTransactionFinancial(
-    trx,
-    ModelTransactionFinancialIncomeIsar.new,
-  );
-
+  final data = await isar.modelTransactionFinancialIncomeIsars
+      .where()
+      .invoiceEqualTo(trx.getinvoice)
+      .findFirst();
   await isar.writeTxn(() async {
-    await isar.modelTransactionFinancialIncomeIsars.put(data);
+    if (data != null) {
+      data..statusTransaction = trx.getstatusTransaction!.name;
+      await isar.modelTransactionFinancialIncomeIsars.put(data);
+    } else {
+      await isar.modelTransactionFinancialIncomeIsars.put(
+        convertTransactionFinancial(
+          trx,
+          ModelTransactionFinancialIncomeIsar.new,
+        ),
+      );
+    }
   });
 }
 

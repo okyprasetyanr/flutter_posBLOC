@@ -246,6 +246,8 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                 context.read<TransFinancialBloc>().add(
                   TransFinancialResetSelected(),
                 );
+                amountController.clear();
+                noteController.clear();
               },
               color: context.colorTransFinance,
             ),
@@ -304,6 +306,8 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                       note: noteController.text,
                     ),
                   );
+                  amountController.clear();
+                  noteController.clear();
                 },
                 backgroundColor: context.colorTransFinance,
                 icon: const Icon(

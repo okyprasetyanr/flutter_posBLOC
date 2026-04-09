@@ -93,7 +93,6 @@ final routesPage = {
     return BlocProvider(
       create: (context) {
         final bloc = TransactionBloc(context.read())..add(TransactionGetData());
-
         if (revision && transaction != null) {
           bloc.add(
             TransactionLoadTransaction(
@@ -102,7 +101,6 @@ final routesPage = {
             ),
           );
         }
-
         return bloc;
       },
       child: const UITransaction(),
@@ -119,11 +117,15 @@ final routesPage = {
           ..add(HistoryTransactionGetData()),
     child: const UIHistoryTransaction(),
   ),
+  '/selltransactionsuccess': (context) {
+    final paymentBloc =
+        ModalRoute.of(context)!.settings.arguments as PaymentBloc;
 
-  '/selltransactionsuccess': (context) => BlocProvider.value(
-    value: context.read<PaymentBloc>(),
-    child: const UITransactionSuccess(),
-  ),
+    return BlocProvider.value(
+      value: paymentBloc,
+      child: const UITransactionSuccess(),
+    );
+  },
   '/sellpayment': (context) {
     final transactionBloc =
         ModalRoute.of(context)!.settings.arguments as TransactionBloc;

@@ -6,9 +6,11 @@ import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/cash_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/debit_payment.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
@@ -70,33 +72,36 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                     customBottomSheet(
                       context: context,
                       resetItemForm: null,
-                      content: (scrollController) => Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: ListView(
-                          controller: scrollController,
-                          children: [
-                            Text(
-                              "Pembayaran ${LabelPaymentMethod.Cash.name}",
-                              style: lv1TextStyleBold,
-                            ),
-                            const SizedBox(width: 10),
-                            UIPaymentCashPayment(
-                              split: true,
-                              payController: payController,
-                              selectedAmount: selectedAmount,
-                            ),
-                            const SizedBox(height: 25),
-                            Text(
-                              "Pembayaran ${LabelPaymentMethod.Debit.name}",
-                              style: lv1TextStyleBold,
-                            ),
-                            const SizedBox(width: 10),
-                            UIPaymentDebitPayment(
-                              split: true,
-                              chargeController: chargeController,
-                              payDebitController: payDebitController,
-                            ),
-                          ],
+                      content: (scrollController) => BlocProvider.value(
+                        value: context.read<PaymentBloc>(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: ListView(
+                            controller: scrollController,
+                            children: [
+                              Text(
+                                "Pembayaran ${LabelPaymentMethod.Cash.name}",
+                                style: lv1TextStyleBold,
+                              ),
+                              const SizedBox(width: 10),
+                              UIPaymentCashPayment(
+                                split: true,
+                                payController: payController,
+                                selectedAmount: selectedAmount,
+                              ),
+                              const SizedBox(height: 25),
+                              Text(
+                                "Pembayaran ${LabelPaymentMethod.Debit.name}",
+                                style: lv1TextStyleBold,
+                              ),
+                              const SizedBox(width: 10),
+                              UIPaymentDebitPayment(
+                                split: true,
+                                chargeController: chargeController,
+                                payDebitController: payDebitController,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
