@@ -37,7 +37,6 @@ class _UITransactionState extends State<UITransaction> {
   @override
   void initState() {
     super.initState();
-    initData();
   }
 
   @override
@@ -47,19 +46,9 @@ class _UITransactionState extends State<UITransaction> {
     super.dispose();
   }
 
-  Future<void> initData() async {
-    final bloc = context.read<TransactionBloc>();
-    final blocValue = bloc.state;
-    bloc.add(
-      TransactionGetData(
-        idBranch: (blocValue is TransactionLoaded) ? blocValue.idBranch : null,
-      ),
-    );
-  }
-
   Future<void> _onRefresh() async {
     await context.read<DataUserRepositoryCache>().initTransaction();
-    initData();
+    context.read<TransactionBloc>().add(TransactionGetData());
   }
 
   @override
@@ -126,7 +115,6 @@ class _UITransactionState extends State<UITransaction> {
                     context.read<TransactionBloc>().add(
                       TransactionStatusTransaction(),
                     );
-                    initData();
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
@@ -214,7 +202,7 @@ class _UITransactionState extends State<UITransaction> {
                       prev.selectedItem?.getidOrdered,
               listener: (context, state) {
                 if (state is TransactionLoaded && state.selectedItem != null) {
-                  debugPrint(
+                  devLog(
                     "Log UITransaction: PopUpItem: SelectedItem: ${state.selectedItem}",
                   );
 

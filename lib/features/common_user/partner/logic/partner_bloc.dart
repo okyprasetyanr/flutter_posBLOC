@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_state.dart';
@@ -107,7 +105,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
       final isCustomer = event.isCustomer ?? !currentState.isCustomer;
       emit(currentState.copyWith(isCustomer: isCustomer));
 
-      debugPrint("Log PartnerBloc: isCustomer: $isCustomer");
+      devLog("Log PartnerBloc: isCustomer: $isCustomer");
       add(PartnerGetData(isCustomer: isCustomer));
     }
   }
@@ -135,7 +133,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
           isCustomer: currentState.isCustomer,
         ),
       );
-      debugPrint("Log PartnerBloc: SelectedIdBranch: ${event.idBranch}");
+      devLog("Log PartnerBloc: SelectedIdBranch: ${event.idBranch}");
     }
   }
 
@@ -147,7 +145,7 @@ class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {
     event.type == PartnerType.customer
         ? await deleteCustomerById_Isar(event.id)
         : await deleteSupplierById_Isar(event.id);
-    debugPrint("Log PartnerBloc: deleteById: ${event.id}");
+    devLog("Log PartnerBloc: deleteById: ${event.id}");
     final currentState = state;
     if (currentState is PartnerLoaded) {
       final dataPartner = event.type == PartnerType.customer

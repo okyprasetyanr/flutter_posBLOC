@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -66,7 +64,7 @@ class HistoryFinancialBloc
         ? "Hari ini"
         : "${formatDate(date: dateStart, minute: false)} - ${formatDate(date: dateEnd, minute: false)}";
 
-    debugPrint("Log HistoryFinancial: dataTransaction: $dataTransaction");
+    devLog("Log HistoryFinancial: dataTransaction: $dataTransaction");
 
     emit(
       HistoryFinancialLoaded(

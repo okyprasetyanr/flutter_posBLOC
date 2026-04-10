@@ -5,6 +5,7 @@ import 'package:flutter_pos/common_widget/widget_custom_list_gradient.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,7 +18,7 @@ class UIInventoryListViewCategory extends StatelessWidget {
     return BlocSelector<InventoryBloc, InventoryState, List<ModelCategory>?>(
       selector: (state) => state is InventoryLoaded ? state.dataCategory : null,
       builder: (context, state) {
-        debugPrint("Log UIInventory category: search: ${state}");
+        devLog("Log UIInventory category: search: ${state}");
         if (state == null) {
           return Padding(
             padding: const EdgeInsets.all(10),

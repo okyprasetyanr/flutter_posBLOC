@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 
@@ -12,17 +12,17 @@ Future<void> deleteDataCategory(String id) async {
 }
 
 Future<void> deleteDataitem(String id) async {
-  debugPrint("Log DeleteData: Item: $id");
+  devLog("Log DeleteData: Item: $id");
   await FirebaseFirestore.instance.collection('items').doc(id).delete();
 }
 
 Future<void> deleteDataFinancial(String id) async {
-  debugPrint("Log DeleteData: Financial: $id");
+  devLog("Log DeleteData: Financial: $id");
   await FirebaseFirestore.instance.collection('financial').doc(id).delete();
 }
 
 Future<void> deleteDataUser(String id) async {
-  debugPrint("Log DeleteData: Operator: $id");
+  devLog("Log DeleteData: Operator: $id");
   await FirebaseFirestore.instance.collection('users').doc(id).delete();
 }
 
@@ -48,7 +48,7 @@ Future<void> deleteDataTransaction(
   String id,
   List<ModelItemOrdered> itemOrdered,
 ) async {
-  debugPrint("Log DeleteData: Operator: $id");
+  devLog("Log DeleteData: Operator: $id");
 
   for (final item in itemOrdered) {
     for (final condiment in item.getCondiment) {

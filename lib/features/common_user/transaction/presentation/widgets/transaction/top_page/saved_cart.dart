@@ -33,116 +33,123 @@ class UITransactionSavedCart extends StatelessWidget {
                 context: context,
                 resetItemForm: () {},
                 content: (scrollController) {
-                  return BlocSelector<
-                    TransactionBloc,
-                    TransactionState,
-                    List<ModelTransaction>
-                  >(
-                    selector: (state) {
-                      if (state is TransactionLoaded) {
-                        return state.dataTransactionSaved;
-                      }
-                      return const [];
-                    },
-                    builder: (context, state) {
-                      return ListView.builder(
-                        itemCount: state.length,
-                        itemBuilder: (context, index) {
-                          final transaction = state[index];
-                          return InkWell(
-                            onTap: () {
-                              debugPrint(
-                                "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
-                              );
-                              context.read<TransactionBloc>().add(
-                                TransactionResetOrderedItem(),
-                              );
-                              context.read<TransactionBloc>().add(
-                                TransactionLoadTransaction(
-                                  currentTransaction: state[index],
-                                ),
-                              );
-                              Navigator.pop(context);
-                            },
-                            child: Dismissible(
-                              key: Key(state[index].getinvoice),
-                              direction: DismissDirection.endToStart,
-                              background: Container(
-                                padding: const EdgeInsets.only(right: 10),
-                                color: AppPropertyColor.red,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: AppPropertyColor.white,
-                                  ),
-                                ),
-                              ),
-                              confirmDismiss: (direction) async {
-                                final result = await showDialog<bool>(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text(
-                                      "Konfirmasi",
-                                      style: lv2TextStyle,
-                                    ),
-                                    content: Text(
-                                      "Hapus Transaksi ${state[index].getinvoice}?",
-                                      style: lv1TextStyle,
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, false),
-                                        child: Text(
-                                          "Batal",
-                                          style: lv1TextStyle,
+                  return BlocProvider.value(
+                    value: context.read<TransactionBloc>(),
+                    child:
+                        BlocSelector<
+                          TransactionBloc,
+                          TransactionState,
+                          List<ModelTransaction>
+                        >(
+                          selector: (state) {
+                            if (state is TransactionLoaded) {
+                              return state.dataTransactionSaved;
+                            }
+                            return const [];
+                          },
+                          builder: (context, state) {
+                            return ListView.builder(
+                              itemCount: state.length,
+                              itemBuilder: (context, index) {
+                                final transaction = state[index];
+                                return InkWell(
+                                  onTap: () {
+                                    devLog(
+                                      "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
+                                    );
+                                    context.read<TransactionBloc>().add(
+                                      TransactionResetOrderedItem(),
+                                    );
+                                    context.read<TransactionBloc>().add(
+                                      TransactionLoadTransaction(
+                                        currentTransaction: state[index],
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                  child: Dismissible(
+                                    key: Key(state[index].getinvoice),
+                                    direction: DismissDirection.endToStart,
+                                    background: Container(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      color: AppPropertyColor.red,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: AppPropertyColor.white,
                                         ),
                                       ),
-                                      TextButton(
-                                        onPressed: () {
-                                          context.read<TransactionBloc>().add(
-                                            TransactionDeleteItemSaved(
-                                              invoice: state[index].getinvoice,
+                                    ),
+                                    confirmDismiss: (direction) async {
+                                      final result = await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text(
+                                            "Konfirmasi",
+                                            style: lv2TextStyle,
+                                          ),
+                                          content: Text(
+                                            "Hapus Transaksi ${state[index].getinvoice}?",
+                                            style: lv1TextStyle,
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, false),
+                                              child: Text(
+                                                "Batal",
+                                                style: lv1TextStyle,
+                                              ),
                                             ),
-                                          );
-                                          Navigator.pop(context, true);
-                                        },
-                                        child: Text(
-                                          "Hapus",
-                                          style: lv1TextStyle,
+                                            TextButton(
+                                              onPressed: () {
+                                                context
+                                                    .read<TransactionBloc>()
+                                                    .add(
+                                                      TransactionDeleteItemSaved(
+                                                        invoice: state[index]
+                                                            .getinvoice,
+                                                      ),
+                                                    );
+                                                Navigator.pop(context, true);
+                                              },
+                                              child: Text(
+                                                "Hapus",
+                                                style: lv1TextStyle,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                      if (result == true) {
+                                        return true;
+                                      }
+                                      return false;
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 5,
+                                        right: 5,
+                                        top: 10,
+                                        bottom: 10,
+                                      ),
+
+                                      child: ListTile(
+                                        title: Text(
+                                          "${transaction.getinvoice}, ${formatPriceRp(transaction.gettotal)}",
+                                        ),
+                                        subtitle: Text(
+                                          "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 );
-                                if (result == true) {
-                                  return true;
-                                }
-                                return false;
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 5,
-                                  right: 5,
-                                  top: 10,
-                                  bottom: 10,
-                                ),
-
-                                child: ListTile(
-                                  title: Text(
-                                    "${transaction.getinvoice}, ${formatPriceRp(transaction.gettotal)}",
-                                  ),
-                                  subtitle: Text(
-                                    "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                            );
+                          },
+                        ),
                   );
                 },
               );

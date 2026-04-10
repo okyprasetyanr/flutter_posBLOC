@@ -180,9 +180,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                                 selectedFinancial: data,
                               ),
                             );
-                            debugPrint(
-                              "Log UITransactionFinancial: selectedData",
-                            );
+                            devLog("Log UITransactionFinancial: selectedData");
                           },
                           data: state,
                           getId: (data) => data.getidFinancial,

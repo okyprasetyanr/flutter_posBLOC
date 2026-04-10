@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:excel/excel.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_pos/function/function.dart';
 
 typedef SheetHandler = Future<void> Function(Sheet sheet);
 
@@ -11,7 +11,7 @@ class ExcelRestoreService {
   ExcelRestoreService({required this.file, required this.handlers});
 
   Future<void> restore() async {
-    debugPrint("Log ExcelRestore: Restore START");
+    devLog("Log ExcelRestore: Restore START");
     final bytes = await file.readAsBytes();
     final excel = Excel.decodeBytes(bytes);
 
@@ -52,10 +52,10 @@ Future<void> restoreSheet<T>({
       } else {
         dataRepo = model;
       }
-      debugPrint("Log Restore: Cek Data: $listDataRepo");
+      devLog("Log Restore: Cek Data: $listDataRepo");
     } else {
       getMap!(map);
-      debugPrint("Log Restore: Cek Data nested False: $listDataRepo");
+      devLog("Log Restore: Cek Data nested False: $listDataRepo");
     }
   }
 }

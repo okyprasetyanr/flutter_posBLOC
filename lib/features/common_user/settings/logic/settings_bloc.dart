@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/enum/enum.dart';
@@ -68,7 +67,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsFeature event,
     Emitter<SettingsState> emit,
   ) async {
-    debugPrint(
+    devLog(
       "Log SettingsBloc: selectedMode Init: ${UserSession.getSelectedStockMode()}",
     );
     emit(
@@ -90,7 +89,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     pref.setBool('fifo', !isFifo);
     UserSession.init();
 
-    debugPrint("Log Settings: Feature Fifo: $isFifo");
+    devLog("Log Settings: Feature Fifo: $isFifo");
     emit(currentState.copyWith(isFifo: !isFifo));
   }
 

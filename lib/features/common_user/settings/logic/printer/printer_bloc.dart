@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:flutter_pos/function/format_print.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/service/service_printer.dart';
 import 'printer_event.dart';
 import 'printer_state.dart';
@@ -51,7 +51,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
 
       emit(state.copyWith(isLoading: false, paperWidth: savedPaper));
     } catch (e) {
-      debugPrint("Log PrinterBloc Error: $e");
+      devLog("Log PrinterBloc Error: $e");
       emit(state.copyWith(isLoading: false));
     }
   }

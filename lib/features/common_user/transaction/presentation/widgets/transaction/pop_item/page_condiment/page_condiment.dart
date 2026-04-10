@@ -88,7 +88,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                         stateCondiment.$2 == null) {
                                       return Spacer();
                                     }
-                                    debugPrint(
+                                    devLog(
                                       "Log UIPageCondiment: ${stateCondiment.$2}",
                                     );
                                     double qtyitem =

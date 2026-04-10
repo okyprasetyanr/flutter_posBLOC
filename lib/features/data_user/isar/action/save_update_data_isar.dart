@@ -243,18 +243,38 @@ T convertPartner<T extends ModelPartnerBaseIsar>(
 }
 
 Future<void> saveTransactionBuy_Isar(ModelTransaction trx) async {
-  final data = convertTransaction(trx, ModelTransactionBuyIsar.new);
+  final data = await isar.modelTransactionBuyIsars
+      .where()
+      .invoiceEqualTo(trx.getinvoice)
+      .findFirst();
 
   await isar.writeTxn(() async {
-    await isar.modelTransactionBuyIsars.put(data);
+    if (data != null) {
+      data..statusTransaction = trx.getstatusTransaction!.name;
+      await isar.modelTransactionBuyIsars.put(data);
+    } else {
+      await isar.modelTransactionBuyIsars.put(
+        await convertTransaction(trx, ModelTransactionBuyIsar.new),
+      );
+    }
   });
 }
 
 Future<void> saveTransactionSell_Isar(ModelTransaction trx) async {
-  final data = convertTransaction(trx, ModelTransactionSellIsar.new);
+  final data = await isar.modelTransactionSellIsars
+      .where()
+      .invoiceEqualTo(trx.getinvoice)
+      .findFirst();
 
   await isar.writeTxn(() async {
-    await isar.modelTransactionSellIsars.put(data);
+    if (data != null) {
+      data..statusTransaction = trx.getstatusTransaction!.name;
+      await isar.modelTransactionSellIsars.put(data);
+    } else {
+      await isar.modelTransactionSellIsars.put(
+        await convertTransaction(trx, ModelTransactionSellIsar.new),
+      );
+    }
   });
 }
 

@@ -14,6 +14,7 @@ import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/transaction_saved_hive_adapter.dart';
 import 'package:flutter_pos/firebase_options.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:flutter_pos/service/service_printer.dart';
 import 'package:flutter_pos/routes/routes.dart';
@@ -90,10 +91,10 @@ void callbackDispatcher() {
       await Hive.openBox<TransactionSavedHive>('saved_transaction');
 
       await FirestoreWorker.processQueueHive();
-      debugPrint('Log Main: FirestoreWorker sukses');
+      devLog('Log Main: FirestoreWorker sukses');
       return Future.value(true);
     } catch (e) {
-      debugPrint('Log Main: FirestoreWorker Error: $e');
+      devLog('Log Main: FirestoreWorker Error: $e');
       return Future.value(false);
     }
   });

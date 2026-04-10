@@ -12,6 +12,7 @@ import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_is
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
@@ -40,7 +41,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       idBranch = currentState.idBranch;
     }
 
-    debugPrint("Log OperatorBloc: ${dataUser.map((e) => e.getNameUser)}");
+    devLog("Log OperatorBloc: ${dataUser.map((e) => e.getNameUser)}");
     return dataUser.where((element) {
       if (statusUser != null) {
         final byStatus = element.getstatusUser == statusUser;
@@ -109,7 +110,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       statusUser: statusUser,
     );
 
-    debugPrint("Log OperatorBloc: onFilter: $filteredData");
+    devLog("Log OperatorBloc: onFilter: $filteredData");
 
     emit(
       currentState.copyWith(
@@ -138,7 +139,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
       }
       return true;
     }).toList();
-    debugPrint("Log OperatorBloc: onSearch: $roleUser, $statusUser");
+    devLog("Log OperatorBloc: onSearch: $roleUser, $statusUser");
     emit(currentState.copyWith(filteredData: dataFiltered));
   }
 
@@ -159,7 +160,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
   ) {
     final currentState = state as OperatorLoaded;
     final selectedData = event.selectedData ?? currentState.selectedData;
-    debugPrint("Log OperatorBloc: selectedData: $selectedData");
+    devLog("Log OperatorBloc: selectedData: $selectedData");
     emit(
       currentState.copyWith(
         selectedData: selectedData,
@@ -217,7 +218,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
     } else {
       await saveUser_Isar(data);
     }
-    debugPrint("Log OperatorBloc: upload: ${data}");
+    devLog("Log OperatorBloc: upload: ${data}");
     await data.pushDataUser();
 
     emit(resetData());
@@ -278,7 +279,7 @@ class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
         ),
       );
     } catch (e) {
-      debugPrint("Log OperatorBloc: ResetPassword Error: ${e.toString()}");
+      devLog("Log OperatorBloc: ResetPassword Error: ${e.toString()}");
       emit(
         currentState.copyWith(
           resetStatus: ResetPasswordStatus.failure,

@@ -4,6 +4,7 @@ import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
@@ -47,7 +48,7 @@ class _UITransactionPopUpExpiredDateState
                     initMonth: month,
                     initYear: year,
                     onSelected: (day, month, year) {
-                      debugPrint(
+                      devLog(
                         "Log UITransaction: CustomDate: $year-$month-$day",
                       );
                       context.read<TransactionBloc>().add(

@@ -46,7 +46,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       dataTransaction.getdataSplit.clear();
 
       emit(currentState.copyWith(transaction_sell: dataTransaction));
-      debugPrint("Log PaymentBloc: Split data dihapus");
+      devLog("Log PaymentBloc: Split data dihapus");
     }
   }
 
@@ -66,7 +66,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       double billPaid = 0;
       double total = 0;
 
-      debugPrint(
+      devLog(
         "Log PaymentBloc: before Ajust: $paymentMethod, $charge, ${event.paymentMethod}",
       );
 
@@ -141,12 +141,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           }
           bankName = null;
         }
-        debugPrint(
-          "Log PaymentBloc: Ajust Split: ${event.bankName} ${dataSplit}",
-        );
+        devLog("Log PaymentBloc: Ajust Split: ${event.bankName} ${dataSplit}");
       }
 
-      debugPrint(
+      devLog(
         "Log PaymentBloc: Ajust: $paymentMethod, $bankName, $charge, ${event.paymentMethod}",
       );
 
@@ -187,7 +185,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Emitter<PaymentState> emit,
   ) async {
     final sellState = this.transactionBloc.state as TransactionLoaded;
-    debugPrint(
+    devLog(
       "Log PaymentBloc: dataRevisiOrSaved: ${sellState.selectedTransaction}",
     );
     final formattedDate = parseDate(date: DateTime.now());
@@ -246,7 +244,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
 
     add(PaymentAdjust(ppn: ppn, discount: discount));
-    debugPrint("Log PaymentBloc: isSell: ${sellState.isSell}");
+    devLog("Log PaymentBloc: isSell: ${sellState.isSell}");
     emit(
       PaymentLoaded(
         revisionInvoice: dataRevisiOrSaved?.getinvoice ?? "",
@@ -282,9 +280,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   FutureOr<void> _onPaymentNote(PaymentNote event, Emitter<PaymentState> emit) {
     final currentState = state;
     if (currentState is PaymentLoaded) {
-      debugPrint(
-        "Log PaymentBloc: Note ${currentState.transaction_sell!.getnote}",
-      );
+      devLog("Log PaymentBloc: Note ${currentState.transaction_sell!.getnote}");
       emit(
         currentState.copyWith(
           transaction_sell: currentState.transaction_sell!.copyWith(
@@ -318,7 +314,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         currentState.transaction_sell!.getidBranch,
       );
 
-      debugPrint(
+      devLog(
         "Log PaymentBloc: onPaymentProcess: ${currentState.revisionInvoice}",
       );
 
@@ -341,7 +337,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       );
 
       final box = await repoCache.getHiveSavedTransaction();
-      debugPrint(
+      devLog(
         "Log PaymentBlog: OnPaymentProcess check saved Invoice: $invoice, InvoiceSaved: ${currentState.revisionInvoice}",
       );
 

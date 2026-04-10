@@ -52,7 +52,7 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                           return (null, "");
                         },
                         builder: (context, state) {
-                          debugPrint(
+                          devLog(
                             "Log UITransaction: NameAndQty: idBranch: ${state.$2}",
                           );
                           return Text(

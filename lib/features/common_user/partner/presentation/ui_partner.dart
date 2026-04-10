@@ -339,7 +339,7 @@ class _UIPartnerState extends State<UIPartner> {
               flex: 2,
               child: customButtonIcon(
                 onPressed: () {
-                  debugPrint(
+                  devLog(
                     "UIPartner: date: ${parseDate(date: formatDate(date: DateTime.now()))},",
                   );
                   if (!_formKey.currentState!.validate()) {

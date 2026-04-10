@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 
@@ -22,12 +21,6 @@ class HistoryTransactionSelectedData extends HistoryTransactionEvent {
   final ModelTransaction? selectedData;
 
   HistoryTransactionSelectedData({required this.selectedData});
-}
-
-class HistoryTransactionRevisionData extends HistoryTransactionEvent {
-  final BuildContext context;
-
-  HistoryTransactionRevisionData({required this.context});
 }
 
 class HistoryTransactionCancelData extends HistoryTransactionEvent {}

@@ -15,9 +15,9 @@ import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.
 import 'package:flutter_pos/from_and_to_map/from_isar.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/service/service_printer.dart';
-import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/date_picker.dart';
@@ -358,10 +358,11 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   }
 
   Future<void> confirmCancel(
-    List<ModelItemOrdered> getitemsOrdered, {
-    bool? revisi,
+    ModelTransaction transaction, {
+    bool revisi = false,
   }) async {
     // List<Map<String, dynamic>> dataExpiredItem = [];
+    final historyBloc = context.read<HistoryTransactionBloc>();
     showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -396,15 +397,16 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
           ),
           TextButton(
             onPressed: () {
-              context.read<HistoryTransactionBloc>().add(
-                HistoryTransactionCancelData(),
-              );
-              if (revisi != null) {
-                context.read<HistoryTransactionBloc>().add(
-                  HistoryTransactionRevisionData(context: context),
+              Navigator.pop(context, true);
+              historyBloc.add(HistoryTransactionCancelData());
+              if (revisi) {
+                navUpDownTransition(
+                  context,
+                  '/sell',
+                  false,
+                  arguments: {"revision": true, "transaction": transaction},
                 );
               }
-              Navigator.pop(context, true);
             },
             child: Text("Batalkan", style: lv1TextStyle),
           ),
@@ -570,27 +572,28 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                           color: AppPropertyColor.red,
                         ),
                         onPressed: () async {
-                          final dataBatch = fromIsarBatch(
-                            await getBatchIsarByInvoice(state.$1!.getinvoice),
-                          );
-                          state.$2
-                              ? transaction.getstatusTransaction ==
-                                        ListStatusTransaction.Batal
-                                    ? customSnackBar(
-                                        context,
-                                        "Sudah diBatalkan!",
-                                      )
-                                    : confirmCancel(transaction.getitemsOrdered)
-                              : UserSession.getStatusFifo()
-                              ? dataBatch.getitems_batch.every(
-                                      (element) => element.getqtyItem_out == 0,
-                                    )
-                                    ? confirmCancel(transaction.getitemsOrdered)
-                                    : customSnackBar(
-                                        context,
-                                        "FIFO: Aktif, Stok Batch sudah terpakai, tidak dapat membatalkan!",
-                                      )
-                              : confirmCancel(state.$1!.getitemsOrdered);
+                          if (transaction.getstatusTransaction ==
+                              ListStatusTransaction.Batal) {
+                            return customSnackBar(context, "Sudah diBatalkan!");
+                          }
+                          if (!state.$2) {
+                            final dataBatch = fromIsarBatch(
+                              await getBatchIsarByInvoice(
+                                transaction.getinvoice,
+                              ),
+                            );
+                            if (UserSession.getStatusFifo()) {
+                              if (dataBatch.getitems_batch.any(
+                                (element) => element.getqtyItem_out > 0,
+                              )) {
+                                return customSnackBar(
+                                  context,
+                                  "FIFO: Aktif, Stok Batch sudah terpakai, tidak dapat membatalkan!",
+                                );
+                              }
+                            }
+                          }
+                          return confirmCancel(transaction);
                         },
                       ),
                       const SizedBox(width: 10),
@@ -630,7 +633,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                           Navigator.pop(context, true);
                                           await confirmCancel(
                                             revisi: true,
-                                            state.$1!.getitemsOrdered,
+                                            transaction,
                                           );
                                         },
                                         child: Text(

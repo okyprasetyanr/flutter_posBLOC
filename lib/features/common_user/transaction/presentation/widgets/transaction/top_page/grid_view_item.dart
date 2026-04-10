@@ -41,7 +41,7 @@ class UITransactionGridViewItem extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final item = state.$1[index];
-            debugPrint(
+            devLog(
               "Log UITransactionGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItembyBatch}",
             );
             return Material(
@@ -72,9 +72,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                         condiment: [],
                       );
 
-                      debugPrint(
-                        "Log UITransaction: idOrdered Item: $idOrdered",
-                      );
+                      devLog("Log UITransaction: idOrdered Item: $idOrdered");
 
                       if (UserSession.getStatusFifo() &&
                           item.getqtyItem == 0 &&
@@ -90,7 +88,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                             (bloc.state as TransactionLoaded).itemOrdered,
                             (bloc.state as TransactionLoaded).dataItem!,
                           ).entries.any((element) {
-                            debugPrint(
+                            devLog(
                               "Log UITransaction: checkQTY Item: ordered: ${element.value.ordered}, stock: ${element.value.stock}",
                             );
                             return element.value.ordered >= element.value.stock;
@@ -103,9 +101,7 @@ class UITransactionGridViewItem extends StatelessWidget {
                           "FIFO: Stok sudah mencapai batas",
                         );
                       }
-                      debugPrint(
-                        "Log UITransaction: selectedItem: $selectedItem",
-                      );
+                      devLog("Log UITransaction: selectedItem: $selectedItem");
                       context.read<TransactionBloc>().add(
                         TransactionSelectedItem(
                           selectedItem: selectedItem,

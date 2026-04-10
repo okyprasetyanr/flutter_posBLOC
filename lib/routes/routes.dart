@@ -37,7 +37,9 @@ import 'package:flutter_pos/features/common_user/transaction/presentation/page/u
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_success.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/main.dart';
+import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/screen_signup.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/page/ui_setting_menu.dart';
 import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
@@ -75,7 +77,7 @@ final routesPage = {
   ),
   '/partner': (context) {
     final isCustomer = ModalRoute.of(context)!.settings.arguments as bool;
-    debugPrint("Log Routes: Partner Arhument: $isCustomer");
+    devLog("Log Routes: Partner Arhument: $isCustomer");
 
     return BlocProvider(
       create: (context) => PartnerBloc(context.read())
@@ -87,22 +89,19 @@ final routesPage = {
   '/sell': (context) {
     final args = ModalRoute.of(context)?.settings.arguments as Map?;
 
-    final revision = args?['revision'] ?? false;
-    final transaction = args?['transaction'];
-
+    final revision = (args?['revision'] as bool?) ?? false;
+    final transaction = args?['transaction'] as ModelTransaction?;
+    devLog(
+      "Log Routes: Transaction Arhument: $transaction, revision=$revision",
+    );
     return BlocProvider(
-      create: (context) {
-        final bloc = TransactionBloc(context.read())..add(TransactionGetData());
-        if (revision && transaction != null) {
-          bloc.add(
-            TransactionLoadTransaction(
-              currentTransaction: transaction,
-              revision: revision,
-            ),
-          );
-        }
-        return bloc;
-      },
+      create: (context) => TransactionBloc(context.read())
+        ..add(
+          TransactionGetData(
+            currentTransaction: transaction,
+            revision: revision,
+          ),
+        ),
       child: const UITransaction(),
     );
   },

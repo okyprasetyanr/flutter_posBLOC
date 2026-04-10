@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -60,9 +59,7 @@ class TransFinancialBloc
   ) {
     final currentState = state as TransFinancialLoaded;
     emit(currentState.copyWith(selectedFinancial: event.selectedFinancial));
-    debugPrint(
-      "Log TransFinancialBloc: selectedData: ${event.selectedFinancial}",
-    );
+    devLog("Log TransFinancialBloc: selectedData: ${event.selectedFinancial}");
   }
 
   Future<void> _onUploadTrans(

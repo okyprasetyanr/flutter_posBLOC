@@ -106,7 +106,7 @@ String generateInvoice({
   final branch = branchId!.substring(0, 4);
   final uuid = saved != null ? "Saved" : Uuid().v4().substring(0, 4);
   final operator = idOP.substring(0, 4);
-  debugPrint("Log Function: GenerateInvoice: $operator");
+  devLog("Log Function: GenerateInvoice: $operator");
   return "$operator-$branch-$queue-$uuid";
 }
 
@@ -165,4 +165,11 @@ Map<String, ({double stock, double ordered})> checkQTY(
   }
 
   return result;
+}
+
+void devLog(String message) {
+  assert(() {
+    debugPrint(message);
+    return true;
+  }());
 }

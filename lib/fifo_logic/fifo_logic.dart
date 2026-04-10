@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
@@ -48,10 +47,10 @@ ModelFIFOLogic fifoLogic({
 
   final checkCustomPrice = isSell ? customPriceSell != item.getpriceItem : true;
 
-  debugPrint(
+  devLog(
     "Log FifoLogic: customPriceBuy: $customPriceBuy, customPriceSell: $customPriceSell",
   );
-  debugPrint(
+  devLog(
     "Log FifoLogic: batch_priceBuy: ${batches.isNotEmpty ? batches.last.getprice_itemBuy : 0}, batch_priceSell: ${batches.isNotEmpty ? batches.last.getprice_item : 0}",
   );
 
@@ -122,7 +121,7 @@ ModelFIFOLogic fifoLogic({
           invoice: item.getinvoice ?? '',
           qtyNeed: 1,
         );
-        debugPrint(
+        devLog(
           "Log TransactionBloc: fifoLogic: price ${checkCustomPrice ? customPriceSell : 0}",
         );
       } else {
@@ -142,10 +141,10 @@ ModelFIFOLogic fifoLogic({
             qty_item: batches[0].getqty_item + 1,
           );
         }
-        debugPrint("Log TransactionBloc: Buy Add");
+        devLog("Log TransactionBloc: Buy Add");
       }
     } else {
-      debugPrint("Log TransactionBloc: fifoLogic: checkFLow ${mode}");
+      devLog("Log TransactionBloc: fifoLogic: checkFLow ${mode}");
       if (batches.isNotEmpty) {
         _releaseFIFO(usedBatches: batches, qtyRelease: 1);
       }
@@ -208,7 +207,7 @@ ModelFIFOLogic fifoLogic({
       ? _calculateSubTotalFromBatch(batches, discount ?? 0)
       : priceBuy * qtyFinal;
 
-  debugPrint("Log FifoLogic: subTotal: $priceBuy * $qtyFinal = $subTotal");
+  devLog("Log FifoLogic: subTotal: $priceBuy * $qtyFinal = $subTotal");
 
   return ModelFIFOLogic(
     priceBuy: priceBuy,
@@ -284,7 +283,7 @@ void _allocateFIFO({
       ),
     );
 
-    debugPrint(
+    devLog(
       "Log FifoLogic: AllocateFIFO: ${usedBatches.last.getprice_item}/$priceSell",
     );
     need -= take;
@@ -450,7 +449,7 @@ void applyFifoPriceToItem({
     final item = listItem[i];
     final fifoBatches = fifoMap[item.getidItem];
     if (fifoBatches == null || fifoBatches.isEmpty) continue;
-    debugPrint(
+    devLog(
       "Log FifoLogic: applyFifoPriceToItem: ${fifoBatches.last.getpriceItemFinal}",
     );
 

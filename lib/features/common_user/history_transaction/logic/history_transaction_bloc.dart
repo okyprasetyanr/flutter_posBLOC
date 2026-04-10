@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -15,7 +13,6 @@ import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/request/delete_data.dart';
-import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 
 class HistoryTransactionBloc
     extends Bloc<HistoryTransactionEvent, HistoryTransactionState> {
@@ -30,7 +27,6 @@ class HistoryTransactionBloc
     );
     on<HistoryTransactionSelectedData>(_onSelectedData);
     on<HistoryTransactionResetSelectedData>(_onResetSelectedData);
-    on<HistoryTransactionRevisionData>(_onRevisionData);
     on<HistoryTransactionSelectedFilter>(_onSelectedFilter);
   }
 
@@ -74,7 +70,7 @@ class HistoryTransactionBloc
               element.getdate.isBefore(dateEnd));
     }).toList();
 
-    debugPrint(
+    devLog(
       "Log HistoryTransactionBloc: getData: $dateStart $dateEnd $filteredData",
     );
 
@@ -188,19 +184,6 @@ class HistoryTransactionBloc
     if (currentState is HistoryTransactionLoaded) {
       emit(currentState.copyWith(selectedData: null));
     }
-  }
-
-  FutureOr<void> _onRevisionData(
-    HistoryTransactionRevisionData event,
-    Emitter<HistoryTransactionState> emit,
-  ) {
-    final currentState = state as HistoryTransactionLoaded;
-    navUpDownTransition(
-      event.context,
-      '/sell',
-      false,
-      arguments: {"revision": true, "transaction": currentState.selectedData!},
-    );
   }
 
   FutureOr<void> _onSelectedFilter(

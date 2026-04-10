@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
@@ -150,7 +149,7 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
       now: now,
     );
 
-    debugPrint("Log MainMenuBloc: datAcount: $dataAccount");
+    devLog("Log MainMenuBloc: datAcount: $dataAccount");
 
     final spots = (finalDataTransaction.isEmpty)
         ? [const FlSpot(0, 0)]

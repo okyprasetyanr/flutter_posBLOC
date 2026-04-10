@@ -37,7 +37,7 @@ class UIInventoryGridViewItem extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final item = items[index];
-            debugPrint(
+            devLog(
               "Log UIInventoryGridViewItem: priceItem: ${item.getpriceItem}, priceItemByBatch: ${item.getpriceItembyBatch}",
             );
             return Material(

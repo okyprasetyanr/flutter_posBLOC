@@ -596,7 +596,7 @@ class ExcelBackupService {
     }
     sheetWidthStyle(FieldDataTransFinancial.values, sheetHistoryExpense);
 
-    debugPrint("Log ExcelBackup: isPickingFile:${_isPickingFile}");
+    devLog("Log ExcelBackup: isPickingFile:${_isPickingFile}");
 
     if (_isPickingFile) return;
     _isPickingFile = true;

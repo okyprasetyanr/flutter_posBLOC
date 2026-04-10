@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
@@ -77,7 +76,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         .values
         .toList();
 
-    debugPrint(
+    devLog(
       "Log transactionBloc: Hive Data: ${hiveTransactionSaved.toString()}",
     );
 
@@ -179,6 +178,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         selectedPartner: ModelPartner.empty(),
       ),
     );
+    if (event.revision != null && event.currentTransaction != null) {
+      add(
+        TransactionLoadTransaction(
+          currentTransaction: event.currentTransaction!,
+          revision: true,
+        ),
+      );
+    }
   }
 
   FutureOr<void> _onSellSearchItem(
@@ -255,7 +262,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) {
     final currentState = state;
     if (currentState is TransactionLoaded) {
-      debugPrint("Log TransactionBloc: _onResetSelectedItem: masuk");
+      devLog("Log TransactionBloc: _onResetSelectedItem: masuk");
       emit(
         currentState.copyWith(
           selectedItem: null,
@@ -366,12 +373,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           emit(currentState.copyWith(itemOrdered: itemPesanan));
         }
       } else {
-        if (event.orderedItem != null) {
-          debugPrint("Log TransactionBloc:cek ${event.orderedItem!.toList()}");
-          emit(currentState.copyWith(itemOrdered: event.orderedItem));
-        } else {
-          emit(currentState.copyWith(itemOrdered: [...itemPesanan, selected!]));
-        }
+        devLog("Log TransactionBloc:cek 2 ${selected}");
+        emit(currentState.copyWith(itemOrdered: [...itemPesanan, selected!]));
       }
       add(TransactionResetSelectedItem());
     }
@@ -399,7 +402,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         );
       }
 
-      debugPrint("Log TransactionBloc: SelectedItem: $item");
+      devLog("Log TransactionBloc: SelectedItem: $item");
       emit(
         currentState.copyWith(selectedItem: item, editSelectedItem: event.edit),
       );
@@ -433,7 +436,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       discount: discount,
     );
 
-    debugPrint(
+    devLog(
       "Log TransactionLoaded: adjustItem: price: ${resultFifo.price} , price Buy: ${resultFifo.priceBuy}",
     );
 
@@ -481,7 +484,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     add(TransactionResetSelectedItem());
     if (currentState is TransactionLoaded) {
-      debugPrint("Log TransactionBloc: ResetOrderedItem");
+      devLog("Log TransactionBloc: ResetOrderedItem");
       emit(
         currentState.copyWith(
           selectedTransaction: ModelTransaction.empty(),
@@ -541,7 +544,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           simulatedItemOrdered: itemOrderedFinal,
         );
 
-        debugPrint(
+        devLog(
           "Log TransactionBloc: LoadedTransaction: ${item.getpriceItemFinal}, priceFinal: ${resultFifo.price}",
         );
         item = item.copyWith(
@@ -552,10 +555,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         );
         itemOrderedFinal.add(item);
       }
-      add(TransactionAddOrderedItem(orderedItem: itemOrderedFinal));
+
       final dataPartner = currentState.isSell
           ? await getCustomerIsar(event.currentTransaction.getidBranch)
           : await getSupplierIsar(event.currentTransaction.getidBranch);
+
+      devLog("Log TransactionBloc: LoadSaved ${event.currentTransaction}");
 
       emit(
         currentState.copyWith(
@@ -573,6 +578,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
               : ModelPartner.empty(),
           selectedTransaction: event.currentTransaction,
           revision: event.revision ?? false,
+          itemOrdered: [...itemOrderedFinal],
         ),
       );
     }

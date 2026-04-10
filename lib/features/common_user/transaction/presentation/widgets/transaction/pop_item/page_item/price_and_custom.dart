@@ -59,7 +59,7 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                           return null;
                         },
                         builder: (context, state) {
-                          debugPrint(
+                          devLog(
                             "Log UISell: BlocSelector Harga value: $state",
                           );
                           return Text(
@@ -113,7 +113,7 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                                     inputType: TextInputType.number,
                                     controller: controller,
                                     onChanged: (value) {
-                                      debugPrint(
+                                      devLog(
                                         "Log UISell: cek BlocSelector Harga",
                                       );
                                       onChange(

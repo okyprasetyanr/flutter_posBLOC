@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_state.dart';
@@ -138,7 +136,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
                         element.getidItem == currentState.selectedIdItem,
                   )
                   .toList();
-        debugPrint("Log BatchBloc: searchedBatch: ${filteredItemBatch}");
+        devLog("Log BatchBloc: searchedBatch: ${filteredItemBatch}");
       } else {
         filteredItem = event.search.isNotEmpty
             ? currentState.dataItem

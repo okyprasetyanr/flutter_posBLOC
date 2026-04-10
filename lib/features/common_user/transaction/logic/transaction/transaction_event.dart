@@ -7,8 +7,10 @@ class TransactionEvent {}
 
 class TransactionGetData extends TransactionEvent {
   final String? idBranch;
+  final ModelTransaction? currentTransaction;
+  final bool? revision;
 
-  TransactionGetData({this.idBranch});
+  TransactionGetData({this.idBranch, this.currentTransaction, this.revision});
 }
 
 class TransactionResetSelectedItem extends TransactionEvent {}

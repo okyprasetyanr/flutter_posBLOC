@@ -77,7 +77,7 @@ Future<UserCredential?> authenticatorAccount({
           ),
         );
       }
-      debugPrint(
+      devLog(
         "Log AuthenticationAccount: dataAccount: ${await getAllAccountIsar()}, idUser: $uidUser, created: ${parseDate(date: map[FieldDataUser.created_user.name], minute: false)}",
       );
 
@@ -89,14 +89,14 @@ Future<UserCredential?> authenticatorAccount({
       return userCredential;
     }
   } on FirebaseAuthException catch (e) {
-    debugPrint("Log AuthAccont : Firebase Error: $e");
+    devLog("Log AuthAccont : Firebase Error: $e");
     customSnackBar(context, "Terjadi kesalahan! Silahkan coba kembali.");
     customSnackBar(context, _mapFirebaseAuthCodeToKey(e));
     Navigator.pop(context);
     return null;
   } catch (e) {
     customSnackBar(context, "Terjadi kesalahan");
-    debugPrint("Log AuthAccont : $e");
+    devLog("Log AuthAccont : $e");
     Navigator.pop(context);
     return null;
   }

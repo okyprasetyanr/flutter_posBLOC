@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
@@ -187,7 +186,7 @@ class ModelTransaction extends Equatable {
   Future<void> pushDataBatch() async {
     List<ModelItemBatch> convertToItemBatch = [];
     for (final itemordered in _itemsOrdered) {
-      debugPrint("Log ModelTransaction: ${itemordered}");
+      devLog("Log ModelTransaction: ${itemordered}");
       convertToItemBatch.add(
         ModelItemBatch(
           priceitemBuy: itemordered.getpriceItemBuy,
@@ -309,7 +308,7 @@ class ModelTransaction extends Equatable {
               statusTransaction: _statusTransaction,
             );
 
-      debugPrint("Log ModelTransaction: Cek Transaksi: $dataTransaction");
+      devLog("Log ModelTransaction: Cek Transaksi: $dataTransaction");
 
       isSell
           ? await saveTransactionSell_Isar(finaldataTransaction)
@@ -327,7 +326,7 @@ class ModelTransaction extends Equatable {
           "item_ordered_batch",
         );
         for (final itemBatch in itemOrdered.getitemOrderedBatch) {
-          debugPrint(
+          devLog(
             "Log ModelTransaction: PushData: Check ItemOrderedBatch: ${itemBatch.getid_Ordered}",
           );
           final itemIdOrderedBatch = itemOrderedBatchRef.doc(

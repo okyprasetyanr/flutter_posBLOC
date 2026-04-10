@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/request/push_data.dart';
 
 enum PartnerType { customer, supplier }
@@ -70,7 +70,7 @@ class ModelPartner extends Equatable {
   }
 
   Future<void> pushDataPartner() async {
-    debugPrint("Log ModelPartner: _date: $_datePartner");
+    devLog("Log ModelPartner: _date: $_datePartner");
     pushWorkerDataPartner(
       collection: 'partners',
       id: _idPartner,

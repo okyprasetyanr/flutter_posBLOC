@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
 
@@ -57,7 +57,7 @@ class ServicePrinter {
       await BluetoothPrintPlus.connect(device);
       await _saveMac(device.address);
     } catch (e) {
-      debugPrint("Log ServicePrinter: Connect Error $e");
+      devLog("Log ServicePrinter: Connect Error $e");
     }
   }
 
@@ -126,7 +126,7 @@ class ServicePrinter {
       // 2. Kirim data
       await BluetoothPrintPlus.write(bytes);
     } catch (e) {
-      debugPrint("Log ServicePrinter: Write Gagal $e");
+      devLog("Log ServicePrinter: Write Gagal $e");
       await disconnect();
     }
   }

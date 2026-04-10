@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -23,7 +22,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final DataUserRepositoryCache repoCache;
 
   InventoryBloc(this.repoCache) : super(InventoryInitial()) {
-    debugPrint("Log InventoryBloc: Masuk Bloc");
+    devLog("Log InventoryBloc: Masuk Bloc");
     on<InventoryGetData>(_onGetData);
 
     on<InventoryFilterItem>(_onFilteredItem);
@@ -113,7 +112,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         list.sort((a, b) => a.getqtyItem.compareTo(b.getqtyItem));
         break;
     }
-    debugPrint(
+    devLog(
       "Log InventoryBloc: filterItem: ${list.isNotEmpty ? list.first.getpriceItembyBatch : "No Data"}",
     );
     return list;
@@ -170,7 +169,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final filterByCategory = currentState.indexFilterByCategoryItem;
 
     final dataItem = await getItemIsar(idBranch);
-    debugPrint("Log InventoryBloc: items: $dataItem");
+    devLog("Log InventoryBloc: items: $dataItem");
     final dataCategory = await getCategoryIsar(idBranch);
     final filteredDataCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
@@ -249,7 +248,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
     await item.pushDataItem();
 
-    debugPrint("Log InventoryBloc: PushData: ${item}");
+    devLog("Log InventoryBloc: PushData: ${item}");
     saveItem_Isar(item);
     add(InventoryGetData());
   }
@@ -298,9 +297,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   ) {
     final currentState = state as InventoryLoaded;
 
-    debugPrint(
-      "Log InventoryBloc SelectedCategoryItem: ${event.dataCategoryItem}",
-    );
+    devLog("Log InventoryBloc SelectedCategoryItem: ${event.dataCategoryItem}");
     emit(
       currentState.copyWith(dataSelectedCategoryItem: event.dataCategoryItem),
     );
@@ -311,7 +308,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     Emitter<InventoryState> emit,
   ) {
     final currentState = state as InventoryLoaded;
-    debugPrint("Log InventoryBloc SelectedItem: ${event.selectedItem}");
+    devLog("Log InventoryBloc SelectedItem: ${event.selectedItem}");
     emit(currentState.copyWith(dataSelectedItem: event.selectedItem));
   }
 
@@ -323,7 +320,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         ? (state as InventoryLoaded)
         : InventoryLoaded();
 
-    debugPrint("Log InventoryBloc: resetSelectedItem: masuk");
+    devLog("Log InventoryBloc: resetSelectedItem: masuk");
     emit(
       currentState.copyWith(
         dataSelectedItem: null,
@@ -363,7 +360,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     Emitter<InventoryState> emit,
   ) {
     final currentState = state as InventoryLoaded;
-    debugPrint(
+    devLog(
       "Log InventoryBloc CondimentForm: ${event.condimentForm} ${currentState.dataSelectedItem}",
     );
 
@@ -409,7 +406,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
                 .toList()
           : currentState.dataCategory.toList();
 
-      debugPrint("Log InventoryBloc Category: search: ${filteredData}");
+      devLog("Log InventoryBloc Category: search: ${filteredData}");
       emit(currentState.copyWith(filteredDataCategory: filteredData));
     }
   }

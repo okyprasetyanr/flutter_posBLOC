@@ -82,28 +82,31 @@ class UIInventoryFormFieldItem extends StatelessWidget {
                     onPressed: () => customBottomSheet(
                       context: context,
                       resetItemForm: null,
-                      content: (scrollController) =>
-                          BlocSelector<InventoryBloc, InventoryState, File?>(
-                            selector: (state) {
-                              if (state is InventoryLoaded) {
-                                return state.image;
-                              }
-                              return null;
-                            },
-                            builder: (context, state) {
-                              return GestureDetector(
-                                onTap: () => context.read<InventoryBloc>().add(
-                                  InventoryPickImage(),
-                                ),
-                                child: state == null
-                                    ? Text(
-                                        "Belum ada gambar!",
-                                        style: lv05TextStyle,
-                                      )
-                                    : Image.file(state),
-                              );
-                            },
-                          ),
+                      content: (scrollController) => BlocProvider.value(
+                        value: context.read<InventoryBloc>(),
+                        child:
+                            BlocSelector<InventoryBloc, InventoryState, File?>(
+                              selector: (state) {
+                                if (state is InventoryLoaded) {
+                                  return state.image;
+                                }
+                                return null;
+                              },
+                              builder: (context, state) {
+                                return GestureDetector(
+                                  onTap: () => context
+                                      .read<InventoryBloc>()
+                                      .add(InventoryPickImage()),
+                                  child: state == null
+                                      ? Text(
+                                          "Belum ada gambar!",
+                                          style: lv05TextStyle,
+                                        )
+                                      : Image.file(state),
+                                );
+                              },
+                            ),
+                      ),
                     ),
                   ),
                 ),

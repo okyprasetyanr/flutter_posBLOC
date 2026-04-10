@@ -129,7 +129,7 @@ class _UiBatchState extends State<UiBatch> {
                   return ([], [], false);
                 },
                 builder: (context, state) {
-                  debugPrint("Log UIBatch: itemBatch: $state");
+                  devLog("Log UIBatch: itemBatch: $state");
                   final itemById = state.$2;
                   return state.$1.isEmpty
                       ? Center(
