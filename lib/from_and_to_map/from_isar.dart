@@ -9,12 +9,15 @@ import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_isar.dart';
+import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
+import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
@@ -25,6 +28,7 @@ import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
+import 'package:hive/hive.dart';
 
 Future<List<ModelItem>> fromIsarItem(
   List<ModelItemIsar> dataItem,
@@ -299,6 +303,28 @@ ModelFinancial fromIsarFinancial<T extends ModelFinancialBaseIsar>({
     idFinancial: object.idFinancial,
     nameFinancial: object.nameFinancial,
     idBranch: object.idBranch,
+  );
+}
+
+ModelCounter fromIsarCounter(
+  ModelCounterIsar counter,
+  Box<TransactionSavedHive> savedTransaction,
+) {
+  return ModelCounter(
+    counterSellSaved: savedTransaction.values
+        .where(
+          (element) =>
+              element.datatransactionSaved[FieldDataTransaction
+                  .id_branch
+                  .name] ==
+              counter.idBranch,
+        )
+        .length,
+    counterSell: counter.counterSell,
+    counterBuy: counter.counterBuy,
+    counterIncome: counter.counterIncome,
+    counterExpense: counter.counterExpense,
+    idBranch: counter.idBranch,
   );
 }
 

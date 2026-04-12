@@ -80,20 +80,14 @@ Future<List<ModelCategory>> getCategoryIsar(String idBranch) async {
 }
 
 Future<ModelCounter> getCounterIsar(String idBranch) async {
+  final savedTransaction = await Hive.box<TransactionSavedHive>(
+    'saved_transaction',
+  );
   final allCounter = await isar.modelCounterIsars
       .where()
       .idBranchEqualTo(idBranch)
       .findFirst();
-  return ModelCounter(
-    counterSellSaved: await Hive.box<TransactionSavedHive>(
-      'saved_transaction',
-    ).length,
-    counterSell: allCounter!.counterSell,
-    counterBuy: allCounter.counterBuy,
-    counterIncome: allCounter.counterIncome,
-    counterExpense: allCounter.counterExpense,
-    idBranch: allCounter.idBranch,
-  );
+  return fromIsarCounter(allCounter!, savedTransaction);
 }
 
 Future<List<ModelFinancial>> getIncomeIsar(String idBranch) async {

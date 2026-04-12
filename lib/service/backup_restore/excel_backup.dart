@@ -24,6 +24,9 @@ class ExcelBackupService {
   Future<void> backupItemsToExcel() async {
     final excel = Excel.createExcel();
     final uidOwner = UserSession.getUidOwner();
+    final sheetBatch = excel[ListDataHeaderExcel.Batch.name];
+    final sheetBatchItem = excel[ListDataHeaderExcel.Batch_Item.name];
+    final sheetCounter = excel[ListDataHeaderExcel.Counter.name];
     final sheetAccount = excel[ListDataHeaderExcel.Akun.name];
     final sheetCompany = excel[ListDataHeaderExcel.Usaha.name];
     final sheetItem = excel[ListDataHeaderExcel.Item.name];
@@ -153,6 +156,7 @@ class ExcelBackupService {
         TextCellValue(item.getstatusCondiment.name),
         TextCellValue(item.getStatusItem.name),
         TextCellValue(formatDate(date: item.getDateItem, minute: false)),
+        DoubleCellValue(item.getpriceItemBuybyBatch), // ✅ FIX
       ]);
     }
     sheetWidthStyle(FieldDataItem.values, sheetItem);
@@ -205,7 +209,6 @@ class ExcelBackupService {
 
     //Supplier
     sheetSupplier.appendRow([
-      TextCellValue(FieldDataPartner.uid_owner.name),
       TextCellValue(FieldDataPartner.id_branch.name),
       TextCellValue(FieldDataPartner.id_partner.name),
       TextCellValue(FieldDataPartner.name_partner.name),
@@ -218,7 +221,6 @@ class ExcelBackupService {
 
     for (final partner in await getAllSupplier_Isar()) {
       sheetSupplier.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(partner.getidBranchPartner),
         TextCellValue(partner.getidPartner),
         TextCellValue(partner.getnamePartner),
@@ -233,7 +235,6 @@ class ExcelBackupService {
 
     //Income
     sheetIncome.appendRow([
-      TextCellValue(FieldDataFinancial.uid_owner.name),
       TextCellValue(FieldDataFinancial.id_branch.name),
       TextCellValue(FieldDataFinancial.id_financial.name),
       TextCellValue(FieldDataFinancial.name_financial.name),
@@ -242,7 +243,6 @@ class ExcelBackupService {
 
     for (final financial in await getAllIncome_Isar()) {
       sheetIncome.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(financial.getidBranch),
         TextCellValue(financial.getidFinancial),
         TextCellValue(financial.getnameFinancial),
@@ -253,7 +253,6 @@ class ExcelBackupService {
 
     //Expense
     sheetExpense.appendRow([
-      TextCellValue(FieldDataFinancial.uid_owner.name),
       TextCellValue(FieldDataFinancial.id_branch.name),
       TextCellValue(FieldDataFinancial.id_financial.name),
       TextCellValue(FieldDataFinancial.name_financial.name),
@@ -262,7 +261,6 @@ class ExcelBackupService {
 
     for (final financial in await getAllExpense_Isar()) {
       sheetExpense.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(financial.getidBranch),
         TextCellValue(financial.getidFinancial),
         TextCellValue(financial.getnameFinancial),
@@ -273,7 +271,6 @@ class ExcelBackupService {
 
     //User
     sheetUser.appendRow([
-      TextCellValue(FieldDataUser.uid_owner.name),
       TextCellValue(FieldDataUser.id_branch.name),
       TextCellValue(FieldDataUser.id_user.name),
       TextCellValue(FieldDataUser.name_user.name),
@@ -288,8 +285,7 @@ class ExcelBackupService {
 
     for (final operator in await getAllUserIsar()) {
       sheetUser.appendRow([
-        TextCellValue(uidOwner),
-        TextCellValue(operator.getIdBranchUser!),
+        TextCellValue(operator.getIdBranchUser ?? ""),
         TextCellValue(operator.getIdUser!),
         TextCellValue(operator.getNameUser),
         TextCellValue(operator.getEmailUser),
@@ -312,7 +308,6 @@ class ExcelBackupService {
 
     //HistorySell
     sheetHistorySell.appendRow([
-      TextCellValue(FieldDataTransaction.uid_owner.name),
       TextCellValue(FieldDataTransaction.invoice.name),
       TextCellValue(FieldDataTransaction.id_branch.name),
       TextCellValue(FieldDataTransaction.note.name),
@@ -340,7 +335,6 @@ class ExcelBackupService {
 
     for (final item in dataTransactionSell) {
       sheetHistorySell.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(item.getinvoice),
         TextCellValue(item.getidBranch),
         TextCellValue(item.getnote),
@@ -384,11 +378,10 @@ class ExcelBackupService {
         DoubleCellValue(element.getpaymentTotal),
       ]);
     });
-    sheetWidthStyle(FieldDataTransaction.values, sheetHistorySplitPayment);
+    sheetWidthStyle(FieldDataSplit.values, sheetHistorySplitPayment);
 
     //HistorySellItem
     sheetHistorySellItem.appendRow([
-      TextCellValue(FieldDataItemOrdered.uid_owner.name),
       TextCellValue(FieldDataItemOrdered.id_branch.name),
       TextCellValue(FieldDataItemOrdered.id_ordered.name),
       TextCellValue(FieldDataItemOrdered.id_category_item.name),
@@ -396,16 +389,15 @@ class ExcelBackupService {
       TextCellValue(FieldDataItemOrdered.name_item.name),
       TextCellValue(FieldDataItemOrdered.qty_item.name),
       TextCellValue(FieldDataItemOrdered.price_item.name),
+      TextCellValue(FieldDataItemOrdered.price_item_final.name),
+      TextCellValue(FieldDataItemOrdered.price_item_buy.name),
       TextCellValue(FieldDataItemOrdered.discount_item.name),
       TextCellValue(FieldDataItemOrdered.sub_total.name),
       TextCellValue(FieldDataItemOrdered.note.name),
     ]);
 
-    dataTransactionSell.expand((element) => element.getitemsOrdered).forEach((
-      element,
-    ) {
+    dataTransactionSell.expand((e) => e.getitemsOrdered).forEach((element) {
       sheetHistorySellItem.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(element.getidBranch),
         TextCellValue(element.getidOrdered),
         TextCellValue(element.getidCategoryItem),
@@ -413,6 +405,8 @@ class ExcelBackupService {
         TextCellValue(element.getnameItem),
         DoubleCellValue(element.getqtyItem),
         DoubleCellValue(element.getpriceItem),
+        DoubleCellValue(element.getpriceItemFinal),
+        DoubleCellValue(element.getpriceItemBuy),
         IntCellValue(element.getdiscountItem),
         DoubleCellValue(element.getsubTotal),
         TextCellValue(element.getNote),
@@ -422,7 +416,6 @@ class ExcelBackupService {
 
     //HistorySellCondiment
     sheetHistorySellCondiment.appendRow([
-      TextCellValue(FieldDataItemOrdered.uid_owner.name),
       TextCellValue(FieldDataItemOrdered.id_branch.name),
       TextCellValue(FieldDataItemOrdered.id_ordered.name),
       TextCellValue(FieldDataItemOrdered.id_category_item.name),
@@ -440,7 +433,6 @@ class ExcelBackupService {
         .expand((element) => element.getCondiment)
         .forEach((element) {
           sheetHistorySellCondiment.appendRow([
-            TextCellValue(uidOwner),
             TextCellValue(element.getidBranch),
             TextCellValue(element.getidOrdered),
             TextCellValue(element.getidCategoryItem),
@@ -457,7 +449,6 @@ class ExcelBackupService {
 
     //HistoryBuy
     sheetHistoryBuy.appendRow([
-      TextCellValue(FieldDataTransaction.uid_owner.name),
       TextCellValue(FieldDataTransaction.invoice.name),
       TextCellValue(FieldDataTransaction.id_branch.name),
       TextCellValue(FieldDataTransaction.note.name),
@@ -484,7 +475,6 @@ class ExcelBackupService {
     final dataTransactionBuy = await getAllTransactionBuy_Isar();
     for (final item in dataTransactionBuy) {
       sheetHistoryBuy.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(item.getinvoice),
         TextCellValue(item.getidBranch),
         TextCellValue(item.getnote),
@@ -512,7 +502,6 @@ class ExcelBackupService {
 
     //HistoryBuyItem
     sheetHistoryBuyItem.appendRow([
-      TextCellValue(FieldDataItemOrdered.uid_owner.name),
       TextCellValue(FieldDataItemOrdered.id_branch.name),
       TextCellValue(FieldDataItemOrdered.id_ordered.name),
       TextCellValue(FieldDataItemOrdered.id_category_item.name),
@@ -528,7 +517,6 @@ class ExcelBackupService {
     for (final transBuyItem in dataTransactionBuy) {
       for (final item in transBuyItem.getitemsOrdered) {
         sheetHistoryBuyItem.appendRow([
-          TextCellValue(uidOwner),
           TextCellValue(item.getidBranch),
           TextCellValue(item.getidOrdered),
           TextCellValue(item.getidCategoryItem),
@@ -546,7 +534,6 @@ class ExcelBackupService {
 
     //HistoryIncome
     sheetHistoryIncome.appendRow([
-      TextCellValue(FieldDataTransFinancial.uid_owner.name),
       TextCellValue(FieldDataTransFinancial.id_branch.name),
       TextCellValue(FieldDataTransFinancial.id_financial.name),
       TextCellValue(FieldDataTransFinancial.name_financial.name),
@@ -558,7 +545,6 @@ class ExcelBackupService {
 
     for (final transIncome in await getAllTransactionIncome_Isar()) {
       sheetHistoryIncome.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(transIncome.getidBranch),
         TextCellValue(transIncome.getidFinancial),
         TextCellValue(transIncome.getnameFinancial),
@@ -572,7 +558,6 @@ class ExcelBackupService {
 
     //HistoryExpense
     sheetHistoryExpense.appendRow([
-      TextCellValue(FieldDataTransFinancial.uid_owner.name),
       TextCellValue(FieldDataTransFinancial.id_branch.name),
       TextCellValue(FieldDataTransFinancial.id_financial.name),
       TextCellValue(FieldDataTransFinancial.name_financial.name),
@@ -584,7 +569,6 @@ class ExcelBackupService {
 
     for (final transExpense in await getAllTransactionExpense_Isar()) {
       sheetHistoryExpense.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(transExpense.getidBranch),
         TextCellValue(transExpense.getidFinancial),
         TextCellValue(transExpense.getnameFinancial),
@@ -595,6 +579,95 @@ class ExcelBackupService {
       ]);
     }
     sheetWidthStyle(FieldDataTransFinancial.values, sheetHistoryExpense);
+
+    //Counter
+    sheetCounter.appendRow([
+      TextCellValue(FieldDataCounter.id_branch.name),
+      TextCellValue(FieldDataCounter.counter_sell.name),
+      TextCellValue(FieldDataCounter.counter_sell_saved.name),
+      TextCellValue(FieldDataCounter.counter_buy.name),
+      TextCellValue(FieldDataCounter.counter_income.name),
+      TextCellValue(FieldDataCounter.counter_expense.name),
+    ]);
+
+    final counter = await getAllCounterIsar();
+    for (final data in counter) {
+      sheetCounter.appendRow([
+        TextCellValue(data.getidBranch),
+        IntCellValue(data.getcounterSell),
+        IntCellValue(data.getcounterSellSaved),
+        IntCellValue(data.getcounterBuy),
+        IntCellValue(data.getcounterIncome),
+        IntCellValue(data.getcounterExpense),
+      ]);
+    }
+    sheetWidthStyle(FieldDataCounter.values, sheetCounter);
+
+    //Batch
+
+    final dataBatch = await getAllBatchIsar();
+    sheetBatch.appendRow([
+      TextCellValue(FieldDataBatch.invoice.name),
+      TextCellValue(FieldDataBatch.id_branch.name),
+      TextCellValue(FieldDataBatch.date_buy.name),
+    ]);
+
+    for (final batch in dataBatch) {
+      sheetBatch.appendRow([
+        TextCellValue(batch.getinvoice),
+        TextCellValue(batch.getidBranch),
+        TextCellValue(formatDate(date: batch.getdate_buy, minute: false)),
+      ]);
+    }
+    sheetWidthStyle(FieldDataBatch.values, sheetBatch);
+
+    //BatchItem
+    sheetBatchItem.appendRow([
+      TextCellValue(FieldDataItemBatch.invoice.name),
+      TextCellValue(FieldDataItemBatch.name_item.name),
+      TextCellValue(FieldDataItemBatch.id_branch.name),
+      TextCellValue(FieldDataItemBatch.id_item.name),
+      TextCellValue(FieldDataItemBatch.id_category_item.name),
+      TextCellValue(FieldDataItemBatch.note.name),
+      TextCellValue(FieldDataItemBatch.date_buy.name),
+      TextCellValue(FieldDataItemBatch.expired_date.name),
+      TextCellValue(FieldDataItemBatch.discount_item.name),
+      TextCellValue(FieldDataItemBatch.qty_item_in.name),
+      TextCellValue(FieldDataItemBatch.qty_item_out.name),
+      TextCellValue(FieldDataItemBatch.price_item.name),
+      TextCellValue(FieldDataItemBatch.sub_total.name),
+      TextCellValue(FieldDataItemBatch.price_item_final.name),
+      TextCellValue(FieldDataItemBatch.price_item_buy.name),
+    ]);
+    dataBatch
+        .expand((element) => element.getitems_batch)
+        .forEach(
+          (element) => sheetBatchItem.appendRow([
+            TextCellValue(element.getinvoice),
+            TextCellValue(element.getnameItem),
+            TextCellValue(element.getidBranch),
+            TextCellValue(element.getidItem),
+            TextCellValue(element.getidCategoryItem),
+            TextCellValue(element.getnote),
+
+            TextCellValue(formatDate(date: element.getdateBuy, minute: false)),
+
+            TextCellValue(
+              element.getexpiredDate != null
+                  ? formatDate(date: element.getexpiredDate!, minute: false)
+                  : "",
+            ),
+
+            IntCellValue(element.getdiscountItem),
+            DoubleCellValue(element.getqtyItem_in),
+            DoubleCellValue(element.getqtyItem_out),
+            DoubleCellValue(element.getpriceItem),
+            DoubleCellValue(element.getsubTotal),
+            DoubleCellValue(element.getpriceItemFinal),
+            DoubleCellValue(element.getpriceItemBuy),
+          ]),
+        );
+    sheetWidthStyle(FieldDataItemBatch.values, sheetBatchItem);
 
     devLog("Log ExcelBackup: isPickingFile:${_isPickingFile}");
 

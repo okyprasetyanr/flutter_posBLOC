@@ -2,6 +2,7 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_account_isa
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_customer_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_income_isar.dart';
@@ -12,11 +13,13 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
+import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/from_and_to_map/from_isar.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
+import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
@@ -24,6 +27,7 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
+import 'package:hive/hive.dart';
 import 'package:isar/isar.dart';
 
 Future<List<ModelUser>> getAllUserIsar() async {
@@ -54,11 +58,19 @@ Future<List<ModelBatch>> getAllBatchIsar() async {
   );
 }
 
+Future<List<ModelCounter>> getAllCounterIsar() async {
+  final data = await isar.modelCounterIsars.where().findAll();
+  final savedTransaction = await Hive.box<TransactionSavedHive>(
+    'saved_transaction',
+  );
+  return data.map((e) => fromIsarCounter(e, savedTransaction)).toList();
+}
+
 Future<List<ModelItem>> getAllItemIsar() async {
   return await fromIsarItem(
     await isar.modelItemIsars.where().findAll(),
     null,
-    getAll: false,
+    getAll: true,
   );
 }
 

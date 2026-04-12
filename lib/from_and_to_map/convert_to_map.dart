@@ -101,7 +101,9 @@ Map<String, dynamic> convertToMapItemOrdered(
   bool saved = false,
 }) {
   final data = {
-    FieldDataItemOrdered.invoice.name: _itemsOrdered.getinvoice,
+    if (_itemsOrdered.getinvoice != null)
+      FieldDataItemOrdered.invoice.name: _itemsOrdered.getinvoice,
+
     FieldDataItemOrdered.sub_total.name: _itemsOrdered.getsubTotal,
     FieldDataItemOrdered.name_item.name: _itemsOrdered.getnameItem,
     FieldDataItemOrdered.id_item.name: _itemsOrdered.getidItem,

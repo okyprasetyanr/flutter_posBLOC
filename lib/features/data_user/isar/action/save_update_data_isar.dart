@@ -340,7 +340,6 @@ T convertTransaction<T extends ModelTransactionBaseIsar>(
                 .map(
                   (c) => ModelItemOrderedIsar()
                     ..idOrdered = c.getidOrdered
-                    ..invoice = c.getinvoice
                     ..dateBuy = c.getdateBuy
                     ..expiredDate = c.getexpiredDate
                     ..priceItemFinal = c.getpriceItemFinal

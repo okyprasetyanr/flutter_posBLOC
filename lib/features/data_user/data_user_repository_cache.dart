@@ -9,18 +9,6 @@ import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transact
 import 'package:hive/hive.dart';
 
 class DataUserRepositoryCache {
-  // List<ModelItem> dataItem = [];
-  // List<ModelCategory> dataCategory = [];
-  // List<ModelPartner> dataPartner = [];
-  // List<ModelTransaction> dataTransSell = [];
-  // List<ModelTransaction> dataTransBuy = [];
-  // List<ModelBatch> dataBatch = [];
-  // List<ModelFinancial> dataFinancial = [];
-  // List<ModelTransactionFinancial> dataTransIncome = [];
-  // List<ModelTransactionFinancial> dataTransExpense = [];
-  // List<ModelUser> dataUser = [];
-  // List<ModelCounter> dataCounter = [];
-  // ModelCompany? dataCompany;
   final DataUserRepository repo;
 
   DataUserRepositoryCache(this.repo);

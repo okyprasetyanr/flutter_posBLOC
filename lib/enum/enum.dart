@@ -106,7 +106,6 @@ enum FieldDataItemOrdered {
   id_branch,
   name_item,
   id_item,
-  id_condiment,
   qty_item,
   discount_item,
   price_item,
@@ -144,9 +143,10 @@ enum FieldDataItemOrderedBatch {
   price_itemBuy,
 }
 
-enum FieldDataBatch { uid_owner, id_branch, date_buy }
+enum FieldDataBatch { uid_owner, id_branch, date_buy, invoice }
 
 enum FieldDataCounter {
+  id_branch,
   counter_sell,
   counter_sell_saved,
   counter_buy,
@@ -164,6 +164,9 @@ enum FieldDataListBranch {
 enum ListForDatabase { Item, Transaksi, Kontak, Kas, Operator }
 
 enum ListDataHeaderExcel {
+  Batch,
+  Batch_Item,
+  Counter,
   Akun,
   Usaha,
   Item,
