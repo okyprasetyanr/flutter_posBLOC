@@ -1,5 +1,9 @@
+import 'package:isar/isar.dart';
+
 abstract class ModelUserBaseIsar {
+  @Index(unique: true)
   late String idUser;
+  @Index()
   late String? idBranchUser;
 
   late String statusUser;

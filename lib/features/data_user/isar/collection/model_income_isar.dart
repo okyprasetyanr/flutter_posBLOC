@@ -5,8 +5,4 @@ part 'model_income_isar.g.dart';
 @collection
 class ModelIncomeIsar extends ModelFinancialBaseIsar {
   Id isarId = Isar.autoIncrement;
-  @Index(unique: true)
-  late String idFinancial;
-  @Index()
-  late String idBranch;
 }

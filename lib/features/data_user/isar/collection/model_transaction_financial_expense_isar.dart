@@ -6,8 +6,4 @@ part 'model_transaction_financial_expense_isar.g.dart';
 class ModelTransactionFinancialExpenseIsar
     extends ModelTransactionFinancialBaseIsar {
   Id isarId = Isar.autoIncrement;
-  @Index(unique: true)
-  late String invoice;
-  @Index()
-  late String idBranch;
 }

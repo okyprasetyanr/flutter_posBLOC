@@ -6,8 +6,4 @@ part 'model_account_isar.g.dart';
 @collection
 class ModelAccountIsar extends ModelUserBaseIsar {
   Id isarId = Isar.autoIncrement;
-  @Index(unique: true)
-  late String idUser;
-  @Index()
-  late String? idBranchUser;
 }

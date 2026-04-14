@@ -9,10 +9,4 @@ part 'model_transaction_buy_isar.g.dart';
 @collection
 class ModelTransactionBuyIsar extends ModelTransactionBaseIsar {
   Id isarId = Isar.autoIncrement;
-
-  @Index(unique: true)
-  late String invoice;
-
-  @Index()
-  late String idBranch;
 }

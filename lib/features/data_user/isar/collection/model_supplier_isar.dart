@@ -5,8 +5,4 @@ part 'model_supplier_isar.g.dart';
 @collection
 class ModelSupplierIsar extends ModelPartnerBaseIsar {
   Id isarId = Isar.autoIncrement;
-  @Index(unique: true)
-  late String idPartner;
-  @Index()
-  late String idBranch;
 }
