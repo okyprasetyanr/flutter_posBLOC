@@ -272,16 +272,33 @@ void _allocateFIFO({
 
     final take = available >= need ? need : available;
 
-    usedBatches.add(
-      ModelItemOrderedBatch(
-        id_ordered: batch.getidOrdered,
-        id_item: idItem,
-        invoice: invoice,
-        qty_item: take,
-        price_item: priceSell != 0 ? priceSell : batch.getpriceItemFinal,
-        price_itemBuy: priceBuy != 0 ? priceBuy : batch.getpriceItemBuy,
-      ),
+    final existingIndex = usedBatches.indexWhere(
+      (e) => e.getid_Ordered == batch.getidOrdered,
     );
+
+    if (existingIndex != -1) {
+      final existing = usedBatches[existingIndex];
+
+      usedBatches[existingIndex] = ModelItemOrderedBatch(
+        id_ordered: existing.getid_Ordered,
+        id_item: existing.getid_Item,
+        invoice: existing.getinvoice,
+        qty_item: existing.getqty_item + take,
+        price_item: existing.getprice_item,
+        price_itemBuy: existing.getprice_itemBuy,
+      );
+    } else {
+      usedBatches.add(
+        ModelItemOrderedBatch(
+          id_ordered: batch.getidOrdered,
+          id_item: idItem,
+          invoice: invoice,
+          qty_item: take,
+          price_item: priceSell != 0 ? priceSell : batch.getpriceItemFinal,
+          price_itemBuy: priceBuy != 0 ? priceBuy : batch.getpriceItemBuy,
+        ),
+      );
+    }
 
     devLog(
       "Log FifoLogic: AllocateFIFO: ${usedBatches.last.getprice_item}/$priceSell",

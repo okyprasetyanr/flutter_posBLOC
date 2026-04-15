@@ -234,12 +234,25 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     if (!sellState.isSell) {
       itemOrdered = itemOrdered
           .map(
-            (item) => item.copyWith(dateBuy: formattedDate, invoice: invoice),
+            (item) => item.copyWith(
+              dateBuy: formattedDate,
+              invoice: invoice,
+              itemOrderedBatch: item.getitemOrderedBatch
+                  .map((e) => e.copyWith(invoice: invoice))
+                  .toList(),
+            ),
           )
           .toList();
     } else {
       itemOrdered = itemOrdered
-          .map((item) => item.copyWith(invoice: invoice))
+          .map(
+            (item) => item.copyWith(
+              invoice: invoice,
+              itemOrderedBatch: item.getitemOrderedBatch
+                  .map((e) => e.copyWith(invoice: invoice))
+                  .toList(),
+            ),
+          )
           .toList();
     }
 

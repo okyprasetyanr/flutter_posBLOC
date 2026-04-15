@@ -63,12 +63,14 @@ class HistoryTransactionBloc
               .toList()
         : dataTransaction;
 
-    final filteredData = finalDataTransaction.where((element) {
-      return (element.getdate.isAtSameMomentAs(dateStart) ||
-              element.getdate.isAfter(dateStart)) &&
-          (element.getdate.isAtSameMomentAs(dateEnd) ||
-              element.getdate.isBefore(dateEnd));
-    }).toList();
+    final filteredData = _sortData(
+      finalDataTransaction.where((element) {
+        return (element.getdate.isAtSameMomentAs(dateStart) ||
+                element.getdate.isAfter(dateStart)) &&
+            (element.getdate.isAtSameMomentAs(dateEnd) ||
+                element.getdate.isBefore(dateEnd));
+      }).toList(),
+    );
 
     devLog(
       "Log HistoryTransactionBloc: getData: $dateStart $dateEnd $filteredData",
@@ -158,6 +160,7 @@ class HistoryTransactionBloc
           dateEnd: dateEnd,
           search: event.search,
         ),
+
         dateStart: dateStart,
         dateEnd: dateEnd,
       );
@@ -203,11 +206,17 @@ class HistoryTransactionBloc
           dateEnd: dateEnd,
           search: currentState.search,
         ),
+
         dateStart: currentState.dateStart,
         dateEnd: currentState.dateEnd,
         filter: event.filter,
       ),
     );
+  }
+
+  List<ModelTransaction> _sortData(List<ModelTransaction> data) {
+    data.sort((a, b) => b.getdate.compareTo(a.getdate));
+    return data;
   }
 
   List<ModelTransaction> _filterData({
@@ -219,35 +228,37 @@ class HistoryTransactionBloc
   }) {
     final lowerSearch = search.toLowerCase();
 
-    return dataTransaction.where((element) {
-      final date = element.getdate;
-      final status = element.getstatusTransaction;
+    return _sortData(
+      dataTransaction.where((element) {
+        final date = element.getdate;
+        final status = element.getstatusTransaction;
 
-      final dateValid =
-          (date.isAtSameMomentAs(dateStart) || date.isAfter(dateStart)) &&
-          (date.isAtSameMomentAs(dateEnd) || date.isBefore(dateEnd));
+        final dateValid =
+            (date.isAtSameMomentAs(dateStart) || date.isAfter(dateStart)) &&
+            (date.isAtSameMomentAs(dateEnd) || date.isBefore(dateEnd));
 
-      if (!dateValid) return false;
+        if (!dateValid) return false;
 
-      if (filter != ListStatusTransaction.All) {
-        final statusTarget = status == filter;
-        if (!statusTarget) return false;
-      }
+        if (filter != ListStatusTransaction.All) {
+          final statusTarget = status == filter;
+          if (!statusTarget) return false;
+        }
 
-      if (search.isNotEmpty) {
-        final invoice = element.getinvoice.toLowerCase();
-        final partner = element.getnamePartner!.toLowerCase();
-        final note = element.getnote.toLowerCase();
+        if (search.isNotEmpty) {
+          final invoice = element.getinvoice.toLowerCase();
+          final partner = element.getnamePartner!.toLowerCase();
+          final note = element.getnote.toLowerCase();
 
-        final match =
-            invoice.contains(lowerSearch) ||
-            partner.contains(lowerSearch) ||
-            note.contains(lowerSearch);
+          final match =
+              invoice.contains(lowerSearch) ||
+              partner.contains(lowerSearch) ||
+              note.contains(lowerSearch);
 
-        if (!match) return false;
-      }
+          if (!match) return false;
+        }
 
-      return true;
-    }).toList();
+        return true;
+      }).toList(),
+    );
   }
 }

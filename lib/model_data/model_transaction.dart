@@ -191,7 +191,7 @@ class ModelTransaction extends Equatable {
         ModelItemBatch(
           priceitemBuy: itemordered.getpriceItemBuy,
           qtyItem_out: 0,
-          invoice: _invoice,
+          invoice: itemordered.getinvoice!,
           nameItem: itemordered.getnameItem,
           idBranch: itemordered.getidBranch,
           idItem: itemordered.getidItem,
