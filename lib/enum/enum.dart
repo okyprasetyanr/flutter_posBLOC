@@ -177,6 +177,7 @@ enum ListDataHeaderExcel {
   Pengeluaran,
   Operator,
   Riwayat_Penjualan,
+  Riwayat_Penjualan_Item_Batch,
   Riwayat_Pembayaran_Split,
   Riwayat_Penjualan_Item,
   Riwayat_Penjualan_Tambahan,

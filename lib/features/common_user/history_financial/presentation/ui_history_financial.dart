@@ -475,7 +475,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
   }
 
   Future<void> refreshIndicator() async {
-    await context.read<DataUserRepositoryCache>().initTransFinancial();
+    await context.read<DataUserRepositoryCache>().initTransaction();
     _initData();
   }
 }

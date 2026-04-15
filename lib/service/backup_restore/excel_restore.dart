@@ -27,11 +27,8 @@ class ExcelRestoreService {
 Future<void> restoreSheet<T>({
   required Sheet sheet,
   required String id,
-  List<T>? listDataRepo,
-  T? dataRepo,
-  T Function(Map<String, dynamic> data, String id)? fromMap,
+  Function(Map<String, dynamic> data, String id)? fromMap,
   void Function(Map<String, dynamic> data)? getMap,
-  bool nested = false,
 }) async {
   if (sheet.rows.length <= 1) return;
 
@@ -45,17 +42,14 @@ Future<void> restoreSheet<T>({
 
     final map = _mapRow(headers, row);
 
-    if (!nested) {
-      final model = fromMap!(map, map[id]);
-      if (listDataRepo != null) {
-        listDataRepo.add(model);
-      } else {
-        dataRepo = model;
-      }
-      devLog("Log Restore: Cek Data: $listDataRepo");
-    } else {
-      getMap!(map);
-      devLog("Log Restore: Cek Data nested False: $listDataRepo");
+    if (fromMap != null) {
+      await fromMap(map, map[id]);
+      devLog("Log Restore: Cek Data: $map");
+    }
+
+    if (getMap != null) {
+      getMap(map);
+      devLog("Log Restore: Cek Data nested: $map");
     }
   }
 }

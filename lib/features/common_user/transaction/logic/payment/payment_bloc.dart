@@ -244,7 +244,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
 
     add(PaymentAdjust(ppn: ppn, discount: discount));
-    devLog("Log PaymentBloc: isSell: ${sellState.isSell}");
+    devLog("Log PaymentBloc: Counter: ${counter.getcounterSell}");
     emit(
       PaymentLoaded(
         revisionInvoice: dataRevisiOrSaved?.getinvoice ?? "",
@@ -393,7 +393,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             ? null
             : counter.getcounterBuy + 1,
       );
-
+      devLog(
+        "Log PaymentBloc: Counter After Payment: finalCounter: ${finalCounter.getcounterSell}",
+      );
       await saveCounter_Isar(finalCounter);
 
       await FirebaseFirestore.instance

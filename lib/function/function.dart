@@ -106,7 +106,7 @@ String generateInvoice({
   final branch = branchId!.substring(0, 4);
   final uuid = saved != null ? "Saved" : Uuid().v4().substring(0, 4);
   final operator = idOP.substring(0, 4);
-  devLog("Log Function: GenerateInvoice: $operator");
+  devLog("Log Function: GenerateInvoice: $queue");
   return "$operator-$branch-$queue-$uuid";
 }
 

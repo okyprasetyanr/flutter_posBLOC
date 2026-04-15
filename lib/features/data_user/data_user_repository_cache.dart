@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by_collection.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
@@ -24,10 +25,8 @@ class DataUserRepositoryCache {
   }
 
   Future<bool> initData() async {
-    await deleteAllCommonDataIsar();
     await initCompany();
     await initFinancial();
-    await initTransFinancial();
     await initItem();
     await initCategory();
     await initPartner();
@@ -45,6 +44,7 @@ class DataUserRepositoryCache {
   }
 
   Future<void> initFinancial() async {
+    await deleteFinancialCollection();
     final dataFinancial = await repo.getFinancial();
     for (final element in dataFinancial.where((e) => e.isIncome)) {
       await saveIncome_Isar(element);
@@ -55,7 +55,17 @@ class DataUserRepositoryCache {
     }
   }
 
-  Future<void> initTransFinancial() async {
+  Future<void> initTransaction() async {
+    await deleteCounterCollection();
+    await deleteTransactionSellCollection();
+    await deleteTransactionBuyCollection();
+    for (final element in await repo.getTransactionSell()) {
+      await saveTransactionSell_Isar(element);
+    }
+
+    for (final element in await repo.getTransactionBuy()) {
+      await saveTransactionBuy_Isar(element);
+    }
     for (final element in await repo.getTransIncome()) {
       await saveTransactionFinancialncome_Isar(element);
     }
@@ -66,30 +76,22 @@ class DataUserRepositoryCache {
     await saveCounterToIsar();
   }
 
-  Future<void> initTransaction() async {
-    for (final element in await repo.getTransactionSell()) {
-      await saveTransactionSell_Isar(element);
-    }
-
-    for (final element in await repo.getTransactionBuy()) {
-      await saveTransactionBuy_Isar(element);
-    }
-    await saveCounterToIsar();
-  }
-
   Future<void> initItem() async {
+    await deleteItemCollection();
     for (final element in await repo.getItem()) {
       await saveItem_Isar(element);
     }
   }
 
   Future<void> initCategory() async {
+    await deleteCategoryCollection();
     for (final element in await repo.getCategory()) {
       await saveCategory_Isar(element);
     }
   }
 
   Future<void> initPartner() async {
+    await deletePartnerCollection();
     final dataPartner = await repo.getPartner();
     for (final element in dataPartner.where((e) => e.isCustomer)) {
       await saveCustomer_Isar(element);
@@ -100,12 +102,14 @@ class DataUserRepositoryCache {
   }
 
   Future<void> initBatch() async {
+    await deleteBatchCollection();
     for (final element in await repo.getBatch()) {
       await saveBatch_Isar(element);
     }
   }
 
   Future<void> initUser() async {
+    await deleteOperatorCollection();
     for (final element in await repo.getUser()) {
       await saveUser_Isar(element);
     }

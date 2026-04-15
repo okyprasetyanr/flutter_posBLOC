@@ -106,16 +106,31 @@ Future<void> saveCompany_Isar(ModelCompany company) async {
 }
 
 Future<void> saveCounter_Isar(ModelCounter counter) async {
-  final data = ModelCounterIsar()
-    ..idBranch = counter.getidBranch
-    ..counterSell = counter.getcounterSell
-    ..counterSellSaved = counter.getcounterSellSaved
-    ..counterBuy = counter.getcounterBuy
-    ..counterIncome = counter.getcounterIncome
-    ..counterExpense = counter.getcounterExpense;
+  final data = await isar.modelCounterIsars
+      .where()
+      .idBranchEqualTo(counter.getidBranch)
+      .findFirst();
 
   await isar.writeTxn(() async {
-    await isar.modelCounterIsars.put(data);
+    if (data != null) {
+      data
+        ..counterSell = counter.getcounterSell
+        ..counterSellSaved = counter.getcounterSellSaved
+        ..counterBuy = counter.getcounterBuy
+        ..counterIncome = counter.getcounterIncome
+        ..counterExpense = counter.getcounterExpense;
+      await isar.modelCounterIsars.put(data);
+    } else {
+      await isar.modelCounterIsars.put(
+        ModelCounterIsar()
+          ..idBranch = counter.getidBranch
+          ..counterSell = counter.getcounterSell
+          ..counterSellSaved = counter.getcounterSellSaved
+          ..counterBuy = counter.getcounterBuy
+          ..counterIncome = counter.getcounterIncome
+          ..counterExpense = counter.getcounterExpense,
+      );
+    }
   });
 }
 
@@ -339,6 +354,7 @@ T convertTransaction<T extends ModelTransactionBaseIsar>(
             ..condiment = item.getCondiment
                 .map(
                   (c) => ModelItemOrderedIsar()
+                    ..invoice = null
                     ..idOrdered = c.getidOrdered
                     ..dateBuy = c.getdateBuy
                     ..expiredDate = c.getexpiredDate

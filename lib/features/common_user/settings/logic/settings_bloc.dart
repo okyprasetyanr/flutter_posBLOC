@@ -7,10 +7,13 @@ import 'package:flutter_pos/features/common_user/settings/logic/settings_event.d
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by_collection.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
+import 'package:flutter_pos/model_data/model_branch.dart';
+import 'package:flutter_pos/model_data/model_counter.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
+import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 import 'package:flutter_pos/service/backup_restore/excel_backup.dart';
 import 'package:flutter_pos/service/backup_restore/excel_restore.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -159,27 +162,22 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       switch (key) {
         case ListForDatabase.Item:
-          await deleteItemCollection();
           await repoCache.initItem();
+          await repoCache.initCategory();
           break;
         case ListForDatabase.Kas:
-          await deleteFinancialCollection();
           await repoCache.initFinancial();
           break;
         case ListForDatabase.Kontak:
-          await deletePartnerCollection();
           await repoCache.initPartner();
           break;
         case ListForDatabase.Transaksi:
-          await deleteTransactionSellCollection();
-          await deleteTransactionBuyCollection();
           await Future.wait([
             repoCache.initTransaction(),
-            repoCache.initTransFinancial(),
+            repoCache.initBatch(),
           ]);
           break;
         case ListForDatabase.Operator:
-          await deleteOperatorCollection();
           await repoCache.initUser();
           break;
       }
@@ -258,249 +256,315 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final currentState = state as SettingsBackupRestoreLoaded;
     List<ModelItemOrdered> itemsOrdered = [];
     List<ModelItemOrdered> itemCondiment = [];
+    List<ModelItemOrderedBatch> itemsOrderedBatch = [];
     List<ModelSplit> splitPayment = [];
-    bool isCorrect = false;
+    List<ModelItemBatch> itemBatch = [];
     await ExcelRestoreService(
       file: currentState.selectedFile as File,
       handlers: {
         ListDataHeaderExcel.Akun.name: (sheet) async => restoreSheet<ModelUser>(
           sheet: sheet,
           id: FieldDataUser.id_user.name,
-          listDataRepo: await getAllUserIsar(),
+
           getMap: (data) async {
             final dataAccount = await getAllAccountIsar();
             if (data[FieldDataUser.id_user.name] == dataAccount.idUser) {
-              isCorrect = true;
+              devLog("Log SettingsBloc: Restore aman");
+              await deleteAllCommonDataIsar();
+              await ExcelRestoreService(
+                file: currentState.selectedFile as File,
+                handlers: {
+                  ListDataHeaderExcel.Riwayat_Penjualan_Item.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) => restoreSheet<ModelItemOrdered>(
+                    sheet: sheet,
+                    id: FieldDataItemOrdered.id_ordered.name,
+
+                    getMap: (data) {
+                      itemsOrdered.add(
+                        fromMapItemOrdered(
+                          itemBatch: [],
+                          items: data,
+                          condiment: [],
+                          isCondiment: true,
+                          id_ordered:
+                              data[FieldDataItemOrdered.id_ordered.name
+                                  .replaceAll(" ", "_")],
+                        ),
+                      );
+                    },
+                  ),
+
+                  ListDataHeaderExcel.Riwayat_Penjualan_Item_Batch.name
+                      .replaceAll(" ", "_"): (sheet) =>
+                      restoreSheet<ModelItemOrderedBatch>(
+                        sheet: sheet,
+                        id: FieldDataItemOrderedBatch.id_ordered.name,
+                        getMap: (data) => itemsOrderedBatch.add(
+                          fromMapItemOrderedBatch(
+                            orderedBatch: data,
+                            id_ordered:
+                                data[FieldDataItemOrderedBatch.id_ordered.name],
+                          ),
+                        ),
+                      ),
+
+                  ListDataHeaderExcel.Riwayat_Penjualan_Tambahan.name
+                      .replaceAll(" ", "_"): (sheet) =>
+                      restoreSheet<ModelItemOrdered>(
+                        sheet: sheet,
+                        id: FieldDataItemOrdered.id_ordered.name,
+
+                        getMap: (data) {
+                          itemCondiment.add(
+                            fromMapItemOrdered(
+                              itemBatch: [],
+                              items: data,
+                              condiment: [],
+                              isCondiment: true,
+                              id_ordered:
+                                  data[FieldDataItemOrdered.id_ordered.name
+                                      .replaceAll(" ", "_")],
+                            ),
+                          );
+                        },
+                      ),
+
+                  ListDataHeaderExcel.Batch_Item.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) => restoreSheet<ModelItemBatch>(
+                    sheet: sheet,
+                    id: FieldDataItemBatch.invoice.name,
+                    getMap: (data) {
+                      itemBatch.add(
+                        fromMapItembatch(
+                          data,
+                          data[FieldDataItemBatch.invoice.name.replaceAll(
+                            " ",
+                            "_",
+                          )],
+                        ),
+                      );
+                    },
+                  ),
+
+                  ListDataHeaderExcel.Riwayat_Pembayaran_Split.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) => restoreSheet<ModelSplit>(
+                    sheet: sheet,
+                    id: FieldDataSplit.invoice.name,
+
+                    getMap: (data) {
+                      splitPayment.add(
+                        fromMapSplit(
+                          data,
+                          invoice: data[FieldDataSplit.invoice],
+                        ),
+                      );
+                    },
+                  ),
+
+                  ListDataHeaderExcel.Riwayat_Pembelian_Item.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) => restoreSheet<ModelItemOrdered>(
+                    sheet: sheet,
+                    id: FieldDataItemOrdered.id_ordered.name,
+
+                    getMap: (data) {
+                      itemsOrdered.add(
+                        fromMapItemOrdered(
+                          itemBatch: [],
+                          items: data,
+                          condiment: [],
+                          isCondiment: true,
+                          id_ordered:
+                              data[FieldDataItemOrdered.id_ordered.name
+                                  .replaceAll(" ", "_")],
+                        ),
+                      );
+                    },
+                  ),
+                },
+              ).restore();
+
+              await ExcelRestoreService(
+                file: currentState.selectedFile as File,
+                handlers: {
+                  // ListDataHeaderExcel.Akun.name: (sheet) =>
+                  //     restoreSheet<ModelUser>(
+                  //       sheet: sheet,
+                  //       id: FieldDataUser.id_user.name,
+                  //
+                  //       fromMap: (data, id) => fromMapUser(data, id),
+                  //     ),
+                  ListDataHeaderExcel.Batch.name: (sheet) async =>
+                      restoreSheet<ModelCounter>(
+                        sheet: sheet,
+                        id: FieldDataBatch.invoice.name,
+                        fromMap: (data, id) async => await saveBatch_Isar(
+                          fromMapBatch(
+                            data,
+                            data[FieldDataBatch.invoice],
+                            dataList: itemBatch,
+                          ),
+                        ),
+                      ),
+
+                  ListDataHeaderExcel.Counter.name: (sheet) async =>
+                      restoreSheet<ModelCounter>(
+                        sheet: sheet,
+                        id: FieldDataCounter.id_branch.name,
+                        fromMap: (data, id) async =>
+                            await saveCounter_Isar(fromMapCounter(data, id)),
+                      ),
+
+                  ListDataHeaderExcel.Usaha.name: (sheet) async =>
+                      restoreSheet<ModelCompany>(
+                        sheet: sheet,
+                        id: FieldDataCompany.id_company.name,
+                        fromMap: (data, id) async =>
+                            await saveCompany_Isar(fromMapCompany(data, id)),
+                      ),
+
+                  ListDataHeaderExcel.Item.name: (sheet) async =>
+                      restoreSheet<ModelItem>(
+                        sheet: sheet,
+                        id: FieldDataItem.id_item.name,
+
+                        fromMap: (data, id) async =>
+                            await saveItem_Isar(fromMapItem(data, id)),
+                      ),
+
+                  ListDataHeaderExcel.Kategori.name: (sheet) async =>
+                      restoreSheet<ModelCategory>(
+                        sheet: sheet,
+                        id: FieldDataCategory.id_category.name,
+
+                        fromMap: (data, id) async =>
+                            await saveCategory_Isar(fromMapCategory(data, id)),
+                      ),
+
+                  ListDataHeaderExcel.Pelanggan.name: (sheet) async =>
+                      restoreSheet<ModelPartner>(
+                        sheet: sheet,
+                        id: FieldDataPartner.id_partner.name,
+
+                        fromMap: (data, id) async =>
+                            await saveCustomer_Isar(fromMapPartner(data, id)),
+                      ),
+
+                  ListDataHeaderExcel.Pemasok.name: (sheet) async =>
+                      restoreSheet<ModelPartner>(
+                        sheet: sheet,
+                        id: FieldDataPartner.id_partner.name,
+
+                        fromMap: (data, id) async =>
+                            await saveSupplier_Isar(fromMapPartner(data, id)),
+                      ),
+
+                  ListDataHeaderExcel.Pendapatan.name: (sheet) async =>
+                      restoreSheet<ModelFinancial>(
+                        sheet: sheet,
+                        id: FieldDataFinancial.id_financial.name,
+
+                        fromMap: (data, id) async =>
+                            await saveIncome_Isar(fromMapFinancial(data, id)),
+                      ),
+
+                  ListDataHeaderExcel.Pengeluaran.name: (sheet) async =>
+                      restoreSheet<ModelFinancial>(
+                        sheet: sheet,
+                        id: FieldDataFinancial.id_financial.name,
+
+                        fromMap: (data, id) async =>
+                            await saveExpense_Isar(fromMapFinancial(data, id)),
+                      ),
+
+                  // ListDataHeaderExcel.Operator.name: (sheet) =>
+                  //     restoreSheet<ModelUser>(
+                  //       sheet: sheet,
+                  //       id: FieldDataUser.id_user.name,
+                  //
+                  //       fromMap: (data, id) => fromMapUser(data, id),
+                  //     ),
+                  ListDataHeaderExcel.Riwayat_Penjualan.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) async => restoreSheet<ModelTransaction>(
+                    sheet: sheet,
+                    id: FieldDataTransaction.invoice.name,
+
+                    fromMap: (data, id) async => await saveTransactionSell_Isar(
+                      fromMapTransaction(
+                        data,
+                        itemsOrdered
+                            .where((element) => element.getinvoice == id)
+                            .toList(),
+                        splitPayment,
+                        id,
+                      ),
+                    ),
+                  ),
+
+                  ListDataHeaderExcel.Riwayat_Pembelian.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) async => restoreSheet<ModelTransaction>(
+                    sheet: sheet,
+                    id: FieldDataTransaction.invoice.name,
+
+                    fromMap: (data, id) async => await saveTransactionBuy_Isar(
+                      fromMapTransaction(
+                        data,
+                        itemsOrdered
+                            .where((element) => element.getinvoice == id)
+                            .toList(),
+                        splitPayment,
+                        id,
+                      ),
+                    ),
+                  ),
+
+                  ListDataHeaderExcel.Riwayat_Pendapatan.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) async => restoreSheet<ModelTransactionFinancial>(
+                    sheet: sheet,
+                    id: FieldDataTransFinancial.id_financial.name,
+
+                    fromMap: (data, id) async =>
+                        await saveTransactionFinancialncome_Isar(
+                          fromMapTransFinancial(data, id),
+                        ),
+                  ),
+
+                  ListDataHeaderExcel.Riwayat_Pengeluaran.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) async => restoreSheet<ModelTransactionFinancial>(
+                    sheet: sheet,
+                    id: FieldDataTransFinancial.id_financial.name,
+
+                    fromMap: (data, id) async =>
+                        await saveTransactionFinancialExpense_Isar(
+                          fromMapTransFinancial(data, id),
+                        ),
+                  ),
+                },
+              ).restore();
             }
           },
-          nested: true,
         ),
       },
     ).restore();
 
-    if (isCorrect) {
-      await ExcelRestoreService(
-        file: currentState.selectedFile as File,
-        handlers: {
-          ListDataHeaderExcel.Riwayat_Penjualan_Item.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) => restoreSheet<ModelItemOrdered>(
-            sheet: sheet,
-            id: FieldDataItemOrdered.id_ordered.name,
-            nested: true,
-            getMap: (data) {
-              itemsOrdered.add(
-                fromMapItemOrdered(
-                  itemBatch: [],
-                  items: data,
-                  condiment: [],
-                  isCondiment: true,
-                  id_ordered:
-                      data[FieldDataItemOrdered.id_ordered.name.replaceAll(
-                        " ",
-                        "_",
-                      )],
-                ),
-              );
-            },
-          ),
-
-          ListDataHeaderExcel.Riwayat_Penjualan_Tambahan.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) => restoreSheet<ModelItemOrdered>(
-            sheet: sheet,
-            id: FieldDataItemOrdered.id_ordered.name,
-            nested: true,
-            getMap: (data) {
-              itemCondiment.add(
-                fromMapItemOrdered(
-                  itemBatch: [],
-                  items: data,
-                  condiment: [],
-                  isCondiment: true,
-                  id_ordered:
-                      data[FieldDataItemOrdered.id_ordered.name.replaceAll(
-                        " ",
-                        "_",
-                      )],
-                ),
-              );
-            },
-          ),
-
-          ListDataHeaderExcel.Riwayat_Pembayaran_Split.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) => restoreSheet<ModelSplit>(
-            sheet: sheet,
-            id: FieldDataSplit.invoice.name,
-            nested: true,
-            getMap: (data) {
-              splitPayment.add(
-                fromMapSplit(data, invoice: data[FieldDataSplit.invoice]),
-              );
-            },
-          ),
-
-          ListDataHeaderExcel.Riwayat_Pembelian_Item.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) => restoreSheet<ModelItemOrdered>(
-            sheet: sheet,
-            id: FieldDataItemOrdered.id_ordered.name,
-            nested: true,
-            getMap: (data) {
-              itemsOrdered.add(
-                fromMapItemOrdered(
-                  itemBatch: [],
-                  items: data,
-                  condiment: [],
-                  isCondiment: true,
-                  id_ordered:
-                      data[FieldDataItemOrdered.id_ordered.name.replaceAll(
-                        " ",
-                        "_",
-                      )],
-                ),
-              );
-            },
-          ),
-        },
-      ).restore();
-
-      await ExcelRestoreService(
-        file: currentState.selectedFile as File,
-        handlers: {
-          // ListDataHeaderExcel.Akun.name: (sheet) =>
-          //     restoreSheet<ModelUser>(
-          //       sheet: sheet,
-          //       id: FieldDataUser.id_user.name,
-          //       listDataRepo: repoCache.dataUser,
-          //       fromMap: (data, id) => fromMapUser(data, id),
-          //     ),
-          ListDataHeaderExcel.Usaha.name: (sheet) async =>
-              restoreSheet<ModelCompany>(
-                sheet: sheet,
-                id: FieldDataCompany.id_company.name,
-                dataRepo: await getAllCompanyIsar(),
-                fromMap: (data, id) => fromMapCompany(data, id),
-              ),
-
-          ListDataHeaderExcel.Item.name: (sheet) async =>
-              restoreSheet<ModelItem>(
-                sheet: sheet,
-                id: FieldDataItem.id_item.name,
-                listDataRepo: await getAllItemIsar(),
-                fromMap: (data, id) => fromMapItem(data, id),
-              ),
-
-          ListDataHeaderExcel.Kategori.name: (sheet) async =>
-              restoreSheet<ModelCategory>(
-                sheet: sheet,
-                id: FieldDataCategory.id_category.name,
-                listDataRepo: await getAllCategoryIsar(),
-                fromMap: (data, id) => fromMapCategory(data, id),
-              ),
-
-          ListDataHeaderExcel.Pelanggan.name: (sheet) async =>
-              restoreSheet<ModelPartner>(
-                sheet: sheet,
-                id: FieldDataPartner.id_partner.name,
-                listDataRepo: await getAllCustomer_Isar(),
-                fromMap: (data, id) => fromMapPartner(data, id),
-              ),
-
-          ListDataHeaderExcel.Pemasok.name: (sheet) async =>
-              restoreSheet<ModelPartner>(
-                sheet: sheet,
-                id: FieldDataPartner.id_partner.name,
-                listDataRepo: await getAllSupplier_Isar(),
-                fromMap: (data, id) => fromMapPartner(data, id),
-              ),
-
-          ListDataHeaderExcel.Pendapatan.name: (sheet) async =>
-              restoreSheet<ModelFinancial>(
-                sheet: sheet,
-                id: FieldDataFinancial.id_financial.name,
-                listDataRepo: await getAllIncome_Isar(),
-                fromMap: (data, id) => fromMapFinancial(data, id),
-              ),
-
-          ListDataHeaderExcel.Pengeluaran.name: (sheet) async =>
-              restoreSheet<ModelFinancial>(
-                sheet: sheet,
-                id: FieldDataFinancial.id_financial.name,
-                listDataRepo: await getAllExpense_Isar(),
-                fromMap: (data, id) => fromMapFinancial(data, id),
-              ),
-
-          // ListDataHeaderExcel.Operator.name: (sheet) =>
-          //     restoreSheet<ModelUser>(
-          //       sheet: sheet,
-          //       id: FieldDataUser.id_user.name,
-          //       listDataRepo: repoCache.dataUser,
-          //       fromMap: (data, id) => fromMapUser(data, id),
-          //     ),
-          ListDataHeaderExcel.Riwayat_Penjualan.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) async => restoreSheet<ModelTransaction>(
-            sheet: sheet,
-            id: FieldDataTransaction.invoice.name,
-            listDataRepo: await getAllTransactionSell_Isar(),
-            fromMap: (data, id) => fromMapTransaction(
-              data,
-              itemsOrdered
-                  .where((element) => element.getinvoice == id)
-                  .toList(),
-              splitPayment,
-              id,
-            ),
-          ),
-
-          ListDataHeaderExcel.Riwayat_Pembelian.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) async => restoreSheet<ModelTransaction>(
-            sheet: sheet,
-            id: FieldDataTransaction.invoice.name,
-            listDataRepo: await getAllTransactionBuy_Isar(),
-            fromMap: (data, id) => fromMapTransaction(
-              data,
-              itemsOrdered
-                  .where((element) => element.getinvoice == id)
-                  .toList(),
-              splitPayment,
-              id,
-            ),
-          ),
-
-          ListDataHeaderExcel.Riwayat_Pendapatan.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) async => restoreSheet<ModelTransactionFinancial>(
-            sheet: sheet,
-            id: FieldDataTransFinancial.id_financial.name,
-            listDataRepo: await getAllTransactionIncome_Isar(),
-            fromMap: (data, id) => fromMapTransFinancial(data, id),
-          ),
-
-          ListDataHeaderExcel.Riwayat_Pengeluaran.name.replaceAll(
-            " ",
-            "_",
-          ): (sheet) async => restoreSheet<ModelTransactionFinancial>(
-            sheet: sheet,
-            id: FieldDataTransFinancial.id_financial.name,
-            listDataRepo: await getAllTransactionExpense_Isar(),
-            fromMap: (data, id) => fromMapTransFinancial(data, id),
-          ),
-        },
-      ).restore();
-    } else {
-      emit(currentState.copyWith(isCorrent: isCorrect));
-    }
+    // if (isCorrect)  else {
+    //   emit(currentState.copyWith(isCorrent: isCorrect));
+    // }
   }
 
   FutureOr<void> _onSelectedBackup(
@@ -526,6 +590,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     Emitter<SettingsState> emit,
   ) async {
     await deleteAllCommonDataIsar();
+    final company = await getAllListBranchIsar();
+    for (ModelBranch branch in company) {
+      await saveCounter_Isar(
+        ModelCounter(
+          counterSell: 0,
+          counterBuy: 0,
+          counterIncome: 0,
+          counterExpense: 0,
+          idBranch: branch.getidBranch,
+        ),
+      );
+    }
     // repoCache.notifyChanged();
   }
 }

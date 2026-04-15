@@ -72,7 +72,7 @@ ModelItem fromMapItem(Map<String, dynamic> data, String id) {
     idBranch: data[FieldDataItem.id_branch.name],
     barcode: data[FieldDataItem.barcode.name],
     statusItem: StatusDataX.fromString(data[FieldDataItem.status_item.name]),
-    date: parseDate(date: data[FieldDataItem.date.name]),
+    date: parseDate(date: data[FieldDataItem.date.name], minute: false),
   );
 }
 
@@ -84,12 +84,13 @@ ModelPartner fromMapPartner(Map<String, dynamic> data, String id) {
     namePartner: data[FieldDataPartner.name_partner.name],
     phonePartner: data[FieldDataPartner.phone_partner.name],
     emailPartner: data[FieldDataPartner.email_partner.name],
-    balancePartner: data[FieldDataPartner.balance_partner.name],
+    balancePartner: (data[FieldDataPartner.balance_partner.name] as num)
+        .toDouble(),
     typePartner: PartnerType.values.firstWhere(
       (element) => element.name == data[FieldDataPartner.type.name],
       orElse: () => PartnerType.customer,
     ),
-    date: parseDate(date: data[FieldDataPartner.date.name]),
+    date: parseDate(date: data[FieldDataPartner.date.name], minute: false),
   );
 }
 
