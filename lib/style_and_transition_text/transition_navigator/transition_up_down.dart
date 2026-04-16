@@ -34,7 +34,7 @@ Future navUpDownTransition(
   );
 
   if (replace) {
-    return Navigator.pushReplacement(context, route);
+    return Navigator.pushAndRemoveUntil(context, route, (route) => false);
   } else {
     return Navigator.push(context, route);
   }

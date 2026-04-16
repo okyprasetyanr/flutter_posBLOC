@@ -146,7 +146,11 @@ final routesPage = {
     );
   },
 
-  '/settings': (context) => const UISettings(),
+  '/settings': (context) {
+    final mainMenu =
+        ModalRoute.of(context)!.settings.arguments as DataReportBloc;
+    return BlocProvider.value(value: mainMenu, child: const UISettings());
+  },
   '/login': (context) => const ScreenLogin(),
   '/sign-up': (context) => const ScreenSignup(),
 };

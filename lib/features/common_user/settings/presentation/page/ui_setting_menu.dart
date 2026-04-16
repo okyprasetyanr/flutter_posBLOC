@@ -5,6 +5,7 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_menu.dart';
+import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_event.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/ui_backup_restore_reset.dart';
@@ -240,6 +241,7 @@ class _UISettingsState extends State<UISettings> {
                     ),
                     label: Text("Keluar", style: lv05TextStyleWhite),
                     onPressed: () async {
+                      context.read<DataReportBloc>().isLogout = true;
                       await FirebaseAuth.instance.signOut();
                       await deleteAllDataIsar();
                       navUpDownTransition(context, '/login', true);

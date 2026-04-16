@@ -215,7 +215,12 @@ class _UIMainMenuState extends State<UIMainMenu> {
                     ),
                     listTileText(
                       () {
-                        navUpDownTransition(context, '/settings', false);
+                        navUpDownTransition(
+                          context,
+                          '/settings',
+                          false,
+                          arguments: context.read<DataReportBloc>(),
+                        );
                       },
                       Icons.settings,
                       "Pengaturan",

@@ -18,9 +18,10 @@ import 'package:flutter_pos/model_data/model_item_batch.dart';
 class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
   final DataUserRepositoryCache repoCache;
   late final StreamSubscription _repoSub;
-
+  bool isLogout = false;
   DataReportBloc(this.repoCache) : super(DataReportInitial()) {
     _repoSub = repoCache.onChanged.listen((_) {
+      if (isLogout) return;
       add(DataReportGetData());
     });
 

@@ -6,6 +6,9 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
+import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
+import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
+import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
@@ -125,7 +128,6 @@ class _MainAppState extends State<ScreenLogin> {
   @override
   void initState() {
     super.initState();
-
     Future.delayed(const Duration(milliseconds: 2000), () {
       _logoTopPosition.value = -150;
     });
@@ -133,21 +135,33 @@ class _MainAppState extends State<ScreenLogin> {
     Future.delayed(const Duration(milliseconds: 2800), () {
       showForm.value = true;
     });
+    _checkUserSession();
   }
+
+  Future<void> _checkUserSession() async {}
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        // if (snapshot.hasData) {
-        //   WidgetsBinding.instance.addPostFrameCallback((_) {
-        //     navUpDownTransition(context, '/mainmenu', true);
-        //   });
-        //   return SizedBox();
-        // } else {
+    return FutureBuilder(
+      future: Future.wait([
+        UserSession.init(),
+        Future.value(FirebaseAuth.instance.currentUser),
+      ]),
+      builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final User? user = snapshot.data?[1];
+        if (user != null) {
+          return BlocProvider(
+            create: (context) =>
+                DataReportBloc(context.read())..add(DataReportGetData()),
+            child: const UIMainMenu(),
+          );
+        }
         return _login();
-        // }
       },
     );
   }
