@@ -8,7 +8,7 @@ import 'package:flutter_pos/features/common_user/settings/logic/settings_state.d
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/from_and_to_map/from_map.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
@@ -602,6 +602,5 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         ),
       );
     }
-    // repoCache.notifyChanged();
   }
 }

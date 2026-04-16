@@ -27,8 +27,6 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
 
-final DataUserRepository dataUserRepo = DataUserRepository();
-final DataUserRepositoryCache repo = DataUserRepositoryCache(dataUserRepo);
 final ServicePrinter? printService = kIsWeb ? null : ServicePrinter();
 
 void main() async {
@@ -42,6 +40,9 @@ void main() async {
     Hive.openBox<TransactionSavedHive>('saved_transaction'),
   ]);
   await IsarService.initIsar();
+  final dataUserRepo = DataUserRepository();
+  final repo = DataUserRepositoryCache(dataUserRepo, isar);
+
   if (!kIsWeb) {
     Workmanager().initialize(callbackDispatcher);
     Workmanager().registerPeriodicTask(

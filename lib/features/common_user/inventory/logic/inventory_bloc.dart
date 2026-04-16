@@ -7,7 +7,7 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -246,10 +246,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       date: parseDate(date: DateTime.now()),
     );
 
+    await saveItem_Isar(item);
     await item.pushDataItem();
 
     devLog("Log InventoryBloc: PushData: ${item}");
-    saveItem_Isar(item);
     add(InventoryGetData());
   }
 

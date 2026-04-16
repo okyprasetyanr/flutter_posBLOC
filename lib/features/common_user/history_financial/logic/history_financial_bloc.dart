@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/common_user/history_financial/logic/history
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_state.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -141,7 +141,6 @@ class HistoryFinancialBloc
         : await saveTransactionFinancialExpense_Isar(dataTrans[index]);
     await dataTrans[index].updateCancelDataFinancial(isIncome);
     add(HistoryFinancialGetData());
-    // repoCache.notifyChanged();
   }
 
   FutureOr<void> _onSelectedFilter(

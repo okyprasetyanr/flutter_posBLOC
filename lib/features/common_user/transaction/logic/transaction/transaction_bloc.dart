@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -42,7 +42,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     );
     on<TransactionSelectedPartner>(_onSelectedPartner);
     on<TransactionDeleteItemOrdered>(_onDeleteItemOrdered);
-    on<TransactionStatusTransaction>(_onStatusTransaction);
     on<TransactionLoadTransaction>(_onTransactionLoadTransaction);
     on<TransactionDeleteItemSaved>(_onDeleteItemSaved);
   }
@@ -51,12 +50,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     TransactionGetData event,
     Emitter<TransactionState> emit,
   ) async {
+    add(TransactionResetOrderedItem());
     final currentState = state is TransactionLoaded
         ? (state as TransactionLoaded)
         : TransactionLoaded();
 
     final listBranch = await getAllListBranchIsar();
-
+    final isSell = event.changeMode != null
+        ? !currentState.isSell
+        : currentState.isSell;
     String idBranch =
         event.idBranch ?? currentState.idBranch ?? listBranch.first.getidBranch;
     final dataItem = await getItembyStatus(
@@ -68,7 +70,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       ...await getCategoryIsar(idBranch),
     ];
 
-    List<ModelPartner> partner = currentState.isSell
+    List<ModelPartner> partner = isSell
         ? await getCustomerIsar(idBranch)
         : await getSupplierIsar(idBranch);
 
@@ -153,16 +155,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     applyFifoPriceToItem(listItem: dataItem, fifoMap: fifoMap);
 
     dataItem.sort((a, b) => a.getnameItem.compareTo(b.getnameItem));
-    final isSell = !UserSession.getStatusFifo() ? true : currentState.isSell;
+    final finalisSell = !UserSession.getStatusFifo() ? true : isSell;
 
     emit(
       currentState.copyWith(
-        isSell: isSell,
+        customPrice: 0,
+        isSell: finalisSell,
         selectedTransaction: ModelTransaction.empty(),
         dataItemBatch: dataItemBatch,
         dataTransactionSaved: dataTransactionSaved,
         dataPartner: partner,
-        filteredItem: currentState.isSell
+        filteredItem: isSell
             ? dataItem
                   .where(
                     (element) =>
@@ -492,25 +495,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           editSelectedItem: false,
           itemOrdered: [],
           selectedPartner: ModelPartner.empty(),
-        ),
-      );
-    }
-  }
-
-  FutureOr<void> _onStatusTransaction(
-    TransactionStatusTransaction event,
-    Emitter<TransactionState> emit,
-  ) {
-    final currentState = state;
-    if (currentState is TransactionLoaded) {
-      // add(TransactionResetSelectedItem());
-      add(TransactionResetOrderedItem());
-      final newStatus = currentState.isSell;
-      emit(
-        currentState.copyWith(
-          isSell: !newStatus,
-          customPrice: 0,
-          itemOrdered: [],
         ),
       );
     }

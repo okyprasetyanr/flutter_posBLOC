@@ -113,7 +113,7 @@ class _UITransactionState extends State<UITransaction> {
                       );
                     }
                     context.read<TransactionBloc>().add(
-                      TransactionStatusTransaction(),
+                      TransactionGetData(changeMode: true),
                     );
                   },
                   child: AnimatedContainer(

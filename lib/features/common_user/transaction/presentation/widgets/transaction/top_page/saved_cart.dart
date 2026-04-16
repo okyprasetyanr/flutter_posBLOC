@@ -48,6 +48,8 @@ class UITransactionSavedCart extends StatelessWidget {
                             return const [];
                           },
                           builder: (context, state) {
+                            final transactionBloc = context
+                                .read<TransactionBloc>();
                             return ListView.builder(
                               itemCount: state.length,
                               itemBuilder: (context, index) {
@@ -104,14 +106,12 @@ class UITransactionSavedCart extends StatelessWidget {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                context
-                                                    .read<TransactionBloc>()
-                                                    .add(
-                                                      TransactionDeleteItemSaved(
-                                                        invoice: state[index]
-                                                            .getinvoice,
-                                                      ),
-                                                    );
+                                                transactionBloc.add(
+                                                  TransactionDeleteItemSaved(
+                                                    invoice:
+                                                        state[index].getinvoice,
+                                                  ),
+                                                );
                                                 Navigator.pop(context, true);
                                               },
                                               child: Text(

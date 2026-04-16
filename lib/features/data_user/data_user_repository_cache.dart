@@ -3,24 +3,35 @@ import 'dart:async';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_by_collection.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save/save_list_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_buy_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_expense_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 
 import 'package:hive/hive.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:isar/isar.dart';
 
 class DataUserRepositoryCache {
   final DataUserRepository repo;
+  final Isar isar;
 
-  DataUserRepositoryCache(this.repo);
+  late final Stream<void> onChanged;
 
-  final _changeController = StreamController<void>.broadcast();
-
-  Stream<void> get onChanged => _changeController.stream;
-
-  void notifyChanged() {
-    if (!_changeController.isClosed) {
-      _changeController.add(null);
-    }
+  DataUserRepositoryCache(this.repo, this.isar) {
+    onChanged = MergeStream([
+      isar.modelItemIsars.watchLazy(),
+      isar.modelTransactionSellIsars.watchLazy(),
+      isar.modelTransactionFinancialIncomeIsars.watchLazy(),
+      isar.modelTransactionFinancialExpenseIsars.watchLazy(),
+      isar.modelTransactionBuyIsars.watchLazy(),
+      isar.modelBatchIsars.watchLazy(),
+    ]).debounceTime(const Duration(milliseconds: 200)).asBroadcastStream();
   }
 
   Future<bool> initData() async {
@@ -33,8 +44,6 @@ class DataUserRepositoryCache {
     await initBatch();
     await initUser();
 
-    // notifyChanged();
-
     return true;
   }
 
@@ -45,73 +54,57 @@ class DataUserRepositoryCache {
   Future<void> initFinancial() async {
     await deleteFinancialCollection();
     final dataFinancial = await repo.getFinancial();
-    for (final element in dataFinancial.where((e) => e.isIncome)) {
-      await saveIncome_Isar(element);
-    }
-
-    for (final element in dataFinancial.where((e) => e.isExpense)) {
-      await saveExpense_Isar(element);
-    }
+    await saveExpense_List_Isar(
+      dataFinancial.where((e) => e.isExpense).toList(),
+    );
+    await saveIncome_List_Isar(dataFinancial.where((e) => e.isIncome).toList());
   }
 
   Future<void> initTransaction() async {
     await deleteCounterCollection();
     await deleteTransactionSellCollection();
     await deleteTransactionBuyCollection();
-    for (final element in await repo.getTransactionSell()) {
-      await saveTransactionSell_Isar(element);
-    }
+    await deleteTransactionFinancialIncomeCollection();
+    await deleteTransactionFinancialExpenseCollection();
+    await saveTransactionSell_List_Isar(await repo.getTransactionSell());
+    await saveTransactionBuy_List_Isar(await repo.getTransactionBuy());
+    await saveTransactionFinancialncome_List_Isar(await repo.getTransIncome());
+    await saveTransactionFinancialExpense_List_Isar(
+      await repo.getTransExpense(),
+    );
 
-    for (final element in await repo.getTransactionBuy()) {
-      await saveTransactionBuy_Isar(element);
-    }
-    for (final element in await repo.getTransIncome()) {
-      await saveTransactionFinancialncome_Isar(element);
-    }
-
-    for (final element in await repo.getTransExpense()) {
-      await saveTransactionFinancialExpense_Isar(element);
-    }
     await saveCounterToIsar();
   }
 
   Future<void> initItem() async {
     await deleteItemCollection();
-    for (final element in await repo.getItem()) {
-      await saveItem_Isar(element);
-    }
+    await saveItem_List_Isar(await repo.getItem());
   }
 
   Future<void> initCategory() async {
     await deleteCategoryCollection();
-    for (final element in await repo.getCategory()) {
-      await saveCategory_Isar(element);
-    }
+    await saveCategory_List_Isar(await repo.getCategory());
   }
 
   Future<void> initPartner() async {
     await deletePartnerCollection();
     final dataPartner = await repo.getPartner();
-    for (final element in dataPartner.where((e) => e.isCustomer)) {
-      await saveCustomer_Isar(element);
-    }
-    for (final element in dataPartner.where((e) => e.isSupplier)) {
-      await saveSupplier_Isar(element);
-    }
+    await saveCustomer_List_Isar(
+      dataPartner.where((e) => e.isCustomer).toList(),
+    );
+    await saveSupplier_List_Isar(
+      dataPartner.where((e) => e.isSupplier).toList(),
+    );
   }
 
   Future<void> initBatch() async {
     await deleteBatchCollection();
-    for (final element in await repo.getBatch()) {
-      await saveBatch_Isar(element);
-    }
+    await saveBatch_List_Isar(await repo.getBatch());
   }
 
   Future<void> initUser() async {
     await deleteOperatorCollection();
-    for (final element in await repo.getUser()) {
-      await saveUser_Isar(element);
-    }
+    await saveUser_List_Isar(await repo.getUser());
   }
 
   Future<Box<TransactionSavedHive>> getHiveSavedTransaction() async {
@@ -119,9 +112,8 @@ class DataUserRepositoryCache {
   }
 
   Future<void> saveCounterToIsar() async {
-    final data = await repo.getCounter(await getAllCompanyIsar());
-    for (final element in data) {
-      await saveCounter_Isar(element);
-    }
+    await saveCounter_List_Isar(
+      await repo.getCounter(await getAllCompanyIsar()),
+    );
   }
 }

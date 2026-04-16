@@ -73,6 +73,9 @@ class UIInventoryButtonItem extends StatelessWidget {
                   ),
                 );
                 formKey.currentState!.reset();
+                nameItemController.clear();
+                priceItemController.clear();
+                codeBarcodeController.clear();
               }
             },
             label: BlocSelector<InventoryBloc, InventoryState, String?>(

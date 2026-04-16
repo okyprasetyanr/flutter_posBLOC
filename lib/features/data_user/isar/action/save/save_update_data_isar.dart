@@ -1,9 +1,4 @@
 import 'package:flutter_pos/enum/enum.dart';
-import 'package:flutter_pos/features/data_user/isar/ModelBase/model_financial_base_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/ModelBase/model_partner_base_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_base_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_financial_base_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
@@ -20,17 +15,13 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_branch_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_batch_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/embedded/model_split_isar.dart';
+import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
-import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -39,47 +30,20 @@ import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
 
 Future<void> saveBatch_Isar(ModelBatch batch) async {
-  final data = ModelBatchIsar()
-    ..invoice = batch.getinvoice
-    ..idBranch = batch.getidBranch
-    ..dateBuy = batch.getdate_buy
-    ..itemsBatch = batch.getitems_batch
-        .map((e) => convertItemBatch(e))
-        .toList();
-
   await isar.writeTxn(() async {
-    await isar.modelBatchIsars.put(data);
+    await isar.modelBatchIsars.put(convertBatch(batch));
   });
 }
 
-ModelItemBatchIsar convertItemBatch(ModelItemBatch data) {
-  return ModelItemBatchIsar()
-    ..invoice = data.getinvoice
-    ..idOrdered = data.getidOrdered
-    ..priceitemBuy = data.getpriceItemBuy
-    ..nameItem = data.getnameItem
-    ..idBranch = data.getidBranch
-    ..idItem = data.getidItem
-    ..idCategoryItem = data.getidCategoryItem
-    ..note = data.getnote
-    ..date_buy = data.getdateBuy
-    ..expiredDate = data.getexpiredDate
-    ..discountItem = data.getdiscountItem
-    ..qtyItem_in = data.getqtyItem_in
-    ..qtyItem_out = data.getqtyItem_out
-    ..priceItem = data.getpriceItem
-    ..subTotal = data.getsubTotal
-    ..priceItemFinal = data.getpriceItemFinal;
+Future<void> saveItem_Isar(ModelItem item) async {
+  await isar.writeTxn(() async {
+    await isar.modelItemIsars.put(convertItem(item));
+  });
 }
 
 Future<void> saveCategory_Isar(ModelCategory category) async {
-  final data = ModelCategoryIsar()
-    ..idCategory = category.getidCategory
-    ..idBranch = category.getidBranch
-    ..nameCategory = category.getnameCategory;
-
   await isar.writeTxn(() async {
-    await isar.modelCategoryIsars.put(data);
+    await isar.modelCategoryIsars.put(convertCategory(category));
   });
 }
 
@@ -121,15 +85,7 @@ Future<void> saveCounter_Isar(ModelCounter counter) async {
         ..counterExpense = counter.getcounterExpense;
       await isar.modelCounterIsars.put(data);
     } else {
-      await isar.modelCounterIsars.put(
-        ModelCounterIsar()
-          ..idBranch = counter.getidBranch
-          ..counterSell = counter.getcounterSell
-          ..counterSellSaved = counter.getcounterSellSaved
-          ..counterBuy = counter.getcounterBuy
-          ..counterIncome = counter.getcounterIncome
-          ..counterExpense = counter.getcounterExpense,
-      );
+      await isar.modelCounterIsars.put(convertCounter(counter));
     }
   });
 }
@@ -165,39 +121,6 @@ Future<void> saveExpense_Isar(ModelFinancial expense) async {
         await convertFinancial(expense, ModelExpenseIsar.new),
       );
     }
-  });
-}
-
-T convertFinancial<T extends ModelFinancialBaseIsar>(
-  ModelFinancial financial,
-  T Function() creator,
-) {
-  final object = creator();
-  return object
-    ..idFinancial = financial.getidFinancial
-    ..idBranch = financial.getidBranch
-    ..type = financial.getfinancialType.name
-    ..nameFinancial = financial.getnameFinancial;
-}
-
-Future<void> saveItem_Isar(ModelItem item) async {
-  final user = ModelItemIsar()
-    ..idItem = item.getidItem
-    ..nameItem = item.getnameItem
-    ..idCategoryItem = item.getidCategoryiItem
-    ..urlImage = item.geturlImage
-    ..idBranch = item.getidBranch
-    ..barcode = item.getBarcode
-    ..date = item.getDateItem
-    ..priceItem = item.getpriceItem
-    ..qtyItem = item.getqtyItem
-    ..priceItemBuybyBatch = item.getpriceItemBuybyBatch
-    ..priceItemByBatch = item.getpriceItembyBatch
-    ..statusCondiment = item.getstatusCondiment.name
-    ..statusItem = item.getStatusItem.name;
-
-  await isar.writeTxn(() async {
-    await isar.modelItemIsars.put(user);
   });
 }
 
@@ -241,22 +164,6 @@ Future<void> saveCustomer_Isar(ModelPartner partner) async {
   });
 }
 
-T convertPartner<T extends ModelPartnerBaseIsar>(
-  ModelPartner partner,
-  T Function() creator,
-) {
-  final object = creator();
-  return object
-    ..idPartner = partner.getidPartner
-    ..idBranch = partner.getidBranchPartner
-    ..typePartner = partner.gettypePartner.name
-    ..namePartner = partner.getnamePartner
-    ..phonePartner = partner.getphonePartner
-    ..emailPartner = partner.getemailPartner
-    ..balancePartner = partner.getbalancePartner
-    ..date = partner.getdate;
-}
-
 Future<void> saveTransactionBuy_Isar(ModelTransaction trx) async {
   final data = await isar.modelTransactionBuyIsars
       .where()
@@ -291,97 +198,6 @@ Future<void> saveTransactionSell_Isar(ModelTransaction trx) async {
       );
     }
   });
-}
-
-T convertTransaction<T extends ModelTransactionBaseIsar>(
-  ModelTransaction trx,
-  T Function() creator,
-) {
-  final object = creator();
-
-  return object
-    ..invoice = trx.getinvoice
-    ..idBranch = trx.getidBranch
-    ..statusTransaction = trx.getstatusTransaction!.name
-    ..paymentMethod = trx.getpaymentMethod.name
-    ..date = trx.getdate
-    ..bankName = trx.getbankName
-    ..note = trx.getnote
-    ..namePartner = trx.getnamePartner
-    ..idPartner = trx.getidPartner
-    ..nameOperator = trx.getnameOperator
-    ..idOperator = trx.getidOperator
-    ..discount = trx.getdiscount
-    ..ppn = trx.getppn
-    ..totalItem = trx.gettotalItem
-    ..charge = trx.getcharge
-    ..subTotal = trx.getsubTotal
-    ..billPaid = trx.getbillPaid
-    ..totalCharge = trx.gettotalCharge
-    ..totalPpn = trx.gettotalPpn
-    ..totalDiscount = trx.gettotalDiscount
-    ..total = trx.gettotal
-    ..itemsOrdered = trx.getitemsOrdered
-        .map(
-          (item) => ModelItemOrderedIsar()
-            ..idOrdered = item.getidOrdered
-            ..invoice = item.getinvoice
-            ..dateBuy = item.getdateBuy
-            ..expiredDate = item.getexpiredDate
-            ..priceItemFinal = item.getpriceItemFinal
-            ..subTotal = item.getsubTotal
-            ..nameItem = item.getnameItem
-            ..idItem = item.getidItem
-            ..idBranch = item.getidBranch
-            ..qtyItem = item.getqtyItem
-            ..priceItem = item.getpriceItem
-            ..priceItemBuy = item.getpriceItemBuy
-            ..discountItem = item.getdiscountItem
-            ..idCategoryItem = item.getidCategoryItem
-            ..note = item.getNote
-            ..itemOrderedBatch = item.getitemOrderedBatch
-                .map(
-                  (b) => ModelItemOrderedBatchIsar()
-                    ..id_ordered = b.getid_Ordered
-                    ..invoice = b.getinvoice
-                    ..id_item = b.getid_Item
-                    ..qty_item = b.getqty_item
-                    ..price_item = b.getprice_item
-                    ..price_itemBuy = b.getprice_itemBuy
-                    ..isNegative = b.getisNegative,
-                )
-                .toList()
-            ..condiment = item.getCondiment
-                .map(
-                  (c) => ModelItemOrderedIsar()
-                    ..invoice = null
-                    ..idOrdered = c.getidOrdered
-                    ..dateBuy = c.getdateBuy
-                    ..expiredDate = c.getexpiredDate
-                    ..priceItemFinal = c.getpriceItemFinal
-                    ..subTotal = c.getsubTotal
-                    ..nameItem = c.getnameItem
-                    ..idItem = c.getidItem
-                    ..idBranch = c.getidBranch
-                    ..qtyItem = c.getqtyItem
-                    ..priceItem = c.getpriceItem
-                    ..priceItemBuy = c.getpriceItemBuy
-                    ..discountItem = c.getdiscountItem
-                    ..idCategoryItem = c.getidCategoryItem
-                    ..note = c.getNote,
-                )
-                .toList(),
-        )
-        .toList()
-    ..dataSplit = trx.getdataSplit
-        .map(
-          (s) => ModelSplitIsar()
-            ..paymentInvoice = s.getpaymentInvoice!
-            ..paymentName = s.getpaymentName.name
-            ..paymentDebitName = s.getpaymentDebitName
-            ..paymentTotal = s.getpaymentTotal,
-        )
-        .toList();
 }
 
 Future<void> saveTransactionFinancialExpense_Isar(
@@ -426,23 +242,6 @@ Future<void> saveTransactionFinancialncome_Isar(
       );
     }
   });
-}
-
-T convertTransactionFinancial<T extends ModelTransactionFinancialBaseIsar>(
-  ModelTransactionFinancial trx,
-  T Function() creator,
-) {
-  final object = creator();
-
-  return object
-    ..invoice = trx.getinvoice
-    ..idBranch = trx.getidBranch
-    ..statusTransaction = trx.getstatusTransaction!.name
-    ..idFinancial = trx.getidFinancial
-    ..nameFinancial = trx.getnameFinancial
-    ..note = trx.getnote
-    ..date = trx.getdate
-    ..amount = trx.getamount;
 }
 
 Future<void> saveUser_Isar(ModelUser user) async {
@@ -509,40 +308,4 @@ Future<void> saveAccount_Isar(ModelUser user) async {
       );
     }
   });
-}
-
-Future<T> convertUser<T extends ModelUserBaseIsar>(
-  ModelUser user,
-  T Function() creator,
-) async {
-  final object = creator();
-  final permissions = user.getPermissionsUser;
-  return object
-    ..idUser = user.getIdUser!
-    ..idBranchUser = user.getRoleUser == RoleType.Pemilik
-        ? null
-        : user.getIdBranchUser
-    ..statusUser = user.getstatusUser.name
-    ..roleUser = user.getRoleUser.name
-    ..nameUser = user.getNameUser
-    ..emailUser = user.getEmailUser
-    ..phoneUser = user.getPhoneUser
-    ..createdUser = user.getCreatedUser
-    ..noteUser = user.getNoteUser
-    ..Stok = permissions[Permission.Stok] ?? false
-    ..Inventory = permissions[Permission.Inventory] ?? false
-    ..Penjualan = permissions[Permission.Penjualan] ?? false
-    ..Pembelian = permissions[Permission.Pembelian] ?? false
-    ..Pendapatan = permissions[Permission.Pendapatan] ?? false
-    ..Pengeluaran = permissions[Permission.Pengeluaran] ?? false
-    ..Data_Pelanggan = permissions[Permission.Data_Pelanggan] ?? false
-    ..Data_Pemasok = permissions[Permission.Data_Pemasok] ?? false
-    ..Data_Pemasukan = permissions[Permission.Data_Pemasukan] ?? false
-    ..Data_Pengeluaran = permissions[Permission.Data_Pengeluaran] ?? false
-    ..Data_Operator = permissions[Permission.Data_Operator] ?? false
-    ..Riwayat_Penjualan = permissions[Permission.Riwayat_Penjualan] ?? false
-    ..Riwayat_Pembelian = permissions[Permission.Riwayat_Pembelian] ?? false
-    ..Riwayat_Pendapatan = permissions[Permission.Riwayat_Pendapatan] ?? false
-    ..Riwayat_Pengeluaran = permissions[Permission.Riwayat_Pengeluaran] ?? false
-    ..Laporan = permissions[Permission.Laporan] ?? false;
 }

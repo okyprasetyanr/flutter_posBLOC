@@ -9,8 +9,14 @@ class TransactionGetData extends TransactionEvent {
   final String? idBranch;
   final ModelTransaction? currentTransaction;
   final bool? revision;
+  final bool? changeMode;
 
-  TransactionGetData({this.idBranch, this.currentTransaction, this.revision});
+  TransactionGetData({
+    this.idBranch,
+    this.changeMode,
+    this.currentTransaction,
+    this.revision,
+  });
 }
 
 class TransactionResetSelectedItem extends TransactionEvent {}
@@ -104,5 +110,3 @@ class TransactionDeleteItemSaved extends TransactionEvent {
 
   TransactionDeleteItemSaved({required this.invoice});
 }
-
-class TransactionStatusTransaction extends TransactionEvent {}
