@@ -146,7 +146,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     });
 
     ModelCategory selectedIdCategory =
-        currentState.selectedCategory ?? listCategory.first;
+        currentState.selectedFilterCategory ?? listCategory.first;
 
     List<ModelItemBatch> dataItemBatch = [...await getItemBatchIsar(idBranch)];
 
@@ -174,7 +174,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                   .toList()
             : dataItem,
         selectedIDBranch: idBranch,
-        selectedCategory: selectedIdCategory,
+        selectedFilterCategory: selectedIdCategory,
         dataBranch: listBranch,
         dataItem: dataItem,
         dataCategory: listCategory,
@@ -232,7 +232,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             .toList();
       }
       String finalidCategory =
-          idCategory ?? currentState.selectedCategory!.getidCategory;
+          idCategory ?? currentState.selectedFilterCategory!.getidCategory;
       if (finalidCategory != "0") {
         list = list
             .where((element) => element.getidCategoryiItem == finalidCategory)
@@ -252,7 +252,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     if (currentState is TransactionLoaded) {
       emit(
         currentState.copyWith(
-          selectedCategory: event.selectedCategory,
+          selectedFilterCategory: event.selectedCategory,
           filteredItem: _sellFilterItem(event.selectedCategory.getidCategory),
         ),
       );

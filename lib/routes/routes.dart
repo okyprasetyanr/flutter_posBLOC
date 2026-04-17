@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/adjustment/presentation/ui_adjustment.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/presentation/ui_batch.dart';
@@ -145,6 +148,12 @@ final routesPage = {
       ),
     );
   },
+  '/adjustment': (context) => BlocProvider(
+    create: (context) =>
+        AdjustmentBloc(context.read<DataUserRepositoryCache>())
+          ..add(AdjustmentGetData()),
+    child: const UiAdjustment(),
+  ),
 
   '/settings': (context) {
     final mainMenu =

@@ -240,6 +240,7 @@ Future<T> convertUser<T extends ModelUserBaseIsar>(
     ..createdUser = user.getCreatedUser
     ..noteUser = user.getNoteUser
     ..Stok = permissions[Permission.Stok] ?? false
+    ..Penyesuaian = permissions[Permission.Penyesuaian] ?? false
     ..Inventory = permissions[Permission.Inventory] ?? false
     ..Penjualan = permissions[Permission.Penjualan] ?? false
     ..Pembelian = permissions[Permission.Pembelian] ?? false

@@ -6,3 +6,4 @@ Memiliki fitur yang mumpuni untuk kebutuhan kasir, mulai dari FIFO/FEFO/HYBRID, 
 ## Tentang Project
 
 Masih dalam Pengembangan
+git p

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_state.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_state.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
@@ -36,7 +38,7 @@ class AppPropertyColor {
 }
 
 class AppPropertyText {
-  static const String AppName = "Ringkas App";
+  static const String AppName = "Ringkas POS";
   static const String ManualDelete =
       "Panduan: Geser ke kiri untuk hapus data yang diinginkan.";
 }
@@ -54,6 +56,10 @@ extension AppThemeExtension on BuildContext {
 
   Color get colorTrans => getDynamicColor<TransactionBloc>(
     (state) => state is TransactionLoaded && state.isSell,
+  );
+
+  Color get colorAdjustment => getDynamicColor<AdjustmentBloc>(
+    (state) => state is AdjustmentLoaded && state.isAdjustIn,
   );
 
   Color get colorTransFinance => getDynamicColor<TransFinancialBloc>(

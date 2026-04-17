@@ -19,6 +19,7 @@ abstract class ModelUserBaseIsar {
   late bool Data_Pemasukan;
   late bool Data_Pengeluaran;
   late bool Inventory;
+  late bool Penyesuaian;
   late bool Laporan;
   late bool Pembelian;
   late bool Pendapatan;

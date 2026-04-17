@@ -281,6 +281,7 @@ extension RoleTypeExt on RoleType {
 }
 
 enum Permission {
+  Penyesuaian,
   Stok,
   Inventory,
   Penjualan,

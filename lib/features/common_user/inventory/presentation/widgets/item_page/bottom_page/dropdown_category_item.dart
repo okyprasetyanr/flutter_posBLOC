@@ -5,6 +5,7 @@ import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
+import 'package:collection/collection.dart';
 
 class DropdownCategoryItem extends StatelessWidget {
   final ValueNotifier<String?> idCategory;
@@ -45,7 +46,7 @@ class DropdownCategoryItem extends StatelessWidget {
             floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
           initialValue: state.$2 != null
-              ? state.$1.firstWhere(
+              ? state.$1.firstWhereOrNull(
                   (element) => element.getidCategory == state.$2,
                 )
               : null,

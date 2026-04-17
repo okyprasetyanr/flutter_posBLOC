@@ -341,6 +341,7 @@ ModelUser fromIsarUser<T extends ModelUserBaseIsar>(T object) {
     roleUser: RoleTypeX.fromString(object.roleUser)!,
     permissionsUser: {
       Permission.Stok: object.Stok,
+      Permission.Penyesuaian: object.Penyesuaian,
       Permission.Inventory: object.Inventory,
       Permission.Penjualan: object.Penjualan,
       Permission.Pembelian: object.Pembelian,

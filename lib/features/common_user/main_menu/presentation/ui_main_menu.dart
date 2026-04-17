@@ -614,6 +614,22 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                 ),
                                 "Data Operator",
                               ),
+                              gridViewMenu(
+                                () {
+                                  state[Permission.Penyesuaian]!
+                                      ? navUpDownTransition(
+                                          context,
+                                          '/adjustment',
+                                          false,
+                                        )
+                                      : customSnackBarAccess(context: context);
+                                },
+                                const Icon(
+                                  Icons.shopping_cart,
+                                  color: AppPropertyColor.black,
+                                ),
+                                "Penyesuaian",
+                              ),
                             ],
                           ),
                           GridView.count(

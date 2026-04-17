@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 
-class UITransactionListViewCategory extends StatelessWidget {
-  const UITransactionListViewCategory({super.key});
+class UIAdjustmentListViewCategory extends StatelessWidget {
+  const UIAdjustmentListViewCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<
-      TransactionBloc,
-      TransactionState,
-      List<ModelCategory>?
-    >(
+    return BlocSelector<AdjustmentBloc, AdjustmentState, List<ModelCategory>?>(
       selector: (state) {
-        if (state is TransactionLoaded) {
+        if (state is AdjustmentLoaded) {
           return (state.dataCategory);
         }
         return null;
@@ -57,20 +53,20 @@ class UITransactionListViewCategory extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        context.read<TransactionBloc>().add(
-                          TransactionSelectedCategoryItem(
+                        context.read<AdjustmentBloc>().add(
+                          AdjustmentFilterByCateogry(
                             selectedCategory: category,
                           ),
                         );
                       },
                       child:
                           BlocSelector<
-                            TransactionBloc,
-                            TransactionState,
+                            AdjustmentBloc,
+                            AdjustmentState,
                             ModelCategory?
                           >(
                             selector: (state) {
-                              if (state is TransactionLoaded) {
+                              if (state is AdjustmentLoaded) {
                                 return state.selectedFilterCategory;
                               }
                               return null;
@@ -84,7 +80,7 @@ class UITransactionListViewCategory extends StatelessWidget {
                                   category.getidCategory ==
                                   stateSelected.getidCategory;
                               final backgroundColor = validasiSelected
-                                  ? context.colorTrans
+                                  ? context.colorAdjustment
                                   : AppPropertyColor.greyLight;
                               final textColor = validasiSelected
                                   ? lv05TextStyleWhite

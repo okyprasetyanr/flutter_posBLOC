@@ -72,73 +72,78 @@ const ModelUserIsarSchema = CollectionSchema(
       name: r'Penjualan',
       type: IsarType.bool,
     ),
-    r'Riwayat_Pembelian': PropertySchema(
+    r'Penyesuaian': PropertySchema(
       id: 11,
+      name: r'Penyesuaian',
+      type: IsarType.bool,
+    ),
+    r'Riwayat_Pembelian': PropertySchema(
+      id: 12,
       name: r'Riwayat_Pembelian',
       type: IsarType.bool,
     ),
     r'Riwayat_Pendapatan': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'Riwayat_Pendapatan',
       type: IsarType.bool,
     ),
     r'Riwayat_Pengeluaran': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'Riwayat_Pengeluaran',
       type: IsarType.bool,
     ),
     r'Riwayat_Penjualan': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'Riwayat_Penjualan',
       type: IsarType.bool,
     ),
     r'Stok': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'Stok',
       type: IsarType.bool,
     ),
     r'createdUser': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'createdUser',
       type: IsarType.dateTime,
     ),
     r'emailUser': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'emailUser',
       type: IsarType.string,
     ),
     r'idBranchUser': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'idBranchUser',
       type: IsarType.string,
     ),
     r'idUser': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'idUser',
       type: IsarType.string,
     ),
     r'nameUser': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'nameUser',
       type: IsarType.string,
     ),
     r'noteUser': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'noteUser',
       type: IsarType.string,
     ),
     r'phoneUser': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'phoneUser',
       type: IsarType.string,
     ),
     r'roleUser': PropertySchema(
-      id: 23,
+      id: 24,
       name: r'roleUser',
       type: IsarType.string,
     ),
     r'statusUser': PropertySchema(
-      id: 24,
+      id: 25,
       name: r'statusUser',
       type: IsarType.string,
     )
@@ -228,20 +233,21 @@ void _modelUserIsarSerialize(
   writer.writeBool(offsets[8], object.Pendapatan);
   writer.writeBool(offsets[9], object.Pengeluaran);
   writer.writeBool(offsets[10], object.Penjualan);
-  writer.writeBool(offsets[11], object.Riwayat_Pembelian);
-  writer.writeBool(offsets[12], object.Riwayat_Pendapatan);
-  writer.writeBool(offsets[13], object.Riwayat_Pengeluaran);
-  writer.writeBool(offsets[14], object.Riwayat_Penjualan);
-  writer.writeBool(offsets[15], object.Stok);
-  writer.writeDateTime(offsets[16], object.createdUser);
-  writer.writeString(offsets[17], object.emailUser);
-  writer.writeString(offsets[18], object.idBranchUser);
-  writer.writeString(offsets[19], object.idUser);
-  writer.writeString(offsets[20], object.nameUser);
-  writer.writeString(offsets[21], object.noteUser);
-  writer.writeString(offsets[22], object.phoneUser);
-  writer.writeString(offsets[23], object.roleUser);
-  writer.writeString(offsets[24], object.statusUser);
+  writer.writeBool(offsets[11], object.Penyesuaian);
+  writer.writeBool(offsets[12], object.Riwayat_Pembelian);
+  writer.writeBool(offsets[13], object.Riwayat_Pendapatan);
+  writer.writeBool(offsets[14], object.Riwayat_Pengeluaran);
+  writer.writeBool(offsets[15], object.Riwayat_Penjualan);
+  writer.writeBool(offsets[16], object.Stok);
+  writer.writeDateTime(offsets[17], object.createdUser);
+  writer.writeString(offsets[18], object.emailUser);
+  writer.writeString(offsets[19], object.idBranchUser);
+  writer.writeString(offsets[20], object.idUser);
+  writer.writeString(offsets[21], object.nameUser);
+  writer.writeString(offsets[22], object.noteUser);
+  writer.writeString(offsets[23], object.phoneUser);
+  writer.writeString(offsets[24], object.roleUser);
+  writer.writeString(offsets[25], object.statusUser);
 }
 
 ModelUserIsar _modelUserIsarDeserialize(
@@ -262,21 +268,22 @@ ModelUserIsar _modelUserIsarDeserialize(
   object.Pendapatan = reader.readBool(offsets[8]);
   object.Pengeluaran = reader.readBool(offsets[9]);
   object.Penjualan = reader.readBool(offsets[10]);
-  object.Riwayat_Pembelian = reader.readBool(offsets[11]);
-  object.Riwayat_Pendapatan = reader.readBool(offsets[12]);
-  object.Riwayat_Pengeluaran = reader.readBool(offsets[13]);
-  object.Riwayat_Penjualan = reader.readBool(offsets[14]);
-  object.Stok = reader.readBool(offsets[15]);
-  object.createdUser = reader.readDateTimeOrNull(offsets[16]);
-  object.emailUser = reader.readString(offsets[17]);
-  object.idBranchUser = reader.readStringOrNull(offsets[18]);
-  object.idUser = reader.readString(offsets[19]);
+  object.Penyesuaian = reader.readBool(offsets[11]);
+  object.Riwayat_Pembelian = reader.readBool(offsets[12]);
+  object.Riwayat_Pendapatan = reader.readBool(offsets[13]);
+  object.Riwayat_Pengeluaran = reader.readBool(offsets[14]);
+  object.Riwayat_Penjualan = reader.readBool(offsets[15]);
+  object.Stok = reader.readBool(offsets[16]);
+  object.createdUser = reader.readDateTimeOrNull(offsets[17]);
+  object.emailUser = reader.readString(offsets[18]);
+  object.idBranchUser = reader.readStringOrNull(offsets[19]);
+  object.idUser = reader.readString(offsets[20]);
   object.isarId = id;
-  object.nameUser = reader.readString(offsets[20]);
-  object.noteUser = reader.readStringOrNull(offsets[21]);
-  object.phoneUser = reader.readString(offsets[22]);
-  object.roleUser = reader.readString(offsets[23]);
-  object.statusUser = reader.readString(offsets[24]);
+  object.nameUser = reader.readString(offsets[21]);
+  object.noteUser = reader.readStringOrNull(offsets[22]);
+  object.phoneUser = reader.readString(offsets[23]);
+  object.roleUser = reader.readString(offsets[24]);
+  object.statusUser = reader.readString(offsets[25]);
   return object;
 }
 
@@ -320,22 +327,24 @@ P _modelUserIsarDeserializeProp<P>(
     case 15:
       return (reader.readBool(offset)) as P;
     case 16:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 17:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 18:
-      return (reader.readStringOrNull(offset)) as P;
-    case 19:
       return (reader.readString(offset)) as P;
+    case 19:
+      return (reader.readStringOrNull(offset)) as P;
     case 20:
       return (reader.readString(offset)) as P;
     case 21:
-      return (reader.readStringOrNull(offset)) as P;
-    case 22:
       return (reader.readString(offset)) as P;
+    case 22:
+      return (reader.readStringOrNull(offset)) as P;
     case 23:
       return (reader.readString(offset)) as P;
     case 24:
+      return (reader.readString(offset)) as P;
+    case 25:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -709,6 +718,16 @@ extension ModelUserIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'Penjualan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterFilterCondition>
+      penyesuaianEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Penyesuaian',
         value: value,
       ));
     });
@@ -2174,6 +2193,19 @@ extension ModelUserIsarQuerySortBy
     });
   }
 
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> sortByPenyesuaian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penyesuaian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      sortByPenyesuaianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penyesuaian', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
       sortByRiwayat_Pembelian() {
     return QueryBuilder.apply(this, (query) {
@@ -2509,6 +2541,19 @@ extension ModelUserIsarQuerySortThenBy
     });
   }
 
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy> thenByPenyesuaian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penyesuaian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
+      thenByPenyesuaianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Penyesuaian', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModelUserIsar, ModelUserIsar, QAfterSortBy>
       thenByRiwayat_Pembelian() {
     return QueryBuilder.apply(this, (query) {
@@ -2782,6 +2827,13 @@ extension ModelUserIsarQueryWhereDistinct
   }
 
   QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
+      distinctByPenyesuaian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Penyesuaian');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, ModelUserIsar, QDistinct>
       distinctByRiwayat_Pembelian() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'Riwayat_Pembelian');
@@ -2951,6 +3003,12 @@ extension ModelUserIsarQueryProperty
   QueryBuilder<ModelUserIsar, bool, QQueryOperations> PenjualanProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'Penjualan');
+    });
+  }
+
+  QueryBuilder<ModelUserIsar, bool, QQueryOperations> PenyesuaianProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Penyesuaian');
     });
   }
 

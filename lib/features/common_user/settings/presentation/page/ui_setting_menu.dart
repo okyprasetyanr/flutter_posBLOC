@@ -104,7 +104,7 @@ class _UISettingsState extends State<UISettings> {
                         Icons.menu_rounded,
                         color: AppPropertyColor.white,
                       ),
-                      text2: "Mengontrol fitur Ringkas POS",
+                      text2: "Mengontrol fitur ${AppPropertyText.AppName}",
                       text1: "Fitur",
                       onTap: () async {
                         context.read<SettingsBloc>().add(SettingsFeature());
@@ -220,7 +220,7 @@ class _UISettingsState extends State<UISettings> {
                           Icons.info_outline,
                           color: AppPropertyColor.white,
                         ),
-                        text2: "Informasi tentang Ringkas POS",
+                        text2: "Informasi tentang ${AppPropertyText.AppName}",
                         text1: "Tentang App",
                         onTap: () async {},
                       ),

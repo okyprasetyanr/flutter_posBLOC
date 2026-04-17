@@ -36,14 +36,38 @@ Future<void> saveBatch_Isar(ModelBatch batch) async {
 }
 
 Future<void> saveItem_Isar(ModelItem item) async {
+  final data = await isar.modelItemIsars
+      .where()
+      .idItemEqualTo(item.getidItem)
+      .findFirst();
   await isar.writeTxn(() async {
-    await isar.modelItemIsars.put(convertItem(item));
+    if (data != null) {
+      data
+        ..nameItem = item.getnameItem
+        ..idCategoryItem = item.getidCategoryiItem
+        ..statusCondiment = item.getstatusCondiment.name
+        ..statusItem = item.getStatusItem.name
+        ..priceItem = item.getpriceItem
+        ..barcode = item.getBarcode;
+      await isar.modelItemIsars.put(data);
+    } else {
+      await isar.modelItemIsars.put(convertItem(item));
+    }
   });
 }
 
 Future<void> saveCategory_Isar(ModelCategory category) async {
+  final data = await isar.modelCategoryIsars
+      .where()
+      .idCategoryEqualTo(category.getidCategory)
+      .findFirst();
   await isar.writeTxn(() async {
-    await isar.modelCategoryIsars.put(convertCategory(category));
+    if (data != null) {
+      data..nameCategory = category.getnameCategory;
+      await isar.modelCategoryIsars.put(data);
+    } else {
+      await isar.modelCategoryIsars.put(convertCategory(category));
+    }
   });
 }
 
@@ -245,11 +269,9 @@ Future<void> saveTransactionFinancialncome_Isar(
 }
 
 Future<void> saveUser_Isar(ModelUser user) async {
-  ModelUserIsar? operator = await isar.modelUserIsars.getByIdUser(
-    user.getIdUser!,
-  );
-  if (operator != null) {
-    operator
+  ModelUserIsar? data = await isar.modelUserIsars.getByIdUser(user.getIdUser!);
+  if (data != null) {
+    data
       ..idUser = user.getIdUser!
       ..idBranchUser = user.getIdBranchUser
       ..statusUser = user.getstatusUser.name
@@ -260,6 +282,7 @@ Future<void> saveUser_Isar(ModelUser user) async {
       ..createdUser = user.getCreatedUser
       ..noteUser = user.getNoteUser
       ..Stok = user.getPermissionsUser[Permission.Stok] ?? false
+      ..Penyesuaian = user.getPermissionsUser[Permission.Penyesuaian] ?? false
       ..Inventory = user.getPermissionsUser[Permission.Inventory] ?? false
       ..Penjualan = user.getPermissionsUser[Permission.Penjualan] ?? false
       ..Pembelian = user.getPermissionsUser[Permission.Pembelian] ?? false
@@ -284,11 +307,11 @@ Future<void> saveUser_Isar(ModelUser user) async {
           user.getPermissionsUser[Permission.Riwayat_Pengeluaran] ?? false
       ..Laporan = user.getPermissionsUser[Permission.Laporan] ?? false;
   } else {
-    operator = await convertUser(user, ModelUserIsar.new);
+    data = await convertUser(user, ModelUserIsar.new);
   }
 
   await isar.writeTxn(() async {
-    await isar.modelUserIsars.put(operator!);
+    await isar.modelUserIsars.put(data!);
   });
 }
 

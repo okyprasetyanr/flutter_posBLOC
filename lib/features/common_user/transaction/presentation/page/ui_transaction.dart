@@ -53,20 +53,11 @@ class _UITransactionState extends State<UITransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          Navigator.pop(context);
-          context.read<TransactionBloc>().add(TransactionResetOrderedItem());
-        }
-      },
-      child: LayoutTopBottom(
-        layoutTop: layoutTop(),
-        layoutBottom: layoutBottom(),
-        widgetNavigation: navigationGesture(),
-        refreshIndicator: _onRefresh,
-      ),
+    return LayoutTopBottom(
+      layoutTop: layoutTop(),
+      layoutBottom: layoutBottom(),
+      widgetNavigation: navigationGesture(),
+      refreshIndicator: _onRefresh,
     );
   }
 
