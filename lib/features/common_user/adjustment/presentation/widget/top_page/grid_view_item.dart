@@ -49,7 +49,7 @@ class UIAdjustmentGridViewItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     onTap: () {
                       context.read<AdjustmentBloc>().add(
-                        AdjustmentSelectedItem(selectedData: item),
+                        AdjustmentSelectedItem(selectedItem: item),
                       );
                     },
                     child: Padding(

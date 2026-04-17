@@ -6,6 +6,8 @@ import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_sta
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/function/event_transformer.dart.dart';
+import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 
@@ -14,7 +16,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   AdjustmentBloc(this.repoCache) : super(AdjustmentInitial()) {
     on<AdjustmentGetData>(_onGetData);
     on<AdjustmentFilterByCateogry>(_onFilterByCategory);
-    on<AdjustmentSearchData>(_onSearchData);
+    on<AdjustmentSearchData>(_onSearchData, transformer: debounceRestartable());
     on<AdjustmentSelectedBatch>(_onSelectedBatch);
     on<AdjustmentSelectedItem>(_onSelectedItem);
     on<AdjustmentUploadData>(_onUploadData);
@@ -29,8 +31,8 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
         ? (state as AdjustmentLoaded)
         : AdjustmentLoaded();
     final dataBranch = await getAllListBranchIsar();
-    final idBranch = currentState.idBranch ?? dataBranch.first.getidBranch;
-    final dataItem = await getItemIsar(idBranch);
+    final idBranch =
+        event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
     final dataCategory = [
       ModelCategory(nameCategory: "All", idCategory: "0", idBranch: "0"),
       ...await getCategoryIsar(idBranch),
@@ -38,21 +40,34 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     final selectedCategory =
         currentState.selectedFilterCategory ?? dataCategory.first;
     final dataBatch = await getBatchIsar(idBranch);
+
+    final dataItemBatch = dataBatch
+        .expand((element) => element.getitems_batch)
+        .toList();
+
+    final dataItem = await getItemIsar(idBranch);
+
+    final idItemBatchSet = dataItemBatch.map((e) => e.getidItem).toSet();
+    final finaldataItem = dataItem
+        .where((item) => idItemBatchSet.contains(item.getidItem))
+        .toList();
+
     emit(
       currentState.copyWith(
         isAdjustIn: event.changeMode != null
             ? !currentState.isAdjustIn
             : currentState.isAdjustIn,
         dataBatch: dataBatch,
-        filteredItem: _filteredItem(dataItem, selectedCategory.getidCategory),
+        filteredItem: _filteredItem(
+          finaldataItem,
+          selectedCategory.getidCategory,
+        ),
         dataBranch: dataBranch,
         dataCategory: dataCategory,
         selectedFilterCategory: selectedCategory,
         dataItem: dataItem,
-        dataItemBatch: dataBatch
-            .expand((element) => element.getitems_batch)
-            .toList(),
         idBranch: idBranch,
+        dataItemBatch: dataItemBatch,
       ),
     );
   }
@@ -76,7 +91,32 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   FutureOr<void> _onSearchData(
     AdjustmentSearchData event,
     Emitter<AdjustmentState> emit,
-  ) {}
+  ) {
+    final currentState = state as AdjustmentLoaded;
+    if (event.text != "") {
+      List<ModelItem> item = List.from(
+        currentState.filteredItem
+            .where((element) => element.getidBranch == currentState.idBranch)
+            .where(
+              (item) => item.getnameItem.toLowerCase().contains(
+                event.text!.toLowerCase(),
+              ),
+            )
+            .toList(),
+      );
+
+      emit(currentState.copyWith(filteredItem: item));
+    } else {
+      emit(
+        currentState.copyWith(
+          filteredItem: _filteredItem(
+            currentState.dataItem,
+            currentState.selectedFilterCategory?.getidCategory,
+          ),
+        ),
+      );
+    }
+  }
 
   FutureOr<void> _onSelectedBatch(
     AdjustmentSelectedBatch event,
@@ -86,7 +126,24 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   FutureOr<void> _onSelectedItem(
     AdjustmentSelectedItem event,
     Emitter<AdjustmentState> emit,
-  ) {}
+  ) {
+    final currentState = state as AdjustmentLoaded;
+    devLog(
+      "Log AdjustmentBloc: selectedItem: ${sortStockMode(currentState.dataItemBatch.where((element) => element.getidItem == event.selectedItem.getidItem).toList())}",
+    );
+    emit(
+      currentState.copyWith(
+        selectedItem: event.selectedItem,
+        dataItemBatchByIdItem: sortStockMode(
+          currentState.dataItemBatch
+              .where(
+                (element) => element.getidItem == event.selectedItem.getidItem,
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
 
   FutureOr<void> _onUploadData(
     AdjustmentUploadData event,

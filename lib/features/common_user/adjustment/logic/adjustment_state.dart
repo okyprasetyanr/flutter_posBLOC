@@ -20,6 +20,7 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
   final ModelBatch? selectedBatch;
   final ModelCategory? selectedFilterCategory;
   final List<ModelItemBatch> dataItemBatch;
+  final List<ModelItemBatch> dataItemBatchByIdItem;
   final bool isAdjustIn;
 
   AdjustmentLoaded({
@@ -28,6 +29,7 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
     this.dataBatch = const [],
     this.dataCategory = const [],
     this.dataItemBatch = const [],
+    this.dataItemBatchByIdItem = const [],
     this.filteredItem = const [],
     this.dataBranch = const [],
     this.selectedFilterCategory,
@@ -47,9 +49,12 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
     ModelItem? selectedItem,
     ModelBatch? selectedBatch,
     List<ModelItemBatch>? dataItemBatch,
+    List<ModelItemBatch>? dataItemBatchByIdItem,
     ModelCategory? selectedFilterCategory,
   }) {
     return AdjustmentLoaded(
+      dataItemBatchByIdItem:
+          dataItemBatchByIdItem ?? this.dataItemBatchByIdItem,
       isAdjustIn: isAdjustIn ?? this.isAdjustIn,
       dataItem: dataItem ?? this.dataItem,
       dataBatch: dataBatch ?? this.dataBatch,
@@ -73,6 +78,7 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
     dataCategory,
     filteredItem,
     dataItemBatch,
+    dataItemBatchByIdItem,
     dataBranch,
     idBranch,
     selectedItem,

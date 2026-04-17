@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
@@ -9,7 +12,11 @@ import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_sta
 import 'package:flutter_pos/features/common_user/adjustment/presentation/widget/top_page/grid_view_item.dart';
 import 'package:flutter_pos/features/common_user/adjustment/presentation/widget/top_page/list_view_category.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
+import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
+import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
 class UiAdjustment extends StatefulWidget {
   const UiAdjustment({super.key});
@@ -59,7 +66,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
-                    width: 195,
+                    width: 95,
                     padding: const EdgeInsets.only(top: 5, bottom: 5),
                     height: 40,
                     child: BlocSelector<AdjustmentBloc, AdjustmentState, bool>(
@@ -72,8 +79,8 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                       builder: (context, state) {
                         return WidgetAnimatePage(
                           change: state,
-                          text1: "Penyesuaian Masuk",
-                          text2: "Penyesuaian Keluar",
+                          text1: "Masuk",
+                          text2: "Keluar",
                           showAt1: 2,
                           showAt2: 0,
                         );
@@ -125,7 +132,100 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   }
 
   Widget layoutBottom() {
-    return SizedBox.shrink();
+    return BlocSelector<AdjustmentBloc, AdjustmentState, List<ModelItemBatch>>(
+      selector: (state) =>
+          state is AdjustmentLoaded ? state.dataItemBatchByIdItem : [],
+      builder: (context, state) => state.isNotEmpty
+          ? DynamicColorWrapper(
+              colorSelector: (context) => context.colorAdjustment,
+              builder: (context, color) => ListView.builder(
+                itemCount: state.length,
+                itemBuilder: (context, index) {
+                  final item = state[index];
+                  return InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Material(
+                        color: AppPropertyColor.white,
+                        borderRadius: BorderRadius.circular(10),
+                        elevation: 4,
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                              ),
+                              width: double.infinity,
+                              child: Text(
+                                "Nota: ${item.getinvoice}",
+                                style: lv1TextStyleWhite,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  rowContent(
+                                    "Tanggal",
+                                    formatDate(date: item.getdateBuy),
+                                  ),
+                                  rowContent(
+                                    "Stock Masuk",
+                                    formatQtyOrPrice(item.getqtyItem_in),
+                                  ),
+                                  rowContent(
+                                    "Stock Keluar",
+                                    formatQtyOrPrice(item.getqtyItem_out),
+                                  ),
+                                  rowContent(
+                                    "Stock Sisa",
+                                    formatQtyOrPrice(
+                                      item.getqtyItem_in - item.getqtyItem_out,
+                                    ),
+                                  ),
+                                  rowContent(
+                                    "Harga Jual",
+                                    formatPriceRp(item.getpriceItemFinal),
+                                  ),
+                                  rowContent(
+                                    "Harga Beli",
+                                    formatPriceRp(item.getpriceItemBuy),
+                                  ),
+                                  rowContent(
+                                    "Kadaluarsa",
+                                    item.getexpiredDate?.toString() ?? "-",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      final bloc = context.read<AdjustmentBloc>();
+                      customBottomSheet(
+                        context: context,
+                        resetItemForm: null,
+                        content: (scrollController) => ListView(
+                          controller: scrollController,
+                          children: [],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            )
+          : Center(
+              child: Text("Belum ada Data Batch!", style: lv05TextStyleBold),
+            ),
+    );
   }
 
   Future<void> refreshIndicator() async {

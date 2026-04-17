@@ -23,7 +23,7 @@ class WidgetAnimatePage extends StatelessWidget {
       children: [
         AnimatedPositioned(
           curve: Curves.easeInOut,
-          left: change ? showAt1 : -200,
+          left: change ? showAt1 : -400,
           duration: const Duration(milliseconds: 500),
           child: Row(
             children: [
@@ -34,7 +34,7 @@ class WidgetAnimatePage extends StatelessWidget {
         ),
         AnimatedPositioned(
           curve: Curves.easeInOut,
-          left: change ? 300 : showAt2,
+          left: change ? 500 : showAt2,
           duration: const Duration(milliseconds: 500),
           child: Align(
             alignment: Alignment.centerLeft,

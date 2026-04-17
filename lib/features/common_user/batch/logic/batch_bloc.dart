@@ -92,7 +92,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
       emit(
         currentState.copyWith(
           selectedIdItem: event.selectedIdItem,
-          dataItemByIdItem: ItemById,
+          dataItemBatchByIdItem: ItemById,
           detailSelectedItem: detailItemBatch,
         ),
       );
@@ -106,7 +106,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
         currentState.copyWith(
           selectedIdItem: null,
           detailSelectedItem: null,
-          dataItemByIdItem: null,
+          dataItemBatchByIdItem: null,
         ),
       );
     }
@@ -117,7 +117,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
     if (currentState is BatchLoaded) {
       List<ModelItem> filteredItem = currentState.dataItem;
       List<ModelItemBatch> filteredItemBatch =
-          currentState.dataItemByIdItem?.toList() ?? [];
+          currentState.dataItemBatchByIdItem?.toList() ?? [];
 
       if (currentState.selectedIdItem != null) {
         filteredItemBatch = event.search.isNotEmpty
@@ -153,7 +153,7 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
           detailSelectedItem: currentState.detailSelectedItem,
           selectedIdItem: currentState.selectedIdItem,
           filteredItem: filteredItem,
-          dataItemByIdItem: filteredItemBatch,
+          dataItemBatchByIdItem: filteredItemBatch,
         ),
       );
     }

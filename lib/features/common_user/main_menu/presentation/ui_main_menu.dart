@@ -485,196 +485,229 @@ class _UIMainMenuState extends State<UIMainMenu> {
                         physics: NeverScrollableScrollPhysics(),
                         controller: currentPage,
                         children: [
-                          GridView.count(
-                            crossAxisCount: 3,
-                            childAspectRatio: 1.6,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            children: [
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Inventory]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/inventory',
-                                          false,
-                                        )
-                                      : state[Permission.Stok]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/batch',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.inventory,
-                                  color: AppPropertyColor.black,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Inventory]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/inventory',
+                                              false,
+                                            )
+                                          : state[Permission.Stok]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/batch',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.inventory,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Inventori",
+                                  ),
                                 ),
-                                "Inventori",
-                              ),
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Penjualan]! ||
-                                          state[Permission.Pembelian]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/sell',
-                                          false,
-                                        )
-                                      : state[Permission.Pendapatan]! ||
-                                            state[Permission.Pengeluaran]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/transfinancial',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.shopping_cart,
-                                  color: AppPropertyColor.black,
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Penjualan]! ||
+                                              state[Permission.Pembelian]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/sell',
+                                              false,
+                                            )
+                                          : state[Permission.Pendapatan]! ||
+                                                state[Permission.Pengeluaran]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/transfinancial',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.shopping_cart,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Transaksi",
+                                  ),
                                 ),
-                                "Transaksi",
-                              ),
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Laporan]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/report',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.assignment_outlined,
-                                  color: AppPropertyColor.black,
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Laporan]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/report',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.assignment_outlined,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Laporan",
+                                  ),
                                 ),
-                                "Laporan",
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          GridView.count(
-                            crossAxisCount: 3,
-                            shrinkWrap: true,
-                            childAspectRatio: 1.6,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-
-                            children: [
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Data_Pelanggan]! ||
-                                          state[Permission.Data_Pemasok]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/partner',
-                                          false,
-                                          arguments: true,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.inventory,
-                                  color: AppPropertyColor.black,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Data_Pelanggan]! ||
+                                              state[Permission.Data_Pemasok]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/partner',
+                                              false,
+                                              arguments: true,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.contact_phone,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Kontak",
+                                  ),
                                 ),
-                                "Data Kontak",
-                              ),
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Data_Pemasukan]! ||
-                                          state[Permission.Data_Pengeluaran]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/financial',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.shopping_cart,
-                                  color: AppPropertyColor.black,
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Data_Pemasukan]! ||
+                                              state[Permission
+                                                  .Data_Pengeluaran]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/financial',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.shopping_cart,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Alur Kas",
+                                  ),
                                 ),
-                                "Data Alur Kas",
-                              ),
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Data_Operator]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/operator',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.shopping_cart,
-                                  color: AppPropertyColor.black,
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Data_Operator]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/operator',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.person,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Operator",
+                                  ),
                                 ),
-                                "Data Operator",
-                              ),
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Penyesuaian]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/adjustment',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.shopping_cart,
-                                  color: AppPropertyColor.black,
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Penyesuaian]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/adjustment',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.adjust_rounded,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Penyesuaian",
+                                  ),
                                 ),
-                                "Penyesuaian",
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          GridView.count(
-                            crossAxisCount: 3,
-                            shrinkWrap: true,
-                            childAspectRatio: 1.6,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-
-                            children: [
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Riwayat_Penjualan]! ||
-                                          state[Permission.Riwayat_Pembelian]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/historytransaction',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.inventory,
-                                  color: AppPropertyColor.black,
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Riwayat_Penjualan]! ||
+                                              state[Permission
+                                                  .Riwayat_Pembelian]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/historytransaction',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.history,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Riwayat Treansaksi",
+                                  ),
                                 ),
-                                "Riwayat Treansaksi",
-                              ),
-                              gridViewMenu(
-                                () {
-                                  state[Permission.Riwayat_Pendapatan]! ||
-                                          state[Permission.Riwayat_Pengeluaran]!
-                                      ? navUpDownTransition(
-                                          context,
-                                          '/historyfinancial',
-                                          false,
-                                        )
-                                      : customSnackBarAccess(context: context);
-                                },
-                                const Icon(
-                                  Icons.assignment_outlined,
-                                  color: AppPropertyColor.black,
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Riwayat_Pendapatan]! ||
+                                              state[Permission
+                                                  .Riwayat_Pengeluaran]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/historyfinancial',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.history,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Riwayat Kas",
+                                  ),
                                 ),
-                                "Riwayat Kas",
-                              ),
-                            ],
+                                Expanded(child: SizedBox.shrink()),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -1031,7 +1064,12 @@ Widget gridViewMenu(VoidCallback onPressed, Icon? icon, String text) {
       children: [
         icon ?? const SizedBox(width: 10),
         const SizedBox(height: 5),
-        Text(text, style: lv05TextStyle, textAlign: TextAlign.center),
+        Text(
+          text,
+          style: lv05TextStyle,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     ),
     onPressed: onPressed,

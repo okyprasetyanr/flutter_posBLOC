@@ -12,9 +12,9 @@ class AdjustmentGetData extends AdjustmentEvent {
 }
 
 class AdjustmentSelectedItem extends AdjustmentEvent {
-  final ModelItem selectedData;
+  final ModelItem selectedItem;
 
-  AdjustmentSelectedItem({required this.selectedData});
+  AdjustmentSelectedItem({required this.selectedItem});
 }
 
 class AdjustmentSelectedBatch extends AdjustmentEvent {

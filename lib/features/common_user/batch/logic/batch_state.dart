@@ -14,7 +14,7 @@ class BatchLoaded extends BatchState with EquatableMixin {
   final List<ModelItem> dataItem;
   final String? selectedIdItem;
   final String? idBranch;
-  final List<ModelItemBatch>? dataItemByIdItem;
+  final List<ModelItemBatch>? dataItemBatchByIdItem;
   final ModelItemBatch? detailSelectedItem;
 
   BatchLoaded({
@@ -23,7 +23,7 @@ class BatchLoaded extends BatchState with EquatableMixin {
     this.dataItem = const [],
     this.dataBatch = const [],
     this.dataItemBatch = const [],
-    this.dataItemByIdItem,
+    this.dataItemBatchByIdItem,
     this.selectedIdItem,
     this.detailSelectedItem,
   });
@@ -31,7 +31,7 @@ class BatchLoaded extends BatchState with EquatableMixin {
   BatchLoaded copyWith({
     String? idBranch,
     List<ModelItem>? filteredItem,
-    List<ModelItemBatch>? dataItemByIdItem,
+    List<ModelItemBatch>? dataItemBatchByIdItem,
     List<ModelBatch>? dataBatch,
     List<ModelItemBatch>? dataItemBatch,
     List<ModelItem>? dataItem,
@@ -43,7 +43,7 @@ class BatchLoaded extends BatchState with EquatableMixin {
       filteredItem: filteredItem ?? this.filteredItem,
       dataItem: dataItem ?? this.dataItem,
       detailSelectedItem: detailSelectedItem,
-      dataItemByIdItem: dataItemByIdItem,
+      dataItemBatchByIdItem: dataItemBatchByIdItem,
       selectedIdItem: selectedIdItem,
       dataBatch: dataBatch ?? this.dataBatch,
       dataItemBatch: dataItemBatch ?? this.dataItemBatch,
@@ -59,6 +59,6 @@ class BatchLoaded extends BatchState with EquatableMixin {
     dataItemBatch,
     selectedIdItem,
     detailSelectedItem,
-    dataItemByIdItem,
+    dataItemBatchByIdItem,
   ];
 }

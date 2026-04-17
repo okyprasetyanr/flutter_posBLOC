@@ -122,7 +122,7 @@ class _UiBatchState extends State<UiBatch> {
                   if (state is BatchLoaded) {
                     return (
                       state.filteredItem,
-                      state.dataItemByIdItem ?? [],
+                      state.dataItemBatchByIdItem ?? [],
                       state.selectedIdItem == null,
                     );
                   }
