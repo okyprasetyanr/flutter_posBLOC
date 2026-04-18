@@ -25,7 +25,7 @@ class UIInventorySearchAndBranchCategory extends StatelessWidget {
             controller: searchControllerCategory,
             enable: true,
             inputType: TextInputType.text,
-            text: "Cari",
+            label: "Cari",
             onChanged: (value) => context.read<InventoryBloc>().add(
               InventorySearchCategory(search: value),
             ),

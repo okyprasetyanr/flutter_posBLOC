@@ -223,9 +223,9 @@ extension FilterItemX on FilterItem {
       case FilterItem.Terlama:
         return "Terlama";
       case FilterItem.Stock_Plus:
-        return "Stock +";
+        return "Stok +";
       case FilterItem.Stock_Minus:
-        return "Stock -";
+        return "Stok -";
     }
   }
 }

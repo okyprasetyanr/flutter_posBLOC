@@ -155,7 +155,7 @@ class _UITransactionPopUpDiscountAndCustomState
                       hint: false,
                       controller: customDiscountController,
                       inputType: const TextInputType.numberWithOptions(),
-                      text: "Ubah Dis.",
+                      label: "Ubah Dis.",
                       suffixText: "%",
                       inputFormatter: [
                         FilteringTextInputFormatter.digitsOnly,

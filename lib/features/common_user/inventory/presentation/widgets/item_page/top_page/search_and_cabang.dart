@@ -25,7 +25,7 @@ class UIInventorySearchAndBranchItem extends StatelessWidget {
           Expanded(
             flex: 3,
             child: customTextField(
-              text: "Cari...",
+              label: "Cari...",
               controller: searchControllerItem,
               moreRadius: true,
               onChanged: (value) {

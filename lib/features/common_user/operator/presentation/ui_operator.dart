@@ -105,7 +105,7 @@ class _UIOperatorState extends State<UIOperator> {
                 controller: searchController,
                 enable: true,
                 inputType: TextInputType.text,
-                text: "Cari",
+                label: "Cari",
                 onChanged: (value) {
                   context.read<OperatorBloc>().add(
                     OperatorSearch(search: value),
@@ -254,7 +254,7 @@ class _UIOperatorState extends State<UIOperator> {
                           nodes: nodes,
                           inputType: TextInputType.text,
                           context: context,
-                          text: "Nama Operator",
+                          label: "Nama Operator",
                           controller: nameController,
                           enable: true,
                           validator: (value) {
@@ -275,7 +275,7 @@ class _UIOperatorState extends State<UIOperator> {
                           index: 1,
                           inputType: TextInputType.text,
                           nodes: nodes,
-                          text: "Nomor Operator",
+                          label: "Nomor Operator",
                         ),
                       ),
                     ],
@@ -295,7 +295,7 @@ class _UIOperatorState extends State<UIOperator> {
                         nodes: nodes,
                         inputType: TextInputType.emailAddress,
                         context: context,
-                        text: "E-mail Operator",
+                        label: "E-mail Operator",
                         controller: emailController,
                         enable: !state,
                         validator: (value) {
@@ -392,7 +392,7 @@ class _UIOperatorState extends State<UIOperator> {
                                 index: 3,
                                 inputType: TextInputType.text,
                                 nodes: nodes,
-                                text: "Password Operator",
+                                label: "Password Operator",
                               );
                       },
                     ),
@@ -411,7 +411,7 @@ class _UIOperatorState extends State<UIOperator> {
                           index: 4,
                           inputType: TextInputType.text,
                           nodes: nodes,
-                          text: "Catatan",
+                          label: "Catatan",
                         ),
                       ),
 

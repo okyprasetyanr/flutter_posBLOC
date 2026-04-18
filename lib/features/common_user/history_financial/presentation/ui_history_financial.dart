@@ -97,7 +97,7 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
                 enable: true,
                 controller: searchController,
                 inputType: TextInputType.text,
-                text: "Cari",
+                label: "Cari",
                 onChanged: (value) {
                   context.read<HistoryFinancialBloc>().add(
                     HistoryFinancialSearchData(search: value),

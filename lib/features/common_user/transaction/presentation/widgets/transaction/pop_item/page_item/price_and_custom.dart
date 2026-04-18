@@ -122,7 +122,7 @@ class UITransactionPopUpPriceAndCustom extends StatelessWidget {
                                             : 0,
                                       );
                                     },
-                                    text: "Ubah Harga:",
+                                    label: "Ubah Harga:",
                                     suffixText: ",00",
                                   ),
                                 ),

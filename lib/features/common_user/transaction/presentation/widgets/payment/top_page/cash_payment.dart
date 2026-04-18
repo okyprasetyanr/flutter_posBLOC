@@ -159,7 +159,7 @@ class UIPaymentCashPayment extends StatelessWidget {
                 controller: payController,
                 inputType: TextInputType.number,
                 suffixText: ",00",
-                text: "Nominal Bayar",
+                label: "Nominal Bayar",
                 onChanged: (value) {
                   final finalValue = double.tryParse(value) ?? 0;
                   split

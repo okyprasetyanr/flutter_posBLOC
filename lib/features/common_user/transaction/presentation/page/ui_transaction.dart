@@ -87,7 +87,7 @@ class _UITransactionState extends State<UITransaction> {
                   child: customTextField(
                     moreRadius: true,
                     controller: searchController,
-                    text: "Cari...",
+                    label: "Cari...",
                     onChanged: (value) => context.read<TransactionBloc>().add(
                       TransactionSearchItem(text: value),
                     ),

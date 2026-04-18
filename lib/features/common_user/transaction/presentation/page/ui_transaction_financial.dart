@@ -120,7 +120,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
               child: customTextField(
                 controller: searchController,
                 inputType: TextInputType.text,
-                text: "Cari",
+                label: "Cari",
                 enable: true,
                 onChanged: (value) => context.read<TransFinancialBloc>().add(
                   TransFinancialSearch(search: value),
@@ -258,7 +258,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
           index: 0,
           inputType: TextInputType.text,
           controller: noteController,
-          text: "Catatan",
+          label: "Catatan",
           context: context,
         ),
         Row(
@@ -271,7 +271,7 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
                 index: 1,
                 inputType: TextInputType.number,
                 controller: amountController,
-                text: "Nominal",
+                label: "Nominal",
                 context: context,
                 validator: (value) {
                   if (double.tryParse(value.toString()) == 0) {

@@ -113,7 +113,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
                       hint: false,
                       controller: chargeController,
                       inputType: const TextInputType.numberWithOptions(),
-                      text: "Charge",
+                      label: "Charge",
                       suffixText: "%",
                       inputFormatter: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -154,7 +154,7 @@ class UIPaymentDebitPayment extends StatelessWidget {
                             controller: payDebitController,
                             inputType: TextInputType.number,
                             suffixText: ",00",
-                            text: "Nominal Bayar",
+                            label: "Nominal Bayar",
                             onChanged: (value) {
                               final finalValue = double.tryParse(value) ?? 0;
 

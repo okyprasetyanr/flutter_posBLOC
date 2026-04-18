@@ -49,7 +49,7 @@ class UiBackupRestore extends StatelessWidget {
                   child: Form(
                     key: formKey,
                     child: customTextField(
-                      text: "Nama",
+                      label: "Nama",
                       controller: nameBackupController,
                       validator: (value) => value!.isEmpty
                           ? "Nama diperlukan untuk Pencadangan"

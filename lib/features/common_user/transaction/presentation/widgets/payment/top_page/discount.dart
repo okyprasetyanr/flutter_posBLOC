@@ -86,7 +86,7 @@ class UIPaymentDiscount extends StatelessWidget {
                 hint: false,
                 controller: customDiscountController,
                 inputType: const TextInputType.numberWithOptions(),
-                text: "Dis.",
+                label: "Dis.",
                 suffixText: "%",
                 inputFormatter: [
                   FilteringTextInputFormatter.digitsOnly,

@@ -4,6 +4,8 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
@@ -14,6 +16,7 @@ import 'package:flutter_pos/features/common_user/adjustment/presentation/widget/
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
@@ -27,6 +30,12 @@ class UiAdjustment extends StatefulWidget {
 
 class _UiAdjustmentState extends State<UiAdjustment> {
   final searchController = TextEditingController();
+  final sellPriceController = TextEditingController();
+  final BuyPriceController = TextEditingController();
+  final qty = 0.0;
+  String? day = "";
+  String? month = "";
+  String? year = "";
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
@@ -50,7 +59,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                   child: customTextField(
                     moreRadius: true,
                     controller: searchController,
-                    text: "Cari...",
+                    label: "Cari...",
                     onChanged: (value) => context.read<AdjustmentBloc>().add(
                       AdjustmentSearchData(text: value),
                     ),
@@ -175,15 +184,15 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                     formatDate(date: item.getdateBuy),
                                   ),
                                   rowContent(
-                                    "Stock Masuk",
+                                    "Stok Masuk",
                                     formatQtyOrPrice(item.getqtyItem_in),
                                   ),
                                   rowContent(
-                                    "Stock Keluar",
+                                    "Stok Keluar",
                                     formatQtyOrPrice(item.getqtyItem_out),
                                   ),
                                   rowContent(
-                                    "Stock Sisa",
+                                    "Stok Sisa",
                                     formatQtyOrPrice(
                                       item.getqtyItem_in - item.getqtyItem_out,
                                     ),
@@ -209,12 +218,179 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                     ),
                     onTap: () {
                       final bloc = context.read<AdjustmentBloc>();
+                      bloc.add(AdjustmentSelectedBatch(selectedBatch: item));
                       customBottomSheet(
                         context: context,
                         resetItemForm: null,
-                        content: (scrollController) => ListView(
-                          controller: scrollController,
-                          children: [],
+                        content: (scrollController) => BlocProvider.value(
+                          value: bloc,
+                          child: ListView(
+                            controller: scrollController,
+                            children: [
+                              rowContent(
+                                "Tanggal",
+                                formatDate(date: item.getdateBuy),
+                              ),
+                              Row(
+                                children: [
+                                  Text("Stok Masuk", style: lv05TextStyle),
+                                  Text(":", style: lv05TextStyle),
+                                  BlocListener<AdjustmentBloc, AdjustmentState>(
+                                    listener: (context, state) {
+                                      if (state is AdjustmentLoaded) {}
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          style: ButtonStyle(
+                                            minimumSize: WidgetStatePropertyAll(
+                                              Size(0, 0),
+                                            ),
+                                            padding: WidgetStatePropertyAll(
+                                              EdgeInsets.all(5),
+                                            ),
+                                            shape: WidgetStatePropertyAll(
+                                              RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  width: 1,
+                                                  color: AppPropertyColor.black,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            bloc.add(
+                                              AdjustmentAdjustData(
+                                                isIncrement: false,
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.remove,
+                                            size: lv2IconSize,
+                                            color: AppPropertyColor.black,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 18,
+                                          child: Text(
+                                            formatQtyOrPrice(qty),
+                                            style: lv1TextStyleBold,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          style: ButtonStyle(
+                                            minimumSize: WidgetStatePropertyAll(
+                                              Size(0, 0),
+                                            ),
+                                            padding: WidgetStatePropertyAll(
+                                              EdgeInsets.all(5),
+                                            ),
+                                            shape: WidgetStatePropertyAll(
+                                              RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  width: 1,
+                                                  color: AppPropertyColor.black,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.only(),
+                                          onPressed: () {
+                                            bloc.add(
+                                              AdjustmentAdjustData(
+                                                isIncrement: false,
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.add,
+                                            size: lv2IconSize,
+                                            color: AppPropertyColor.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              customTextField(
+                                controller: sellPriceController,
+                                label: "Harga Jual",
+                              ),
+                              customTextField(
+                                controller: sellPriceController,
+                                label: "Harga Beli",
+                              ),
+                              Row(
+                                children: [
+                                  Text("Kadaluarsa", style: lv05TextStyle),
+                                  Expanded(
+                                    child:
+                                        BlocListener<
+                                          AdjustmentBloc,
+                                          AdjustmentState
+                                        >(
+                                          listener: (context, state) {
+                                            if (state is AdjustmentLoaded) {
+                                              final dataSelected =
+                                                  state.selectedItemBatch;
+                                              day = dataSelected
+                                                  ?.getexpiredDate
+                                                  ?.day
+                                                  .toString();
+                                              month = dataSelected
+                                                  ?.getexpiredDate
+                                                  ?.month
+                                                  .toString();
+                                              year = dataSelected
+                                                  ?.getexpiredDate
+                                                  ?.year
+                                                  .toString();
+                                            }
+                                          },
+                                          child: WidgetCustomDate(
+                                            initDay: day,
+                                            initMonth: month,
+                                            initYear: year,
+                                            onSelected: (day, month, year) {
+                                              devLog(
+                                                "Log UITransaction: CustomDate: $year-$month-$day",
+                                              );
+                                              bloc.add(
+                                                AdjustmentAdjustData(
+                                                  day: day,
+                                                  month: month,
+                                                  year: year,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              customButtonIcon(
+                                backgroundColor: color,
+                                label: Text(
+                                  "Simpan",
+                                  style: lv05TextStyleWhite,
+                                ),
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.check_rounded,
+                                  color: AppPropertyColor.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },

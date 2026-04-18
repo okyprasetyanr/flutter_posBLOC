@@ -108,7 +108,7 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
                 },
                 child: customTextField(
                   controller: noteController,
-                  text: "Catatan...",
+                  label: "Catatan...",
                   onChanged: (value) =>
                       context.read<PaymentBloc>().add(PaymentNote(note: value)),
                 ),

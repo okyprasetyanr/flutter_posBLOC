@@ -107,7 +107,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                   index: 0,
                   nodes: nodes,
                   inputType: TextInputType.emailAddress,
-                  text: "E-mail",
+                  label: "E-mail",
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Tidak boleh kosong!";
@@ -127,7 +127,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                   index: 1,
                   nodes: nodes,
                   inputType: TextInputType.text,
-                  text: "Kata Sandi",
+                  label: "Kata Sandi",
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Tidak boleh kosong!";
@@ -151,7 +151,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                         index: 2,
                         nodes: nodes,
                         inputType: TextInputType.text,
-                        text: "Nama Usaha",
+                        label: "Nama Usaha",
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "Tidak boleh kosong!";
@@ -176,7 +176,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                               index: 3,
                               nodes: nodes,
                               inputType: TextInputType.phone,
-                              text: "Nomor Usaha",
+                              label: "Nomor Usaha",
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "Tidak boleh kosong!";
@@ -242,7 +242,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                       controller: namaBranchControllers[i],
                                       enable: true,
                                       inputType: TextInputType.text,
-                                      text: "Nama Cabang ${i + 1}",
+                                      label: "Nama Cabang ${i + 1}",
                                       validator: (value) {
                                         if (value!.isEmpty) {
                                           return "Tidak boleh kosong!";
@@ -260,7 +260,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                       controller: addressBranchControllers[i],
                                       enable: true,
                                       inputType: TextInputType.text,
-                                      text: "Daerah Cabang ${i + 1}",
+                                      label: "Daerah Cabang ${i + 1}",
                                       validator: (value) {
                                         if (value!.isEmpty) {
                                           return "Tidak boleh kosong!";
@@ -278,7 +278,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                       controller: phoneBranchControllers[i],
                                       enable: true,
                                       inputType: TextInputType.number,
-                                      text: "Nomor Cabang ${i + 1}",
+                                      label: "Nomor Cabang ${i + 1}",
                                       validator: (value) {
                                         if (value!.isEmpty) {
                                           return "Tidak boleh kosong!";

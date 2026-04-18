@@ -98,7 +98,7 @@ class _UiFinancialState extends State<UiFinancial> {
                 controller: searchController,
                 enable: true,
                 inputType: TextInputType.text,
-                text: "Cari",
+                label: "Cari",
                 onChanged: (value) => context.read<FinancialBloc>().add(
                   FinancialSearch(search: value),
                 ),
@@ -202,7 +202,7 @@ class _UiFinancialState extends State<UiFinancial> {
                     controller: nameController,
                     enable: true,
                     inputType: TextInputType.text,
-                    text: "Nama Kas",
+                    label: "Nama Kas",
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Nama Kas tidak boleh kosong!";

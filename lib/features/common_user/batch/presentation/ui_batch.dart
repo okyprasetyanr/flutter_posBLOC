@@ -83,7 +83,7 @@ class _UiBatchState extends State<UiBatch> {
                 controller: searchController,
                 enable: true,
                 inputType: TextInputType.text,
-                text: "Cari",
+                label: "Cari",
                 onChanged: (value) {
                   context.read<BatchBloc>().add(BatchSearchItem(search: value));
                 },
@@ -242,19 +242,19 @@ class _UiBatchState extends State<UiBatch> {
                                             formatDate(date: item.getdateBuy),
                                           ),
                                           rowContent(
-                                            "Stock Masuk",
+                                            "Stok Masuk",
                                             formatQtyOrPrice(
                                               item.getqtyItem_in,
                                             ),
                                           ),
                                           rowContent(
-                                            "Stock Keluar",
+                                            "Stok Keluar",
                                             formatQtyOrPrice(
                                               item.getqtyItem_out,
                                             ),
                                           ),
                                           rowContent(
-                                            "Stock Sisa",
+                                            "Stok Sisa",
                                             formatQtyOrPrice(
                                               item.getqtyItem_in -
                                                   item.getqtyItem_out,
@@ -350,15 +350,15 @@ class _UiBatchState extends State<UiBatch> {
                     const SizedBox(height: 10),
                     rowContent("Nama Item", state.getnameItem),
                     rowContent(
-                      "Stock Masuk",
+                      "Stok Masuk",
                       formatQtyOrPrice(state.getqtyItem_in),
                     ),
                     rowContent(
-                      "Stock Keluar",
+                      "Stok Keluar",
                       formatQtyOrPrice(state.getqtyItem_out),
                     ),
                     rowContent(
-                      "Stock Sisa",
+                      "Stok Sisa",
                       formatQtyOrPrice(
                         state.getqtyItem_in - state.getqtyItem_out,
                       ),

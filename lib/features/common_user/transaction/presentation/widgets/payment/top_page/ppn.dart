@@ -86,7 +86,7 @@ class UIPaymentPPN extends StatelessWidget {
                 hint: false,
                 controller: customPPNController,
                 inputType: const TextInputType.numberWithOptions(),
-                text: "PPN",
+                label: "PPN",
                 suffixText: "%",
                 inputFormatter: [
                   FilteringTextInputFormatter.digitsOnly,

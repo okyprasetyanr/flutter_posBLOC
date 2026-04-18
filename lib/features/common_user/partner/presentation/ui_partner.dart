@@ -107,7 +107,7 @@ class _UIPartnerState extends State<UIPartner> {
               child: customTextField(
                 controller: searchController,
                 enable: true,
-                text: "Cari",
+                label: "Cari",
                 inputType: TextInputType.text,
                 onChanged: (value) => context.read<PartnerBloc>().add(
                   PartnerSearch(search: value),
@@ -257,7 +257,7 @@ class _UIPartnerState extends State<UIPartner> {
                             nodes: nodes,
                             inputType: TextInputType.text,
                             context: context,
-                            text: "Nama Kontak",
+                            label: "Nama Kontak",
                             controller: namePartnerController,
                             enable: true,
                             validator: (value) {
@@ -276,7 +276,7 @@ class _UIPartnerState extends State<UIPartner> {
                           index: 1,
                           nodes: nodes,
                           context: context,
-                          text: "Nomor Kontak",
+                          label: "Nomor Kontak",
                           controller: phonePartnerController,
                           enable: true,
                           inputType: TextInputType.number,
@@ -293,7 +293,7 @@ class _UIPartnerState extends State<UIPartner> {
                           index: 2,
                           nodes: nodes,
                           context: context,
-                          text: "E-mail",
+                          label: "E-mail",
                           controller: emailPartnerController,
                           enable: true,
                           inputType: TextInputType.emailAddress,

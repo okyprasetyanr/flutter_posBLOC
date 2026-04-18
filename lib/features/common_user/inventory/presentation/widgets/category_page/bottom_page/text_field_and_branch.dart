@@ -41,7 +41,7 @@ class UICategoryTextFieldAndBranch extends StatelessWidget {
               index: 0,
               nodes: nodes,
               inputType: TextInputType.text,
-              text: "Nama Kategori",
+              label: "Nama Kategori",
               controller: nameCategoryController,
               enable: true,
             ),

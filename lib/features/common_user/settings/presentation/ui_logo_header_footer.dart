@@ -50,12 +50,12 @@ class UiLogoHeaderFooter extends StatelessWidget {
                     children: [
                       customTextField(
                         controller: headerController,
-                        text: "Header",
+                        label: "Header",
                       ),
                       const SizedBox(height: 10),
                       customTextField(
                         controller: footerController,
-                        text: "Footer",
+                        label: "Footer",
                       ),
                     ],
                   ),

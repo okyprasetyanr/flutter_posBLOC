@@ -46,7 +46,7 @@ class _UITransactionPopUpNoteAndSubTotalState
             },
             child: customTextField(
               controller: noteController,
-              text: "Catatan",
+              label: "Catatan",
               onChanged: (value) => context.read<TransactionBloc>().add(
                 TransactionAdjustItem(note: value),
               ),

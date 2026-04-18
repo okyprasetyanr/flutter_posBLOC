@@ -110,7 +110,7 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                 controller: searchController,
                 enable: true,
                 inputType: TextInputType.text,
-                text: "Cari",
+                label: "Cari",
                 onChanged: (value) {
                   context.read<HistoryTransactionBloc>().add(
                     HistoryTransactionSearchData(search: value),
