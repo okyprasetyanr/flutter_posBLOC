@@ -17,7 +17,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     on<AdjustmentGetData>(_onGetData);
     on<AdjustmentFilterByCateogry>(_onFilterByCategory);
     on<AdjustmentSearchData>(_onSearchData, transformer: debounceRestartable());
-    on<AdjustmentSelectedBatch>(_onSelectedBatch);
+    on<AdjustmentSelectedItemBatch>(_onSelectedItemBatch);
     on<AdjustmentSelectedItem>(_onSelectedItem);
     on<AdjustmentUploadData>(_onUploadData);
     on<AdjustmentAdjustData>(_onAdjustData);
@@ -118,10 +118,16 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     }
   }
 
-  FutureOr<void> _onSelectedBatch(
-    AdjustmentSelectedBatch event,
+  FutureOr<void> _onSelectedItemBatch(
+    AdjustmentSelectedItemBatch event,
     Emitter<AdjustmentState> emit,
-  ) {}
+  ) {
+    emit(
+      (state as AdjustmentLoaded).copyWith(
+        selectedItemBatch: event.selectedItemBatch,
+      ),
+    );
+  }
 
   FutureOr<void> _onSelectedItem(
     AdjustmentSelectedItem event,

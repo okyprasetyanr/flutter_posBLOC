@@ -18,10 +18,10 @@ class AdjustmentSelectedItem extends AdjustmentEvent {
   AdjustmentSelectedItem({required this.selectedItem});
 }
 
-class AdjustmentSelectedBatch extends AdjustmentEvent {
-  final ModelItemBatch selectedBatch;
+class AdjustmentSelectedItemBatch extends AdjustmentEvent {
+  final ModelItemBatch selectedItemBatch;
 
-  AdjustmentSelectedBatch({required this.selectedBatch});
+  AdjustmentSelectedItemBatch({required this.selectedItemBatch});
 }
 
 class AdjustmentAdjustData extends AdjustmentEvent {

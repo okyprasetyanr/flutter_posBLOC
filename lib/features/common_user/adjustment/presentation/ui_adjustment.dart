@@ -32,10 +32,10 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   final searchController = TextEditingController();
   final sellPriceController = TextEditingController();
   final BuyPriceController = TextEditingController();
-  final qty = 0.0;
-  String? day = "";
-  String? month = "";
-  String? year = "";
+  double qty = 0;
+  String? dayExpired = "";
+  String? monthExpired = "";
+  String? yearExpired = "";
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
@@ -141,105 +141,121 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   }
 
   Widget layoutBottom() {
-    return BlocSelector<AdjustmentBloc, AdjustmentState, List<ModelItemBatch>>(
-      selector: (state) =>
-          state is AdjustmentLoaded ? state.dataItemBatchByIdItem : [],
-      builder: (context, state) => state.isNotEmpty
-          ? DynamicColorWrapper(
-              colorSelector: (context) => context.colorAdjustment,
-              builder: (context, color) => ListView.builder(
-                itemCount: state.length,
-                itemBuilder: (context, index) {
-                  final item = state[index];
-                  return InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Material(
-                        color: AppPropertyColor.white,
-                        borderRadius: BorderRadius.circular(10),
-                        elevation: 4,
-                        child: Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10),
+    return BlocListener<AdjustmentBloc, AdjustmentState>(
+      listener: (context, state) {
+        if (state is AdjustmentLoaded) {
+          if (state.selectedItemBatch != null) {
+            final itemBatch = state.selectedItemBatch!;
+            sellPriceController.text = itemBatch.getpriceItemFinal.toString();
+            BuyPriceController.text = itemBatch.getpriceItemBuy.toString();
+            qty = itemBatch.getqtyItem_in;
+            dayExpired = itemBatch.getexpiredDate?.day.toString();
+            monthExpired = itemBatch.getexpiredDate?.month.toString();
+            yearExpired = itemBatch.getexpiredDate?.year.toString();
+
+            devLog("Log UIAdjustment: data: $itemBatch ");
+          }
+        }
+      },
+      child: BlocSelector<AdjustmentBloc, AdjustmentState, List<ModelItemBatch>>(
+        selector: (state) =>
+            state is AdjustmentLoaded ? state.dataItemBatchByIdItem : [],
+        builder: (context, state) => state.isNotEmpty
+            ? DynamicColorWrapper(
+                colorSelector: (context) => context.colorAdjustment,
+                builder: (context, color) => ListView.builder(
+                  itemCount: state.length,
+                  itemBuilder: (context, index) {
+                    final item = state[index];
+                    return InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Material(
+                          color: AppPropertyColor.white,
+                          borderRadius: BorderRadius.circular(10),
+                          elevation: 4,
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10),
+                                  ),
+                                ),
+                                width: double.infinity,
+                                child: Text(
+                                  "Nota: ${item.getinvoice}",
+                                  style: lv1TextStyleWhite,
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                              width: double.infinity,
-                              child: Text(
-                                "Nota: ${item.getinvoice}",
-                                style: lv1TextStyleWhite,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                children: [
-                                  rowContent(
-                                    "Tanggal",
-                                    formatDate(date: item.getdateBuy),
-                                  ),
-                                  rowContent(
-                                    "Stok Masuk",
-                                    formatQtyOrPrice(item.getqtyItem_in),
-                                  ),
-                                  rowContent(
-                                    "Stok Keluar",
-                                    formatQtyOrPrice(item.getqtyItem_out),
-                                  ),
-                                  rowContent(
-                                    "Stok Sisa",
-                                    formatQtyOrPrice(
-                                      item.getqtyItem_in - item.getqtyItem_out,
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    rowContent(
+                                      "Tanggal",
+                                      formatDate(date: item.getdateBuy),
                                     ),
-                                  ),
-                                  rowContent(
-                                    "Harga Jual",
-                                    formatPriceRp(item.getpriceItemFinal),
-                                  ),
-                                  rowContent(
-                                    "Harga Beli",
-                                    formatPriceRp(item.getpriceItemBuy),
-                                  ),
-                                  rowContent(
-                                    "Kadaluarsa",
-                                    item.getexpiredDate?.toString() ?? "-",
-                                  ),
-                                ],
+                                    rowContent(
+                                      "Stok Masuk",
+                                      formatQtyOrPrice(item.getqtyItem_in),
+                                    ),
+                                    rowContent(
+                                      "Stok Keluar",
+                                      formatQtyOrPrice(item.getqtyItem_out),
+                                    ),
+                                    rowContent(
+                                      "Stok Sisa",
+                                      formatQtyOrPrice(
+                                        item.getqtyItem_in -
+                                            item.getqtyItem_out,
+                                      ),
+                                    ),
+                                    rowContent(
+                                      "Harga Jual",
+                                      formatPriceRp(item.getpriceItemFinal),
+                                    ),
+                                    rowContent(
+                                      "Harga Beli",
+                                      formatPriceRp(item.getpriceItemBuy),
+                                    ),
+                                    rowContent(
+                                      "Kadaluarsa",
+                                      item.getexpiredDate?.toString() ?? "-",
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    onTap: () {
-                      final bloc = context.read<AdjustmentBloc>();
-                      bloc.add(AdjustmentSelectedBatch(selectedBatch: item));
-                      customBottomSheet(
-                        context: context,
-                        resetItemForm: null,
-                        content: (scrollController) => BlocProvider.value(
-                          value: bloc,
-                          child: ListView(
-                            controller: scrollController,
-                            children: [
-                              rowContent(
-                                "Tanggal",
-                                formatDate(date: item.getdateBuy),
-                              ),
-                              Row(
-                                children: [
-                                  Text("Stok Masuk", style: lv05TextStyle),
-                                  Text(":", style: lv05TextStyle),
-                                  BlocListener<AdjustmentBloc, AdjustmentState>(
-                                    listener: (context, state) {
-                                      if (state is AdjustmentLoaded) {}
-                                    },
-                                    child: Row(
+                      onTap: () {
+                        final bloc = context.read<AdjustmentBloc>();
+                        bloc.add(
+                          AdjustmentSelectedItemBatch(selectedItemBatch: item),
+                        );
+                        customBottomSheet(
+                          context: context,
+                          resetItemForm: null,
+                          content: (scrollController) => BlocProvider.value(
+                            value: bloc,
+                            child: ListView(
+                              controller: scrollController,
+                              children: [
+                                rowContent(
+                                  "Tanggal",
+                                  formatDate(date: item.getdateBuy),
+                                ),
+
+                                Row(
+                                  children: [
+                                    Text("Stok Masuk", style: lv05TextStyle),
+                                    Text(":", style: lv05TextStyle),
+                                    Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
@@ -306,7 +322,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                           onPressed: () {
                                             bloc.add(
                                               AdjustmentAdjustData(
-                                                isIncrement: false,
+                                                isIncrement: true,
                                               ),
                                             );
                                           },
@@ -318,89 +334,65 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                              customTextField(
-                                controller: sellPriceController,
-                                label: "Harga Jual",
-                              ),
-                              customTextField(
-                                controller: sellPriceController,
-                                label: "Harga Beli",
-                              ),
-                              Row(
-                                children: [
-                                  Text("Kadaluarsa", style: lv05TextStyle),
-                                  Expanded(
-                                    child:
-                                        BlocListener<
-                                          AdjustmentBloc,
-                                          AdjustmentState
-                                        >(
-                                          listener: (context, state) {
-                                            if (state is AdjustmentLoaded) {
-                                              final dataSelected =
-                                                  state.selectedItemBatch;
-                                              day = dataSelected
-                                                  ?.getexpiredDate
-                                                  ?.day
-                                                  .toString();
-                                              month = dataSelected
-                                                  ?.getexpiredDate
-                                                  ?.month
-                                                  .toString();
-                                              year = dataSelected
-                                                  ?.getexpiredDate
-                                                  ?.year
-                                                  .toString();
-                                            }
-                                          },
-                                          child: WidgetCustomDate(
-                                            initDay: day,
-                                            initMonth: month,
-                                            initYear: year,
-                                            onSelected: (day, month, year) {
-                                              devLog(
-                                                "Log UITransaction: CustomDate: $year-$month-$day",
-                                              );
-                                              bloc.add(
-                                                AdjustmentAdjustData(
-                                                  day: day,
-                                                  month: month,
-                                                  year: year,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              customButtonIcon(
-                                backgroundColor: color,
-                                label: Text(
-                                  "Simpan",
-                                  style: lv05TextStyleWhite,
+                                  ],
                                 ),
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.check_rounded,
-                                  color: AppPropertyColor.white,
+                                customTextField(
+                                  controller: sellPriceController,
+                                  label: "Harga Jual",
                                 ),
-                              ),
-                            ],
+                                customTextField(
+                                  controller: sellPriceController,
+                                  label: "Harga Beli",
+                                ),
+                                Row(
+                                  children: [
+                                    Text("Kadaluarsa", style: lv05TextStyle),
+                                    Expanded(
+                                      child: WidgetCustomDate(
+                                        initDay: dayExpired,
+                                        initMonth: monthExpired,
+                                        initYear: yearExpired,
+                                        onSelected: (day, month, year) {
+                                          devLog(
+                                            "Log UITransaction: CustomDate: $year-$month-$day",
+                                          );
+                                          bloc.add(
+                                            AdjustmentAdjustData(
+                                              day: day,
+                                              month: month,
+                                              year: year,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                customButtonIcon(
+                                  backgroundColor: color,
+                                  label: Text(
+                                    "Simpan",
+                                    style: lv05TextStyleWhite,
+                                  ),
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.check_rounded,
+                                    color: AppPropertyColor.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                        );
+                      },
+                    );
+                  },
+                ),
+              )
+            : Center(
+                child: Text("Belum ada Data Batch!", style: lv05TextStyleBold),
               ),
-            )
-          : Center(
-              child: Text("Belum ada Data Batch!", style: lv05TextStyleBold),
-            ),
+      ),
     );
   }
 
