@@ -31,11 +31,11 @@ class UiAdjustment extends StatefulWidget {
 class _UiAdjustmentState extends State<UiAdjustment> {
   final searchController = TextEditingController();
   final sellPriceController = TextEditingController();
-  final BuyPriceController = TextEditingController();
-  final qty = 0.0;
-  String? day = "";
-  String? month = "";
-  String? year = "";
+  final buyPriceController = TextEditingController();
+  double qty = 0;
+  String? day = null;
+  String? month = null;
+  String? year = null;
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
@@ -218,28 +218,48 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                     ),
                     onTap: () {
                       final bloc = context.read<AdjustmentBloc>();
-                      bloc.add(AdjustmentSelectedBatch(selectedBatch: item));
+                      bloc.add(
+                        AdjustmentSelectedItemBatch(selectedItemBatch: item),
+                      );
                       customBottomSheet(
                         context: context,
                         resetItemForm: null,
                         content: (scrollController) => BlocProvider.value(
                           value: bloc,
-                          child: ListView(
-                            controller: scrollController,
-                            children: [
-                              rowContent(
-                                "Tanggal",
-                                formatDate(date: item.getdateBuy),
-                              ),
-                              Row(
-                                children: [
-                                  Text("Stok Masuk", style: lv05TextStyle),
-                                  Text(":", style: lv05TextStyle),
-                                  BlocListener<AdjustmentBloc, AdjustmentState>(
-                                    listener: (context, state) {
-                                      if (state is AdjustmentLoaded) {}
-                                    },
-                                    child: Row(
+                          child: BlocListener<AdjustmentBloc, AdjustmentState>(
+                            listenWhen: (previous, current) =>
+                                previous is AdjustmentLoaded &&
+                                current is AdjustmentLoaded &&
+                                previous.selectedItemBatch !=
+                                    current.selectedItemBatch,
+                            listener: (context, state) {
+                              if (state is AdjustmentLoaded) {
+                                final dataSelected = state.selectedItemBatch;
+                                if (dataSelected != null) {
+                                  day = dataSelected.getexpiredDate!.day
+                                      .toString();
+                                  month = dataSelected.getexpiredDate!.month
+                                      .toString();
+                                  year = dataSelected.getexpiredDate!.year
+                                      .toString();
+                                  sellPriceController.text = dataSelected
+                                      .getpriceItemFinal
+                                      .toString();
+                                  buyPriceController.text = dataSelected
+                                      .getpriceItemBuy
+                                      .toString();
+                                  qty = dataSelected.getqtyItem_in;
+                                }
+                              }
+                            },
+                            child: ListView(
+                              controller: scrollController,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text("Stok Masuk", style: lv05TextStyle),
+                                    Text(":", style: lv05TextStyle),
+                                    Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
@@ -318,78 +338,54 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                              customTextField(
-                                controller: sellPriceController,
-                                label: "Harga Jual",
-                              ),
-                              customTextField(
-                                controller: sellPriceController,
-                                label: "Harga Beli",
-                              ),
-                              Row(
-                                children: [
-                                  Text("Kadaluarsa", style: lv05TextStyle),
-                                  Expanded(
-                                    child:
-                                        BlocListener<
-                                          AdjustmentBloc,
-                                          AdjustmentState
-                                        >(
-                                          listener: (context, state) {
-                                            if (state is AdjustmentLoaded) {
-                                              final dataSelected =
-                                                  state.selectedItemBatch;
-                                              day = dataSelected
-                                                  ?.getexpiredDate
-                                                  ?.day
-                                                  .toString();
-                                              month = dataSelected
-                                                  ?.getexpiredDate
-                                                  ?.month
-                                                  .toString();
-                                              year = dataSelected
-                                                  ?.getexpiredDate
-                                                  ?.year
-                                                  .toString();
-                                            }
-                                          },
-                                          child: WidgetCustomDate(
-                                            initDay: day,
-                                            initMonth: month,
-                                            initYear: year,
-                                            onSelected: (day, month, year) {
-                                              devLog(
-                                                "Log UITransaction: CustomDate: $year-$month-$day",
-                                              );
-                                              bloc.add(
-                                                AdjustmentAdjustData(
-                                                  day: day,
-                                                  month: month,
-                                                  year: year,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              customButtonIcon(
-                                backgroundColor: color,
-                                label: Text(
-                                  "Simpan",
-                                  style: lv05TextStyleWhite,
+                                  ],
                                 ),
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.check_rounded,
-                                  color: AppPropertyColor.white,
+                                customTextField(
+                                  controller: sellPriceController,
+                                  label: "Harga Jual",
                                 ),
-                              ),
-                            ],
+                                customTextField(
+                                  controller: buyPriceController,
+                                  label: "Harga Beli",
+                                ),
+                                Row(
+                                  children: [
+                                    Text("Kadaluarsa", style: lv05TextStyle),
+                                    Expanded(
+                                      child: WidgetCustomDate(
+                                        initDay: day,
+                                        initMonth: month,
+                                        initYear: year,
+                                        onSelected: (day, month, year) {
+                                          devLog(
+                                            "Log UITransaction: CustomDate: $year-$month-$day",
+                                          );
+                                          bloc.add(
+                                            AdjustmentAdjustData(
+                                              day: day,
+                                              month: month,
+                                              year: year,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                customButtonIcon(
+                                  backgroundColor: color,
+                                  label: Text(
+                                    "Simpan",
+                                    style: lv05TextStyleWhite,
+                                  ),
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.check_rounded,
+                                    color: AppPropertyColor.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
