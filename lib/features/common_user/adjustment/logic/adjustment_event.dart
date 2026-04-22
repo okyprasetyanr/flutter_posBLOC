@@ -1,4 +1,3 @@
-import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
@@ -24,19 +23,20 @@ class AdjustmentSelectedItemBatch extends AdjustmentEvent {
   AdjustmentSelectedItemBatch({required this.selectedItemBatch});
 }
 
-class AdjustmentAdjustData extends AdjustmentEvent {
-  final bool? isIncrement;
-  final String? day;
-  final String? month;
-  final String? year;
+class AdjustmentResetSelectedData extends AdjustmentEvent {}
 
-  AdjustmentAdjustData({this.day, this.month, this.year, this.isIncrement});
+class AdjustmentAdjustData extends AdjustmentEvent {
+  final String? sellPrice;
+  final String? buyPrice;
+  final bool? isIncrement;
+
+  AdjustmentAdjustData({this.sellPrice, this.buyPrice, this.isIncrement});
 }
 
 class AdjustmentUploadData extends AdjustmentEvent {
-  final ModelBatch updateData;
+  final String? dateExpired;
 
-  AdjustmentUploadData({required this.updateData});
+  AdjustmentUploadData({required this.dateExpired});
 }
 
 class AdjustmentSearchData extends AdjustmentEvent {
