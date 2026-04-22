@@ -55,6 +55,16 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     final finaldataItem = dataItem
         .where((item) => idItemBatchSet.contains(item.getidItem))
         .toList();
+    final dataItemBatchByIdItem = currentState.selectedItem != null
+        ? sortStockMode(
+            currentState.dataItemBatch
+                .where(
+                  (element) =>
+                      element.getidItem == currentState.selectedItem!.getidItem,
+                )
+                .toList(),
+          )
+        : null;
 
     emit(
       currentState.copyWith(
@@ -72,6 +82,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
         dataItem: dataItem,
         idBranch: idBranch,
         dataItemBatch: sortStockMode(dataItemBatch),
+        dataItemBatchByIdItem: dataItemBatchByIdItem,
       ),
     );
   }
@@ -220,7 +231,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     emit(
       (state as AdjustmentLoaded).copyWith(
         editedItemBatch: null,
-        originaItemBatch: null,
+        originalItemBatch: null,
       ),
     );
   }

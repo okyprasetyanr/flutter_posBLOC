@@ -34,9 +34,9 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   final sellPriceController = TextEditingController();
   final buyPriceController = TextEditingController();
   double qty = 0;
-  String? dayExpired = "";
-  String? monthExpired = "";
-  String? yearExpired = "";
+  String? dayExpired = null;
+  String? monthExpired = null;
+  String? yearExpired = null;
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
@@ -160,12 +160,6 @@ class _UiAdjustmentState extends State<UiAdjustment> {
 
             devLog("Log UIAdjustment: data: $itemBatch ");
           }
-          sellPriceController.clear();
-          buyPriceController.clear();
-          qty = 0;
-          dayExpired = null;
-          monthExpired = null;
-          yearExpired = null;
         }
       },
       child: BlocSelector<AdjustmentBloc, AdjustmentState, List<ModelItemBatch>>(
@@ -251,8 +245,16 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                         );
                         customBottomSheet(
                           context: context,
-                          resetItemForm: () =>
-                              bloc.add(AdjustmentResetSelectedData()),
+                          resetItemForm: () {
+                            devLog("Log UIAdjustment: check Reset: true");
+                            dayExpired = null;
+                            monthExpired = null;
+                            yearExpired = null;
+                            bloc.add(AdjustmentResetSelectedData());
+                            devLog(
+                              "Log UIAdjustment: resetDate: $yearExpired-$monthExpired-$dayExpired",
+                            );
+                          },
                           content: (scrollController) => BlocProvider.value(
                             value: bloc,
                             child: Column(
@@ -304,18 +306,18 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                         (bloc.state as AdjustmentLoaded)
                                                 .isAdjustIn
                                             ? customIconButtonMinPlus(
-                                                isIncrement: false,
-                                                onPressed: () => bloc.add(
-                                                  AdjustmentAdjustData(
-                                                    isIncrement: false,
-                                                  ),
-                                                ),
-                                              )
-                                            : customIconButtonMinPlus(
                                                 isIncrement: true,
                                                 onPressed: () => bloc.add(
                                                   AdjustmentAdjustData(
                                                     isIncrement: true,
+                                                  ),
+                                                ),
+                                              )
+                                            : customIconButtonMinPlus(
+                                                isIncrement: false,
+                                                onPressed: () => bloc.add(
+                                                  AdjustmentAdjustData(
+                                                    isIncrement: false,
                                                   ),
                                                 ),
                                               ),
@@ -423,7 +425,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                         initYear: yearExpired,
                                         onSelected: (day, month, year) {
                                           devLog(
-                                            "Log UITransaction: CustomDate: $year-$month-$day",
+                                            "Log UIAdjustment: CustomDate: $year-$month-$day : from Main: $yearExpired-$monthExpired-$dayExpired",
                                           );
                                           dayExpired = day ?? dayExpired;
                                           monthExpired = month ?? monthExpired;
@@ -450,7 +452,10 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                         dayExpired != null &&
                                         monthExpired != null &&
                                         yearExpired != null;
-                                    if (isAllFilled && isAllEmpty) {
+                                    devLog(
+                                      "Log UIAdjustment: date: $yearExpired-$monthExpired-$dayExpired",
+                                    );
+                                    if (isAllFilled || isAllEmpty) {
                                       context.read<AdjustmentBloc>().add(
                                         AdjustmentUploadData(
                                           dateExpired: isAllEmpty

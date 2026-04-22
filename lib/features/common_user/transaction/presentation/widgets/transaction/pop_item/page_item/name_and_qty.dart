@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_icon_button_min_plus.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
-import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class UITransactionPopUpNameAndQty extends StatelessWidget {
@@ -83,29 +83,10 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        style: ButtonStyle(
-                          minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                          padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
-                          shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 1,
-                                color: AppPropertyColor.white,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          context.read<TransactionBloc>().add(
-                            TransactionAdjustItem(mode: false),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.remove,
-                          size: lv2IconSize,
-                          color: AppPropertyColor.white,
+                      customIconButtonMinPlus(
+                        isIncrement: false,
+                        onPressed: () => context.read<TransactionBloc>().add(
+                          TransactionAdjustItem(mode: false),
                         ),
                       ),
                       SizedBox(
@@ -116,30 +97,10 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      IconButton(
-                        style: ButtonStyle(
-                          minimumSize: WidgetStatePropertyAll(Size(0, 0)),
-                          padding: WidgetStatePropertyAll(EdgeInsets.all(5)),
-                          shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 1,
-                                color: AppPropertyColor.white,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        padding: const EdgeInsets.only(),
-                        onPressed: () {
-                          context.read<TransactionBloc>().add(
-                            TransactionAdjustItem(mode: true),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.add,
-                          size: lv2IconSize,
-                          color: AppPropertyColor.white,
+                      customIconButtonMinPlus(
+                        isIncrement: true,
+                        onPressed: () => context.read<TransactionBloc>().add(
+                          TransactionAdjustItem(mode: true),
                         ),
                       ),
                     ],
