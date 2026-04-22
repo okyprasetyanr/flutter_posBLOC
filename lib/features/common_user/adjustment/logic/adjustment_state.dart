@@ -17,7 +17,8 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
   final List<ModelItem> filteredItem;
   final List<ModelBranch> dataBranch;
   final ModelItem? selectedItem;
-  final ModelItemBatch? selectedItemBatch;
+  final ModelItemBatch? editedItemBatch;
+  final ModelItemBatch? originalItemBatch;
   final ModelCategory? selectedFilterCategory;
   final List<ModelItemBatch> dataItemBatch;
   final List<ModelItemBatch> dataItemBatchByIdItem;
@@ -35,7 +36,8 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
     this.selectedFilterCategory,
     this.idBranch,
     this.selectedItem,
-    this.selectedItemBatch,
+    this.editedItemBatch,
+    this.originalItemBatch,
   });
 
   AdjustmentLoaded copyWith({
@@ -47,7 +49,8 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
     List<ModelItem>? filteredItem,
     List<ModelBranch>? dataBranch,
     ModelItem? selectedItem,
-    ModelItemBatch? selectedItemBatch,
+    ModelItemBatch? editedItemBatch,
+    ModelItemBatch? originaItemBatch,
     List<ModelItemBatch>? dataItemBatch,
     List<ModelItemBatch>? dataItemBatchByIdItem,
     ModelCategory? selectedFilterCategory,
@@ -63,7 +66,7 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
       filteredItem: filteredItem ?? this.filteredItem,
       dataBranch: dataBranch ?? this.dataBranch,
       selectedItem: selectedItem ?? this.selectedItem,
-      selectedItemBatch: selectedItemBatch ?? this.selectedItemBatch,
+      editedItemBatch: editedItemBatch ?? this.editedItemBatch,
       dataItemBatch: dataItemBatch ?? this.dataItemBatch,
       selectedFilterCategory:
           selectedFilterCategory ?? this.selectedFilterCategory,
@@ -82,7 +85,8 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
     dataBranch,
     idBranch,
     selectedItem,
-    selectedItemBatch,
+    editedItemBatch,
+    originalItemBatch,
     selectedFilterCategory,
   ];
 }

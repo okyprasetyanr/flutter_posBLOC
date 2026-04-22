@@ -49,8 +49,10 @@ Widget customTextField({
       ),
       suffixText: suffixText,
       floatingLabelBehavior: FloatingLabelBehavior.always,
-      label: Text(label!, style: lv1TextStyle),
-      hint: hint ? Text("$label...", style: lv05TextStyle) : null,
+      label: label != null ? Text(label, style: lv1TextStyle) : null,
+      hint: hint
+          ? Text("${label != null ? label : ""}...", style: lv05TextStyle)
+          : null,
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 5),
       border: OutlineInputBorder(

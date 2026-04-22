@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
 
@@ -19,4 +20,18 @@ Future<void> updateLogoHeaderFoter({
       .collection('companies')
       .doc(UserSession.getUidOwner())
       .set({'header': header, 'footer': footer}, SetOptions(merge: true));
+}
+
+Future<void> updateItemBatch({required ModelItemBatch data}) async {
+  await FirebaseFirestore.instance
+      .collection('batch/${data.getinvoice}/items_batch')
+      .doc(data.getidOrdered)
+      .set({
+        'price_item_final': data.getpriceItemFinal,
+        'price_item_buy': data.getpriceItemBuy,
+        'qty_item_in': data.getqtyItem_in,
+        'expired_date': data.getexpiredDate != null
+            ? formatDate(date: data.getexpiredDate!, minute: false)
+            : null,
+      }, SetOptions(merge: true));
 }

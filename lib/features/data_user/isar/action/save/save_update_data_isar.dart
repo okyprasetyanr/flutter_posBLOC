@@ -22,6 +22,7 @@ import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
@@ -32,6 +33,27 @@ import 'package:isar/isar.dart';
 Future<void> saveBatch_Isar(ModelBatch batch) async {
   await isar.writeTxn(() async {
     await isar.modelBatchIsars.put(convertBatch(batch));
+  });
+}
+
+Future<void> updateItemBatch_Isar(ModelItemBatch itemBatch) async {
+  final data = await isar.modelBatchIsars
+      .where()
+      .invoiceEqualTo(itemBatch.getinvoice)
+      .findFirst();
+
+  await isar.writeTxn(() async {
+    final indexData = data!.itemsBatch.indexWhere(
+      (element) => element.idOrdered == itemBatch.getidOrdered,
+    );
+    final updatedItem = data.itemsBatch[indexData]
+      ..qtyItem_in = itemBatch.getqtyItem_in
+      ..priceItemFinal = itemBatch.getpriceItemFinal
+      ..priceitemBuy = itemBatch.getpriceItemBuy
+      ..expiredDate = itemBatch.getexpiredDate;
+
+    data.itemsBatch[indexData] = updatedItem;
+    await isar.modelBatchIsars.put(data);
   });
 }
 

@@ -6,10 +6,13 @@ import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_sta
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
+import 'package:flutter_pos/model_data/model_item_batch.dart';
+import 'package:flutter_pos/request/update_data.dart';
 
 class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   final DataUserRepositoryCache repoCache;
@@ -20,7 +23,8 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     on<AdjustmentSelectedItemBatch>(_onSelectedItemBatch);
     on<AdjustmentSelectedItem>(_onSelectedItem);
     on<AdjustmentUploadData>(_onUploadData);
-    on<AdjustmentAdjustData>(_onAdjustData);
+    on<AdjustmentResetSelectedData>(_onResetSelectedData);
+    on<AdjustmentAdjustData>(_onAdjustData, transformer: debounceRestartable());
   }
 
   Future<void> _onGetData(
@@ -67,7 +71,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
         selectedFilterCategory: selectedCategory,
         dataItem: dataItem,
         idBranch: idBranch,
-        dataItemBatch: dataItemBatch,
+        dataItemBatch: sortStockMode(dataItemBatch),
       ),
     );
   }
@@ -124,7 +128,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   ) {
     emit(
       (state as AdjustmentLoaded).copyWith(
-        selectedItemBatch: event.selectedItemBatch,
+        editedItemBatch: event.selectedItemBatch,
       ),
     );
   }
@@ -151,15 +155,53 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     );
   }
 
-  FutureOr<void> _onUploadData(
+  Future<void> _onUploadData(
     AdjustmentUploadData event,
     Emitter<AdjustmentState> emit,
-  ) {}
+  ) async {
+    final currentState = state as AdjustmentLoaded;
+    final expiredDate = event.dateExpired;
+    final selectedItemBatch = currentState.editedItemBatch!.copyWith(
+      expiredDate: expiredDate != null
+          ? parseDate(date: expiredDate, minute: false)
+          : null,
+    );
+    await updateItemBatch_Isar(selectedItemBatch);
+    await updateItemBatch(data: selectedItemBatch);
+    add(AdjustmentGetData());
+  }
 
   FutureOr<void> _onAdjustData(
     AdjustmentAdjustData event,
     Emitter<AdjustmentState> emit,
-  ) {}
+  ) {
+    final currentState = state as AdjustmentLoaded;
+    final selectedItemBatch = currentState.editedItemBatch!;
+    final isIncrement = event.isIncrement;
+    final sellPrice = event.sellPrice;
+    final buyPrice = event.buyPrice;
+    ModelItemBatch? data = null;
+    if (isIncrement != null) {
+      data = isIncrement
+          ? selectedItemBatch.copyWith(
+              qtyItem_in: selectedItemBatch.getqtyItem_in + 1,
+            )
+          : selectedItemBatch.copyWith(
+              qtyItem_in: selectedItemBatch.getqtyItem_in - 1,
+            );
+    }
+    if (sellPrice != null) {
+      data = selectedItemBatch.copyWith(
+        priceItemFinal: double.tryParse(sellPrice),
+      );
+    }
+    if (buyPrice != null) {
+      data = selectedItemBatch.copyWith(
+        priceItemBuy: double.tryParse(buyPrice),
+      );
+    }
+    emit(currentState.copyWith(editedItemBatch: data));
+  }
 
   List<ModelItem> _filteredItem(List<ModelItem> data, String? idCategory) {
     List<ModelItem> filteredItem = data;
@@ -169,5 +211,17 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
           .toList();
     }
     return filteredItem;
+  }
+
+  FutureOr<void> _onResetSelectedData(
+    AdjustmentResetSelectedData event,
+    Emitter<AdjustmentState> emit,
+  ) {
+    emit(
+      (state as AdjustmentLoaded).copyWith(
+        editedItemBatch: null,
+        originaItemBatch: null,
+      ),
+    );
   }
 }
