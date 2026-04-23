@@ -65,7 +65,7 @@ class AdjustmentLoaded extends AdjustmentState with EquatableMixin {
       idBranch: idBranch ?? this.idBranch,
       filteredItem: filteredItem ?? this.filteredItem,
       dataBranch: dataBranch ?? this.dataBranch,
-      selectedItem: selectedItem ?? this.selectedItem,
+      selectedItem: selectedItem,
       editedItemBatch: editedItemBatch,
       originalItemBatch: originalItemBatch,
       dataItemBatch: dataItemBatch ?? this.dataItemBatch,

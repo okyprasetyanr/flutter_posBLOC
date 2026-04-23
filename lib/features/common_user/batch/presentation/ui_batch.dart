@@ -272,8 +272,12 @@ class _UiBatchState extends State<UiBatch> {
                                           ),
                                           rowContent(
                                             "Kadaluarsa",
-                                            item.getexpiredDate?.toString() ??
-                                                "-",
+                                            item.getexpiredDate != null
+                                                ? formatDate(
+                                                    date: item.getexpiredDate!,
+                                                    minute: false,
+                                                  )
+                                                : "-",
                                           ),
                                         ],
                                       ),

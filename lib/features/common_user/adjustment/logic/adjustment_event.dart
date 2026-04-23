@@ -28,9 +28,9 @@ class AdjustmentResetSelectedData extends AdjustmentEvent {}
 class AdjustmentAdjustData extends AdjustmentEvent {
   final String? sellPrice;
   final String? buyPrice;
-  final bool? isIncrement;
+  final bool? adjustQty;
 
-  AdjustmentAdjustData({this.sellPrice, this.buyPrice, this.isIncrement});
+  AdjustmentAdjustData({this.sellPrice, this.buyPrice, this.adjustQty});
 }
 
 class AdjustmentUploadData extends AdjustmentEvent {

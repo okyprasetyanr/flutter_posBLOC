@@ -55,16 +55,17 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     final finaldataItem = dataItem
         .where((item) => idItemBatchSet.contains(item.getidItem))
         .toList();
-    final dataItemBatchByIdItem = currentState.selectedItem != null
+    final selectedItem = currentState.selectedItem;
+    final dataItemBatchByIdItem = selectedItem != null
         ? sortStockMode(
-            currentState.dataItemBatch
+            dataItemBatch
                 .where(
                   (element) =>
                       element.getidItem == currentState.selectedItem!.getidItem,
                 )
                 .toList(),
           )
-        : null;
+        : [];
 
     emit(
       currentState.copyWith(
@@ -82,7 +83,8 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
         dataItem: dataItem,
         idBranch: idBranch,
         dataItemBatch: sortStockMode(dataItemBatch),
-        dataItemBatchByIdItem: dataItemBatchByIdItem,
+        selectedItem: selectedItem,
+        dataItemBatchByIdItem: [...dataItemBatchByIdItem],
       ),
     );
   }
@@ -94,6 +96,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     final currentState = state as AdjustmentLoaded;
     emit(
       currentState.copyWith(
+        dataItemBatchByIdItem: [],
         selectedFilterCategory: event.selectedCategory,
         filteredItem: _filteredItem(
           currentState.dataItem,
@@ -137,8 +140,10 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     AdjustmentSelectedItemBatch event,
     Emitter<AdjustmentState> emit,
   ) {
+    final currentState = state as AdjustmentLoaded;
     emit(
-      (state as AdjustmentLoaded).copyWith(
+      currentState.copyWith(
+        selectedItem: currentState.selectedItem,
         editedItemBatch: event.selectedItemBatch,
       ),
     );
@@ -172,6 +177,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   ) async {
     final currentState = state as AdjustmentLoaded;
     final expiredDate = event.dateExpired;
+    devLog("Log AdjustmentBloc: expiredDate: $expiredDate");
     final selectedItemBatch = currentState.editedItemBatch!.copyWith(
       expiredDate: expiredDate != null
           ? parseDate(date: expiredDate, minute: false)
@@ -188,17 +194,16 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   ) {
     final currentState = state as AdjustmentLoaded;
     final selectedItemBatch = currentState.editedItemBatch!;
-    final isIncrement = event.isIncrement;
     final sellPrice = event.sellPrice;
     final buyPrice = event.buyPrice;
     ModelItemBatch? data = null;
-    if (isIncrement != null) {
-      data = isIncrement
+    if (event.adjustQty != null) {
+      data = currentState.isAdjustIn
           ? selectedItemBatch.copyWith(
               qtyItem_in: selectedItemBatch.getqtyItem_in + 1,
             )
           : selectedItemBatch.copyWith(
-              qtyItem_in: selectedItemBatch.getqtyItem_in - 1,
+              qtyItem_out: selectedItemBatch.getqtyItem_out + 1,
             );
     }
     if (sellPrice != null) {
@@ -211,7 +216,12 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
         priceItemBuy: double.tryParse(buyPrice),
       );
     }
-    emit(currentState.copyWith(editedItemBatch: data));
+    emit(
+      currentState.copyWith(
+        editedItemBatch: data,
+        selectedItem: currentState.selectedItem,
+      ),
+    );
   }
 
   List<ModelItem> _filteredItem(List<ModelItem> data, String? idCategory) {
@@ -230,6 +240,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   ) {
     emit(
       (state as AdjustmentLoaded).copyWith(
+        selectedItem: (state as AdjustmentLoaded).selectedItem,
         editedItemBatch: null,
         originalItemBatch: null,
       ),

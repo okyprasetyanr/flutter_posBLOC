@@ -14,6 +14,7 @@ import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/data_user/isar/action/delete/delete_data_isar_all.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/transaction_saved_hive_adapter.dart';
 import 'package:flutter_pos/firebase_options.dart';
@@ -335,6 +336,7 @@ class _MainAppState extends State<ScreenLogin> {
                                               ),
                                             ),
                                           );
+                                          await deleteAllDataIsar();
                                           final result =
                                               await authenticatorAccount(
                                                 repo: context

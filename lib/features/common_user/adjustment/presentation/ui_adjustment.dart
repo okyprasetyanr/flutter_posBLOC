@@ -8,6 +8,7 @@ import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_date.dart';
 import 'package:flutter_pos/common_widget/widget_custom_icon_button_min_plus.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
@@ -33,7 +34,6 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   final searchController = TextEditingController();
   final sellPriceController = TextEditingController();
   final buyPriceController = TextEditingController();
-  double qty = 0;
   String? dayExpired = null;
   String? monthExpired = null;
   String? yearExpired = null;
@@ -153,7 +153,6 @@ class _UiAdjustmentState extends State<UiAdjustment> {
             buyPriceController.text = formatQtyOrPrice(
               itemBatch.getpriceItemBuy,
             );
-            qty = itemBatch.getqtyItem_in;
             dayExpired = itemBatch.getexpiredDate?.day.toString();
             monthExpired = itemBatch.getexpiredDate?.month.toString();
             yearExpired = itemBatch.getexpiredDate?.year.toString();
@@ -229,7 +228,12 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                     ),
                                     rowContent(
                                       "Kadaluarsa",
-                                      item.getexpiredDate?.toString() ?? "-",
+                                      item.getexpiredDate != null
+                                          ? formatDate(
+                                              date: item.getexpiredDate!,
+                                              minute: false,
+                                            )
+                                          : "-",
                                     ),
                                   ],
                                 ),
@@ -243,6 +247,9 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                         bloc.add(
                           AdjustmentSelectedItemBatch(selectedItemBatch: item),
                         );
+
+                        final isAdjustmentIn =
+                            (bloc.state as AdjustmentLoaded).isAdjustIn;
                         customBottomSheet(
                           context: context,
                           resetItemForm: () {
@@ -257,225 +264,281 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                           },
                           content: (scrollController) => BlocProvider.value(
                             value: bloc,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: 150,
-                                      child: Row(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 5,
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: Column(
+                                children: [
+                                  customTextBorder(
+                                    "Penyesuaian ${isAdjustmentIn ? "Masuk" : "Keluar"}",
+                                    titleTextStyleWhite,
+                                    color: color,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 150,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "Nomor Faktur:",
+                                              style: lv05TextStyle,
+                                            ),
+                                            Spacer(),
+                                            Text(":", style: lv1TextStyle),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        item.getinvoice,
+                                        style: lv05TextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 150,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              isAdjustmentIn
+                                                  ? "Stok Masuk"
+                                                  : "Stock Keluar",
+                                              style: lv05TextStyle,
+                                            ),
+                                            Spacer(),
+                                            Text(":", style: lv1TextStyle),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Row(
                                         children: [
-                                          Text(
-                                            "Stok Masuk",
-                                            style: lv05TextStyle,
+                                          SizedBox(
+                                            width: 18,
+                                            child:
+                                                BlocSelector<
+                                                  AdjustmentBloc,
+                                                  AdjustmentState,
+                                                  double
+                                                >(
+                                                  selector: (state) =>
+                                                      state is AdjustmentLoaded
+                                                      ? state.isAdjustIn
+                                                            ? state
+                                                                      .editedItemBatch
+                                                                      ?.getqtyItem_in ??
+                                                                  0
+                                                            : state
+                                                                      .editedItemBatch
+                                                                      ?.getqtyItem_out ??
+                                                                  0
+                                                      : 0,
+                                                  builder: (context, state) =>
+                                                      Text(
+                                                        formatQtyOrPrice(state),
+                                                        style: lv1TextStyleBold,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                ),
                                           ),
-                                          Spacer(),
-                                          Text(":", style: lv1TextStyle),
+                                          customIconButtonMinPlus(
+                                            isIncrement: true,
+                                            onPressed: () => bloc.add(
+                                              AdjustmentAdjustData(
+                                                adjustQty: true,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Row(
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: Column(
                                       children: [
-                                        SizedBox(
-                                          width: 18,
-                                          child:
-                                              BlocSelector<
-                                                AdjustmentBloc,
-                                                AdjustmentState,
-                                                double
-                                              >(
-                                                selector: (state) =>
-                                                    state is AdjustmentLoaded
-                                                    ? state
-                                                              .editedItemBatch
-                                                              ?.getqtyItem_in ??
-                                                          0
-                                                    : 0,
-                                                builder: (context, state) =>
-                                                    Text(
-                                                      formatQtyOrPrice(qty),
-                                                      style: lv1TextStyleBold,
-                                                      textAlign:
-                                                          TextAlign.center,
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: 150,
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "Harga Jual",
+                                                    style: lv05TextStyle,
+                                                  ),
+                                                  Spacer(),
+                                                  Text(
+                                                    ":",
+                                                    style: lv1TextStyle,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: customTextField(
+                                                controller: sellPriceController,
+                                                inputType: TextInputType.number,
+                                                alignEnd: true,
+                                                suffixText: ",00",
+                                                onChanged: (value) => context
+                                                    .read<AdjustmentBloc>()
+                                                    .add(
+                                                      AdjustmentAdjustData(
+                                                        sellPrice: value.isEmpty
+                                                            ? "0"
+                                                            : value,
+                                                      ),
                                                     ),
                                               ),
+                                            ),
+                                          ],
                                         ),
-                                        (bloc.state as AdjustmentLoaded)
-                                                .isAdjustIn
-                                            ? customIconButtonMinPlus(
-                                                isIncrement: true,
-                                                onPressed: () => bloc.add(
-                                                  AdjustmentAdjustData(
-                                                    isIncrement: true,
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: 150,
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "Harga Jual",
+                                                    style: lv05TextStyle,
                                                   ),
-                                                ),
-                                              )
-                                            : customIconButtonMinPlus(
-                                                isIncrement: false,
-                                                onPressed: () => bloc.add(
-                                                  AdjustmentAdjustData(
-                                                    isIncrement: false,
+                                                  Spacer(),
+                                                  Text(
+                                                    ":",
+                                                    style: lv1TextStyle,
                                                   ),
-                                                ),
+                                                ],
                                               ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: customTextField(
+                                                controller: buyPriceController,
+                                                inputType: TextInputType.number,
+                                                alignEnd: true,
+                                                suffixText: ",00",
+                                                onChanged: (value) => context
+                                                    .read<AdjustmentBloc>()
+                                                    .add(
+                                                      AdjustmentAdjustData(
+                                                        buyPrice: value.isEmpty
+                                                            ? "0"
+                                                            : value,
+                                                      ),
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: 150,
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "Harga Jual",
+                                                    style: lv05TextStyle,
+                                                  ),
+                                                  Spacer(),
+                                                  Text(
+                                                    ":",
+                                                    style: lv1TextStyle,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: WidgetCustomDate(
+                                                initDay: dayExpired,
+                                                initMonth: monthExpired,
+                                                initYear: yearExpired,
+                                                onSelected: (day, month, year) {
+                                                  devLog(
+                                                    "Log UIAdjustment: CustomDate: $year-$month-$day : from Main: $yearExpired-$monthExpired-$dayExpired",
+                                                  );
+                                                  dayExpired =
+                                                      day ?? dayExpired;
+                                                  monthExpired =
+                                                      month ?? monthExpired;
+                                                  yearExpired =
+                                                      year ?? yearExpired;
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
                                       ],
                                     ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: 150,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "Harga Jual",
-                                            style: lv05TextStyle,
-                                          ),
-                                          Spacer(),
-                                          Text(":", style: lv1TextStyle),
-                                        ],
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: customButtonIcon(
+                                      backgroundColor: color,
+                                      label: Text(
+                                        "Simpan",
+                                        style: lv05TextStyleWhite,
                                       ),
-                                    ),
+                                      onPressed: () {
+                                        final isAllEmpty =
+                                            dayExpired == null &&
+                                            monthExpired == null &&
+                                            yearExpired == null;
 
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: customTextField(
-                                        controller: sellPriceController,
-                                        inputType: TextInputType.number,
-                                        alignEnd: true,
-                                        suffixText: ",00",
-                                        onChanged: (value) =>
-                                            context.read<AdjustmentBloc>().add(
-                                              AdjustmentAdjustData(
-                                                sellPrice: value.isEmpty
-                                                    ? "0"
-                                                    : value,
-                                              ),
+                                        final isAllFilled =
+                                            dayExpired != null &&
+                                            monthExpired != null &&
+                                            yearExpired != null;
+                                        devLog(
+                                          "Log UIAdjustment: date: $yearExpired-$monthExpired-$dayExpired",
+                                        );
+                                        if (isAllFilled || isAllEmpty) {
+                                          context.read<AdjustmentBloc>().add(
+                                            AdjustmentUploadData(
+                                              dateExpired: isAllEmpty
+                                                  ? null
+                                                  : "$dayExpired-$monthExpired-$yearExpired",
                                             ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: 150,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "Harga Jual",
-                                            style: lv05TextStyle,
-                                          ),
-                                          Spacer(),
-                                          Text(":", style: lv1TextStyle),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: customTextField(
-                                        controller: buyPriceController,
-                                        inputType: TextInputType.number,
-                                        alignEnd: true,
-                                        suffixText: ",00",
-                                        onChanged: (value) =>
-                                            context.read<AdjustmentBloc>().add(
-                                              AdjustmentAdjustData(
-                                                buyPrice: value.isEmpty
-                                                    ? "0"
-                                                    : value,
-                                              ),
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: 150,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "Harga Jual",
-                                            style: lv05TextStyle,
-                                          ),
-                                          Spacer(),
-                                          Text(":", style: lv1TextStyle),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: WidgetCustomDate(
-                                        initDay: dayExpired,
-                                        initMonth: monthExpired,
-                                        initYear: yearExpired,
-                                        onSelected: (day, month, year) {
-                                          devLog(
-                                            "Log UIAdjustment: CustomDate: $year-$month-$day : from Main: $yearExpired-$monthExpired-$dayExpired",
                                           );
-                                          dayExpired = day ?? dayExpired;
-                                          monthExpired = month ?? monthExpired;
-                                          yearExpired = year ?? yearExpired;
-                                        },
+                                        } else {
+                                          return customSnackBar(
+                                            context,
+                                            "Tanggal Kadaluarsa tidak lengkap!",
+                                          );
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.check_rounded,
+                                        color: AppPropertyColor.white,
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                customButtonIcon(
-                                  backgroundColor: color,
-                                  label: Text(
-                                    "Simpan",
-                                    style: lv05TextStyleWhite,
                                   ),
-                                  onPressed: () {
-                                    final isAllEmpty =
-                                        dayExpired == null &&
-                                        monthExpired == null &&
-                                        yearExpired == null;
-
-                                    final isAllFilled =
-                                        dayExpired != null &&
-                                        monthExpired != null &&
-                                        yearExpired != null;
-                                    devLog(
-                                      "Log UIAdjustment: date: $yearExpired-$monthExpired-$dayExpired",
-                                    );
-                                    if (isAllFilled || isAllEmpty) {
-                                      context.read<AdjustmentBloc>().add(
-                                        AdjustmentUploadData(
-                                          dateExpired: isAllEmpty
-                                              ? null
-                                              : "$dayExpired-$monthExpired-$yearExpired",
-                                        ),
-                                      );
-                                    } else {
-                                      return customSnackBar(
-                                        context,
-                                        "Tanggal Kadaluarsa tidak lengkap!",
-                                      );
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.check_rounded,
-                                    color: AppPropertyColor.white,
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         );
