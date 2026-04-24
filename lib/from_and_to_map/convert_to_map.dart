@@ -1,5 +1,7 @@
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
@@ -146,10 +148,7 @@ Map<String, dynamic> convertToMapTransactionIncome(
     FieldDataTransFinancial.name_financial.name:
         transfinancial.getnameFinancial,
     FieldDataTransFinancial.note.name: transfinancial.getnote,
-    FieldDataTransFinancial.date.name: formatDate(
-      date: transfinancial.getdate,
-      minute: true,
-    ),
+    FieldDataTransFinancial.date.name: formatDate(date: transfinancial.getdate),
     FieldDataTransFinancial.amount.name: transfinancial.getamount,
     FieldDataTransFinancial.uid_owner.name: UserSession.getUidOwner(),
   };
@@ -167,7 +166,7 @@ Map<String, dynamic> convertToMapItem(ModelItem item) {
     FieldDataItem.id_branch.name: item.getidBranch,
     FieldDataItem.barcode.name: item.getBarcode,
     FieldDataItem.status_item.name: item.getStatusItem.name,
-    FieldDataItem.date.name: formatDate(date: item.getDateItem),
+    FieldDataItem.date.name: formatDate(date: item.getDateItem, minute: false),
   };
 }
 
@@ -213,7 +212,10 @@ Map<String, dynamic> convertToMapPartner(ModelPartner partner) {
     FieldDataPartner.email_partner.name: partner.getemailPartner,
     FieldDataPartner.balance_partner.name: partner.getbalancePartner,
     FieldDataPartner.type.name: partner.gettypePartner.name,
-    FieldDataPartner.date.name: formatDate(date: partner.getdate),
+    FieldDataPartner.date.name: formatDate(
+      date: partner.getdate,
+      minute: false,
+    ),
   };
 }
 
@@ -240,6 +242,10 @@ Map<String, dynamic> convertToMapCounter(ModelCounter dataCounter) {
     FieldDataCounter.counter_buy.name: dataCounter.getcounterBuy,
     FieldDataCounter.counter_income.name: dataCounter.getcounterIncome,
     FieldDataCounter.counter_expense.name: dataCounter.getcounterExpense,
+    FieldDataCounter.counter_adjustment_in.name:
+        dataCounter.getcounterAdjustmentIn,
+    FieldDataCounter.counter_adjustment_out.name:
+        dataCounter.getcounterAdjustmentOut,
   };
 }
 
@@ -254,5 +260,41 @@ Map<String, dynamic> convertToMapCompanySignUp({
     FieldDataCompany.name_company.name: nameCompany,
     FieldDataCompany.phone_company.name: phoneCompany,
     FieldDataCompany.list_branch.name: listBranch,
+  };
+}
+
+Map<String, dynamic> convertToMapAdjustmentIn({
+  required ModelTransactionAdjustmentIn data,
+}) {
+  return {
+    FieldDataAdjustmentIn.invoice.name: data.getinvoice,
+    FieldDataAdjustmentIn.idBranch.name: data.getidBranch,
+    FieldDataAdjustmentIn.item_invoice.name: data.getitemInvoice,
+    FieldDataAdjustmentIn.item_name.name: data.getitemName,
+    FieldDataAdjustmentIn.buyPriceAfter.name: data.getbuyPriceAfter,
+    FieldDataAdjustmentIn.buyPriceBefore.name: data.getbuyPriceBefore,
+    FieldDataAdjustmentIn.sellPriceAfter.name: data.getsellPriceAfter,
+    FieldDataAdjustmentIn.sellPriceBefore.name: data.getsellPriceBefore,
+    FieldDataAdjustmentIn.expiredDateAfter.name: data.getexpiredDateAfter,
+    FieldDataAdjustmentIn.expiredDateBefore.name: data.getexpiredDateBefore,
+    FieldDataAdjustmentIn.qty_in_after.name: data.getqty_in_after,
+    FieldDataAdjustmentIn.qty_in_before.name: data.getqty_in_before,
+    FieldDataAdjustmentIn.date.name: formatDate(date: data.getdate),
+    FieldDataAdjustmentIn.note.name: data.getnote,
+  };
+}
+
+Map<String, dynamic> convertToMapAdjustmentOut({
+  required ModelTransactionAdjustmentOut data,
+}) {
+  return {
+    FieldDataAdjustmentOut.invoice.name: data.getinvoice,
+    FieldDataAdjustmentOut.idBranch.name: data.getidBranch,
+    FieldDataAdjustmentOut.item_invoice.name: data.getitemInvoice,
+    FieldDataAdjustmentOut.item_name.name: data.getitemName,
+    FieldDataAdjustmentOut.date.name: formatDate(date: data.getdate),
+    FieldDataAdjustmentOut.qty_out_after.name: data.getqty_in_after,
+    FieldDataAdjustmentOut.qty_out_before.name: data.getqty_in_before,
+    FieldDataAdjustmentOut.note.name: data.getnote,
   };
 }

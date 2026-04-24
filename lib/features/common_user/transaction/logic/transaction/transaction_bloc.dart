@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -80,12 +79,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     devLog(
       "Log transactionBloc: Hive Data: ${hiveTransactionSaved.toString()}",
-    );
-
-    final counter = await getCounterIsar(idBranch);
-
-    await saveCounter_Isar(
-      counter.copyWith(counterSellSaved: hiveTransactionSaved.length),
     );
 
     List<ModelTransaction> dataTransactionSaved = [];

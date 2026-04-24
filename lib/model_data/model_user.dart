@@ -66,7 +66,7 @@ class ModelUser extends Equatable {
   }
 
   Future<void> pushDataUser({String? uidOwner}) async {
-    pushWorkerDataUser(
+    await pushWorkerDataUser(
       collection: 'users',
       id: idUser!,
       dataUser: convertToMapUser(

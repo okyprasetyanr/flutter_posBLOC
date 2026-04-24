@@ -1,7 +1,7 @@
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_out_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
@@ -18,8 +18,8 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_branch_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';
-import 'package:flutter_pos/model_data/model_adjustment_in.dart';
-import 'package:flutter_pos/model_data/model_adjustment_out.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
@@ -34,15 +34,21 @@ import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
 
-Future<void> saveAdjustment_In_Isar(ModelAdjustmentIn batch) async {
+Future<void> saveAdjustment_In_Isar(ModelTransactionAdjustmentIn batch) async {
   await isar.writeTxn(() async {
-    await isar.modelAdjustmentInIsars.put(convertAdjustmentIn(batch));
+    await isar.modelTransactionAdjustmentInIsars.put(
+      convertAdjustmentIn(batch),
+    );
   });
 }
 
-Future<void> saveAdjustment_Out_Isar(ModelAdjustmentOut batch) async {
+Future<void> saveAdjustment_Out_Isar(
+  ModelTransactionAdjustmentOut batch,
+) async {
   await isar.writeTxn(() async {
-    await isar.modelAdjustmentOutIsars.put(convertAdjustmentOut(batch));
+    await isar.modelTransactionAdjustmentOutIsars.put(
+      convertAdjustmentOut(batch),
+    );
   });
 }
 
@@ -144,7 +150,9 @@ Future<void> saveCounter_Isar(ModelCounter counter) async {
         ..counterSellSaved = counter.getcounterSellSaved
         ..counterBuy = counter.getcounterBuy
         ..counterIncome = counter.getcounterIncome
-        ..counterExpense = counter.getcounterExpense;
+        ..counterExpense = counter.getcounterExpense
+        ..counterAdjustmentIn = counter.getcounterAdjustmentIn
+        ..counterAdjustmentOut = counter.counterAdjustmentOut;
       await isar.modelCounterIsars.put(data);
     } else {
       await isar.modelCounterIsars.put(convertCounter(counter));

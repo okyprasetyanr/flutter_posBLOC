@@ -17,33 +17,43 @@ const ModelCounterIsarSchema = CollectionSchema(
   name: r'ModelCounterIsar',
   id: 6029640465836626808,
   properties: {
-    r'counterBuy': PropertySchema(
+    r'counterAdjustmentIn': PropertySchema(
       id: 0,
+      name: r'counterAdjustmentIn',
+      type: IsarType.long,
+    ),
+    r'counterAdjustmentOut': PropertySchema(
+      id: 1,
+      name: r'counterAdjustmentOut',
+      type: IsarType.long,
+    ),
+    r'counterBuy': PropertySchema(
+      id: 2,
       name: r'counterBuy',
       type: IsarType.long,
     ),
     r'counterExpense': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'counterExpense',
       type: IsarType.long,
     ),
     r'counterIncome': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'counterIncome',
       type: IsarType.long,
     ),
     r'counterSell': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'counterSell',
       type: IsarType.long,
     ),
     r'counterSellSaved': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'counterSellSaved',
       type: IsarType.long,
     ),
     r'idBranch': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'idBranch',
       type: IsarType.string,
     )
@@ -92,12 +102,14 @@ void _modelCounterIsarSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.counterBuy);
-  writer.writeLong(offsets[1], object.counterExpense);
-  writer.writeLong(offsets[2], object.counterIncome);
-  writer.writeLong(offsets[3], object.counterSell);
-  writer.writeLong(offsets[4], object.counterSellSaved);
-  writer.writeString(offsets[5], object.idBranch);
+  writer.writeLong(offsets[0], object.counterAdjustmentIn);
+  writer.writeLong(offsets[1], object.counterAdjustmentOut);
+  writer.writeLong(offsets[2], object.counterBuy);
+  writer.writeLong(offsets[3], object.counterExpense);
+  writer.writeLong(offsets[4], object.counterIncome);
+  writer.writeLong(offsets[5], object.counterSell);
+  writer.writeLong(offsets[6], object.counterSellSaved);
+  writer.writeString(offsets[7], object.idBranch);
 }
 
 ModelCounterIsar _modelCounterIsarDeserialize(
@@ -107,12 +119,14 @@ ModelCounterIsar _modelCounterIsarDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ModelCounterIsar();
-  object.counterBuy = reader.readLong(offsets[0]);
-  object.counterExpense = reader.readLong(offsets[1]);
-  object.counterIncome = reader.readLong(offsets[2]);
-  object.counterSell = reader.readLong(offsets[3]);
-  object.counterSellSaved = reader.readLong(offsets[4]);
-  object.idBranch = reader.readString(offsets[5]);
+  object.counterAdjustmentIn = reader.readLong(offsets[0]);
+  object.counterAdjustmentOut = reader.readLong(offsets[1]);
+  object.counterBuy = reader.readLong(offsets[2]);
+  object.counterExpense = reader.readLong(offsets[3]);
+  object.counterIncome = reader.readLong(offsets[4]);
+  object.counterSell = reader.readLong(offsets[5]);
+  object.counterSellSaved = reader.readLong(offsets[6]);
+  object.idBranch = reader.readString(offsets[7]);
   object.isarId = id;
   return object;
 }
@@ -135,6 +149,10 @@ P _modelCounterIsarDeserializeProp<P>(
     case 4:
       return (reader.readLong(offset)) as P;
     case 5:
+      return (reader.readLong(offset)) as P;
+    case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -281,6 +299,118 @@ extension ModelCounterIsarQueryWhere
 
 extension ModelCounterIsarQueryFilter
     on QueryBuilder<ModelCounterIsar, ModelCounterIsar, QFilterCondition> {
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentInEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'counterAdjustmentIn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentInGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'counterAdjustmentIn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentInLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'counterAdjustmentIn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentInBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'counterAdjustmentIn',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentOutEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'counterAdjustmentOut',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentOutGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'counterAdjustmentOut',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentOutLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'counterAdjustmentOut',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
+      counterAdjustmentOutBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'counterAdjustmentOut',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterFilterCondition>
       counterBuyEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
@@ -763,6 +893,34 @@ extension ModelCounterIsarQueryLinks
 extension ModelCounterIsarQuerySortBy
     on QueryBuilder<ModelCounterIsar, ModelCounterIsar, QSortBy> {
   QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      sortByCounterAdjustmentIn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentIn', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      sortByCounterAdjustmentInDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentIn', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      sortByCounterAdjustmentOut() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentOut', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      sortByCounterAdjustmentOutDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentOut', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
       sortByCounterBuy() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'counterBuy', Sort.asc);
@@ -849,6 +1007,34 @@ extension ModelCounterIsarQuerySortBy
 
 extension ModelCounterIsarQuerySortThenBy
     on QueryBuilder<ModelCounterIsar, ModelCounterIsar, QSortThenBy> {
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      thenByCounterAdjustmentIn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentIn', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      thenByCounterAdjustmentInDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentIn', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      thenByCounterAdjustmentOut() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentOut', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
+      thenByCounterAdjustmentOutDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'counterAdjustmentOut', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModelCounterIsar, ModelCounterIsar, QAfterSortBy>
       thenByCounterBuy() {
     return QueryBuilder.apply(this, (query) {
@@ -951,6 +1137,20 @@ extension ModelCounterIsarQuerySortThenBy
 extension ModelCounterIsarQueryWhereDistinct
     on QueryBuilder<ModelCounterIsar, ModelCounterIsar, QDistinct> {
   QueryBuilder<ModelCounterIsar, ModelCounterIsar, QDistinct>
+      distinctByCounterAdjustmentIn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'counterAdjustmentIn');
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QDistinct>
+      distinctByCounterAdjustmentOut() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'counterAdjustmentOut');
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, ModelCounterIsar, QDistinct>
       distinctByCounterBuy() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'counterBuy');
@@ -998,6 +1198,20 @@ extension ModelCounterIsarQueryProperty
   QueryBuilder<ModelCounterIsar, int, QQueryOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isarId');
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, int, QQueryOperations>
+      counterAdjustmentInProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'counterAdjustmentIn');
+    });
+  }
+
+  QueryBuilder<ModelCounterIsar, int, QQueryOperations>
+      counterAdjustmentOutProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'counterAdjustmentOut');
     });
   }
 

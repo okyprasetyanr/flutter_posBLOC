@@ -588,6 +588,8 @@ class ExcelBackupService {
       TextCellValue(FieldDataCounter.counter_buy.name),
       TextCellValue(FieldDataCounter.counter_income.name),
       TextCellValue(FieldDataCounter.counter_expense.name),
+      TextCellValue(FieldDataCounter.counter_adjustment_in.name),
+      TextCellValue(FieldDataCounter.counter_adjustment_out.name),
     ]);
 
     final counter = await getAllCounterIsar();
@@ -599,12 +601,13 @@ class ExcelBackupService {
         IntCellValue(data.getcounterBuy),
         IntCellValue(data.getcounterIncome),
         IntCellValue(data.getcounterExpense),
+        IntCellValue(data.getcounterAdjustmentIn),
+        IntCellValue(data.getcounterAdjustmentOut),
       ]);
     }
     sheetWidthStyle(FieldDataCounter.values, sheetCounter);
 
     //Batch
-
     final dataBatch = await getAllBatchIsar();
     sheetBatch.appendRow([
       TextCellValue(FieldDataBatch.invoice.name),

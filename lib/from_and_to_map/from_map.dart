@@ -14,6 +14,8 @@ import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/request/get_data.dart';
@@ -33,6 +35,44 @@ ModelTransactionFinancial fromMapTransFinancial(
     date: parseDate(date: data[FieldDataTransFinancial.date.name]),
     note: data[FieldDataTransFinancial.note.name],
     amount: data[FieldDataTransFinancial.amount.name].toDouble(),
+  );
+}
+
+ModelTransactionAdjustmentIn fromMapAdjustmentIn(
+  Map<String, dynamic> data,
+  String id,
+) {
+  return ModelTransactionAdjustmentIn(
+    invoice: data[FieldDataAdjustmentIn.invoice.name],
+    idBranch: data[FieldDataAdjustmentIn.idBranch.name],
+    itemInvoice: data[FieldDataAdjustmentIn.item_invoice.name],
+    itemName: data[FieldDataAdjustmentIn.item_name.name],
+    buyPriceAfter: data[FieldDataAdjustmentIn.buyPriceAfter.name],
+    buyPriceBefore: data[FieldDataAdjustmentIn.buyPriceBefore.name],
+    date: data[FieldDataAdjustmentIn.date.name],
+    expiredDateAfter: data[FieldDataAdjustmentIn.expiredDateAfter.name],
+    expiredDateBefore: data[FieldDataAdjustmentIn.expiredDateBefore.name],
+    note: data[FieldDataAdjustmentIn.note.name],
+    qty_in_after: data[FieldDataAdjustmentIn.qty_in_after.name],
+    qty_in_before: data[FieldDataAdjustmentIn.qty_in_before.name],
+    sellPriceAfter: data[FieldDataAdjustmentIn.sellPriceAfter.name],
+    sellPriceBefore: data[FieldDataAdjustmentIn.sellPriceBefore.name],
+  );
+}
+
+ModelTransactionAdjustmentOut fromMapAdjustmentOut(
+  Map<String, dynamic> data,
+  String id,
+) {
+  return ModelTransactionAdjustmentOut(
+    invoice: data[FieldDataAdjustmentOut.invoice.name],
+    idBranch: data[FieldDataAdjustmentOut.idBranch.name],
+    itemInvoice: data[FieldDataAdjustmentOut.item_invoice.name],
+    itemName: data[FieldDataAdjustmentOut.item_name.name],
+    qty_out_after: data[FieldDataAdjustmentOut.qty_out_after.name],
+    qty_out_before: data[FieldDataAdjustmentOut.qty_out_before.name],
+    date: data[FieldDataAdjustmentOut.date.name],
+    note: data[FieldDataAdjustmentOut.note.name],
   );
 }
 
@@ -171,6 +211,8 @@ ModelCounter fromMapCounter(
     counterBuy: data?[FieldDataCounter.counter_buy.name] ?? 0,
     counterIncome: data?[FieldDataCounter.counter_income.name] ?? 0,
     counterExpense: data?[FieldDataCounter.counter_expense.name] ?? 0,
+    counterAdjustmentIn: data?[FieldDataCounter.counter_adjustment_in] ?? 0,
+    counterAdjustmentOut: data?[FieldDataCounter.counter_adjustment_out] ?? 0,
   );
 }
 

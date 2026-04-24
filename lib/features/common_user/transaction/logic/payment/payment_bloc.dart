@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
@@ -20,6 +19,7 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/request/update_data.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   DataUserRepositoryCache repoCache;
@@ -320,9 +320,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   ) async {
     final sellState = this.transactionBloc;
     final currentState = state;
+
     final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
     final dataAccount = await getAllAccountIsar();
     if (currentState is PaymentLoaded) {
+      final isSell = currentState.isSell;
       final counter = await getCounterIsar(
         currentState.transaction_sell!.getidBranch,
       );
@@ -391,18 +393,18 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             await box.delete(currentState.revisionInvoice);
           }
         }
-        await transaction.pushDataTransaction(isSell: currentState.isSell);
+        await transaction.pushDataTransaction(isSell: isSell);
       }
 
       final finalCounter = counter.copyWith(
         counterSell: saved
             ? null
-            : currentState.isSell
+            : isSell
             ? counter.getcounterSell + 1
             : null,
         counterBuy: saved
             ? null
-            : currentState.isSell
+            : isSell
             ? null
             : counter.getcounterBuy + 1,
       );
@@ -411,15 +413,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       );
       await saveCounter_Isar(finalCounter);
 
-      await FirebaseFirestore.instance
-          .collection('counter')
-          .doc(UserSession.uid_owner)
-          .collection('branch')
-          .doc(transaction.getidBranch)
-          .set({
-            currentState.isSell ? 'counter_sell' : 'counter_buy':
-                FieldValue.increment(1),
-          }, SetOptions(merge: true));
+      await updateCounter(
+        field: currentState.isSell ? 'counter_sell' : 'counter_buy',
+        idBranch: transaction.getidBranch,
+      );
     }
 
     if (sellState.state is TransactionLoaded) {

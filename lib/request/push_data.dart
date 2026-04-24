@@ -35,3 +35,21 @@ Future<void> pushWorkerDataBranch({
   await FirestoreWorker.enqueue(collection, id, dataBranch);
   await FirestoreWorker.processQueueHive();
 }
+
+Future<void> pushWorkerDataAdjustmentIn({
+  required String collection,
+  required String id,
+  required Map<String, dynamic> dataAdjustmentIn,
+}) async {
+  await FirestoreWorker.enqueue(collection, id, dataAdjustmentIn);
+  await FirestoreWorker.processQueueHive();
+}
+
+Future<void> pushWorkerDataAdjustmentOut({
+  required String collection,
+  required String id,
+  required Map<String, dynamic> dataAdjustmentOut,
+}) async {
+  await FirestoreWorker.enqueue(collection, id, dataAdjustmentOut);
+  await FirestoreWorker.processQueueHive();
+}

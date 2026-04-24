@@ -35,3 +35,15 @@ Future<void> updateItemBatch({required ModelItemBatch data}) async {
             : null,
       }, SetOptions(merge: true));
 }
+
+Future<void> updateCounter({
+  required String field,
+  required String idBranch,
+}) async {
+  await FirebaseFirestore.instance
+      .collection('counter')
+      .doc(UserSession.uid_owner)
+      .collection('branch')
+      .doc(idBranch)
+      .set({field: FieldValue.increment(1)}, SetOptions(merge: true));
+}

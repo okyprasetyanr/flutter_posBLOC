@@ -4,8 +4,8 @@ import 'package:flutter_pos/features/data_user/isar/ModelBase/model_partner_base
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_financial_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_out_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
@@ -14,8 +14,8 @@ import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_is
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_split_isar.dart';
-import 'package:flutter_pos/model_data/model_adjustment_in.dart';
-import 'package:flutter_pos/model_data/model_adjustment_out.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
@@ -69,7 +69,9 @@ ModelCounterIsar convertCounter(ModelCounter data) {
     ..counterSellSaved = data.getcounterSellSaved
     ..counterBuy = data.getcounterBuy
     ..counterIncome = data.getcounterIncome
-    ..counterExpense = data.getcounterExpense;
+    ..counterExpense = data.getcounterExpense
+    ..counterAdjustmentIn = data.getcounterAdjustmentIn
+    ..counterAdjustmentOut = data.getcounterAdjustmentOut;
 }
 
 T convertFinancial<T extends ModelFinancialBaseIsar>(
@@ -101,25 +103,38 @@ ModelItemIsar convertItem(ModelItem data) {
     ..statusItem = data.getStatusItem.name;
 }
 
-ModelAdjustmentInIsar convertAdjustmentIn(ModelAdjustmentIn data) {
-  return ModelAdjustmentInIsar()
+ModelTransactionAdjustmentInIsar convertAdjustmentIn(
+  ModelTransactionAdjustmentIn data,
+) {
+  return ModelTransactionAdjustmentInIsar()
     ..idBranch = data.getidBranch
     ..invoice = data.getinvoice
-    ..buyPrice = data.getbuyPrice
-    ..sellPrice = data.getsellPrice
+    ..itemInvoice = data.getitemInvoice
+    ..itemName = data.getitemName
+    ..buyPriceAfter = data.getbuyPriceAfter
+    ..buyPriceBefore = data.getbuyPriceBefore
+    ..sellPriceAfter = data.getsellPriceAfter
+    ..sellPriceBefore = data.getsellPriceBefore
     ..date = data.getdate
-    ..expiredDate = data.getexpiredDate
-    ..note = data.getnote
-    ..qty_in = data.qty_in;
+    ..expiredDateAfter = data.getexpiredDateAfter
+    ..expiredDateBefore = data.getexpiredDateBefore
+    ..qty_in_after = data.getqty_in_after
+    ..qty_in_before = data.getqty_in_before
+    ..note = data.getnote;
 }
 
-ModelAdjustmentOutIsar convertAdjustmentOut(ModelAdjustmentOut data) {
-  return ModelAdjustmentOutIsar()
+ModelTransactionAdjustmentOutIsar convertAdjustmentOut(
+  ModelTransactionAdjustmentOut data,
+) {
+  return ModelTransactionAdjustmentOutIsar()
     ..idBranch = data.getidBranch
     ..invoice = data.getinvoice
+    ..itemInvoice = data.getitemInvoice
+    ..itemName = data.getitemName
     ..date = data.getdate
     ..note = data.getnote
-    ..qty_out = data.qty_out;
+    ..qty_out_after = data.qty_out_after
+    ..qty_out_before = data.qty_out_before;
 }
 
 T convertPartner<T extends ModelPartnerBaseIsar>(

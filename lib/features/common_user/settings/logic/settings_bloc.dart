@@ -598,6 +598,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           counterBuy: 0,
           counterIncome: 0,
           counterExpense: 0,
+          counterAdjustmentIn: 0,
+          counterAdjustmentOut: 0,
           idBranch: branch.getidBranch,
         ),
       );

@@ -36,6 +36,8 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   final searchItemBatchController = TextEditingController();
   final sellPriceController = TextEditingController();
   final buyPriceController = TextEditingController();
+  final noteController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   String? dayExpired = null;
   String? monthExpired = null;
   String? yearExpired = null;
@@ -164,9 +166,10 @@ class _UiAdjustmentState extends State<UiAdjustment> {
               const SizedBox(width: 10),
               customButtonIconReset(
                 color: context.colorAdjustment,
-                onPressed: () => context.read<AdjustmentBloc>().add(
-                  AdjustmentResetAllData(),
-                ),
+                onPressed: () {
+                  context.read<AdjustmentBloc>().add(AdjustmentResetAllData());
+                  noteController.clear();
+                },
               ),
             ],
           ),
@@ -291,6 +294,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                     devLog(
                                       "Log UIAdjustment: check Reset: true",
                                     );
+                                    noteController.clear();
                                     dayExpired = null;
                                     monthExpired = null;
                                     yearExpired = null;
@@ -320,7 +324,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               SizedBox(
-                                                width: 150,
+                                                width: 100,
                                                 child: Row(
                                                   children: [
                                                     Text(
@@ -346,7 +350,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               SizedBox(
-                                                width: 150,
+                                                width: 100,
                                                 child: Row(
                                                   children: [
                                                     Text(
@@ -392,7 +396,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                                   state,
                                                                 ),
                                                                 style:
-                                                                    lv1TextStyleBold,
+                                                                    lv05TextStyleBold,
                                                                 textAlign:
                                                                     TextAlign
                                                                         .center,
@@ -411,157 +415,181 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                               ),
                                             ],
                                           ),
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 150,
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "Harga Jual",
-                                                            style:
-                                                                lv05TextStyle,
-                                                          ),
-                                                          Spacer(),
-                                                          Text(
-                                                            ":",
-                                                            style: lv1TextStyle,
-                                                          ),
-                                                        ],
+                                          if (isAdjustmentIn)
+                                            Expanded(
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 100,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "Harga Jual",
+                                                              style:
+                                                                  lv05TextStyle,
+                                                            ),
+                                                            Spacer(),
+                                                            Text(
+                                                              ":",
+                                                              style:
+                                                                  lv1TextStyle,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
 
-                                                    const SizedBox(width: 10),
-                                                    Expanded(
-                                                      child: customTextField(
-                                                        controller:
-                                                            sellPriceController,
-                                                        inputType: TextInputType
-                                                            .number,
-                                                        alignEnd: true,
-                                                        suffixText: ",00",
-                                                        onChanged: (value) => context
-                                                            .read<
-                                                              AdjustmentBloc
-                                                            >()
-                                                            .add(
-                                                              AdjustmentAdjustData(
-                                                                sellPrice:
-                                                                    value
-                                                                        .isEmpty
-                                                                    ? "0"
-                                                                    : value,
+                                                      const SizedBox(width: 10),
+                                                      Expanded(
+                                                        child: customTextField(
+                                                          controller:
+                                                              sellPriceController,
+                                                          inputType:
+                                                              TextInputType
+                                                                  .number,
+                                                          alignEnd: true,
+                                                          suffixText: ",00",
+                                                          onChanged: (value) => context
+                                                              .read<
+                                                                AdjustmentBloc
+                                                              >()
+                                                              .add(
+                                                                AdjustmentAdjustData(
+                                                                  sellPrice:
+                                                                      value
+                                                                          .isEmpty
+                                                                      ? "0"
+                                                                      : value,
+                                                                ),
                                                               ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 100,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "Harga Jual",
+                                                              style:
+                                                                  lv05TextStyle,
                                                             ),
+                                                            Spacer(),
+                                                            Text(
+                                                              ":",
+                                                              style:
+                                                                  lv1TextStyle,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 10),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 150,
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "Harga Jual",
-                                                            style:
-                                                                lv05TextStyle,
-                                                          ),
-                                                          Spacer(),
-                                                          Text(
-                                                            ":",
-                                                            style: lv1TextStyle,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    Expanded(
-                                                      child: customTextField(
-                                                        controller:
-                                                            buyPriceController,
-                                                        inputType: TextInputType
-                                                            .number,
-                                                        alignEnd: true,
-                                                        suffixText: ",00",
-                                                        onChanged: (value) => context
-                                                            .read<
-                                                              AdjustmentBloc
-                                                            >()
-                                                            .add(
-                                                              AdjustmentAdjustData(
-                                                                buyPrice:
-                                                                    value
-                                                                        .isEmpty
-                                                                    ? "0"
-                                                                    : value,
+                                                      const SizedBox(width: 10),
+                                                      Expanded(
+                                                        child: customTextField(
+                                                          controller:
+                                                              buyPriceController,
+                                                          inputType:
+                                                              TextInputType
+                                                                  .number,
+                                                          alignEnd: true,
+                                                          suffixText: ",00",
+                                                          onChanged: (value) => context
+                                                              .read<
+                                                                AdjustmentBloc
+                                                              >()
+                                                              .add(
+                                                                AdjustmentAdjustData(
+                                                                  buyPrice:
+                                                                      value
+                                                                          .isEmpty
+                                                                      ? "0"
+                                                                      : value,
+                                                                ),
                                                               ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 100,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "Harga Jual",
+                                                              style:
+                                                                  lv05TextStyle,
                                                             ),
+                                                            Spacer(),
+                                                            Text(
+                                                              ":",
+                                                              style:
+                                                                  lv1TextStyle,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 10),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 150,
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "Harga Jual",
-                                                            style:
-                                                                lv05TextStyle,
-                                                          ),
-                                                          Spacer(),
-                                                          Text(
-                                                            ":",
-                                                            style: lv1TextStyle,
-                                                          ),
-                                                        ],
+                                                      const SizedBox(width: 10),
+                                                      Expanded(
+                                                        child: WidgetCustomDate(
+                                                          initDay: dayExpired,
+                                                          initMonth:
+                                                              monthExpired,
+                                                          initYear: yearExpired,
+                                                          onSelected:
+                                                              (
+                                                                day,
+                                                                month,
+                                                                year,
+                                                              ) {
+                                                                devLog(
+                                                                  "Log UIAdjustment: CustomDate: $year-$month-$day : from Main: $yearExpired-$monthExpired-$dayExpired",
+                                                                );
+                                                                dayExpired =
+                                                                    day ??
+                                                                    dayExpired;
+                                                                monthExpired =
+                                                                    month ??
+                                                                    monthExpired;
+                                                                yearExpired =
+                                                                    year ??
+                                                                    yearExpired;
+                                                              },
+                                                        ),
                                                       ),
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    Expanded(
-                                                      child: WidgetCustomDate(
-                                                        initDay: dayExpired,
-                                                        initMonth: monthExpired,
-                                                        initYear: yearExpired,
-                                                        onSelected:
-                                                            (day, month, year) {
-                                                              devLog(
-                                                                "Log UIAdjustment: CustomDate: $year-$month-$day : from Main: $yearExpired-$monthExpired-$dayExpired",
-                                                              );
-                                                              dayExpired =
-                                                                  day ??
-                                                                  dayExpired;
-                                                              monthExpired =
-                                                                  month ??
-                                                                  monthExpired;
-                                                              yearExpired =
-                                                                  year ??
-                                                                  yearExpired;
-                                                            },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 10),
-                                              ],
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                ],
+                                              ),
+                                            ),
+                                          Form(
+                                            key: _formKey,
+                                            child: customTextField(
+                                              controller: noteController,
+                                              label: "Catatan",
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Tidak boleh kosong!";
+                                                }
+                                                return null;
+                                              },
                                             ),
                                           ),
                                           SizedBox(
@@ -585,6 +613,10 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                 devLog(
                                                   "Log UIAdjustment: date: $yearExpired-$monthExpired-$dayExpired",
                                                 );
+                                                if (!_formKey.currentState!
+                                                    .validate()) {
+                                                  return;
+                                                }
                                                 if (isAllFilled || isAllEmpty) {
                                                   context
                                                       .read<AdjustmentBloc>()
@@ -594,6 +626,8 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                               isAllEmpty
                                                               ? null
                                                               : "$dayExpired-$monthExpired-$yearExpired",
+                                                          note: noteController
+                                                              .text,
                                                         ),
                                                       );
                                                 } else {

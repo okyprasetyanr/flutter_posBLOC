@@ -35,8 +35,9 @@ class AdjustmentAdjustData extends AdjustmentEvent {
 
 class AdjustmentUploadData extends AdjustmentEvent {
   final String? dateExpired;
+  final String note;
 
-  AdjustmentUploadData({required this.dateExpired});
+  AdjustmentUploadData({required this.dateExpired, required this.note});
 }
 
 class AdjustmentSearchData extends AdjustmentEvent {

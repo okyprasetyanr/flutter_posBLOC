@@ -9,9 +9,11 @@ import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.
 import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/request/update_data.dart';
 
 class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
@@ -185,6 +187,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     final currentState = state as AdjustmentLoaded;
     emit(
       currentState.copyWith(
+        originalItemBatch: event.selectedItemBatch,
         selectedItem: currentState.selectedItem,
         editedItemBatch: event.selectedItemBatch,
       ),
@@ -221,13 +224,76 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     final currentState = state as AdjustmentLoaded;
     final expiredDate = event.dateExpired;
     devLog("Log AdjustmentBloc: expiredDate: $expiredDate");
-    final selectedItemBatch = currentState.editedItemBatch!.copyWith(
+    final originalItemBatch = currentState.originalItemBatch!;
+    final editedItemBatch = currentState.editedItemBatch!.copyWith(
       expiredDate: expiredDate != null
           ? parseDate(date: expiredDate, minute: false)
           : null,
     );
-    await updateItemBatch_Isar(selectedItemBatch);
-    await updateItemBatch(data: selectedItemBatch);
+    final isAdjustmentIn = currentState.isAdjustIn;
+    final dataAccount = await getAllAccountIsar();
+    final dataCounter = await getCounterIsar(editedItemBatch.getidBranch);
+    final finalDataCounter = dataCounter.copyWith(
+      counterAdjustmentIn: isAdjustmentIn
+          ? dataCounter.getcounterAdjustmentIn + 1
+          : dataCounter.getcounterAdjustmentIn,
+      counterAdjustmentOut: isAdjustmentIn
+          ? dataCounter.getcounterAdjustmentOut
+          : dataCounter.getcounterAdjustmentOut + 1,
+    );
+    final date = dateNowYMDBLOC();
+    final invoice = generateInvoice(
+      idOP: dataAccount.getNameUser,
+      branchId: editedItemBatch.getidBranch,
+      queue: isAdjustmentIn
+          ? finalDataCounter.getcounterAdjustmentIn
+          : finalDataCounter.getcounterAdjustmentOut,
+    );
+    final data = isAdjustmentIn
+        ? ModelTransactionAdjustmentIn(
+            invoice: invoice,
+            itemInvoice: editedItemBatch.getinvoice,
+            itemName: editedItemBatch.getnameItem,
+            idBranch: editedItemBatch.getidBranch,
+            date: date,
+            qty_in_after: editedItemBatch.getqtyItem_in,
+            qty_in_before: originalItemBatch.getqtyItem_in,
+            sellPriceAfter: editedItemBatch.getpriceItemFinal,
+            sellPriceBefore: originalItemBatch.getpriceItemFinal,
+            buyPriceAfter: editedItemBatch.getpriceItemBuy,
+            buyPriceBefore: originalItemBatch.getpriceItemBuy,
+            expiredDateAfter: editedItemBatch.getexpiredDate,
+            expiredDateBefore: originalItemBatch.getexpiredDate,
+            note: event.note,
+          )
+        : ModelTransactionAdjustmentOut(
+            invoice: invoice,
+            itemInvoice: editedItemBatch.getinvoice,
+            itemName: editedItemBatch.getnameItem,
+            idBranch: editedItemBatch.getidBranch,
+            date: date,
+            qty_out_after: editedItemBatch.getqtyItem_out,
+            qty_out_before: originalItemBatch.getqtyItem_out,
+            note: event.note,
+          );
+
+    if (isAdjustmentIn) {
+      await (data as ModelTransactionAdjustmentIn).pushDataAdjustmentIn();
+      await saveAdjustment_In_Isar(data);
+    } else {
+      await (data as ModelTransactionAdjustmentOut).pushDataAdjustmentOut();
+      await saveAdjustment_Out_Isar(data);
+    }
+
+    await updateCounter(
+      field: isAdjustmentIn
+          ? 'transaction_adjustment_in'
+          : 'transaction_adjustment_out',
+      idBranch: editedItemBatch.getidBranch,
+    );
+    await saveCounter_Isar(finalDataCounter);
+    await updateItemBatch_Isar(editedItemBatch);
+    await updateItemBatch(data: editedItemBatch);
     add(AdjustmentGetData());
   }
 
@@ -262,6 +328,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     emit(
       currentState.copyWith(
         editedItemBatch: data,
+        originalItemBatch: currentState.originalItemBatch,
         selectedItem: currentState.selectedItem,
       ),
     );

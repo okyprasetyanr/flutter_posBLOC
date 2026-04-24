@@ -13,4 +13,6 @@ class ModelCounterIsar {
   late int counterBuy;
   late int counterIncome;
   late int counterExpense;
+  late int counterAdjustmentIn;
+  late int counterAdjustmentOut;
 }

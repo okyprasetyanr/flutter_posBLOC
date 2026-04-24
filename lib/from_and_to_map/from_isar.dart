@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
-import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_in_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
@@ -14,7 +14,7 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isa
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
-import 'package:flutter_pos/model_data/model_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -28,19 +28,43 @@ import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:hive/hive.dart';
 
-ModelAdjustmentIn convertAdjustment(ModelAdjustmentInIsar data) {
-  return ModelAdjustmentIn(
+ModelTransactionAdjustmentIn fromIsarAdjustmentIn(
+  ModelTransactionAdjustmentInIsar data,
+) {
+  return ModelTransactionAdjustmentIn(
     invoice: data.invoice,
     idBranch: data.idBranch,
+    itemInvoice: data.itemInvoice,
+    itemName: data.itemName,
     date: data.date,
-    qty_in: data.qty_in,
-    sellPrice: data.sellPrice,
-    buyPrice: data.buyPrice,
-    expiredDate: data.expiredDate,
+    qty_in_after: data.qty_in_after,
+    sellPriceAfter: data.sellPriceAfter,
+    buyPriceAfter: data.buyPriceAfter,
+    expiredDateAfter: data.expiredDateAfter,
+    qty_in_before: data.qty_in_before,
+    sellPriceBefore: data.sellPriceBefore,
+    buyPriceBefore: data.buyPriceBefore,
+    expiredDateBefore: data.expiredDateBefore,
+    note: data.note,
+  );
+}
+
+ModelTransactionAdjustmentOut fromIsarAdjustmentOut(
+  ModelTransactionAdjustmentInIsar data,
+) {
+  return ModelTransactionAdjustmentOut(
+    invoice: data.invoice,
+    idBranch: data.idBranch,
+    itemInvoice: data.itemInvoice,
+    itemName: data.itemName,
+    date: data.date,
+    qty_out_after: data.qty_in_after,
+    qty_out_before: data.qty_in_before,
     note: data.note,
   );
 }
@@ -339,6 +363,8 @@ ModelCounter fromIsarCounter(
     counterBuy: counter.counterBuy,
     counterIncome: counter.counterIncome,
     counterExpense: counter.counterExpense,
+    counterAdjustmentIn: counter.counterAdjustmentIn,
+    counterAdjustmentOut: counter.counterAdjustmentOut,
     idBranch: counter.idBranch,
   );
 }

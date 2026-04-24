@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
+import 'package:flutter_pos/request/update_data.dart';
 
 class TransFinancialBloc
     extends Bloc<TransFinanctialEvent, TransFinancialState> {
@@ -72,7 +72,6 @@ class TransFinancialBloc
     final selectedData = currentState.selectedFinancial!;
     final counter = await getCounterIsar(currentState.idBranch!);
     final dataAccount = await getAllAccountIsar();
-
     final data = ModelTransactionFinancial(
       statusTransaction: ListStatusTransaction.Sukses,
       idFinancial: selectedData.getidFinancial,
@@ -91,12 +90,8 @@ class TransFinancialBloc
     );
 
     final finalCounter = counter.copyWith(
-      counterIncome: currentState.isIncome
-          ? counter.getcounterIncome + 1
-          : null,
-      counterExpense: currentState.isIncome
-          ? null
-          : counter.getcounterExpense + 1,
+      counterIncome: isIncome ? counter.getcounterIncome + 1 : null,
+      counterExpense: isIncome ? null : counter.getcounterExpense + 1,
     );
 
     await saveCounter_Isar(finalCounter);
@@ -105,15 +100,10 @@ class TransFinancialBloc
         ? await saveTransactionFinancialncome_Isar(data)
         : await saveTransactionFinancialExpense_Isar(data);
 
-    await FirebaseFirestore.instance
-        .collection('counter')
-        .doc(UserSession.uid_owner)
-        .collection('branch')
-        .doc(data.getidBranch)
-        .update({
-          currentState.isIncome ? 'counter_income' : 'counter_expense':
-              FieldValue.increment(1),
-        });
+    await updateCounter(
+      field: isIncome ? 'counter_income' : 'counter_expense',
+      idBranch: data.getidBranch,
+    );
 
     await data.pushDataFinancial(isIncome);
     add(TransFinancialResetSelected());

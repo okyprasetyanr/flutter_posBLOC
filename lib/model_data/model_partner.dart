@@ -71,7 +71,7 @@ class ModelPartner extends Equatable {
 
   Future<void> pushDataPartner() async {
     devLog("Log ModelPartner: _date: $_datePartner");
-    pushWorkerDataPartner(
+    await pushWorkerDataPartner(
       collection: 'partners',
       id: _idPartner,
       dataPartner: convertToMapPartner(

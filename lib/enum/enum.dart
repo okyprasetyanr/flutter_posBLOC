@@ -8,6 +8,34 @@ enum FieldDataCompany {
   list_branch,
 }
 
+enum FieldDataAdjustmentIn {
+  invoice,
+  idBranch,
+  item_invoice,
+  item_name,
+  date,
+  qty_in_after,
+  qty_in_before,
+  sellPriceAfter,
+  buyPriceAfter,
+  sellPriceBefore,
+  buyPriceBefore,
+  expiredDateAfter,
+  expiredDateBefore,
+  note,
+}
+
+enum FieldDataAdjustmentOut {
+  invoice,
+  idBranch,
+  item_invoice,
+  item_name,
+  date,
+  qty_out_after,
+  qty_out_before,
+  note,
+}
+
 enum FieldDataUser {
   id_user,
   status_user,
@@ -152,6 +180,8 @@ enum FieldDataCounter {
   counter_buy,
   counter_income,
   counter_expense,
+  counter_adjustment_in,
+  counter_adjustment_out,
 }
 
 enum FieldDataListBranch {

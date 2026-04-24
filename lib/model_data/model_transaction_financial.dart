@@ -31,7 +31,7 @@ class ModelTransactionFinancial extends Equatable {
   double get getamount => amount;
 
   Future<void> pushDataFinancial(bool isIncome) async {
-    pushWorkerDataFinancial(
+    await pushWorkerDataFinancial(
       collection: isIncome ? 'transaction_income' : 'transaction_expense',
       id: invoice,
       dataTransFinancial: convertToMapTransactionIncome(

@@ -91,7 +91,6 @@ void callbackDispatcher() {
       if (!Hive.isAdapterRegistered(TransactionSavedHiveAdapter().typeId)) {
         Hive.registerAdapter(TransactionSavedHiveAdapter());
       }
-
       await Hive.openBox('firestoreQueue');
       await Hive.openBox<TransactionSavedHive>('saved_transaction');
 
