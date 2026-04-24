@@ -1,3 +1,5 @@
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
@@ -12,6 +14,18 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/service/isar_service.dart';
+
+Future<void> deleteAdjustmentInCollection() async {
+  await isar.writeTxn(() async {
+    await isar.modelAdjustmentInIsars.clear();
+  });
+}
+
+Future<void> deleteAdjustmentOutCollection() async {
+  await isar.writeTxn(() async {
+    await isar.modelAdjustmentOutIsars.clear();
+  });
+}
 
 Future<void> deleteBatchCollection() async {
   await isar.writeTxn(() async {

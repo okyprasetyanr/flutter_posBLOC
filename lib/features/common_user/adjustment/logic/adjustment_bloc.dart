@@ -20,11 +20,16 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     on<AdjustmentGetData>(_onGetData);
     on<AdjustmentFilterByCateogry>(_onFilterByCategory);
     on<AdjustmentSearchData>(_onSearchData, transformer: debounceRestartable());
+    on<AdjustmentSearchItemBatch>(
+      _onSearchItemBatch,
+      transformer: debounceRestartable(),
+    );
     on<AdjustmentSelectedItemBatch>(_onSelectedItemBatch);
     on<AdjustmentSelectedItem>(_onSelectedItem);
     on<AdjustmentUploadData>(_onUploadData);
     on<AdjustmentResetSelectedData>(_onResetSelectedData);
     on<AdjustmentAdjustData>(_onAdjustData, transformer: debounceRestartable());
+    on<AdjustmentResetAllData>(_onResetAllData);
   }
 
   Future<void> _onGetData(
@@ -56,15 +61,13 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
         .where((item) => idItemBatchSet.contains(item.getidItem))
         .toList();
     final selectedItem = currentState.selectedItem;
-    final dataItemBatchByIdItem = selectedItem != null
-        ? sortStockMode(
-            dataItemBatch
-                .where(
-                  (element) =>
-                      element.getidItem == currentState.selectedItem!.getidItem,
-                )
-                .toList(),
-          )
+    List<ModelItemBatch> dataItemBatchByIdItem = selectedItem != null
+        ? dataItemBatch
+              .where(
+                (element) =>
+                    element.getidItem == currentState.selectedItem!.getidItem,
+              )
+              .toList()
         : [];
 
     emit(
@@ -73,18 +76,28 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
             ? !currentState.isAdjustIn
             : currentState.isAdjustIn,
         dataBatch: dataBatch,
-        filteredItem: _filteredItem(
-          finaldataItem,
-          selectedCategory.getidCategory,
+        filteredItem: _filteredItem<ModelItem>(
+          data: finaldataItem,
+          idCategory: selectedCategory.getidCategory,
+          getCategory: (modelItem) => modelItem.getidCategoryiItem,
+          getName: (modelItem) => modelItem.getnameItem,
+          search: currentState.searchItem,
         ),
         dataBranch: dataBranch,
         dataCategory: dataCategory,
         selectedFilterCategory: selectedCategory,
-        dataItem: dataItem,
+        dataItem: finaldataItem,
         idBranch: idBranch,
-        dataItemBatch: sortStockMode(dataItemBatch),
+        dataItemBatch: dataItemBatch,
+        filteredItemBatch: sortStockMode(
+          _filteredItem<ModelItemBatch>(
+            data: dataItemBatchByIdItem,
+            search: currentState.searchItemBatch,
+            getName: (modelItemBatch) => modelItemBatch.getnameItem,
+          ),
+        ),
         selectedItem: selectedItem,
-        dataItemBatchByIdItem: [...dataItemBatchByIdItem],
+        dataItemBatchByIdItem: dataItemBatchByIdItem,
       ),
     );
   }
@@ -98,9 +111,10 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
       currentState.copyWith(
         dataItemBatchByIdItem: [],
         selectedFilterCategory: event.selectedCategory,
-        filteredItem: _filteredItem(
-          currentState.dataItem,
-          event.selectedCategory.getidCategory,
+        filteredItem: _filteredItem<ModelItem>(
+          data: currentState.dataItem,
+          idCategory: event.selectedCategory.getidCategory,
+          getCategory: (modelItem) => modelItem.getidCategoryiItem,
         ),
       ),
     );
@@ -113,24 +127,52 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     final currentState = state as AdjustmentLoaded;
     if (event.text != "") {
       List<ModelItem> item = List.from(
-        currentState.filteredItem
-            .where((element) => element.getidBranch == currentState.idBranch)
-            .where(
-              (item) => item.getnameItem.toLowerCase().contains(
-                event.text!.toLowerCase(),
-              ),
-            )
-            .toList(),
+        _filteredItem<ModelItem>(
+          data: currentState.dataItem,
+          idCategory: currentState.selectedFilterCategory?.getidCategory,
+          search: event.text,
+          getName: (modelItem) => modelItem.getnameItem,
+          getCategory: (modelItem) => modelItem.getidCategoryiItem,
+        ),
       );
 
       emit(currentState.copyWith(filteredItem: item));
     } else {
       emit(
         currentState.copyWith(
-          filteredItem: _filteredItem(
-            currentState.dataItem,
-            currentState.selectedFilterCategory?.getidCategory,
+          filteredItem: _filteredItem<ModelItem>(
+            data: currentState.dataItem,
+            idCategory: currentState.selectedFilterCategory?.getidCategory,
+            getCategory: (modelItem) => modelItem.getidCategoryiItem,
           ),
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _onSearchItemBatch(
+    AdjustmentSearchItemBatch event,
+    Emitter<AdjustmentState> emit,
+  ) {
+    final currentState = state as AdjustmentLoaded;
+    if (event.text != "") {
+      List<ModelItemBatch> item = _filteredItem<ModelItemBatch>(
+        data: currentState.dataItemBatchByIdItem,
+        search: event.text,
+        getInvoice: (modelItemBatch) => modelItemBatch.getinvoice,
+      );
+      devLog("Log AdjustmentBloc: searchedItemBatch: ${item.length}");
+      emit(
+        currentState.copyWith(
+          filteredItemBatch: item,
+          searchItemBatch: event.text,
+        ),
+      );
+    } else {
+      emit(
+        currentState.copyWith(
+          filteredItemBatch: sortStockMode(currentState.dataItemBatchByIdItem),
+          searchItemBatch: "",
         ),
       );
     }
@@ -154,18 +196,19 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     Emitter<AdjustmentState> emit,
   ) {
     final currentState = state as AdjustmentLoaded;
-    devLog(
-      "Log AdjustmentBloc: selectedItem: ${sortStockMode(currentState.dataItemBatch.where((element) => element.getidItem == event.selectedItem.getidItem).toList())}",
-    );
+    final dataItemBatch = currentState.dataItemBatch
+        .where((element) => element.getidItem == event.selectedItem.getidItem)
+        .toList();
     emit(
       currentState.copyWith(
         selectedItem: event.selectedItem,
-        dataItemBatchByIdItem: sortStockMode(
-          currentState.dataItemBatch
-              .where(
-                (element) => element.getidItem == event.selectedItem.getidItem,
-              )
-              .toList(),
+        dataItemBatchByIdItem: dataItemBatch,
+        filteredItemBatch: sortStockMode(
+          _filteredItem<ModelItemBatch>(
+            data: dataItemBatch,
+            search: currentState.searchItemBatch,
+            getName: (item) => item.getnameItem,
+          ),
         ),
       ),
     );
@@ -224,14 +267,35 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
     );
   }
 
-  List<ModelItem> _filteredItem(List<ModelItem> data, String? idCategory) {
-    List<ModelItem> filteredItem = data;
-    if (idCategory != null && idCategory != "0") {
-      filteredItem = data
-          .where((element) => element.getidCategoryiItem == idCategory)
-          .toList();
-    }
-    return filteredItem;
+  List<T> _filteredItem<T>({
+    required List<T> data,
+    String? idCategory,
+    String Function(T item)? getCategory,
+    String Function(T item)? getName,
+    String Function(T item)? getInvoice,
+    String? search,
+  }) {
+    return data.where((element) {
+      bool match = true;
+
+      if (idCategory != null && idCategory != "0" && getCategory != null) {
+        match = match && (getCategory(element) == idCategory);
+      }
+
+      if (search != null && search.isNotEmpty && getName != null) {
+        match =
+            match &&
+            getName(element).toLowerCase().contains(search.toLowerCase());
+      }
+
+      if (search != null && search.isNotEmpty && getInvoice != null) {
+        match =
+            match &&
+            getInvoice(element).toLowerCase().contains(search.toLowerCase());
+      }
+
+      return match;
+    }).toList();
   }
 
   FutureOr<void> _onResetSelectedData(
@@ -243,6 +307,19 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
         selectedItem: (state as AdjustmentLoaded).selectedItem,
         editedItemBatch: null,
         originalItemBatch: null,
+      ),
+    );
+  }
+
+  FutureOr<void> _onResetAllData(
+    AdjustmentResetAllData event,
+    Emitter<AdjustmentState> emit,
+  ) {
+    emit(
+      (state as AdjustmentLoaded).copyWith(
+        filteredItemBatch: [],
+        dataItemBatchByIdItem: [],
+        searchItemBatch: "",
       ),
     );
   }

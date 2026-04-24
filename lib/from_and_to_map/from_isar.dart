@@ -6,6 +6,7 @@ import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isa
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
+import 'package:flutter_pos/model_data/model_adjustment_in.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
@@ -29,6 +31,19 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:hive/hive.dart';
+
+ModelAdjustmentIn convertAdjustment(ModelAdjustmentInIsar data) {
+  return ModelAdjustmentIn(
+    invoice: data.invoice,
+    idBranch: data.idBranch,
+    date: data.date,
+    qty_in: data.qty_in,
+    sellPrice: data.sellPrice,
+    buyPrice: data.buyPrice,
+    expiredDate: data.expiredDate,
+    note: data.note,
+  );
+}
 
 Future<List<ModelItem>> fromIsarItem(
   List<ModelItemIsar> dataItem,

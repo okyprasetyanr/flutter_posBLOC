@@ -6,6 +6,8 @@ Future<void> deleteAllDataIsar() async {
 }
 
 Future<void> deleteAllCommonDataIsar() async {
+  await deleteAdjustmentInCollection();
+  await deleteAdjustmentOutCollection();
   await deleteBatchCollection();
   await deleteCategoryCollection();
   await deleteItemCollection();

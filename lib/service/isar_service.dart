@@ -1,4 +1,6 @@
 import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
@@ -24,6 +26,8 @@ class IsarService {
 
     isar = await Isar.open(
       [
+        ModelAdjustmentInIsarSchema,
+        ModelAdjustmentOutIsarSchema,
         ModelBatchIsarSchema,
         ModelCategoryIsarSchema,
         ModelCompanyIsarSchema,

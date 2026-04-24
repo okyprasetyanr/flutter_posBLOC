@@ -1,3 +1,5 @@
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
@@ -12,6 +14,8 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';
+import 'package:flutter_pos/model_data/model_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
@@ -22,6 +26,22 @@ import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
+
+Future<void> saveAdjustment_In_List_Isar(List<ModelAdjustmentIn> data) async {
+  List<ModelAdjustmentInIsar> convertedData = [];
+  for (final rawData in data) {
+    convertedData.add(await convertAdjustmentIn(rawData));
+  }
+  await isar.writeTxn(() => isar.modelAdjustmentInIsars.putAll(convertedData));
+}
+
+Future<void> saveAdjustment_Out_List_Isar(List<ModelAdjustmentOut> data) async {
+  List<ModelAdjustmentOutIsar> convertedData = [];
+  for (final rawData in data) {
+    convertedData.add(await convertAdjustmentOut(rawData));
+  }
+  await isar.writeTxn(() => isar.modelAdjustmentOutIsars.putAll(convertedData));
+}
 
 Future<void> saveIncome_List_Isar(List<ModelFinancial> data) async {
   List<ModelIncomeIsar> convertedData = [];

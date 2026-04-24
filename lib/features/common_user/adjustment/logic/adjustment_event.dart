@@ -45,8 +45,16 @@ class AdjustmentSearchData extends AdjustmentEvent {
   AdjustmentSearchData({required this.text});
 }
 
+class AdjustmentSearchItemBatch extends AdjustmentEvent {
+  final String? text;
+
+  AdjustmentSearchItemBatch({required this.text});
+}
+
 class AdjustmentFilterByCateogry extends AdjustmentEvent {
   final ModelCategory selectedCategory;
 
   AdjustmentFilterByCateogry({required this.selectedCategory});
 }
+
+class AdjustmentResetAllData extends AdjustmentEvent {}

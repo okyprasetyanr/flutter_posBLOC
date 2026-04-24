@@ -4,6 +4,8 @@ import 'package:flutter_pos/features/data_user/isar/ModelBase/model_partner_base
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_financial_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
@@ -12,6 +14,8 @@ import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_is
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_ordered_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_split_isar.dart';
+import 'package:flutter_pos/model_data/model_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
@@ -95,6 +99,27 @@ ModelItemIsar convertItem(ModelItem data) {
     ..priceItemByBatch = data.getpriceItembyBatch
     ..statusCondiment = data.getstatusCondiment.name
     ..statusItem = data.getStatusItem.name;
+}
+
+ModelAdjustmentInIsar convertAdjustmentIn(ModelAdjustmentIn data) {
+  return ModelAdjustmentInIsar()
+    ..idBranch = data.getidBranch
+    ..invoice = data.getinvoice
+    ..buyPrice = data.getbuyPrice
+    ..sellPrice = data.getsellPrice
+    ..date = data.getdate
+    ..expiredDate = data.getexpiredDate
+    ..note = data.getnote
+    ..qty_in = data.qty_in;
+}
+
+ModelAdjustmentOutIsar convertAdjustmentOut(ModelAdjustmentOut data) {
+  return ModelAdjustmentOutIsar()
+    ..idBranch = data.getidBranch
+    ..invoice = data.getinvoice
+    ..date = data.getdate
+    ..note = data.getnote
+    ..qty_out = data.qty_out;
 }
 
 T convertPartner<T extends ModelPartnerBaseIsar>(

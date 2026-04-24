@@ -1,5 +1,7 @@
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
@@ -16,6 +18,8 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_branch_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';
+import 'package:flutter_pos/model_data/model_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
@@ -29,6 +33,18 @@ import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
+
+Future<void> saveAdjustment_In_Isar(ModelAdjustmentIn batch) async {
+  await isar.writeTxn(() async {
+    await isar.modelAdjustmentInIsars.put(convertAdjustmentIn(batch));
+  });
+}
+
+Future<void> saveAdjustment_Out_Isar(ModelAdjustmentOut batch) async {
+  await isar.writeTxn(() async {
+    await isar.modelAdjustmentOutIsars.put(convertAdjustmentOut(batch));
+  });
+}
 
 Future<void> saveBatch_Isar(ModelBatch batch) async {
   await isar.writeTxn(() async {

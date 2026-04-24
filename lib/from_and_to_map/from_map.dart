@@ -199,7 +199,10 @@ ModelItemBatch fromMapItembatch(Map<String, dynamic> data, String id) {
     note: data[FieldDataItemBatch.note.name],
     date_buy: parseDate(date: data[FieldDataItemBatch.date_buy.name]),
     expiredDate: data[FieldDataItemBatch.expired_date.name] != null
-        ? parseDate(date: data[FieldDataItemBatch.expired_date.name])
+        ? parseDate(
+            date: data[FieldDataItemBatch.expired_date.name],
+            minute: false,
+          )
         : null,
     discountItem: data[FieldDataItemBatch.discount_item.name],
     qtyItem_in: data[FieldDataItemBatch.qty_item_in.name],
