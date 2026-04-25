@@ -10,8 +10,28 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
+
+List<ModelTransactionAdjustmentIn> getDataListTransAdjustmentIn(
+  QuerySnapshot data,
+) {
+  return data.docs.map((map) {
+    final dataAdjustmentIn = map.data() as Map<String, dynamic>;
+    return fromMapTransactionAdjustmentIn(dataAdjustmentIn, map.id);
+  }).toList();
+}
+
+List<ModelTransactionAdjustmentOut> getDataListTransAdjustmentOut(
+  QuerySnapshot data,
+) {
+  return data.docs.map((map) {
+    final dataAdjustmentOut = map.data() as Map<String, dynamic>;
+    return fromMapTransactionAdjustmentOut(dataAdjustmentOut, map.id);
+  }).toList();
+}
 
 List<ModelTransactionFinancial> getDataListTransFinancial(QuerySnapshot data) {
   return data.docs.map((map) {

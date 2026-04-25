@@ -29,5 +29,6 @@ abstract class ModelUserBaseIsar {
   late bool Riwayat_Pendapatan;
   late bool Riwayat_Pengeluaran;
   late bool Riwayat_Penjualan;
+  late bool Riwayat_Penyesuaian;
   late bool Stok;
 }

@@ -94,3 +94,15 @@ Future<void> deleteTransactionFinancialExpenseCollection() async {
     await isar.modelTransactionFinancialExpenseIsars.clear();
   });
 }
+
+Future<void> deleteTransactionAdjustmentIn() async {
+  await isar.writeTxn(() async {
+    await isar.modelTransactionAdjustmentInIsars.clear();
+  });
+}
+
+Future<void> deleteTransactionAdjustmentOut() async {
+  await isar.writeTxn(() async {
+    await isar.modelTransactionAdjustmentOutIsars.clear();
+  });
+}

@@ -12,6 +12,7 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_category_is
 import 'package:flutter_pos/features/data_user/isar/collection/model_company_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_counter_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/embedded/model_item_batch_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
@@ -55,7 +56,7 @@ ModelTransactionAdjustmentIn fromIsarAdjustmentIn(
 }
 
 ModelTransactionAdjustmentOut fromIsarAdjustmentOut(
-  ModelTransactionAdjustmentInIsar data,
+  ModelTransactionAdjustmentOutIsar data,
 ) {
   return ModelTransactionAdjustmentOut(
     invoice: data.invoice,
@@ -63,8 +64,8 @@ ModelTransactionAdjustmentOut fromIsarAdjustmentOut(
     itemInvoice: data.itemInvoice,
     itemName: data.itemName,
     date: data.date,
-    qty_out_after: data.qty_in_after,
-    qty_out_before: data.qty_in_before,
+    qty_out_after: data.qty_out_after,
+    qty_out_before: data.qty_out_before,
     note: data.note,
   );
 }
@@ -397,6 +398,7 @@ ModelUser fromIsarUser<T extends ModelUserBaseIsar>(T object) {
       Permission.Riwayat_Pembelian: object.Riwayat_Pembelian,
       Permission.Riwayat_Pendapatan: object.Riwayat_Pendapatan,
       Permission.Riwayat_Pengeluaran: object.Riwayat_Pengeluaran,
+      Permission.Riwayat_Penyesuaian: object.Riwayat_Penyesuaian,
       Permission.Laporan: object.Laporan,
     },
   );

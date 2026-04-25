@@ -6,6 +6,8 @@ import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
@@ -53,6 +55,24 @@ class DataUserRepository {
         .where('uid_owner', isEqualTo: UserSession.getUidOwner())
         .get();
     return await getDataListTransFinancial(data);
+  }
+
+  Future<List<ModelTransactionAdjustmentIn>>
+  getTransactionAdjustmentIn() async {
+    final data = await _db
+        .collection('transaction_adjustment_in')
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
+        .get();
+    return await getDataListTransAdjustmentIn(data);
+  }
+
+  Future<List<ModelTransactionAdjustmentOut>>
+  getTransactionAdjustmentOut() async {
+    final data = await _db
+        .collection('transaction_adjustment_out')
+        .where('uid_owner', isEqualTo: UserSession.getUidOwner())
+        .get();
+    return await getDataListTransAdjustmentOut(data);
   }
 
   Future<List<ModelItem>> getItem() async {

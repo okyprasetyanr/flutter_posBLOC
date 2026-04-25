@@ -122,21 +122,11 @@ class _UIInventoryState extends State<UIInventory> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          Navigator.pop(context);
-          context.read<InventoryBloc>().add(InventoryResetCategoryForm());
-          context.read<InventoryBloc>().add(InventoryResetItemForm());
-        }
-      },
-      child: LayoutTopBottom(
-        refreshIndicator: _onRefresh,
-        layoutTop: topLayout(),
-        layoutBottom: bottomLayout(),
-        widgetNavigation: navigationGesture(),
-      ),
+    return LayoutTopBottom(
+      refreshIndicator: _onRefresh,
+      layoutTop: topLayout(),
+      layoutBottom: bottomLayout(),
+      widgetNavigation: navigationGesture(),
     );
   }
 

@@ -9,6 +9,9 @@ import 'package:flutter_pos/features/common_user/batch/presentation/ui_batch.dar
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/common_user/financial/presentation/ui_financial.dart';
+import 'package:flutter_pos/features/common_user/history_adjustment/logic/history_adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/history_adjustment/logic/history_adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/history_adjustment/presentation/ui_history_adjustment.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_event.dart';
 import 'package:flutter_pos/features/common_user/history_financial/presentation/ui_history_financial.dart';
@@ -108,6 +111,11 @@ final routesPage = {
       child: const UITransaction(),
     );
   },
+  '/historyadjustment': (context) => BlocProvider(
+    create: (context) =>
+        HistoryAdjustmentBloc()..add(HistoryAdjustmentGetData()),
+    child: const UiHistoryAdjustment(),
+  ),
   '/historyfinancial': (context) => BlocProvider(
     create: (context) =>
         HistoryFinancialBloc(context.read())..add(HistoryFinancialGetData()),

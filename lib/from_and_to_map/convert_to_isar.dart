@@ -103,7 +103,7 @@ ModelItemIsar convertItem(ModelItem data) {
     ..statusItem = data.getStatusItem.name;
 }
 
-ModelTransactionAdjustmentInIsar convertAdjustmentIn(
+ModelTransactionAdjustmentInIsar convertTransactionAdjustmentIn(
   ModelTransactionAdjustmentIn data,
 ) {
   return ModelTransactionAdjustmentInIsar()
@@ -123,7 +123,7 @@ ModelTransactionAdjustmentInIsar convertAdjustmentIn(
     ..note = data.getnote;
 }
 
-ModelTransactionAdjustmentOutIsar convertAdjustmentOut(
+ModelTransactionAdjustmentOutIsar convertTransactionAdjustmentOut(
   ModelTransactionAdjustmentOut data,
 ) {
   return ModelTransactionAdjustmentOutIsar()
@@ -295,5 +295,6 @@ Future<T> convertUser<T extends ModelUserBaseIsar>(
     ..Riwayat_Pembelian = permissions[Permission.Riwayat_Pembelian] ?? false
     ..Riwayat_Pendapatan = permissions[Permission.Riwayat_Pendapatan] ?? false
     ..Riwayat_Pengeluaran = permissions[Permission.Riwayat_Pengeluaran] ?? false
+    ..Riwayat_Penyesuaian = permissions[Permission.Riwayat_Penyesuaian] ?? false
     ..Laporan = permissions[Permission.Laporan] ?? false;
 }

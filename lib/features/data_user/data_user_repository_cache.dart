@@ -66,11 +66,19 @@ class DataUserRepositoryCache {
     await deleteTransactionBuyCollection();
     await deleteTransactionFinancialIncomeCollection();
     await deleteTransactionFinancialExpenseCollection();
+    await deleteTransactionAdjustmentIn();
+    await deleteTransactionAdjustmentOut();
     await saveTransactionSell_List_Isar(await repo.getTransactionSell());
     await saveTransactionBuy_List_Isar(await repo.getTransactionBuy());
     await saveTransactionFinancialncome_List_Isar(await repo.getTransIncome());
     await saveTransactionFinancialExpense_List_Isar(
       await repo.getTransExpense(),
+    );
+    await saveTransactionAdjustmentIn_List_Isar(
+      await repo.getTransactionAdjustmentIn(),
+    );
+    await saveTransactionAdjustmentOut_List_Isar(
+      await repo.getTransactionAdjustmentOut(),
     );
 
     await saveCounterToIsar();

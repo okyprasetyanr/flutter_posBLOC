@@ -37,12 +37,6 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _initData();
-  }
-
   void _initData() {
     context.read<HistoryFinancialBloc>().add(HistoryFinancialGetData());
   }

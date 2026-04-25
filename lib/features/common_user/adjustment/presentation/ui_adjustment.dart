@@ -42,6 +42,17 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   String? monthExpired = null;
   String? yearExpired = null;
   @override
+  void dispose() {
+    searchItemController.dispose();
+    searchItemBatchController.dispose();
+    sellPriceController.dispose();
+    buyPriceController.dispose();
+    noteController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
       layoutTop: layoutTop(),

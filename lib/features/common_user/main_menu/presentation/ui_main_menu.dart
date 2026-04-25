@@ -705,7 +705,28 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                     "Riwayat Kas",
                                   ),
                                 ),
-                                Expanded(child: SizedBox.shrink()),
+                                Expanded(
+                                  child: gridViewMenu(
+                                    () {
+                                      state[Permission.Riwayat_Penyesuaian]! ||
+                                              state[Permission
+                                                  .Riwayat_Pengeluaran]!
+                                          ? navUpDownTransition(
+                                              context,
+                                              '/historyadjustment',
+                                              false,
+                                            )
+                                          : customSnackBarAccess(
+                                              context: context,
+                                            );
+                                    },
+                                    const Icon(
+                                      Icons.history,
+                                      color: AppPropertyColor.black,
+                                    ),
+                                    "Riwayat Penyesuaian",
+                                  ),
+                                ),
                               ],
                             ),
                           ),

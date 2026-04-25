@@ -32,7 +32,7 @@ Future<void> saveAdjustment_In_List_Isar(
 ) async {
   List<ModelTransactionAdjustmentInIsar> convertedData = [];
   for (final rawData in data) {
-    convertedData.add(await convertAdjustmentIn(rawData));
+    convertedData.add(await convertTransactionAdjustmentIn(rawData));
   }
   await isar.writeTxn(
     () => isar.modelTransactionAdjustmentInIsars.putAll(convertedData),
@@ -44,7 +44,7 @@ Future<void> saveAdjustment_Out_List_Isar(
 ) async {
   List<ModelTransactionAdjustmentOutIsar> convertedData = [];
   for (final rawData in data) {
-    convertedData.add(await convertAdjustmentOut(rawData));
+    convertedData.add(await convertTransactionAdjustmentOut(rawData));
   }
   await isar.writeTxn(
     () => isar.modelTransactionAdjustmentOutIsars.putAll(convertedData),
@@ -105,6 +105,30 @@ Future<void> saveTransactionFinancialncome_List_Isar(
   }
   await isar.writeTxn(
     () => isar.modelTransactionFinancialIncomeIsars.putAll(convertedData),
+  );
+}
+
+Future<void> saveTransactionAdjustmentIn_List_Isar(
+  List<ModelTransactionAdjustmentIn> data,
+) async {
+  List<ModelTransactionAdjustmentInIsar> convertedData = [];
+  for (final rawData in data) {
+    convertedData.add(await convertTransactionAdjustmentIn(rawData));
+  }
+  await isar.writeTxn(
+    () => isar.modelTransactionAdjustmentInIsars.putAll(convertedData),
+  );
+}
+
+Future<void> saveTransactionAdjustmentOut_List_Isar(
+  List<ModelTransactionAdjustmentOut> data,
+) async {
+  List<ModelTransactionAdjustmentOutIsar> convertedData = [];
+  for (final rawData in data) {
+    convertedData.add(await convertTransactionAdjustmentOut(rawData));
+  }
+  await isar.writeTxn(
+    () => isar.modelTransactionAdjustmentOutIsars.putAll(convertedData),
   );
 }
 

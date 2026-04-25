@@ -67,10 +67,91 @@ class ExcelBackupService {
           "_",
           " ",
         )];
+    final sheetHistoryAdjustmenIn =
+        excel[ListDataHeaderExcel.Riwayat_Penyesuaian_Masuk.name.replaceAll(
+          "_",
+          " ",
+        )];
+    final sheetHistoryAdjustmenOut =
+        excel[ListDataHeaderExcel.Riwayat_Penyesuaian_Keluar.name.replaceAll(
+          "_",
+          " ",
+        )];
+
+    //HistoryAdjustmentIn
+    sheetHistoryAdjustmenIn.appendRow([
+      TextCellValue(FieldDataAdjustmentIn.id_branch.name),
+      TextCellValue(FieldDataAdjustmentIn.invoice.name),
+      TextCellValue(FieldDataAdjustmentIn.date.name),
+      TextCellValue(FieldDataAdjustmentIn.note.name),
+      TextCellValue(FieldDataAdjustmentIn.qty_in_after.name),
+      TextCellValue(FieldDataAdjustmentIn.qty_in_before.name),
+      TextCellValue(FieldDataAdjustmentIn.sell_price_after.name),
+      TextCellValue(FieldDataAdjustmentIn.sell_price_before.name),
+      TextCellValue(FieldDataAdjustmentIn.buy_price_after.name),
+      TextCellValue(FieldDataAdjustmentIn.buy_price_before.name),
+      TextCellValue(FieldDataAdjustmentIn.expired_date_after.name),
+      TextCellValue(FieldDataAdjustmentIn.expired_date_before.name),
+    ]);
+
+    for (final adjsutmentin in await getAllTransactionAdjustment_In_Isar()) {
+      sheetCategory.appendRow([
+        TextCellValue(adjsutmentin.getidBranch),
+        TextCellValue(adjsutmentin.getinvoice),
+        TextCellValue(formatDate(date: adjsutmentin.getdate)),
+        TextCellValue(adjsutmentin.getnote),
+        DoubleCellValue(adjsutmentin.getqty_in_after ?? 0),
+        DoubleCellValue(adjsutmentin.getqty_in_before ?? 0),
+        DoubleCellValue(adjsutmentin.getsellPriceAfter ?? 0),
+        DoubleCellValue(adjsutmentin.getsellPriceBefore ?? 0),
+        DoubleCellValue(adjsutmentin.getbuyPriceAfter ?? 0),
+        DoubleCellValue(adjsutmentin.getbuyPriceBefore ?? 0),
+        TextCellValue(
+          adjsutmentin.getexpiredDateAfter != null
+              ? formatDate(date: adjsutmentin.getexpiredDateAfter!)
+              : "",
+        ),
+        TextCellValue(
+          adjsutmentin.getexpiredDateBefore != null
+              ? formatDate(date: adjsutmentin.getexpiredDateBefore!)
+              : "",
+        ),
+      ]);
+    }
+    sheetWidthStyle(
+      FieldDataAdjustmentIn.values,
+      sheetHistoryAdjustmenIn,
+      wrapColumns: {9},
+    );
+
+    //HistoryAdjustmentOut
+    sheetHistoryAdjustmenIn.appendRow([
+      TextCellValue(FieldDataAdjustmentOut.id_branch.name),
+      TextCellValue(FieldDataAdjustmentOut.invoice.name),
+      TextCellValue(FieldDataAdjustmentOut.date.name),
+      TextCellValue(FieldDataAdjustmentOut.note.name),
+      TextCellValue(FieldDataAdjustmentOut.qty_out_after.name),
+      TextCellValue(FieldDataAdjustmentOut.qty_out_before.name),
+    ]);
+
+    for (final adjsutmentout in await getAllTransactionAdjustment_Out_Isar()) {
+      sheetCategory.appendRow([
+        TextCellValue(adjsutmentout.getidBranch),
+        TextCellValue(adjsutmentout.getinvoice),
+        TextCellValue(formatDate(date: adjsutmentout.getdate)),
+        TextCellValue(adjsutmentout.getnote),
+        DoubleCellValue(adjsutmentout.getqty_in_after ?? 0),
+        DoubleCellValue(adjsutmentout.getqty_in_before ?? 0),
+      ]);
+    }
+    sheetWidthStyle(
+      FieldDataAdjustmentOut.values,
+      sheetHistoryAdjustmenOut,
+      wrapColumns: {9},
+    );
 
     //Account
     sheetAccount.appendRow([
-      TextCellValue(FieldDataUser.uid_owner.name),
       TextCellValue(FieldDataUser.id_branch.name),
       TextCellValue(FieldDataUser.id_user.name),
       TextCellValue(FieldDataUser.name_user.name),
@@ -127,7 +208,6 @@ class ExcelBackupService {
 
     //Item
     sheetItem.appendRow([
-      TextCellValue(FieldDataItem.uid_owner.name),
       TextCellValue(FieldDataItem.id_branch.name),
       TextCellValue(FieldDataItem.id_item.name),
       TextCellValue(FieldDataItem.id_category.name),
@@ -163,7 +243,6 @@ class ExcelBackupService {
 
     //Category
     sheetCategory.appendRow([
-      TextCellValue(FieldDataCategory.uid_owner.name),
       TextCellValue(FieldDataCategory.id_branch.name),
       TextCellValue(FieldDataCategory.id_category.name),
       TextCellValue(FieldDataCategory.name_category.name),
@@ -181,7 +260,6 @@ class ExcelBackupService {
 
     //Customer
     sheetCustomer.appendRow([
-      TextCellValue(FieldDataPartner.uid_owner.name),
       TextCellValue(FieldDataPartner.id_branch.name),
       TextCellValue(FieldDataPartner.id_partner.name),
       TextCellValue(FieldDataPartner.name_partner.name),

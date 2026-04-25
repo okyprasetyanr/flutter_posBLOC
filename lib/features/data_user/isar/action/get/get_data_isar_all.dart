@@ -8,6 +8,8 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isa
 import 'package:flutter_pos/features/data_user/isar/collection/model_income_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_item_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_supplier_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_buy_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_expense_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_financial_income_isar.dart';
@@ -24,6 +26,8 @@ import 'package:flutter_pos/model_data/model_financial.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
@@ -114,6 +118,28 @@ Future<List<ModelTransaction>> getAllTransactionBuy_Isar() async {
       .findAll();
   return await dataTransactionBuy
       .map((e) => fromIsarTransaction(object: e))
+      .toList();
+}
+
+Future<List<ModelTransactionAdjustmentIn>>
+getAllTransactionAdjustment_In_Isar() async {
+  final dataTransactionAdjustmentIn = await isar
+      .modelTransactionAdjustmentInIsars
+      .where()
+      .findAll();
+  return await dataTransactionAdjustmentIn
+      .map((e) => fromIsarAdjustmentIn(e))
+      .toList();
+}
+
+Future<List<ModelTransactionAdjustmentOut>>
+getAllTransactionAdjustment_Out_Isar() async {
+  final dataTransactionAdjustmentOut = await isar
+      .modelTransactionAdjustmentOutIsars
+      .where()
+      .findAll();
+  return await dataTransactionAdjustmentOut
+      .map((e) => fromIsarAdjustmentOut(e))
       .toList();
 }
 

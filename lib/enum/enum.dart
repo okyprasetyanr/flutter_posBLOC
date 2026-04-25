@@ -10,30 +10,32 @@ enum FieldDataCompany {
 
 enum FieldDataAdjustmentIn {
   invoice,
-  idBranch,
+  id_branch,
   item_invoice,
   item_name,
   date,
   qty_in_after,
   qty_in_before,
-  sellPriceAfter,
-  buyPriceAfter,
-  sellPriceBefore,
-  buyPriceBefore,
-  expiredDateAfter,
-  expiredDateBefore,
+  sell_price_after,
+  buy_price_after,
+  sell_price_before,
+  buy_price_before,
+  expired_date_after,
+  expired_date_before,
   note,
+  uid_owner,
 }
 
 enum FieldDataAdjustmentOut {
   invoice,
-  idBranch,
+  id_branch,
   item_invoice,
   item_name,
   date,
   qty_out_after,
   qty_out_before,
   note,
+  uid_owner,
 }
 
 enum FieldDataUser {
@@ -48,6 +50,7 @@ enum FieldDataUser {
   permissions_user,
   created_user,
   note_user,
+  uid_woner,
 }
 
 enum FieldDataItem {
@@ -215,6 +218,8 @@ enum ListDataHeaderExcel {
   Riwayat_Pembelian_Item,
   Riwayat_Pendapatan,
   Riwayat_Pengeluaran,
+  Riwayat_Penyesuaian_Masuk,
+  Riwayat_Penyesuaian_Keluar,
 }
 
 enum ListStatusTransactionFinancial { All, Sukses, Batal }
@@ -327,6 +332,7 @@ enum Permission {
   Riwayat_Pembelian,
   Riwayat_Pendapatan,
   Riwayat_Pengeluaran,
+  Riwayat_Penyesuaian,
   Laporan,
 }
 

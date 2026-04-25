@@ -97,53 +97,58 @@ const ModelAccountIsarSchema = CollectionSchema(
       name: r'Riwayat_Penjualan',
       type: IsarType.bool,
     ),
-    r'Stok': PropertySchema(
+    r'Riwayat_Penyesuaian': PropertySchema(
       id: 16,
+      name: r'Riwayat_Penyesuaian',
+      type: IsarType.bool,
+    ),
+    r'Stok': PropertySchema(
+      id: 17,
       name: r'Stok',
       type: IsarType.bool,
     ),
     r'createdUser': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'createdUser',
       type: IsarType.dateTime,
     ),
     r'emailUser': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'emailUser',
       type: IsarType.string,
     ),
     r'idBranchUser': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'idBranchUser',
       type: IsarType.string,
     ),
     r'idUser': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'idUser',
       type: IsarType.string,
     ),
     r'nameUser': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'nameUser',
       type: IsarType.string,
     ),
     r'noteUser': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'noteUser',
       type: IsarType.string,
     ),
     r'phoneUser': PropertySchema(
-      id: 23,
+      id: 24,
       name: r'phoneUser',
       type: IsarType.string,
     ),
     r'roleUser': PropertySchema(
-      id: 24,
+      id: 25,
       name: r'roleUser',
       type: IsarType.string,
     ),
     r'statusUser': PropertySchema(
-      id: 25,
+      id: 26,
       name: r'statusUser',
       type: IsarType.string,
     )
@@ -238,16 +243,17 @@ void _modelAccountIsarSerialize(
   writer.writeBool(offsets[13], object.Riwayat_Pendapatan);
   writer.writeBool(offsets[14], object.Riwayat_Pengeluaran);
   writer.writeBool(offsets[15], object.Riwayat_Penjualan);
-  writer.writeBool(offsets[16], object.Stok);
-  writer.writeDateTime(offsets[17], object.createdUser);
-  writer.writeString(offsets[18], object.emailUser);
-  writer.writeString(offsets[19], object.idBranchUser);
-  writer.writeString(offsets[20], object.idUser);
-  writer.writeString(offsets[21], object.nameUser);
-  writer.writeString(offsets[22], object.noteUser);
-  writer.writeString(offsets[23], object.phoneUser);
-  writer.writeString(offsets[24], object.roleUser);
-  writer.writeString(offsets[25], object.statusUser);
+  writer.writeBool(offsets[16], object.Riwayat_Penyesuaian);
+  writer.writeBool(offsets[17], object.Stok);
+  writer.writeDateTime(offsets[18], object.createdUser);
+  writer.writeString(offsets[19], object.emailUser);
+  writer.writeString(offsets[20], object.idBranchUser);
+  writer.writeString(offsets[21], object.idUser);
+  writer.writeString(offsets[22], object.nameUser);
+  writer.writeString(offsets[23], object.noteUser);
+  writer.writeString(offsets[24], object.phoneUser);
+  writer.writeString(offsets[25], object.roleUser);
+  writer.writeString(offsets[26], object.statusUser);
 }
 
 ModelAccountIsar _modelAccountIsarDeserialize(
@@ -273,17 +279,18 @@ ModelAccountIsar _modelAccountIsarDeserialize(
   object.Riwayat_Pendapatan = reader.readBool(offsets[13]);
   object.Riwayat_Pengeluaran = reader.readBool(offsets[14]);
   object.Riwayat_Penjualan = reader.readBool(offsets[15]);
-  object.Stok = reader.readBool(offsets[16]);
-  object.createdUser = reader.readDateTimeOrNull(offsets[17]);
-  object.emailUser = reader.readString(offsets[18]);
-  object.idBranchUser = reader.readStringOrNull(offsets[19]);
-  object.idUser = reader.readString(offsets[20]);
+  object.Riwayat_Penyesuaian = reader.readBool(offsets[16]);
+  object.Stok = reader.readBool(offsets[17]);
+  object.createdUser = reader.readDateTimeOrNull(offsets[18]);
+  object.emailUser = reader.readString(offsets[19]);
+  object.idBranchUser = reader.readStringOrNull(offsets[20]);
+  object.idUser = reader.readString(offsets[21]);
   object.isarId = id;
-  object.nameUser = reader.readString(offsets[21]);
-  object.noteUser = reader.readStringOrNull(offsets[22]);
-  object.phoneUser = reader.readString(offsets[23]);
-  object.roleUser = reader.readString(offsets[24]);
-  object.statusUser = reader.readString(offsets[25]);
+  object.nameUser = reader.readString(offsets[22]);
+  object.noteUser = reader.readStringOrNull(offsets[23]);
+  object.phoneUser = reader.readString(offsets[24]);
+  object.roleUser = reader.readString(offsets[25]);
+  object.statusUser = reader.readString(offsets[26]);
   return object;
 }
 
@@ -329,22 +336,24 @@ P _modelAccountIsarDeserializeProp<P>(
     case 16:
       return (reader.readBool(offset)) as P;
     case 17:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 18:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 19:
-      return (reader.readStringOrNull(offset)) as P;
-    case 20:
       return (reader.readString(offset)) as P;
+    case 20:
+      return (reader.readStringOrNull(offset)) as P;
     case 21:
       return (reader.readString(offset)) as P;
     case 22:
-      return (reader.readStringOrNull(offset)) as P;
-    case 23:
       return (reader.readString(offset)) as P;
+    case 23:
+      return (reader.readStringOrNull(offset)) as P;
     case 24:
       return (reader.readString(offset)) as P;
     case 25:
+      return (reader.readString(offset)) as P;
+    case 26:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -768,6 +777,16 @@ extension ModelAccountIsarQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'Riwayat_Penjualan',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModelAccountIsar, ModelAccountIsar, QAfterFilterCondition>
+      riwayat_PenyesuaianEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'Riwayat_Penyesuaian',
         value: value,
       ));
     });
@@ -2270,6 +2289,20 @@ extension ModelAccountIsarQuerySortBy
     });
   }
 
+  QueryBuilder<ModelAccountIsar, ModelAccountIsar, QAfterSortBy>
+      sortByRiwayat_Penyesuaian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penyesuaian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelAccountIsar, ModelAccountIsar, QAfterSortBy>
+      sortByRiwayat_PenyesuaianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penyesuaian', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModelAccountIsar, ModelAccountIsar, QAfterSortBy> sortByStok() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'Stok', Sort.asc);
@@ -2636,6 +2669,20 @@ extension ModelAccountIsarQuerySortThenBy
     });
   }
 
+  QueryBuilder<ModelAccountIsar, ModelAccountIsar, QAfterSortBy>
+      thenByRiwayat_Penyesuaian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penyesuaian', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModelAccountIsar, ModelAccountIsar, QAfterSortBy>
+      thenByRiwayat_PenyesuaianDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'Riwayat_Penyesuaian', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModelAccountIsar, ModelAccountIsar, QAfterSortBy> thenByStok() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'Stok', Sort.asc);
@@ -2904,6 +2951,13 @@ extension ModelAccountIsarQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ModelAccountIsar, ModelAccountIsar, QDistinct>
+      distinctByRiwayat_Penyesuaian() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'Riwayat_Penyesuaian');
+    });
+  }
+
   QueryBuilder<ModelAccountIsar, ModelAccountIsar, QDistinct> distinctByStok() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'Stok');
@@ -3084,6 +3138,13 @@ extension ModelAccountIsarQueryProperty
       Riwayat_PenjualanProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'Riwayat_Penjualan');
+    });
+  }
+
+  QueryBuilder<ModelAccountIsar, bool, QQueryOperations>
+      Riwayat_PenyesuaianProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'Riwayat_Penyesuaian');
     });
   }
 

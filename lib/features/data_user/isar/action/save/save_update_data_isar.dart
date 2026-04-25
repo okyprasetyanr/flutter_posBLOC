@@ -34,20 +34,22 @@ import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
 
-Future<void> saveAdjustment_In_Isar(ModelTransactionAdjustmentIn batch) async {
+Future<void> saveTransactionAdjustment_In_Isar(
+  ModelTransactionAdjustmentIn batch,
+) async {
   await isar.writeTxn(() async {
     await isar.modelTransactionAdjustmentInIsars.put(
-      convertAdjustmentIn(batch),
+      convertTransactionAdjustmentIn(batch),
     );
   });
 }
 
-Future<void> saveAdjustment_Out_Isar(
+Future<void> saveTransactionAdjustment_Out_Isar(
   ModelTransactionAdjustmentOut batch,
 ) async {
   await isar.writeTxn(() async {
     await isar.modelTransactionAdjustmentOutIsars.put(
-      convertAdjustmentOut(batch),
+      convertTransactionAdjustmentOut(batch),
     );
   });
 }
@@ -351,6 +353,8 @@ Future<void> saveUser_Isar(ModelUser user) async {
           user.getPermissionsUser[Permission.Riwayat_Pendapatan] ?? false
       ..Riwayat_Pengeluaran =
           user.getPermissionsUser[Permission.Riwayat_Pengeluaran] ?? false
+      ..Riwayat_Penyesuaian =
+          user.getPermissionsUser[Permission.Riwayat_Penyesuaian] ?? false
       ..Laporan = user.getPermissionsUser[Permission.Laporan] ?? false;
   } else {
     data = await convertUser(user, ModelUserIsar.new);

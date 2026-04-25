@@ -1,6 +1,8 @@
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_expense_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_supplier_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_in_isar.dart';
+import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_out_isar.dart';
 import 'package:flutter_pos/features/hive_setup/saved_transaction/model_transaction_save.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_category_isar.dart';
@@ -21,10 +23,40 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:hive/hive.dart';
 import 'package:isar/isar.dart';
+
+Future<List<ModelTransactionAdjustmentIn>> getTransactionAdjustmentInBy(
+  String idBranch,
+) async {
+  List<ModelTransactionAdjustmentIn> data = [];
+  for (final dataAdjustment
+      in await await isar.modelTransactionAdjustmentInIsars
+          .where()
+          .idBranchEqualTo(idBranch)
+          .findAll()) {
+    data.add(fromIsarAdjustmentIn(dataAdjustment));
+  }
+  return data;
+}
+
+Future<List<ModelTransactionAdjustmentOut>> getTransactionAdjustmentOutBy(
+  String idBranch,
+) async {
+  List<ModelTransactionAdjustmentOut> data = [];
+  for (final dataAdjustment
+      in await await isar.modelTransactionAdjustmentOutIsars
+          .where()
+          .idBranchEqualTo(idBranch)
+          .findAll()) {
+    data.add(fromIsarAdjustmentOut(dataAdjustment));
+  }
+  return data;
+}
 
 Future<List<ModelBatch>> getBatchIsar(String idBranch) async {
   return fromIsarBatchToList(

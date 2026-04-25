@@ -279,10 +279,10 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
 
     if (isAdjustmentIn) {
       await (data as ModelTransactionAdjustmentIn).pushDataAdjustmentIn();
-      await saveAdjustment_In_Isar(data);
+      await saveTransactionAdjustment_In_Isar(data);
     } else {
       await (data as ModelTransactionAdjustmentOut).pushDataAdjustmentOut();
-      await saveAdjustment_Out_Isar(data);
+      await saveTransactionAdjustment_Out_Isar(data);
     }
 
     await updateCounter(

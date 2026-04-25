@@ -14,6 +14,8 @@ import 'package:flutter_pos/model_data/model_branch.dart';
 import 'package:flutter_pos/model_data/model_counter.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/service/backup_restore/excel_backup.dart';
 import 'package:flutter_pos/service/backup_restore/excel_restore.dart';
 import 'package:flutter_pos/function/function.dart';
@@ -528,6 +530,32 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
                       ),
                     ),
                   ),
+
+                  ListDataHeaderExcel.Riwayat_Penyesuaian_Masuk.name.replaceAll(
+                    " ",
+                    "_",
+                  ): (sheet) async =>
+                      restoreSheet<ModelTransactionAdjustmentIn>(
+                        sheet: sheet,
+                        id: FieldDataAdjustmentIn.invoice.name,
+
+                        fromMap: (data, id) async =>
+                            await saveTransactionAdjustment_In_Isar(
+                              fromMapTransactionAdjustmentIn(data, id),
+                            ),
+                      ),
+
+                  ListDataHeaderExcel.Riwayat_Penyesuaian_Keluar.name
+                      .replaceAll(" ", "_"): (sheet) async =>
+                      restoreSheet<ModelTransactionAdjustmentOut>(
+                        sheet: sheet,
+                        id: FieldDataAdjustmentOut.invoice.name,
+
+                        fromMap: (data, id) async =>
+                            await saveTransactionAdjustment_Out_Isar(
+                              fromMapTransactionAdjustmentOut(data, id),
+                            ),
+                      ),
 
                   ListDataHeaderExcel.Riwayat_Pendapatan.name.replaceAll(
                     " ",

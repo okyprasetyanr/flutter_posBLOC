@@ -268,19 +268,20 @@ Map<String, dynamic> convertToMapAdjustmentIn({
 }) {
   return {
     FieldDataAdjustmentIn.invoice.name: data.getinvoice,
-    FieldDataAdjustmentIn.idBranch.name: data.getidBranch,
+    FieldDataAdjustmentIn.id_branch.name: data.getidBranch,
     FieldDataAdjustmentIn.item_invoice.name: data.getitemInvoice,
     FieldDataAdjustmentIn.item_name.name: data.getitemName,
-    FieldDataAdjustmentIn.buyPriceAfter.name: data.getbuyPriceAfter,
-    FieldDataAdjustmentIn.buyPriceBefore.name: data.getbuyPriceBefore,
-    FieldDataAdjustmentIn.sellPriceAfter.name: data.getsellPriceAfter,
-    FieldDataAdjustmentIn.sellPriceBefore.name: data.getsellPriceBefore,
-    FieldDataAdjustmentIn.expiredDateAfter.name: data.getexpiredDateAfter,
-    FieldDataAdjustmentIn.expiredDateBefore.name: data.getexpiredDateBefore,
+    FieldDataAdjustmentIn.buy_price_after.name: data.getbuyPriceAfter,
+    FieldDataAdjustmentIn.buy_price_before.name: data.getbuyPriceBefore,
+    FieldDataAdjustmentIn.sell_price_after.name: data.getsellPriceAfter,
+    FieldDataAdjustmentIn.sell_price_before.name: data.getsellPriceBefore,
+    FieldDataAdjustmentIn.expired_date_after.name: data.getexpiredDateAfter,
+    FieldDataAdjustmentIn.expired_date_before.name: data.getexpiredDateBefore,
     FieldDataAdjustmentIn.qty_in_after.name: data.getqty_in_after,
     FieldDataAdjustmentIn.qty_in_before.name: data.getqty_in_before,
     FieldDataAdjustmentIn.date.name: formatDate(date: data.getdate),
     FieldDataAdjustmentIn.note.name: data.getnote,
+    FieldDataAdjustmentIn.uid_owner.name: UserSession.getUidOwner(),
   };
 }
 
@@ -289,12 +290,13 @@ Map<String, dynamic> convertToMapAdjustmentOut({
 }) {
   return {
     FieldDataAdjustmentOut.invoice.name: data.getinvoice,
-    FieldDataAdjustmentOut.idBranch.name: data.getidBranch,
+    FieldDataAdjustmentOut.id_branch.name: data.getidBranch,
     FieldDataAdjustmentOut.item_invoice.name: data.getitemInvoice,
     FieldDataAdjustmentOut.item_name.name: data.getitemName,
     FieldDataAdjustmentOut.date.name: formatDate(date: data.getdate),
     FieldDataAdjustmentOut.qty_out_after.name: data.getqty_in_after,
     FieldDataAdjustmentOut.qty_out_before.name: data.getqty_in_before,
     FieldDataAdjustmentOut.note.name: data.getnote,
+    FieldDataAdjustmentOut.uid_owner.name: UserSession.getUidOwner(),
   };
 }

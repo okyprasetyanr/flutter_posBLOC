@@ -6,6 +6,8 @@ import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_blo
 import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_state.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_state.dart';
+import 'package:flutter_pos/features/common_user/history_adjustment/logic/history_adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/history_adjustment/logic/history_adjustment_state.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_state.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
@@ -53,6 +55,10 @@ extension AppThemeExtension on BuildContext {
         ? AppPropertyColor.primary
         : AppPropertyColor.secondPrimary;
   }
+
+  Color get colorHistAdjustment => getDynamicColor<HistoryAdjustmentBloc>(
+    (state) => state is HistoryAdjustmentLoaded && state.isAdjustmentIn,
+  );
 
   Color get colorTrans => getDynamicColor<TransactionBloc>(
     (state) => state is TransactionLoaded && state.isSell,

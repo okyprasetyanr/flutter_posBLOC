@@ -38,35 +38,35 @@ ModelTransactionFinancial fromMapTransFinancial(
   );
 }
 
-ModelTransactionAdjustmentIn fromMapAdjustmentIn(
+ModelTransactionAdjustmentIn fromMapTransactionAdjustmentIn(
   Map<String, dynamic> data,
   String id,
 ) {
   return ModelTransactionAdjustmentIn(
     invoice: data[FieldDataAdjustmentIn.invoice.name],
-    idBranch: data[FieldDataAdjustmentIn.idBranch.name],
+    idBranch: data[FieldDataAdjustmentIn.id_branch.name],
     itemInvoice: data[FieldDataAdjustmentIn.item_invoice.name],
     itemName: data[FieldDataAdjustmentIn.item_name.name],
-    buyPriceAfter: data[FieldDataAdjustmentIn.buyPriceAfter.name],
-    buyPriceBefore: data[FieldDataAdjustmentIn.buyPriceBefore.name],
+    buyPriceAfter: data[FieldDataAdjustmentIn.buy_price_after.name],
+    buyPriceBefore: data[FieldDataAdjustmentIn.buy_price_before.name],
     date: data[FieldDataAdjustmentIn.date.name],
-    expiredDateAfter: data[FieldDataAdjustmentIn.expiredDateAfter.name],
-    expiredDateBefore: data[FieldDataAdjustmentIn.expiredDateBefore.name],
+    expiredDateAfter: data[FieldDataAdjustmentIn.expired_date_after.name],
+    expiredDateBefore: data[FieldDataAdjustmentIn.expired_date_before.name],
     note: data[FieldDataAdjustmentIn.note.name],
     qty_in_after: data[FieldDataAdjustmentIn.qty_in_after.name],
     qty_in_before: data[FieldDataAdjustmentIn.qty_in_before.name],
-    sellPriceAfter: data[FieldDataAdjustmentIn.sellPriceAfter.name],
-    sellPriceBefore: data[FieldDataAdjustmentIn.sellPriceBefore.name],
+    sellPriceAfter: data[FieldDataAdjustmentIn.sell_price_after.name],
+    sellPriceBefore: data[FieldDataAdjustmentIn.sell_price_before.name],
   );
 }
 
-ModelTransactionAdjustmentOut fromMapAdjustmentOut(
+ModelTransactionAdjustmentOut fromMapTransactionAdjustmentOut(
   Map<String, dynamic> data,
   String id,
 ) {
   return ModelTransactionAdjustmentOut(
     invoice: data[FieldDataAdjustmentOut.invoice.name],
-    idBranch: data[FieldDataAdjustmentOut.idBranch.name],
+    idBranch: data[FieldDataAdjustmentOut.id_branch.name],
     itemInvoice: data[FieldDataAdjustmentOut.item_invoice.name],
     itemName: data[FieldDataAdjustmentOut.item_name.name],
     qty_out_after: data[FieldDataAdjustmentOut.qty_out_after.name],
