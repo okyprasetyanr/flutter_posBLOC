@@ -634,26 +634,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
                                     "Operator",
                                   ),
                                 ),
-                                Expanded(
-                                  child: gridViewMenu(
-                                    () {
-                                      state[Permission.Penyesuaian]!
-                                          ? navUpDownTransition(
-                                              context,
-                                              '/adjustment',
-                                              false,
-                                            )
-                                          : customSnackBarAccess(
-                                              context: context,
-                                            );
-                                    },
-                                    const Icon(
-                                      Icons.adjust_rounded,
-                                      color: AppPropertyColor.black,
-                                    ),
-                                    "Penyesuaian",
-                                  ),
-                                ),
                               ],
                             ),
                           ),

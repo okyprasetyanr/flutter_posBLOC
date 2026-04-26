@@ -27,7 +27,6 @@ import 'package:flutter_pos/style_and_transition_text/transition_navigator/trans
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:workmanager/workmanager.dart';
 

@@ -31,7 +31,7 @@ class UIAdjustmentGridViewItem extends StatelessWidget {
           itemCount: state.$1.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            mainAxisExtent: 110,
+            mainAxisExtent: 95,
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
             childAspectRatio: 1,
@@ -64,22 +64,6 @@ class UIAdjustmentGridViewItem extends StatelessWidget {
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              formatPriceRp(
-                                state.$2
-                                    ? UserSession.getStatusFifo()
-                                          ? item.getpriceItembyBatch == 0
-                                                ? item.getpriceItem
-                                                : item.getpriceItembyBatch
-                                          : item.getpriceItem
-                                    : item.getpriceItemBuybyBatch,
-                              ),
-                              style: lv05textStylePrice,
-                              textAlign: TextAlign.left,
-                            ),
                           ),
 
                           Align(

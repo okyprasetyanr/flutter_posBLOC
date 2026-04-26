@@ -35,11 +35,6 @@ class _UITransactionState extends State<UITransaction> {
   double ratioGridView = 0;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   dispose() {
     searchController.dispose();
     isOpen.dispose();
@@ -304,6 +299,12 @@ class _UITransactionState extends State<UITransaction> {
         "id": "transfinancial",
         "toContext": '/transfinancial',
         "text_menu": "Kas",
+        "onTap": () {},
+      },
+      {
+        "id": "adjustment",
+        "toContext": '/adjustment',
+        "text_menu": "Penyesuaian",
         "onTap": () {},
       },
     ];

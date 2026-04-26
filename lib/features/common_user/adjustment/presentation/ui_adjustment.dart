@@ -12,6 +12,7 @@ import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
+import 'package:flutter_pos/common_widget/widget_navigation_gesture.dart';
 import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
 import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_event.dart';
 import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_state.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_pos/features/common_user/adjustment/presentation/widget/
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
+import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
@@ -38,6 +40,8 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   final buyPriceController = TextEditingController();
   final noteController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  final isOpen = ValueNotifier<bool>(false);
   String? dayExpired = null;
   String? monthExpired = null;
   String? yearExpired = null;
@@ -48,6 +52,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
     sellPriceController.dispose();
     buyPriceController.dispose();
     noteController.dispose();
+    isOpen.dispose();
 
     super.dispose();
   }
@@ -57,101 +62,109 @@ class _UiAdjustmentState extends State<UiAdjustment> {
     return LayoutTopBottom(
       layoutTop: layoutTop(),
       layoutBottom: layoutBottom(),
-      widgetNavigation: null,
+      widgetNavigation: navigationGesture(),
       refreshIndicator: refreshIndicator,
     );
   }
 
   Widget layoutTop() {
-    return Stack(
+    return Column(
       children: [
-        Column(
+        Row(
           children: [
-            Row(
-              children: [
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 1,
-                  child: customTextField(
-                    moreRadius: true,
-                    controller: searchItemController,
-                    label: "Cari...",
-                    onChanged: (value) => context.read<AdjustmentBloc>().add(
-                      AdjustmentSearchData(text: value),
-                    ),
-                  ),
+            customButtonIcon(
+              backgroundColor: context.colorAdjustment,
+              icon: const Icon(
+                Icons.menu_rounded,
+                color: AppPropertyColor.white,
+                size: lv2IconSize,
+              ),
+              label: Text("Menu", style: lv05TextStyleWhite),
+              onPressed: () {
+                isOpen.value = !isOpen.value;
+              },
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 1,
+              child: customTextField(
+                moreRadius: true,
+                controller: searchItemController,
+                label: "Cari...",
+                onChanged: (value) => context.read<AdjustmentBloc>().add(
+                  AdjustmentSearchData(text: value),
                 ),
+              ),
+            ),
 
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: () {
-                    context.read<AdjustmentBloc>().add(
-                      AdjustmentGetData(changeMode: true),
+            const SizedBox(width: 10),
+            GestureDetector(
+              onTap: () {
+                context.read<AdjustmentBloc>().add(
+                  AdjustmentGetData(changeMode: true),
+                );
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                width: 95,
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                height: 40,
+                child: BlocSelector<AdjustmentBloc, AdjustmentState, bool>(
+                  selector: (state) {
+                    if (state is AdjustmentLoaded) {
+                      return state.isAdjustIn;
+                    }
+                    return true;
+                  },
+                  builder: (context, state) {
+                    return WidgetAnimatePage(
+                      change: state,
+                      text1: "Masuk",
+                      text2: "Keluar",
+                      showAt1: 2,
+                      showAt2: 0,
                     );
                   },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
-                    width: 95,
-                    padding: const EdgeInsets.only(top: 5, bottom: 5),
-                    height: 40,
-                    child: BlocSelector<AdjustmentBloc, AdjustmentState, bool>(
-                      selector: (state) {
-                        if (state is AdjustmentLoaded) {
-                          return state.isAdjustIn;
-                        }
-                        return true;
-                      },
-                      builder: (context, state) {
-                        return WidgetAnimatePage(
-                          change: state,
-                          text1: "Masuk",
-                          text2: "Keluar",
-                          showAt1: 2,
-                          showAt2: 0,
-                        );
-                      },
-                    ),
-                  ),
                 ),
-              ],
+              ),
             ),
-
-            SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(width: 5),
-                Expanded(
-                  flex: 6,
-                  child: SizedBox(
-                    height: 27,
-                    child: UIAdjustmentListViewCategory(),
-                  ),
-                ),
-                const SizedBox(width: 5),
-                SizedBox(
-                  width: 140,
-                  child: BlocSelector<AdjustmentBloc, AdjustmentState, String>(
-                    selector: (state) =>
-                        state is AdjustmentLoaded ? state.idBranch ?? "" : "",
-                    builder: (context, state) {
-                      return WidgetDropdownBranch(
-                        idBranch: state,
-                        selectedIdBranch: (selectedIdBranch) {
-                          context.read<AdjustmentBloc>().add(
-                            AdjustmentGetData(idBranch: selectedIdBranch),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Expanded(child: const UIAdjustmentGridViewItem()),
           ],
         ),
+
+        SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(width: 5),
+            Expanded(
+              flex: 6,
+              child: SizedBox(
+                height: 27,
+                child: UIAdjustmentListViewCategory(),
+              ),
+            ),
+            const SizedBox(width: 5),
+            SizedBox(
+              width: 140,
+              child: BlocSelector<AdjustmentBloc, AdjustmentState, String>(
+                selector: (state) =>
+                    state is AdjustmentLoaded ? state.idBranch ?? "" : "",
+                builder: (context, state) {
+                  return WidgetDropdownBranch(
+                    idBranch: state,
+                    selectedIdBranch: (selectedIdBranch) {
+                      context.read<AdjustmentBloc>().add(
+                        AdjustmentGetData(idBranch: selectedIdBranch),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        Expanded(child: const UIAdjustmentGridViewItem()),
       ],
     );
   }
@@ -695,5 +708,37 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initTransaction();
     context.read<AdjustmentBloc>().add(AdjustmentGetData());
+  }
+
+  Widget navigationGesture() {
+    final contentNavGesture = [
+      {
+        "id": "sell",
+        "toContext": '/sell',
+        "text_menu": "Jual-Beli",
+        "onTap": () {},
+      },
+      {
+        "id": "transfinancial",
+        "toContext": '/transfinancial',
+        "text_menu": "Kas",
+        "onTap": () {},
+      },
+      {
+        "id": "adjustment",
+        "toContext": '/adjustment',
+        "text_menu": "Penyesuaian",
+        "onTap": () {},
+      },
+    ];
+
+    return NavigationGesture(
+      currentPage: "adjustment",
+      attContent: contentNavGesture,
+      isOpen: isOpen,
+      close: () {
+        isOpen.value = false;
+      },
+    );
   }
 }

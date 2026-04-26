@@ -340,6 +340,12 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
         "text_menu": "Kas",
         "onTap": () {},
       },
+      {
+        "id": "adjustment",
+        "toContext": '/adjustment',
+        "text_menu": "Penyesuaian",
+        "onTap": () {},
+      },
     ];
 
     return NavigationGesture(

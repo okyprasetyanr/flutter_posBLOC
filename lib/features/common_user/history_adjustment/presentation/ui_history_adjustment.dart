@@ -570,6 +570,7 @@ class _UiHistoryAdjustmentState extends State<UiHistoryAdjustment> {
     String dataAfter;
     String dataBefore;
     String originalAfter;
+    bool minus = false;
     if (value_before is double) {
       final after = value_after as double?;
       final before = value_before as double?;
@@ -588,6 +589,7 @@ class _UiHistoryAdjustmentState extends State<UiHistoryAdjustment> {
                   ).replaceAll("Rp", "").replaceAll(",00", "")
                 : formatQtyOrPrice(after)
           : "-";
+      minus = calculate < 0;
       dataBefore = price
           ? formatPriceRp(
               before as double,
@@ -617,9 +619,9 @@ class _UiHistoryAdjustmentState extends State<UiHistoryAdjustment> {
               ? dataAfter
               : dataAfter.isEmpty
               ? "-"
-              : "(+$dataAfter)",
+              : "(${minus ? "" : "+"}$dataAfter)",
           flexRow4: 5,
-          style4: lv05TextStylePrimary,
+          style4: minus ? lv05TextStyleRed : lv05TextStylePrimary,
         ),
         const Divider(
           thickness: 1,
