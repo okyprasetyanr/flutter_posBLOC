@@ -576,16 +576,22 @@ class _UiHistoryAdjustmentState extends State<UiHistoryAdjustment> {
       double calculate = after != null && before != after ? after - before! : 0;
       dataAfter = calculate != 0
           ? price
-                ? formatPriceRp(calculate).replaceAll("Rp", "")
+                ? formatPriceRp(
+                    calculate,
+                  ).replaceAll("Rp", "").replaceAll(",00", "")
                 : formatQtyOrPrice(calculate)
           : "";
       originalAfter = after != null && before != after
           ? price
-                ? formatPriceRp(after).replaceAll("Rp", "")
+                ? formatPriceRp(
+                    after,
+                  ).replaceAll("Rp", "").replaceAll(",00", "")
                 : formatQtyOrPrice(after)
           : "-";
       dataBefore = price
-          ? formatPriceRp(before as double).replaceAll("Rp", "")
+          ? formatPriceRp(
+              before as double,
+            ).replaceAll("Rp", "").replaceAll(",00", "")
           : formatQtyOrPrice(before as double);
     } else {
       final after = value_after as String? ?? "";
