@@ -107,7 +107,6 @@ class LayoutTopBottom extends StatelessWidget {
                               ],
                             );
                           } else {
-                            // --- Mode Landscape ---
                             return Stack(
                               children: [
                                 Positioned(

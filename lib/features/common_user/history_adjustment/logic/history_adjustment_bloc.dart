@@ -49,6 +49,7 @@ class HistoryAdjustmentBloc
         ? currentState.dataAdjustmentOut
         : await getTransactionAdjustmentOutBy(idBranch);
     final filteredAdjustmentIn = _filterData<ModelTransactionAdjustmentIn>(
+      getInvoice: (dataItem) => dataItem.getinvoice,
       data: dataAdjustmentIn,
       search: currentState.search,
       start: dateStart,
@@ -57,6 +58,7 @@ class HistoryAdjustmentBloc
       getNameItem: (dataItem) => dataItem.getitemName,
     );
     final filteredAdjustmentOut = _filterData<ModelTransactionAdjustmentOut>(
+      getInvoice: (dataItem) => dataItem.getinvoice,
       data: dataAdjustmentOut,
       search: currentState.search,
       start: dateStart,
@@ -93,12 +95,17 @@ class HistoryAdjustmentBloc
     required DateTime end,
     required String Function(T dataItem) getNameItem,
     required DateTime Function(T dataItem) getDate,
+    required String Function(T dataItem) getInvoice,
   }) {
     final filtered = data.where((element) {
       final name = getNameItem(element).toLowerCase();
+      final invoice = getInvoice(element).toLowerCase();
       final date = getDate(element);
 
-      final matchSearch = search.isEmpty || name.contains(search.toLowerCase());
+      final matchSearch =
+          search.isEmpty ||
+          name.contains(search.toLowerCase()) ||
+          invoice.contains(search.toLowerCase());
 
       final matchDate =
           (date.isAtSameMomentAs(start) || date.isAfter(start)) &&
@@ -135,7 +142,7 @@ class HistoryAdjustmentBloc
   ) {
     emit(
       (state as HistoryAdjustmentLoaded).copyWith(
-        isAdjustmentIn: !event.isAdjustmentIn,
+        isAdjustmentIn: event.isAdjustmentIn,
       ),
     );
   }
@@ -146,16 +153,18 @@ class HistoryAdjustmentBloc
   ) {
     final currentState = state as HistoryAdjustmentLoaded;
     final filteredAdjustmentIn = _filterData<ModelTransactionAdjustmentIn>(
+      getInvoice: (dataItem) => dataItem.getinvoice,
       data: currentState.dataAdjustmentIn,
-      search: currentState.search,
+      search: event.search,
       start: currentState.dateStart!,
       end: currentState.dateStart!,
       getDate: (dataItem) => dataItem.getdate,
       getNameItem: (dataItem) => dataItem.getitemName,
     );
     final filteredAdjustmentOut = _filterData<ModelTransactionAdjustmentOut>(
+      getInvoice: (dataItem) => dataItem.getinvoice,
       data: currentState.dataAdjustmentOut,
-      search: currentState.search,
+      search: event.search,
       start: currentState.dateStart!,
       end: currentState.dateStart!,
       getDate: (dataItem) => dataItem.getdate,

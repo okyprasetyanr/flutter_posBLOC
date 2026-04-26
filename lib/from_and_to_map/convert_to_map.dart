@@ -294,8 +294,8 @@ Map<String, dynamic> convertToMapAdjustmentOut({
     FieldDataAdjustmentOut.item_invoice.name: data.getitemInvoice,
     FieldDataAdjustmentOut.item_name.name: data.getitemName,
     FieldDataAdjustmentOut.date.name: formatDate(date: data.getdate),
-    FieldDataAdjustmentOut.qty_out_after.name: data.getqty_in_after,
-    FieldDataAdjustmentOut.qty_out_before.name: data.getqty_in_before,
+    FieldDataAdjustmentOut.qty_out_after.name: data.getqty_out_after,
+    FieldDataAdjustmentOut.qty_out_before.name: data.getqty_out_before,
     FieldDataAdjustmentOut.note.name: data.getnote,
     FieldDataAdjustmentOut.uid_owner.name: UserSession.getUidOwner(),
   };

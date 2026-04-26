@@ -28,8 +28,8 @@ class ModelTransactionAdjustmentOut extends Equatable {
   String get getinvoice => invoice;
   String get getidBranch => idBranch;
   DateTime get getdate => date;
-  double? get getqty_in_after => qty_out_after;
-  double? get getqty_in_before => qty_out_before;
+  double? get getqty_out_after => qty_out_after;
+  double? get getqty_out_before => qty_out_before;
   String get getnote => note;
 
   Future<void> pushDataAdjustmentOut() async {

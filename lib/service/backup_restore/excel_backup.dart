@@ -140,8 +140,8 @@ class ExcelBackupService {
         TextCellValue(adjsutmentout.getinvoice),
         TextCellValue(formatDate(date: adjsutmentout.getdate)),
         TextCellValue(adjsutmentout.getnote),
-        DoubleCellValue(adjsutmentout.getqty_in_after ?? 0),
-        DoubleCellValue(adjsutmentout.getqty_in_before ?? 0),
+        DoubleCellValue(adjsutmentout.getqty_out_after ?? 0),
+        DoubleCellValue(adjsutmentout.getqty_out_before ?? 0),
       ]);
     }
     sheetWidthStyle(

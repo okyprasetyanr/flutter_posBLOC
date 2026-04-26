@@ -500,24 +500,22 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                                 return Column(
                                   children: [
                                     customRowListItem(
-                                      name: item.getnameItem,
-                                      disc: formatDisc(item.getdiscountItem),
-                                      quantity: formatQtyOrPrice(
-                                        item.getqtyItem,
-                                      ),
-                                      total: formatPriceRp(item.getsubTotal),
+                                      row1: item.getnameItem,
+                                      row2: formatDisc(item.getdiscountItem),
+                                      row3: formatQtyOrPrice(item.getqtyItem),
+                                      row4: formatPriceRp(item.getsubTotal),
                                     ),
                                     ...item.getCondiment.map((condiment) {
                                       return customRowListItem(
                                         condiment: true,
-                                        name: condiment.getnameItem,
-                                        disc: formatDisc(
+                                        row1: condiment.getnameItem,
+                                        row2: formatDisc(
                                           condiment.getdiscountItem,
                                         ),
-                                        quantity: formatQtyOrPrice(
+                                        row3: formatQtyOrPrice(
                                           condiment.getqtyItem,
                                         ),
-                                        total: formatPriceRp(
+                                        row4: formatPriceRp(
                                           condiment.getsubTotal,
                                         ),
                                       );

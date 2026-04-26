@@ -107,6 +107,12 @@ final lv05TextStyleRedPrice = GoogleFonts.poppins(
   fontSize: 10,
 );
 
+final lv05TextStylePrimary = GoogleFonts.poppins(
+  color: AppPropertyColor.primary,
+  fontWeight: FontWeight.w400,
+  fontSize: 10,
+);
+
 final lv05TextStyleBold = GoogleFonts.poppins(
   color: AppPropertyColor.black,
   fontWeight: FontWeight.w600,

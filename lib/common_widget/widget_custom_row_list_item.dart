@@ -3,10 +3,18 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 Widget customRowListItem({
-  String name = "Nama",
-  String disc = "Dis.",
-  String quantity = "Jumlah",
-  String total = "Total Harga",
+  String row1 = "Nama",
+  String row2 = "Dis.",
+  String row3 = "Jumlah",
+  String row4 = "Total Harga",
+  int flexRow1 = 7,
+  int flexRow2 = 3,
+  int flexRow3 = 3,
+  int flexRow4 = 5,
+  TextStyle? style1,
+  TextStyle? style2,
+  TextStyle? style3,
+  TextStyle? style4,
   bool label = false,
   bool condiment = false,
 }) {
@@ -16,12 +24,14 @@ Widget customRowListItem({
       Row(
         children: [
           Expanded(
-            flex: 7,
+            flex: flexRow1,
             child: Padding(
               padding: EdgeInsets.only(left: label ? 0 : 5),
               child: Text(
-                condiment ? "*$name" : name,
-                style: condiment ? lv05TextStyleItalic : lv05TextStyle,
+                condiment ? "*$row1" : row1,
+                style: condiment
+                    ? lv05TextStyleItalic
+                    : style1 ?? lv05TextStyle,
                 overflow: TextOverflow.ellipsis,
                 textAlign: label ? TextAlign.center : TextAlign.start,
               ),
@@ -35,10 +45,10 @@ Widget customRowListItem({
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: flexRow2,
             child: Text(
-              disc,
-              style: condiment ? lv05TextStyleItalic : lv05TextStyle,
+              row2,
+              style: condiment ? lv05TextStyleItalic : style2 ?? lv05TextStyle,
               textAlign: TextAlign.center,
             ),
           ),
@@ -50,10 +60,10 @@ Widget customRowListItem({
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: flexRow3,
             child: Text(
-              quantity,
-              style: condiment ? lv05TextStyleItalic : lv05TextStyle,
+              row3,
+              style: condiment ? lv05TextStyleItalic : style3 ?? lv05TextStyle,
               textAlign: TextAlign.center,
             ),
           ),
@@ -65,12 +75,14 @@ Widget customRowListItem({
             ),
           ),
           Expanded(
-            flex: 5,
+            flex: flexRow4,
             child: Padding(
               padding: EdgeInsets.only(right: label ? 0 : 5),
               child: Text(
-                total,
-                style: condiment ? lv05TextStyleItalic : lv05TextStyle,
+                row4,
+                style: condiment
+                    ? lv05TextStyleItalic
+                    : style4 ?? lv05TextStyle,
                 textAlign: label ? TextAlign.center : TextAlign.end,
               ),
             ),

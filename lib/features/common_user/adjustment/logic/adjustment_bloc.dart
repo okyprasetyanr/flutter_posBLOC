@@ -241,7 +241,7 @@ class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
           ? dataCounter.getcounterAdjustmentOut
           : dataCounter.getcounterAdjustmentOut + 1,
     );
-    final date = dateNowYMDBLOC();
+    final date = DateTime.now();
     final invoice = generateInvoice(
       idOP: dataAccount.getNameUser,
       branchId: editedItemBatch.getidBranch,

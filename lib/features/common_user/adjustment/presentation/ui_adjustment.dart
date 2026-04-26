@@ -621,12 +621,27 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                     dayExpired != null &&
                                                     monthExpired != null &&
                                                     yearExpired != null;
+                                                final bloc =
+                                                    context
+                                                            .read<
+                                                              AdjustmentBloc
+                                                            >()
+                                                            .state
+                                                        as AdjustmentLoaded;
+
                                                 devLog(
                                                   "Log UIAdjustment: date: $yearExpired-$monthExpired-$dayExpired",
                                                 );
                                                 if (!_formKey.currentState!
                                                     .validate()) {
                                                   return;
+                                                }
+                                                if (bloc.editedItemBatch ==
+                                                    bloc.originalItemBatch) {
+                                                  return customSnackBar(
+                                                    context,
+                                                    "Tidak ada yang diubah!",
+                                                  );
                                                 }
                                                 if (isAllFilled || isAllEmpty) {
                                                   context
@@ -647,6 +662,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                     "Tanggal Kadaluarsa tidak lengkap!",
                                                   );
                                                 }
+
                                                 Navigator.pop(context);
                                               },
                                               icon: Icon(
