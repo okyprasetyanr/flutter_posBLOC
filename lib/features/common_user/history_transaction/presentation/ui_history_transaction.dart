@@ -44,12 +44,6 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _initData();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
       layoutTop: layoutTop(),
@@ -92,10 +86,6 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
 
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initTransaction();
-    _initData();
-  }
-
-  void _initData() {
     context.read<HistoryTransactionBloc>().add(HistoryTransactionGetData());
   }
 
@@ -173,10 +163,10 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
               ),
               backgroundColor: AppPropertyColor.white,
               onPressed: () {
-                final bloc = context.read<HistoryTransactionBloc>();
-                bloc.add(HistoryTransactionResetSelectedData());
+                context.read<HistoryTransactionBloc>().add(
+                  HistoryTransactionGetData(),
+                );
                 searchController.clear();
-                _initData();
               },
             ),
           ],

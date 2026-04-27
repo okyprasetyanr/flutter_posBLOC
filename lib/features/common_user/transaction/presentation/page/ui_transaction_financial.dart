@@ -43,11 +43,6 @@ class _UITransactionFinancialState extends State<UITransactionFinancial> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
       layoutTop: layoutTop(),

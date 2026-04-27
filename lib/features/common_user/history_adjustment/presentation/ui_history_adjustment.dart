@@ -20,14 +20,14 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
-class UiHistoryAdjustment extends StatefulWidget {
-  const UiHistoryAdjustment({super.key});
+class UIHistoryAdjustment extends StatefulWidget {
+  const UIHistoryAdjustment({super.key});
 
   @override
-  State<UiHistoryAdjustment> createState() => _UiHistoryAdjustmentState();
+  State<UIHistoryAdjustment> createState() => _UIHistoryAdjustmentState();
 }
 
-class _UiHistoryAdjustmentState extends State<UiHistoryAdjustment> {
+class _UIHistoryAdjustmentState extends State<UIHistoryAdjustment> {
   final searchController = TextEditingController();
   @override
   void dispose() {

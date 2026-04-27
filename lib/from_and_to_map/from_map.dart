@@ -49,9 +49,21 @@ ModelTransactionAdjustmentIn fromMapTransactionAdjustmentIn(
     itemName: data[FieldDataAdjustmentIn.item_name.name],
     buyPriceAfter: data[FieldDataAdjustmentIn.buy_price_after.name],
     buyPriceBefore: data[FieldDataAdjustmentIn.buy_price_before.name],
-    date: data[FieldDataAdjustmentIn.date.name],
-    expiredDateAfter: data[FieldDataAdjustmentIn.expired_date_after.name],
-    expiredDateBefore: data[FieldDataAdjustmentIn.expired_date_before.name],
+    date: parseDate(date: data[FieldDataAdjustmentIn.date.name]),
+    expiredDateAfter:
+        data[FieldDataAdjustmentIn.expired_date_after.name] != null
+        ? parseDate(
+            date: data[FieldDataAdjustmentIn.expired_date_after.name],
+            minute: false,
+          )
+        : null,
+    expiredDateBefore:
+        data[FieldDataAdjustmentIn.expired_date_before.name] != null
+        ? parseDate(
+            date: data[FieldDataAdjustmentIn.expired_date_before.name],
+            minute: false,
+          )
+        : null,
     note: data[FieldDataAdjustmentIn.note.name],
     qty_in_after: data[FieldDataAdjustmentIn.qty_in_after.name],
     qty_in_before: data[FieldDataAdjustmentIn.qty_in_before.name],
@@ -71,7 +83,7 @@ ModelTransactionAdjustmentOut fromMapTransactionAdjustmentOut(
     itemName: data[FieldDataAdjustmentOut.item_name.name],
     qty_out_after: data[FieldDataAdjustmentOut.qty_out_after.name],
     qty_out_before: data[FieldDataAdjustmentOut.qty_out_before.name],
-    date: data[FieldDataAdjustmentOut.date.name],
+    date: parseDate(date: data[FieldDataAdjustmentOut.date.name]),
     note: data[FieldDataAdjustmentOut.note.name],
   );
 }

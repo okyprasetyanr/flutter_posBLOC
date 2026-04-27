@@ -17,14 +17,14 @@ import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 
-class UiFinancial extends StatefulWidget {
-  const UiFinancial({super.key});
+class UIFinancial extends StatefulWidget {
+  const UIFinancial({super.key});
 
   @override
-  State<UiFinancial> createState() => _UiFinancialState();
+  State<UIFinancial> createState() => _UIFinancialState();
 }
 
-class _UiFinancialState extends State<UiFinancial> {
+class _UIFinancialState extends State<UIFinancial> {
   final nameController = TextEditingController();
   final searchController = TextEditingController();
   final branchController = TextEditingController();

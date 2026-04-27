@@ -71,6 +71,7 @@ Future<void> updateItemBatch_Isar(ModelItemBatch itemBatch) async {
       (element) => element.idOrdered == itemBatch.getidOrdered,
     );
     final updatedItem = data.itemsBatch[indexData]
+      ..qtyItem_out = itemBatch.getqtyItem_out
       ..qtyItem_in = itemBatch.getqtyItem_in
       ..priceItemFinal = itemBatch.getpriceItemFinal
       ..priceitemBuy = itemBatch.getpriceItemBuy

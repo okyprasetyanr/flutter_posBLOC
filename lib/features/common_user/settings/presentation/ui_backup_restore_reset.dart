@@ -76,7 +76,11 @@ class UiBackupRestore extends StatelessWidget {
                         final listFile = bloc.listFile;
                         final inputName = nameBackupController.text.trim();
                         if (listFile.contains("$inputName.xlsx")) {
-                          customSnackBar(context, "Nama sudah digunakan!");
+                          customSnackBar(
+                            top: true,
+                            context,
+                            "Nama sudah digunakan!",
+                          );
                         } else {
                           context.read<SettingsBloc>().add(
                             SettingsBackup(name: inputName, context: context),
@@ -87,6 +91,7 @@ class UiBackupRestore extends StatelessWidget {
                       }
                       if (bloc.isCorrect) {
                         customSnackBar(
+                          top: true,
                           context,
                           "File ini diCadangkan oleh Akun yang bukan anda! Pilih Pencadangan anda!",
                         );

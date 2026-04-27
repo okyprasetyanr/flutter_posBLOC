@@ -125,7 +125,11 @@ class UIPaymentDebitPayment extends StatelessWidget {
                               ) ??
                               0;
                           if (intValue > 100) {
-                            customSnackBar(context, "Jumlah melebihi 100%");
+                            customSnackBar(
+                              top: true,
+                              context,
+                              "Jumlah melebihi 100%",
+                            );
                             return oldValue;
                           }
                           context.read<PaymentBloc>().add(

@@ -5,6 +5,7 @@ import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_state.dart';
+import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
@@ -16,14 +17,14 @@ import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/common_widget/widget_navigation_gesture.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 
-class UiBatch extends StatefulWidget {
-  const UiBatch({super.key});
+class UIBatch extends StatefulWidget {
+  const UIBatch({super.key});
 
   @override
-  State<UiBatch> createState() => _UiBatchState();
+  State<UIBatch> createState() => _UIBatchState();
 }
 
-class _UiBatchState extends State<UiBatch> {
+class _UIBatchState extends State<UIBatch> {
   final isOpen = ValueNotifier<bool>(false);
   final searchController = TextEditingController();
   @override
@@ -31,16 +32,6 @@ class _UiBatchState extends State<UiBatch> {
     searchController.dispose();
     isOpen.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initData();
-  }
-
-  Future<void> _initData() async {
-    context.read<BatchBloc>().add(BatchGetData());
   }
 
   @override
@@ -53,7 +44,13 @@ class _UiBatchState extends State<UiBatch> {
     );
   }
 
-  Future<void> _onRefresh() async {}
+  Future<void> _onRefresh() async {
+    await Future.wait([
+      context.read<DataUserRepositoryCache>().initItem(),
+      context.read<DataUserRepositoryCache>().initBatch(),
+    ]);
+    context.read<BatchBloc>().add(BatchGetData());
+  }
 
   Widget layoutTop() {
     return Column(
@@ -344,9 +341,8 @@ class _UiBatchState extends State<UiBatch> {
                             color: AppPropertyColor.white,
                           ),
                           onPressed: () {
-                            context.read<BatchBloc>().add(BatchReset());
+                            context.read<BatchBloc>().add(BatchGetData());
                             searchController.clear();
-                            _initData();
                           },
                         ),
                       ],

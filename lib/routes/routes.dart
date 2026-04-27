@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
-import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_event.dart';
-import 'package:flutter_pos/features/common_user/adjustment/presentation/ui_adjustment.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_adjustment.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/presentation/ui_batch.dart';
@@ -62,7 +62,7 @@ final routesPage = {
   ),
   '/financial': (context) => BlocProvider(
     create: (context) => FinancialBloc(context.read())..add(FinancialGetData()),
-    child: const UiFinancial(),
+    child: const UIFinancial(),
   ),
   '/report': (context) => BlocProvider(
     create: (context) => ReportBloc(context.read())..add(ReportGetData()),
@@ -70,7 +70,7 @@ final routesPage = {
   ),
   '/batch': (context) => BlocProvider(
     create: (context) => BatchBloc(context.read())..add(BatchGetData()),
-    child: const UiBatch(),
+    child: const UIBatch(),
   ),
   '/mainmenu': (context) => BlocProvider(
     create: (context) =>
@@ -114,12 +114,12 @@ final routesPage = {
   '/historyadjustment': (context) => BlocProvider(
     create: (context) =>
         HistoryAdjustmentBloc()..add(HistoryAdjustmentGetData()),
-    child: const UiHistoryAdjustment(),
+    child: const UIHistoryAdjustment(),
   ),
   '/historyfinancial': (context) => BlocProvider(
     create: (context) =>
         HistoryFinancialBloc(context.read())..add(HistoryFinancialGetData()),
-    child: const UiHistoryFinancial(),
+    child: const UIHistoryFinancial(),
   ),
   '/historytransaction': (context) => BlocProvider(
     create: (context) =>
@@ -160,7 +160,7 @@ final routesPage = {
     create: (context) =>
         AdjustmentBloc(context.read<DataUserRepositoryCache>())
           ..add(AdjustmentGetData()),
-    child: const UiAdjustment(),
+    child: const UITransactionAdjustment(),
   ),
 
   '/settings': (context) {

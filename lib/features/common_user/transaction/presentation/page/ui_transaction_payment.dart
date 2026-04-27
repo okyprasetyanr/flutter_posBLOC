@@ -52,11 +52,6 @@ class _UITransactionPaymentState extends State<UITransactionPayment> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   final pageController = PageController();
 
   void _gotoPage(int page) {

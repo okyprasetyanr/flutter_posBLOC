@@ -26,7 +26,6 @@ class HistoryTransactionBloc
       transformer: debounceRestartable(),
     );
     on<HistoryTransactionSelectedData>(_onSelectedData);
-    on<HistoryTransactionResetSelectedData>(_onResetSelectedData);
     on<HistoryTransactionSelectedFilter>(_onSelectedFilter);
   }
 
@@ -175,16 +174,6 @@ class HistoryTransactionBloc
     final currentState = state;
     if (currentState is HistoryTransactionLoaded) {
       emit(currentState.copyWith(selectedData: event.selectedData));
-    }
-  }
-
-  FutureOr<void> _onResetSelectedData(
-    HistoryTransactionResetSelectedData event,
-    Emitter<HistoryTransactionState> emit,
-  ) {
-    final currentState = state;
-    if (currentState is HistoryTransactionLoaded) {
-      emit(currentState.copyWith(selectedData: null));
     }
   }
 

@@ -22,23 +22,19 @@ import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 
-class UiHistoryFinancial extends StatefulWidget {
-  const UiHistoryFinancial({super.key});
+class UIHistoryFinancial extends StatefulWidget {
+  const UIHistoryFinancial({super.key});
 
   @override
-  State<UiHistoryFinancial> createState() => _UiHistoryFinancialState();
+  State<UIHistoryFinancial> createState() => _UIHistoryFinancialState();
 }
 
-class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
+class _UIHistoryFinancialState extends State<UIHistoryFinancial> {
   final searchController = TextEditingController();
   @override
   void dispose() {
     searchController.dispose();
     super.dispose();
-  }
-
-  void _initData() {
-    context.read<HistoryFinancialBloc>().add(HistoryFinancialGetData());
   }
 
   @override
@@ -155,9 +151,9 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
               ),
               onPressed: () {
                 searchController.clear();
-                final bloc = context.read<HistoryFinancialBloc>();
-                bloc.add(HistoryFinancialResetSelectedData());
-                _initData();
+                context.read<HistoryFinancialBloc>().add(
+                  HistoryFinancialGetData(),
+                );
               },
             ),
           ],
@@ -470,6 +466,6 @@ class _UiHistoryFinancialState extends State<UiHistoryFinancial> {
 
   Future<void> refreshIndicator() async {
     await context.read<DataUserRepositoryCache>().initTransaction();
-    _initData();
+    context.read<HistoryFinancialBloc>().add(HistoryFinancialGetData());
   }
 }

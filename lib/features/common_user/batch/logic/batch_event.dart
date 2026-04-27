@@ -12,8 +12,6 @@ class BatchSelectedIdItem extends BatchEvent {
   BatchSelectedIdItem({required this.selectedIdItem});
 }
 
-class BatchReset extends BatchEvent {}
-
 class BatchSearchItem extends BatchEvent {
   final String search;
 

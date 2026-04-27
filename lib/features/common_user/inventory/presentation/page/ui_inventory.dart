@@ -112,9 +112,11 @@ class _UIInventoryState extends State<UIInventory> {
     _resetItemForm();
     nameCategoryController.clear();
 
-    await context.read<DataUserRepositoryCache>().initItem();
-    await context.read<DataUserRepositoryCache>().initCategory();
-    await context.read<DataUserRepositoryCache>().initBatch();
+    await Future.wait([
+      context.read<DataUserRepositoryCache>().initItem(),
+      context.read<DataUserRepositoryCache>().initCategory(),
+      context.read<DataUserRepositoryCache>().initBatch(),
+    ]);
 
     _initData();
     devLog("Log UIInventory: initData");

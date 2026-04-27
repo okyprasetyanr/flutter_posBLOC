@@ -39,7 +39,6 @@ class _UIPartnerState extends State<UIPartner> {
   @override
   void initState() {
     super.initState();
-    _initData();
   }
 
   @override
@@ -50,10 +49,6 @@ class _UIPartnerState extends State<UIPartner> {
     phonePartnerController.dispose();
     branchController.dispose();
     super.dispose();
-  }
-
-  Future<void> _initData() async {
-    context.read<PartnerBloc>().add(PartnerGetData());
   }
 
   @override
@@ -380,7 +375,7 @@ class _UIPartnerState extends State<UIPartner> {
 
   Future<void> _onRefresh() async {
     await context.read<DataUserRepositoryCache>().initPartner();
-    _initData();
+    context.read<PartnerBloc>().add(PartnerGetData());
   }
 
   void resetForm() {

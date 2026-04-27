@@ -275,8 +275,14 @@ Map<String, dynamic> convertToMapAdjustmentIn({
     FieldDataAdjustmentIn.buy_price_before.name: data.getbuyPriceBefore,
     FieldDataAdjustmentIn.sell_price_after.name: data.getsellPriceAfter,
     FieldDataAdjustmentIn.sell_price_before.name: data.getsellPriceBefore,
-    FieldDataAdjustmentIn.expired_date_after.name: data.getexpiredDateAfter,
-    FieldDataAdjustmentIn.expired_date_before.name: data.getexpiredDateBefore,
+    FieldDataAdjustmentIn.expired_date_after.name:
+        data.getexpiredDateAfter != null
+        ? formatDate(date: data.getexpiredDateAfter!, minute: false)
+        : null,
+    FieldDataAdjustmentIn.expired_date_before.name:
+        data.getexpiredDateBefore != null
+        ? formatDate(date: data.getexpiredDateBefore!, minute: false)
+        : null,
     FieldDataAdjustmentIn.qty_in_after.name: data.getqty_in_after,
     FieldDataAdjustmentIn.qty_in_before.name: data.getqty_in_before,
     FieldDataAdjustmentIn.date.name: formatDate(date: data.getdate),

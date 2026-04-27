@@ -18,25 +18,9 @@ import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 
-class UIReport extends StatefulWidget {
+class UIReport extends StatelessWidget {
   const UIReport({super.key});
 
-  @override
-  State<UIReport> createState() => _UIReportState();
-}
-
-class _UIReportState extends State<UIReport> {
-  @override
-  void initState() {
-    super.initState();
-    _initData();
-  }
-
-  void _initData() {
-    context.read<ReportBloc>().add(ReportGetData());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

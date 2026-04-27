@@ -13,11 +13,11 @@ import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/common_widget/widget_navigation_gesture.dart';
-import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_bloc.dart';
-import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_event.dart';
-import 'package:flutter_pos/features/common_user/adjustment/logic/adjustment_state.dart';
-import 'package:flutter_pos/features/common_user/adjustment/presentation/widget/top_page/grid_view_item.dart';
-import 'package:flutter_pos/features/common_user/adjustment/presentation/widget/top_page/list_view_category.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction_adjustment/top_page/grid_view_item.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction_adjustment/top_page/list_view_category.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
@@ -26,14 +26,15 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
-class UiAdjustment extends StatefulWidget {
-  const UiAdjustment({super.key});
+class UITransactionAdjustment extends StatefulWidget {
+  const UITransactionAdjustment({super.key});
 
   @override
-  State<UiAdjustment> createState() => _UiAdjustmentState();
+  State<UITransactionAdjustment> createState() =>
+      _UITransactionAdjustmentState();
 }
 
-class _UiAdjustmentState extends State<UiAdjustment> {
+class _UITransactionAdjustmentState extends State<UITransactionAdjustment> {
   final searchItemController = TextEditingController();
   final searchItemBatchController = TextEditingController();
   final sellPriceController = TextEditingController();
@@ -652,6 +653,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                 if (bloc.editedItemBatch ==
                                                     bloc.originalItemBatch) {
                                                   return customSnackBar(
+                                                    top: true,
                                                     context,
                                                     "Tidak ada yang diubah!",
                                                   );
@@ -671,6 +673,7 @@ class _UiAdjustmentState extends State<UiAdjustment> {
                                                       );
                                                 } else {
                                                   return customSnackBar(
+                                                    top: true,
                                                     context,
                                                     "Tanggal Kadaluarsa tidak lengkap!",
                                                   );
@@ -706,7 +709,10 @@ class _UiAdjustmentState extends State<UiAdjustment> {
   }
 
   Future<void> refreshIndicator() async {
-    await context.read<DataUserRepositoryCache>().initTransaction();
+    await Future.wait([
+      context.read<DataUserRepositoryCache>().initBatch(),
+      context.read<DataUserRepositoryCache>().initItem(),
+    ]);
     context.read<AdjustmentBloc>().add(AdjustmentGetData());
   }
 

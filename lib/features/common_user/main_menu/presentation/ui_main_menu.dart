@@ -37,7 +37,6 @@ class _UIMainMenuState extends State<UIMainMenu> {
   @override
   void initState() {
     super.initState();
-    context.read<DataReportBloc>().add(DataReportGetData());
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _listenConnection();
     });

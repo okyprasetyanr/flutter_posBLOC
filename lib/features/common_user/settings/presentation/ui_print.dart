@@ -5,6 +5,7 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
 import 'package:flutter_pos/enum/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
@@ -26,12 +27,7 @@ class UIPrint extends StatelessWidget {
             previous.errorMessage != current.errorMessage &&
             current.errorMessage != null,
         listener: (context, state) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage ?? 'Error'),
-              backgroundColor: AppPropertyColor.red,
-            ),
-          );
+          customSnackBar(top: true, context, state.errorMessage ?? 'Error');
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -15,7 +15,6 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
   BatchBloc(this.repoCache) : super(BatchInitial()) {
     on<BatchGetData>(_onBatchGetData);
     on<BatchSelectedIdItem>(_onBatchSelectedIdItem);
-    on<BatchReset>(_onBatchReset);
     on<BatchSearchItem>(_onSearch, transformer: debounceRestartable());
   }
 
@@ -94,19 +93,6 @@ class BatchBloc extends Bloc<BatchEvent, BatchState> {
           selectedIdItem: event.selectedIdItem,
           dataItemBatchByIdItem: ItemById,
           detailSelectedItem: detailItemBatch,
-        ),
-      );
-    }
-  }
-
-  FutureOr<void> _onBatchReset(BatchReset event, Emitter<BatchState> emit) {
-    final currentState = state;
-    if (currentState is BatchLoaded) {
-      emit(
-        currentState.copyWith(
-          selectedIdItem: null,
-          detailSelectedItem: null,
-          dataItemBatchByIdItem: null,
         ),
       );
     }

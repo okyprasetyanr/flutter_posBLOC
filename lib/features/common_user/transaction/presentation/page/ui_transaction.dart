@@ -42,7 +42,11 @@ class _UITransactionState extends State<UITransaction> {
   }
 
   Future<void> _onRefresh() async {
-    await context.read<DataUserRepositoryCache>().initTransaction();
+    await Future.wait([
+      context.read<DataUserRepositoryCache>().initBatch(),
+      context.read<DataUserRepositoryCache>().initItem(),
+      context.read<DataUserRepositoryCache>().initPartner(),
+    ]);
     context.read<TransactionBloc>().add(TransactionGetData());
   }
 

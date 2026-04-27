@@ -30,6 +30,7 @@ Future<void> updateItemBatch({required ModelItemBatch data}) async {
         'price_item_final': data.getpriceItemFinal,
         'price_item_buy': data.getpriceItemBuy,
         'qty_item_in': data.getqtyItem_in,
+        'qty_item_out': data.getqtyItem_out,
         'expired_date': data.getexpiredDate != null
             ? formatDate(date: data.getexpiredDate!, minute: false)
             : null,
