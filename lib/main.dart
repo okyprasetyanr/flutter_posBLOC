@@ -342,8 +342,8 @@ class _MainAppState extends State<ScreenLogin> {
                                                       DataUserRepositoryCache
                                                     >(),
                                                 context: context,
-                                                email: "demo@gmail.com",
-                                                password: "123456",
+                                                email: emailcontroller.text,
+                                                password: passcontroller.text,
                                                 signup: false,
                                               );
 
