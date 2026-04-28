@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
+import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_icon_button_min_plus.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
@@ -90,11 +92,52 @@ class UITransactionPopUpNameAndQty extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 18,
-                        child: Text(
-                          formatQtyOrPrice(state),
-                          style: lv1TextStyleWhiteBold,
-                          textAlign: TextAlign.center,
+                        width: 50,
+                        child: customButton(
+                          onPressed: () {
+                            final TextEditingController controller =
+                                TextEditingController();
+                            final bloc = context.read<TransactionBloc>();
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("Input Angka"),
+                                  content: TextField(
+                                    controller: controller,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      hintText: "Masukkan angka",
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text("Batal"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        bloc.add(
+                                          TransactionAdjustItem(
+                                            qty: double.tryParse(
+                                              controller.text,
+                                            ),
+                                          ),
+                                        );
+                                        Navigator.pop(context, controller.text);
+                                      },
+                                      child: Text("OK"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            formatQtyOrPrice(state),
+                            style: lv1TextStyleBold,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                       customIconButtonMinPlus(

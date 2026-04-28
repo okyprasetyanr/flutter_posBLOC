@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save/save_list_data_isar.dart';
-import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_item_ordered_batch.dart';
-import 'package:flutter_pos/request/update_data.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 
 ModelFIFOLogic fifoLogic({
