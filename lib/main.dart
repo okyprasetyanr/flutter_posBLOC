@@ -327,12 +327,23 @@ class _MainAppState extends State<ScreenLogin> {
                                         onPressed: () async {
                                           showDialog(
                                             context: context,
-                                            builder: (context) => Center(
-                                              child: customSpinKit(
-                                                color: AppPropertyColor.white,
-                                                size: 30,
-                                              ),
-                                            ),
+                                            barrierDismissible: false,
+                                            builder: (BuildContext context) {
+                                              return PopScope(
+                                                canPop: false,
+                                                child: Dialog(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  elevation: 0,
+                                                  child: Center(
+                                                    child: customSpinKit(
+                                                      color: AppPropertyColor
+                                                          .white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           );
                                           await deleteAllDataIsar();
                                           final result =
