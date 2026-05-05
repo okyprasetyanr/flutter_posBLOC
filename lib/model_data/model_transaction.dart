@@ -14,6 +14,7 @@ import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
+import 'package:flutter_pos/request/push_data.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 
 enum PaymentMethod { Cash, Debit, QRIS, Split }
@@ -217,23 +218,16 @@ class ModelTransaction extends Equatable {
       items_batch: convertToItemBatch,
     );
 
-    final batchRef = FirebaseFirestore.instance
-        .collection("batch")
-        .doc(_invoice);
-
-    await batchRef.set(convertToMapBatch(newBatch));
-
-    final itemsRef = batchRef.collection("items_batch");
-    final writeBatch = FirebaseFirestore.instance.batch();
+    pushWorkerDataBatch(id: _invoice, dataBatch: convertToMapBatch(newBatch));
 
     for (final itemBatch in convertToItemBatch) {
-      final itemDoc = itemsRef.doc(itemBatch.getidOrdered);
-      writeBatch.set(itemDoc, convertToMapItemBatch(itemBatch, _invoice));
+      pushWorkerDataItemBatch(
+        id: itemBatch.getidOrdered,
+        dataItemBatch: convertToMapItemBatch(itemBatch, _invoice),
+      );
     }
 
     await saveBatch_Isar(newBatch);
-
-    await writeBatch.commit();
   }
 
   Future<void> pushDataTransaction({

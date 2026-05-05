@@ -10,13 +10,27 @@ class FirestoreWorker {
   static Future<void> enqueue(
     String collection,
     String docId,
-    Map<String, dynamic> data,
-  ) async {
+    Map<String, dynamic> data, {
+    String? collection2,
+    String? collection3,
+    String? collection4,
+    String? collection5,
+    String? ordered,
+    bool nested = false,
+    bool transaction = false,
+  }) async {
     final id = DateTime.now().millisecondsSinceEpoch.toString();
+
     await _box.put(id, {
       'collection': collection,
+      'collection2': collection2,
+      'collection3': collection3,
+      'collection4': collection4,
+      'collection5': collection5,
       'docId': docId,
       'data': data,
+      'nested': nested,
+      'transaction': transaction,
     });
     devLog('Log FirestoreWorker: Simpan Hive: $collection/$docId');
   }
@@ -39,8 +53,8 @@ class FirestoreWorker {
       }
 
       final box = _box;
-      final keys = box.keys.toList();
-
+      final keys = box.keys.cast<String>().toList()
+        ..sort((a, b) => a.compareTo(b));
       if (keys.isEmpty) {
         devLog('Log FirestoreWorker: Hive Kosong');
         _isProcessingPush = false;
