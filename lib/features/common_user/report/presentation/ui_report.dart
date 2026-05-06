@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_state.dart';

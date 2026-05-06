@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 
@@ -95,7 +95,7 @@ class ExcelBackupService {
     ]);
 
     for (final adjsutmentin in await getAllTransactionAdjustment_In_Isar()) {
-      sheetCategory.appendRow([
+      sheetHistoryAdjustmenIn.appendRow([
         TextCellValue(adjsutmentin.getidBranch),
         TextCellValue(adjsutmentin.getinvoice),
         TextCellValue(formatDate(date: adjsutmentin.getdate)),
@@ -118,14 +118,10 @@ class ExcelBackupService {
         ),
       ]);
     }
-    sheetWidthStyle(
-      FieldDataAdjustmentIn.values,
-      sheetHistoryAdjustmenIn,
-      wrapColumns: {9},
-    );
+    sheetWidthStyle(FieldDataAdjustmentIn.values, sheetHistoryAdjustmenIn);
 
     //HistoryAdjustmentOut
-    sheetHistoryAdjustmenIn.appendRow([
+    sheetHistoryAdjustmenOut.appendRow([
       TextCellValue(FieldDataAdjustmentOut.id_branch.name),
       TextCellValue(FieldDataAdjustmentOut.invoice.name),
       TextCellValue(FieldDataAdjustmentOut.date.name),
@@ -135,7 +131,7 @@ class ExcelBackupService {
     ]);
 
     for (final adjsutmentout in await getAllTransactionAdjustment_Out_Isar()) {
-      sheetCategory.appendRow([
+      sheetHistoryAdjustmenOut.appendRow([
         TextCellValue(adjsutmentout.getidBranch),
         TextCellValue(adjsutmentout.getinvoice),
         TextCellValue(formatDate(date: adjsutmentout.getdate)),
@@ -144,11 +140,7 @@ class ExcelBackupService {
         DoubleCellValue(adjsutmentout.getqty_out_before ?? 0),
       ]);
     }
-    sheetWidthStyle(
-      FieldDataAdjustmentOut.values,
-      sheetHistoryAdjustmenOut,
-      wrapColumns: {9},
-    );
+    sheetWidthStyle(FieldDataAdjustmentOut.values, sheetHistoryAdjustmenOut);
 
     //Account
     sheetAccount.appendRow([
@@ -183,7 +175,7 @@ class ExcelBackupService {
 
       TextCellValue(formatDate(date: account.getCreatedUser!, minute: false)),
     ]);
-    sheetWidthStyle(FieldDataUser.values, sheetAccount, wrapColumns: {9});
+    sheetWidthStyle(FieldDataUser.values, sheetAccount);
 
     //Company
     final company = await getAllCompanyIsar();
@@ -224,7 +216,6 @@ class ExcelBackupService {
 
     for (final item in await getAllItemIsar()) {
       sheetItem.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(item.getidBranch),
         TextCellValue(item.getidItem),
         TextCellValue(item.getidCategoryiItem),
@@ -250,7 +241,6 @@ class ExcelBackupService {
 
     for (final category in await getAllCategoryIsar()) {
       sheetCategory.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(category.getidBranch),
         TextCellValue(category.getidCategory),
         TextCellValue(category.getnameCategory),
@@ -272,7 +262,6 @@ class ExcelBackupService {
 
     for (final partner in await getAllCustomer_Isar()) {
       sheetCustomer.appendRow([
-        TextCellValue(uidOwner),
         TextCellValue(partner.getidBranchPartner),
         TextCellValue(partner.getidPartner),
         TextCellValue(partner.getnamePartner),

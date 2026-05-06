@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_branch.dart';

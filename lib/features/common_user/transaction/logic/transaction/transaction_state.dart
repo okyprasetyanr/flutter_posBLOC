@@ -51,7 +51,6 @@ class TransactionLoaded extends TransactionState with EquatableMixin {
   });
 
   TransactionLoaded copyWith({
-    double? customPrice,
     List<ModelItemBatch>? dataItemBatch,
     bool? revision,
     ModelTransaction? selectedTransaction,

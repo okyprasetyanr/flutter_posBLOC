@@ -1,4 +1,4 @@
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_financial_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_partner_base_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/ModelBase/model_transaction_base_isar.dart';

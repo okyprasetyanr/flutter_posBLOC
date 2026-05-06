@@ -1,5 +1,5 @@
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 
 abstract class PrinterEvent {}
 

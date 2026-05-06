@@ -4,7 +4,7 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_row_list_item.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -487,13 +487,35 @@ class _UIHistoryTransactionState extends State<UIHistoryTransaction> {
                             children: [
                               customRowListItem(label: true),
                               ...transaction.getitemsOrdered.map((item) {
+                                final batches = item.getitemOrderedBatch;
+                                final Map<double, double> grouped = {};
+
+                                for (final batch in batches) {
+                                  final price = batch.getprice_item;
+                                  final qty = batch.getqty_item;
+
+                                  grouped.update(
+                                    price,
+                                    (existingQty) => existingQty + qty,
+                                    ifAbsent: () => qty,
+                                  );
+                                }
+                                final entries = grouped.entries.toList();
+                                final valueQty = entries
+                                    .map((e) => formatQtyOrPrice(e.value))
+                                    .join("\n");
+
+                                final valuePrice = entries
+                                    .map((e) => formatPriceRp(e.key))
+                                    .join("\n");
+
                                 return Column(
                                   children: [
                                     customRowListItem(
                                       row1: item.getnameItem,
                                       row2: formatDisc(item.getdiscountItem),
-                                      row3: formatQtyOrPrice(item.getqtyItem),
-                                      row4: formatPriceRp(item.getsubTotal),
+                                      row3: valueQty,
+                                      row4: valuePrice,
                                     ),
                                     ...item.getCondiment.map((condiment) {
                                       return customRowListItem(

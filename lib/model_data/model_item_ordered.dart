@@ -13,10 +13,12 @@ class ModelItemOrdered extends Equatable {
   final double _qtyItem, _priceItem, _subTotal, _priceItemFinal, _priceItemBuy;
   final List<ModelItemOrderedBatch> _itemOrderedBatch;
   final List<ModelItemOrdered> _condiment;
+  final bool _customPrice;
 
   final DateTime? _dateBuy, _expiredDate;
 
   ModelItemOrdered({
+    bool customprice = false,
     DateTime? dateBuy,
     DateTime? expiredDate,
     String? invoice,
@@ -50,7 +52,8 @@ class ModelItemOrdered extends Equatable {
        _dateBuy = dateBuy,
        _expiredDate = expiredDate,
        _invoice = invoice,
-       _itemOrderedBatch = itemOrderedBatch;
+       _itemOrderedBatch = itemOrderedBatch,
+       _customPrice = customprice;
 
   String get getnameItem => _nameItem;
   String get getidItem => _idItem;
@@ -69,6 +72,7 @@ class ModelItemOrdered extends Equatable {
   DateTime? get getexpiredDate => _expiredDate;
   String? get getinvoice => _invoice;
   double get getpriceItemBuy => _priceItemBuy;
+  bool get getcustomPrice => _customPrice;
 
   ModelItemOrdered copyWith({
     String? invoice,
@@ -88,6 +92,7 @@ class ModelItemOrdered extends Equatable {
     double? subTotal,
     List<ModelItemOrdered>? condiment,
     List<ModelItemOrderedBatch>? itemOrderedBatch,
+    bool? customPriceStatus,
   }) {
     return ModelItemOrdered(
       priceItemBuy: priceItemBuy ?? _priceItemBuy,
@@ -107,11 +112,13 @@ class ModelItemOrdered extends Equatable {
       idCategoryItem: idCategoryItem ?? _idCategoryItem,
       note: note ?? _note,
       condiment: condiment ?? _condiment,
+      customprice: customPriceStatus ?? _customPrice,
     );
   }
 
   @override
   List<Object?> get props => [
+    _customPrice,
     _invoice,
     _dateBuy,
     _expiredDate,

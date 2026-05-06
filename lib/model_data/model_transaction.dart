@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
@@ -14,6 +14,7 @@ import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
+import 'package:flutter_pos/request/push_data.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 
 enum PaymentMethod { Cash, Debit, QRIS, Split }

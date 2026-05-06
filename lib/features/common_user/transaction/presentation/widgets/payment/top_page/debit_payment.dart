@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_pos/enum_and_string/string.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';
@@ -27,6 +28,7 @@ ModelFIFOLogic fifoLogic({
   final fifoActive = UserSession.getStatusFifo();
   final isFifo = fifoActive && isSell;
   final batch = state.dataItemBatch!;
+  bool customPriceItemStatus = item.getcustomPrice;
 
   final customPriceSell = isSell
       ? customPrice == null
@@ -57,6 +59,7 @@ ModelFIFOLogic fifoLogic({
 
   if ((customPrice != null && customPrice != 0 && checkCustomPrice) ||
       (secondCustomPrice != null && secondCustomPrice != 0)) {
+    customPriceItemStatus = true;
     if (isFifo) {
       for (int i = 0; i < batches.length; i++) {
         final b = batches[i];
@@ -82,6 +85,7 @@ ModelFIFOLogic fifoLogic({
       }
     }
   } else if (customPriceSell == 0 || customPriceBuy == 0) {
+    customPriceItemStatus = false;
     if (isFifo) {
       final qtyNow = _totalQty(batches);
       batches.clear();
@@ -112,7 +116,7 @@ ModelFIFOLogic fifoLogic({
       if (isFifo) {
         _allocateFIFO(
           state: state,
-          priceSell: checkCustomPrice ? customPriceSell : 0,
+          priceSell: customPriceItemStatus ? customPriceSell : 0,
           priceBuy: customPriceBuy,
           currentListContext: simulatedItemOrdered,
           id_ordered: item.getidOrdered,
@@ -131,7 +135,7 @@ ModelFIFOLogic fifoLogic({
             ModelItemOrderedBatch(
               price_itemBuy: item.getpriceItemBuy,
               price_item: item.getpriceItem,
-              id_ordered: 'NON_FIFO',
+              id_ordered: nonFifo,
               id_item: item.getidItem,
               invoice: item.getinvoice ?? '',
               qty_item: 1,
@@ -160,7 +164,7 @@ ModelFIFOLogic fifoLogic({
         _allocateFIFO(
           priceBuy: customPriceBuy,
           state: state,
-          priceSell: checkCustomPrice ? customPriceSell : 0,
+          priceSell: customPriceItemStatus ? customPriceSell : 0,
           currentListContext: simulatedItemOrdered,
           id_ordered: item.getidOrdered,
           usedBatches: batches,
@@ -179,7 +183,7 @@ ModelFIFOLogic fifoLogic({
             price_item: batches.isNotEmpty
                 ? batches.first.getprice_item
                 : item.getpriceItemFinal,
-            id_ordered: 'NON_FIFO',
+            id_ordered: nonFifo,
             id_item: item.getidItem,
             invoice: item.getinvoice ?? '',
             qty_item: item.getqtyItem,
@@ -211,6 +215,7 @@ ModelFIFOLogic fifoLogic({
   devLog("Log FifoLogic: subTotal: $priceBuy * $qtyFinal = $subTotal");
 
   return ModelFIFOLogic(
+    customPriceStatus: customPriceItemStatus,
     priceBuy: priceBuy,
     qty: qtyFinal,
     price: priceSell,

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/model_data/model_company.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 

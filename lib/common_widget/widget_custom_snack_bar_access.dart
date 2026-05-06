@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 

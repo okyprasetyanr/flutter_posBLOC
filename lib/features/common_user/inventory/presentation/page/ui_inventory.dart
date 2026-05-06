@@ -6,7 +6,7 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_branch.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_state.dart';
