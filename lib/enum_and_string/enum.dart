@@ -145,6 +145,7 @@ enum FieldDataItemOrdered {
   sub_total,
   id_category_item,
   note,
+  custom_price_status,
 }
 
 enum FieldDataItemBatch {

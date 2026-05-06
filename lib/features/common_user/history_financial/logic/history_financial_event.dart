@@ -1,4 +1,4 @@
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 
 class HistoryFinancialEvent {}

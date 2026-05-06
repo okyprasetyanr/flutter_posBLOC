@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/check/check_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
@@ -218,16 +218,23 @@ class ModelTransaction extends Equatable {
       items_batch: convertToItemBatch,
     );
 
-    pushWorkerDataBatch(id: _invoice, dataBatch: convertToMapBatch(newBatch));
+    final batchRef = FirebaseFirestore.instance
+        .collection("batch")
+        .doc(_invoice);
+
+    await batchRef.set(convertToMapBatch(newBatch));
+
+    final itemsRef = batchRef.collection("items_batch");
+    final writeBatch = FirebaseFirestore.instance.batch();
 
     for (final itemBatch in convertToItemBatch) {
-      pushWorkerDataItemBatch(
-        id: itemBatch.getidOrdered,
-        dataItemBatch: convertToMapItemBatch(itemBatch, _invoice),
-      );
+      final itemDoc = itemsRef.doc(itemBatch.getidOrdered);
+      writeBatch.set(itemDoc, convertToMapItemBatch(itemBatch, _invoice));
     }
 
     await saveBatch_Isar(newBatch);
+
+    await writeBatch.commit();
   }
 
   Future<void> pushDataTransaction({

@@ -1,4 +1,4 @@
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_account_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_in_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_adjustment_out_isar.dart';

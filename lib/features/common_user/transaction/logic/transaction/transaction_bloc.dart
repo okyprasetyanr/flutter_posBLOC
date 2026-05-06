@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
@@ -152,7 +152,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     emit(
       currentState.copyWith(
-        customPrice: 0,
         isSell: finalisSell,
         selectedTransaction: ModelTransaction.empty(),
         dataItemBatch: dataItemBatch,
@@ -259,13 +258,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     final currentState = state;
     if (currentState is TransactionLoaded) {
       devLog("Log TransactionBloc: _onResetSelectedItem: masuk");
-      emit(
-        currentState.copyWith(
-          selectedItem: null,
-          editSelectedItem: false,
-          customPrice: 0,
-        ),
-      );
+      emit(currentState.copyWith(selectedItem: null, editSelectedItem: false));
     }
   }
 
@@ -395,6 +388,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           qtyItem: resultFifo.qty,
           subTotal: resultFifo.subTotal,
           itemOrderedBatch: resultFifo.batch,
+          priceItemFinal: resultFifo.price,
+          customPriceStatus: resultFifo.customPriceStatus,
         );
       }
 
@@ -438,10 +433,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     emit(
       currentState.copyWith(
-        customPrice: currentState.isSell
-            ? resultFifo.price
-            : resultFifo.priceBuy,
         selectedItem: item.copyWith(
+          customPriceStatus: resultFifo.customPriceStatus,
           priceItemBuy: resultFifo.priceBuy,
           qtyItem: resultFifo.qty,
           priceItemFinal: resultFifo.price,
@@ -525,6 +518,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           "Log TransactionBloc: LoadedTransaction: ${item.getpriceItemFinal}, priceFinal: ${resultFifo.price}",
         );
         item = item.copyWith(
+          customPriceStatus: resultFifo.customPriceStatus,
           qtyItem: resultFifo.qty,
           priceItemFinal: resultFifo.price,
           subTotal: resultFifo.subTotal,
