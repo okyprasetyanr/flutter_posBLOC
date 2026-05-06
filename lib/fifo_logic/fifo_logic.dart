@@ -219,10 +219,6 @@ ModelFIFOLogic fifoLogic({
   );
 }
 
-double _totalQty(List<ModelItemOrderedBatch> batches) {
-  return batches.fold(0.0, (sum, e) => sum + e.getqty_item);
-}
-
 void _allocateFIFO({
   required TransactionLoaded state,
   required List<ModelItemOrderedBatch> usedBatches,
@@ -337,6 +333,10 @@ void _releaseFIFO({
       release = 0;
     }
   }
+}
+
+double _totalQty(List<ModelItemOrderedBatch> batches) {
+  return batches.fold(0.0, (sum, e) => sum + e.getqty_item);
 }
 
 double _calculateSubTotalFromBatch(
