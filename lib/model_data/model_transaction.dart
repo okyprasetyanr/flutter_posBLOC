@@ -14,7 +14,6 @@ import 'package:flutter_pos/model_data/model_batch.dart';
 import 'package:flutter_pos/model_data/model_item_batch.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
-import 'package:flutter_pos/request/push_data.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 
 enum PaymentMethod { Cash, Debit, QRIS, Split }
