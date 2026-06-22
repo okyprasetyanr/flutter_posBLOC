@@ -5,6 +5,8 @@ Memiliki fitur yang mumpuni untuk kebutuhan kasir, mulai dari FIFO/FEFO/HYBRID, 
 
 ## About Project
 
+⚠️ **Note:** This project is currently **under active development**. Some features might change, and new components are still being added.
+
 ### Core Components
 
 This project is built using a clean and modular architecture. It combines reactive state management, multiple storage solutions, and specialized tools to handle background tasks, charts, and hardware printing.
@@ -36,7 +38,3 @@ Here is how the components are organized:
 3. **Data Display**: The retrieved data is sent back to the UI and visualized using **Fl Chart**.
 4. **Action/Export**: The user can then export this data using **Excel** or print a physical receipt via **Esc Pos Utils Plus**.
 5. **Syncing**: Meanwhile, **Work Manager** runs in the background to ensure all offline data is safely backed up to the cloud.
-
-⚠️ **Note:** This project is currently **under active development**. Some features might change, and new components are still being added.
-
-
