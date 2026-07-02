@@ -1,9 +1,4 @@
-# Ringkas POS
-
-Aplikasi POS(Point Of Sell)
-Memiliki fitur yang mumpuni untuk kebutuhan kasir, mulai dari FIFO/FEFO/HYBRID, Responsif Mode (Landscape/Potrait), Backup/Restore menggunakan Excel, dan masih banyak kelebihannya.
-
-## About Project
+## About Project RINGKAS POS
 
 ⚠️ **Note:** This project is currently **under active development**. Some features might change, and new components are still being added.
 
