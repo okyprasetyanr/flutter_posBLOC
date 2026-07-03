@@ -1,4 +1,4 @@
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
 import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
@@ -120,6 +120,8 @@ Map<String, dynamic> convertToMapItemOrdered(
   };
   if (saved) {
     data[FieldDataItemOrdered.id_ordered.name] = _itemsOrdered.getidOrdered;
+    data[FieldDataItemOrdered.custom_price_status.name] =
+        _itemsOrdered.getcustomPrice;
   }
   return data;
 }

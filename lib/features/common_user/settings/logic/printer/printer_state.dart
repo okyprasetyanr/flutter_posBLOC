@@ -1,6 +1,6 @@
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 
 class PrinterState extends Equatable {
   final List<BluetoothDevice> scanResults;

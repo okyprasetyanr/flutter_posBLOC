@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
@@ -11,6 +11,7 @@ import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
+import 'package:collection/collection.dart';
 
 class UITransactionPopUpPageCondiment extends StatelessWidget {
   const UITransactionPopUpPageCondiment({super.key});
@@ -57,7 +58,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                         shrinkWrap: true,
                         itemCount: state.length,
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 155,
+                          maxCrossAxisExtent: 205,
                           mainAxisExtent: 65,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
@@ -93,16 +94,15 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                     );
                                     double qtyitem =
                                         stateCondiment.$2!.isNotEmpty
-                                        ? stateCondiment.$2
-                                                  ?.firstWhere(
+                                        ? (stateCondiment.$2!
+                                                  .firstWhereOrNull(
                                                     (element) =>
                                                         state[index]
                                                             .getidItem ==
                                                         element.getidItem,
-                                                    orElse: null,
                                                   )
-                                                  .getqtyItem ??
-                                              0
+                                                  ?.getqtyItem ??
+                                              0)
                                         : 0;
 
                                     return Column(
@@ -129,6 +129,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                                               onPressed: () {
                                                 if (qtyitem == 0) {
                                                   return customSnackBar(
+                                                    top: true,
                                                     context,
                                                     "Qty 0 tidak dapat dikurangi!",
                                                   );

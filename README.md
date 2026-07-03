@@ -1,35 +1,28 @@
-## About Project RINGKAS POS
+**Note:** This project is currently **under active development**. Some features might change, and new components are still being added.
+# Ringkas POS
 
-⚠️ **Note:** This project is currently **under active development**. Some features might change, and new components are still being added.
+> A Local-First, Highly Adaptive Mobile POS with Hybrid FIFO-FEFO Inventory & Intelligent Offline Sync
 
-### Core Components
+Ringkas POS is a mobile point-of-sale application designed to simplify daily business operations through a cleaner and more intuitive user experience. Built with a Local-First architecture, the application keeps checkout, inventory management, and receipt printing fully operational without an internet connection. Business data is stored locally and synchronized with the cloud on demand.
 
-This project is built using a clean and modular architecture. It combines reactive state management, multiple storage solutions, and specialized tools to handle background tasks, charts, and hardware printing.
+## 🔥 Core Engineering Superpowers
 
-Here is how the components are organized:
+- **Hybrid FIFO-FEFO Inventory Engine:** Uses FIFO (First In, First Out) as the main inventory rule. When multiple identical items are available, they are prioritized using FEFO (First Expired, First Out) to help reduce expired product waste.
+- **Intelligent Background Sync Worker:** Transaction data is first stored in a local Hive DB queue. If offline, the queue keeps the data safe and automatically syncs it to Firestore once the connection is restored. The synchronization process runs only when an internet connection is available.
+- **Atomic Batch Sync:** All queued changes are sent in a single Firestore WriteBatch, and the local queue is cleared only after a successful sync to ensure data consistency.
+- **Checklist-Based Role Permission:** A flexible permission system that lets store owners control which menus each staff member can access using a simple checklist.
+- **Smart Adaptive Layout:** Uses a custom layout wrapper that automatically switches between `Column` in portrait mode and `Row` in landscape mode.
+- **Seamless Dual-State Menu Switcher:** Lets users instantly switch between related menus (such as Sales ↔ Purchases) on the same page for faster operations.
 
-#### 1. State Management & Logic
-*   **BLoC**: The brain of the app. It separates the business logic from the user interface (UI) using **Events** (inputs) and **States** (outputs).
+## 🛠 System & Tech Stack
 
-#### 2. Local & Remote Databases (Data Layer)
-*   **Firestore**: The cloud database used to sync and store data online in real-time.
-*   **Isar**: A super-fast, local NoSQL database used to store large amounts of structured data on the device.
-*   **Hive**: A lightweight key-value database used for quick local storage, such as user settings or app preferences.
+- **Database:** Isar DB for local data storage and Firebase Firestore for cloud backup and synchronization.
+- **Offline Queue:** Hive DB manages pending synchronization tasks while the device is offline.
+- **State Management:** BLOC and Streams provide reactive data updates across the app.
+- **Hardware Integration:** Supports Bluetooth thermal printing using `bluetooth_print_plus` for seamless receipt printing.
+- **Data Utilities:** Allows users to export and import reports directly through Excel.
 
-#### 3. Data Processing & Visualization
-*   **Fl Chart**: A library used to create beautiful, interactive, and responsive graphs or charts.
-*   **Excel**: Used to read, write, and export data into Excel spreadsheet files (`.xlsx`).
+## 🗺 Future Roadmap
 
-#### 4. Background Services & Hardware
-*   **Work Manager**: Handles background tasks that need to run even when the app is closed or the device restarts.
-*   **Esc Pos Utils Plus**: A specialized tool used to format and print receipts directly to thermal POS printers.
-
----
-
-### 🔄 How They Work Together (Data Flow Example)
-
-1. **User Action**: The user requests a sales report on the **UI**.
-2. **Logic Process**: **BLoC** triggers a fetch event. It checks **Firestore** (online) or **Isar/Hive** (offline) for data.
-3. **Data Display**: The retrieved data is sent back to the UI and visualized using **Fl Chart**.
-4. **Action/Export**: The user can then export this data using **Excel** or print a physical receipt via **Esc Pos Utils Plus**.
-5. **Syncing**: Meanwhile, **Work Manager** runs in the background to ensure all offline data is safely backed up to the cloud.
+- **Multi-Branch Cloud Sync:** Connect multiple store branches with real-time data synchronization and consolidated reports.
+- **Automated Daily Reports:** Automatically send daily sales and business reports via WhatsApp or Email.

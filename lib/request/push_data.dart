@@ -45,6 +45,27 @@ Future<void> pushWorkerDataAdjustmentIn({
   await FirestoreWorker.processQueueHive();
 }
 
+Future<void> pushWorkerDataBatch({
+  required String id,
+  required Map<String, dynamic> dataBatch,
+}) async {
+  await FirestoreWorker.enqueue("batch", id, dataBatch);
+  await FirestoreWorker.processQueueHive();
+}
+
+Future<void> pushWorkerDataItemBatch({
+  required String id,
+  required Map<String, dynamic> dataItemBatch,
+}) async {
+  await FirestoreWorker.enqueue(
+    "batch",
+    collection2: "items_batch",
+    id,
+    dataItemBatch,
+  );
+  await FirestoreWorker.processQueueHive();
+}
+
 Future<void> pushWorkerDataAdjustmentOut({
   required String collection,
   required String id,

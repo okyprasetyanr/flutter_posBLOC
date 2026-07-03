@@ -6,7 +6,7 @@ import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_border.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_state.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';

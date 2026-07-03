@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/enum/enum.dart';
+import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 
 class OperatorEvent {}
