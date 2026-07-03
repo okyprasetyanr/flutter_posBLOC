@@ -58,7 +58,7 @@ class UITransactionPopUpPageCondiment extends StatelessWidget {
                         shrinkWrap: true,
                         itemCount: state.length,
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 155,
+                          maxCrossAxisExtent: 205,
                           mainAxisExtent: 65,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,

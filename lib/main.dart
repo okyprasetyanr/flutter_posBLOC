@@ -178,7 +178,7 @@ class _MainAppState extends State<ScreenLogin> {
                 transform: Matrix4.translationValues(0, value, 0),
                 curve: Curves.easeOut,
                 child: Image.asset(
-                  'assets/logo.png',
+                  'assets/icon.png',
                   width: 200,
                   height: 200,
                   fit: BoxFit.cover,
@@ -321,6 +321,22 @@ class _MainAppState extends State<ScreenLogin> {
                                         backgroundColor:
                                             AppPropertyColor.primary,
                                         child: Text(
+                                          "Daftar",
+                                          style: lv2TextStyleWhite,
+                                        ),
+                                        onPressed: () {
+                                          navUpDownTransition(
+                                            context,
+                                            '/sign-up',
+                                            false,
+                                          );
+                                        },
+                                      ),
+                                      const SizedBox(width: 10),
+                                      customButton(
+                                        backgroundColor:
+                                            AppPropertyColor.primary,
+                                        child: Text(
                                           "Masuk",
                                           style: lv2TextStyleWhite,
                                         ),
@@ -365,22 +381,6 @@ class _MainAppState extends State<ScreenLogin> {
                                               true,
                                             );
                                           }
-                                        },
-                                      ),
-                                      const SizedBox(width: 10),
-                                      customButton(
-                                        backgroundColor:
-                                            AppPropertyColor.primary,
-                                        child: Text(
-                                          "Daftar",
-                                          style: lv2TextStyleWhite,
-                                        ),
-                                        onPressed: () {
-                                          navUpDownTransition(
-                                            context,
-                                            '/sign-up',
-                                            false,
-                                          );
                                         },
                                       ),
                                     ],
