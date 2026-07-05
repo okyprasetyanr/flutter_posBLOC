@@ -5,7 +5,7 @@ import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/tr
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_adjustment.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
-import 'package:flutter_pos/features/common_user/batch/presentation/ui_batch.dart';
+import 'package:flutter_pos/features/common_user/batch/presentation/page/page_batch.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_event.dart';
 import 'package:flutter_pos/features/common_user/financial/presentation/ui_financial.dart';
@@ -70,7 +70,7 @@ final routesPage = {
   ),
   '/batch': (context) => BlocProvider(
     create: (context) => BatchBloc(context.read())..add(BatchGetData()),
-    child: const UIBatch(),
+    child: const PageBatch(),
   ),
   '/mainmenu': (context) => BlocProvider(
     create: (context) =>
