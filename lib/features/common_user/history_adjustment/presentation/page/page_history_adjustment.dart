@@ -13,14 +13,14 @@ import 'package:flutter_pos/features/common_user/history_adjustment/presentation
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 
-class UIHistoryAdjustment extends StatefulWidget {
-  const UIHistoryAdjustment({super.key});
+class PageHistoryAdjustment extends StatefulWidget {
+  const PageHistoryAdjustment({super.key});
 
   @override
-  State<UIHistoryAdjustment> createState() => _UIHistoryAdjustmentState();
+  State<PageHistoryAdjustment> createState() => _PageHistoryAdjustmentState();
 }
 
-class _UIHistoryAdjustmentState extends State<UIHistoryAdjustment> {
+class _PageHistoryAdjustmentState extends State<PageHistoryAdjustment> {
   @override
   Widget build(BuildContext context) {
     return LayoutTopBottom(
