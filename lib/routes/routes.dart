@@ -32,14 +32,14 @@ import 'package:flutter_pos/features/common_user/partner/presentation/page_partn
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
 import 'package:flutter_pos/features/common_user/report/presentation/ui_report.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_financial.dart';
+import 'package:flutter_pos/features/common_user/transaction_financial/presentation/page/page_transaction_financial.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_success.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
@@ -58,7 +58,7 @@ final routesPage = {
   '/transfinancial': (context) => BlocProvider(
     create: (context) =>
         TransFinancialBloc(context.read())..add(TransFinancialGetData()),
-    child: const UITransactionFinancial(),
+    child: const PageTransactionFinancial(),
   ),
   '/financial': (context) => BlocProvider(
     create: (context) => FinancialBloc(context.read())..add(FinancialGetData()),

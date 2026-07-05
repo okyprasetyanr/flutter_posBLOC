@@ -16,8 +16,8 @@ import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart
 import 'package:flutter_pos/features/common_user/partner/logic/partner_state.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/financial/transaction_financial_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_state.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
 
