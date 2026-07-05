@@ -14,7 +14,7 @@ import 'package:flutter_pos/features/common_user/history_adjustment/logic/histor
 import 'package:flutter_pos/features/common_user/history_adjustment/presentation/page/page_history_adjustment.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_financial/logic/history_financial_event.dart';
-import 'package:flutter_pos/features/common_user/history_financial/presentation/ui_history_financial.dart';
+import 'package:flutter_pos/features/common_user/history_financial/presentation/page/page_history_financial.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/presentation/ui_history_transaction.dart';
