@@ -17,7 +17,7 @@ import 'package:flutter_pos/features/common_user/history_financial/logic/history
 import 'package:flutter_pos/features/common_user/history_financial/presentation/page/page_history_financial.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
-import 'package:flutter_pos/features/common_user/history_transaction/presentation/ui_history_transaction.dart';
+import 'package:flutter_pos/features/common_user/history_transaction/presentation/page/page_history_transaction.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_bloc.dart';
 import 'package:flutter_pos/features/common_user/inventory/logic/inventory_event.dart';
 import 'package:flutter_pos/features/common_user/inventory/presentation/page/ui_inventory.dart';
@@ -125,7 +125,7 @@ final routesPage = {
     create: (context) =>
         HistoryTransactionBloc(context.read())
           ..add(HistoryTransactionGetData()),
-    child: const UIHistoryTransaction(),
+    child: const PageHistoryTransaction(),
   ),
   '/selltransactionsuccess': (context) {
     final paymentBloc =
