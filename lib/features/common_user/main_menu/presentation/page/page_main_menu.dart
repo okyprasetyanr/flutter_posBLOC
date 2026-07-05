@@ -24,6 +24,14 @@ class PageMainMenu extends StatefulWidget {
 class _PageMainMenuState extends State<PageMainMenu> {
   final currentPage = PageController();
   final selectedMenu = ValueNotifier<String>("Dashboard");
+
+  @override
+  void dispose() {
+    currentPage.dispose();
+    selectedMenu.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();

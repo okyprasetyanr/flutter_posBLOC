@@ -23,8 +23,8 @@ class PageTransactionAdjustment extends StatefulWidget {
 
 class _PageTransactionAdjustmentState extends State<PageTransactionAdjustment> {
   final searchItemController = TextEditingController();
-
   final isOpen = ValueNotifier<bool>(false);
+
   @override
   void dispose() {
     searchItemController.dispose();

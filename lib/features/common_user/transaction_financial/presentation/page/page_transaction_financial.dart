@@ -29,6 +29,7 @@ class _PageTransactionFinancialState extends State<PageTransactionFinancial> {
   void dispose() {
     noteController.dispose();
     amountController.dispose();
+    isOpen.dispose();
     super.dispose();
   }
 

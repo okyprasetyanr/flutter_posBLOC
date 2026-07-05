@@ -60,6 +60,7 @@ class _UIInventoryState extends State<UIInventory> {
   @override
   void dispose() {
     if (mounted) {
+      selectedIdCategoryItem.dispose();
       isOpen.dispose();
       currentPage.dispose();
       nameItemController.dispose();

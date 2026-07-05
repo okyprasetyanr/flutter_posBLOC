@@ -28,7 +28,7 @@ import 'package:flutter_pos/features/common_user/operator/logic/operator_event.d
 import 'package:flutter_pos/features/common_user/operator/presentation/page/page_operator.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
-import 'package:flutter_pos/features/common_user/partner/presentation/page_partner.dart';
+import 'package:flutter_pos/features/common_user/partner/presentation/page/page_partner.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_event.dart';
 import 'package:flutter_pos/features/common_user/report/presentation/ui_report.dart';

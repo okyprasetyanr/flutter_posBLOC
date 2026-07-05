@@ -41,6 +41,13 @@ class _TAdjustmentBotshetContentState extends State<TAdjustmentBotshetContent> {
   late bool isAdjustmentIn;
 
   final dateExp = ValueNotifier<ModelDateExpired?>(null);
+
+  @override
+  void dispose() {
+    dateExp.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     isAdjustmentIn =
