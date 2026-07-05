@@ -8,7 +8,7 @@ import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/presentation/page/page_batch.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/financial/logic/financial_event.dart';
-import 'package:flutter_pos/features/common_user/financial/presentation/ui_financial.dart';
+import 'package:flutter_pos/features/common_user/financial/presentation/page_financial.dart';
 import 'package:flutter_pos/features/common_user/history_adjustment/logic/history_adjustment_bloc.dart';
 import 'package:flutter_pos/features/common_user/history_adjustment/logic/history_adjustment_event.dart';
 import 'package:flutter_pos/features/common_user/history_adjustment/presentation/ui_history_adjustment.dart';
@@ -62,7 +62,7 @@ final routesPage = {
   ),
   '/financial': (context) => BlocProvider(
     create: (context) => FinancialBloc(context.read())..add(FinancialGetData()),
-    child: const UIFinancial(),
+    child: const PageFinancial(),
   ),
   '/report': (context) => BlocProvider(
     create: (context) => ReportBloc(context.read())..add(ReportGetData()),
