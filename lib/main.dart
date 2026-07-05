@@ -8,7 +8,7 @@ import 'package:flutter_pos/connection/authentication_account.dart';
 import 'package:flutter_pos/connection/firestore_worker.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
-import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
+import 'package:flutter_pos/features/common_user/main_menu/presentation/page/page_main_menu.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/settings_bloc.dart';
@@ -157,7 +157,7 @@ class _MainAppState extends State<ScreenLogin> {
           return BlocProvider(
             create: (context) =>
                 DataReportBloc(context.read())..add(DataReportGetData()),
-            child: const UIMainMenu(),
+            child: const PageMainMenu(),
           );
         }
         return _login();

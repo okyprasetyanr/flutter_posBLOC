@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_state.dart';
-import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
@@ -185,6 +184,29 @@ class DataReportBloc extends Bloc<DataReportEvent, DataReportState> {
         smartInterval: smartInterval,
         spot: spots,
       ),
+    );
+  }
+
+  double calculateSmartInterval(double maxVal) {
+    if (maxVal <= 0) return 10000;
+    double rawInterval = maxVal / 4;
+
+    List<double> anchors = [
+      1000,
+      2000,
+      5000,
+      10000,
+      20000,
+      50000,
+      100000,
+      250000,
+      500000,
+      1000000,
+    ];
+
+    return anchors.firstWhere(
+      (a) => a >= rawInterval,
+      orElse: () => (rawInterval / 100000).ceil() * 100000.0,
     );
   }
 

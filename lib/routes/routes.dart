@@ -25,7 +25,7 @@ import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_bloc.
 import 'package:flutter_pos/features/common_user/main_menu/logic/main_menu_event.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_bloc.dart';
 import 'package:flutter_pos/features/common_user/operator/logic/operator_event.dart';
-import 'package:flutter_pos/features/common_user/operator/presentation/ui_operator.dart';
+import 'package:flutter_pos/features/common_user/operator/presentation/page/page_operator.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_bloc.dart';
 import 'package:flutter_pos/features/common_user/partner/logic/partner_event.dart';
 import 'package:flutter_pos/features/common_user/partner/presentation/ui_partner.dart';
@@ -48,7 +48,7 @@ import 'package:flutter_pos/main.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/screen_signup.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/page/ui_setting_menu.dart';
-import 'package:flutter_pos/features/common_user/main_menu/presentation/ui_main_menu.dart';
+import 'package:flutter_pos/features/common_user/main_menu/presentation/page/page_main_menu.dart';
 
 final routesPage = {
   '/operator': (context) => BlocProvider(
@@ -75,7 +75,7 @@ final routesPage = {
   '/mainmenu': (context) => BlocProvider(
     create: (context) =>
         DataReportBloc(context.read())..add(DataReportGetData()),
-    child: const UIMainMenu(),
+    child: const PageMainMenu(),
   ),
   '/inventory': (context) => BlocProvider(
     create: (context) => InventoryBloc(context.read())..add(InventoryGetData()),
