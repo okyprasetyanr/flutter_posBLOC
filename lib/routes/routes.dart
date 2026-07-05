@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_adjustment.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/presentation/page/page_transaction_adjustment.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_bloc.dart';
 import 'package:flutter_pos/features/common_user/batch/logic/batch_event.dart';
 import 'package:flutter_pos/features/common_user/batch/presentation/page/page_batch.dart';
@@ -160,7 +160,7 @@ final routesPage = {
     create: (context) =>
         AdjustmentBloc(context.read<DataUserRepositoryCache>())
           ..add(AdjustmentGetData()),
-    child: const UITransactionAdjustment(),
+    child: const PageTransactionAdjustment(),
   ),
 
   '/settings': (context) {

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-class UIAdjustmentGridViewItem extends StatelessWidget {
-  const UIAdjustmentGridViewItem({super.key});
+class TAdjustmentGridViewItem extends StatelessWidget {
+  const TAdjustmentGridViewItem({super.key});
 
   @override
   Widget build(BuildContext context) {

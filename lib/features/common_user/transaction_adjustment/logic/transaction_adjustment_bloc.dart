@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_state.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';

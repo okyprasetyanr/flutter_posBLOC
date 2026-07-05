@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/adjustment/transaction_adjustment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_adjustment/logic/transaction_adjustment_state.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
 
-class UIAdjustmentListViewCategory extends StatelessWidget {
-  const UIAdjustmentListViewCategory({super.key});
+class TAdjustmentListViewCategory extends StatelessWidget {
+  const TAdjustmentListViewCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
