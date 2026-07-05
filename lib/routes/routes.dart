@@ -53,7 +53,7 @@ import 'package:flutter_pos/features/common_user/main_menu/presentation/page/pag
 final routesPage = {
   '/operator': (context) => BlocProvider(
     create: (context) => OperatorBloc(context.read())..add(OperatorGetData()),
-    child: const UIOperator(),
+    child: const PageOperator(),
   ),
   '/transfinancial': (context) => BlocProvider(
     create: (context) =>

@@ -13,14 +13,14 @@ import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
 
-class UIOperator extends StatefulWidget {
-  const UIOperator({super.key});
+class PageOperator extends StatefulWidget {
+  const PageOperator({super.key});
 
   @override
-  State<UIOperator> createState() => _UIOperatorState();
+  State<PageOperator> createState() => _PageOperatorState();
 }
 
-class _UIOperatorState extends State<UIOperator> {
+class _PageOperatorState extends State<PageOperator> {
   final nodes = List.generate(5, (index) => FocusNode());
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
