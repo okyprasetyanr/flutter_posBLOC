@@ -11,7 +11,7 @@ import 'package:flutter_pos/core/data_user/isar/collection/model_expense_isar.da
 import 'package:flutter_pos/core/data_user/isar/collection/model_income_isar.dart';
 import 'package:flutter_pos/shared/helper/common_helper/event_transformer.dart.dart';
 import 'package:flutter_pos/features/financial/model/model_financial.dart';
-import 'package:flutter_pos/shared/helper/request/delete_data.dart';
+import 'package:flutter_pos/core/request/delete_data.dart';
 import 'package:flutter_pos/core/service/isar_service.dart';
 import 'package:uuid/uuid.dart';
 

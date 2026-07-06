@@ -10,7 +10,7 @@ import 'package:flutter_pos/core/data_user/isar/action/save/save_update_data_isa
 import 'package:flutter_pos/shared/helper/common_helper/event_transformer.dart.dart';
 import 'package:flutter_pos/shared/helper/common_helper/function.dart';
 import 'package:flutter_pos/features/partner/model/model_partner.dart';
-import 'package:flutter_pos/shared/helper/request/delete_data.dart';
+import 'package:flutter_pos/core/request/delete_data.dart';
 import 'package:uuid/uuid.dart';
 
 class PartnerBloc extends Bloc<PartnerEvent, PartnerState> {

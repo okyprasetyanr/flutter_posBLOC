@@ -14,7 +14,7 @@ import 'package:flutter_pos/core/data_user/isar/action/save/save_update_data_isa
 import 'package:flutter_pos/shared/helper/common_helper/event_transformer.dart.dart';
 import 'package:flutter_pos/shared/helper/common_helper/function.dart';
 import 'package:flutter_pos/features/operator/model/model_user.dart';
-import 'package:flutter_pos/shared/helper/request/delete_data.dart';
+import 'package:flutter_pos/core/request/delete_data.dart';
 import 'package:flutter_pos/shared/widget/common_widget/widget_custom_spin_kit.dart';
 
 class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {

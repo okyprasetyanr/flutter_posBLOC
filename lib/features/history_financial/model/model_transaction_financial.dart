@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
 import 'package:flutter_pos/shared/helper/from_and_to_map/convert_to_map.dart';
-import 'package:flutter_pos/shared/helper/request/push_data.dart';
+import 'package:flutter_pos/core/request/push_data.dart';
 
 class ModelTransactionFinancial extends Equatable {
   final String invoice, idBranch, idFinancial, nameFinancial, note;

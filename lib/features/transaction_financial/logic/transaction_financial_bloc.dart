@@ -11,7 +11,7 @@ import 'package:flutter_pos/core/data_user/isar/action/save/save_update_data_isa
 import 'package:flutter_pos/shared/helper/common_helper/event_transformer.dart.dart';
 import 'package:flutter_pos/shared/helper/common_helper/function.dart';
 import 'package:flutter_pos/features/history_financial/model/model_transaction_financial.dart';
-import 'package:flutter_pos/shared/helper/request/update_data.dart';
+import 'package:flutter_pos/core/request/update_data.dart';
 
 class TransFinancialBloc
     extends Bloc<TransFinanctialEvent, TransFinancialState> {

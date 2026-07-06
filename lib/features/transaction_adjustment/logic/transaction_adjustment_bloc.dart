@@ -14,7 +14,7 @@ import 'package:flutter_pos/features/inventory/model/model_category.dart';
 import 'package:flutter_pos/features/inventory/model/model_item.dart';
 import 'package:flutter_pos/features/batch/model/model_item_batch.dart';
 import 'package:flutter_pos/features/history_adjustment/model/model_transaction_adjustment_out.dart';
-import 'package:flutter_pos/shared/helper/request/update_data.dart';
+import 'package:flutter_pos/core/request/update_data.dart';
 
 class AdjustmentBloc extends Bloc<AdjustmentEvent, AdjustmentState> {
   final DataUserRepositoryCache repoCache;

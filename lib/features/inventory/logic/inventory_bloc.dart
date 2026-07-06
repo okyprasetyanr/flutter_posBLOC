@@ -16,7 +16,7 @@ import 'package:flutter_pos/core/service/service_image.dart';
 import 'package:flutter_pos/features/inventory/model/model_category.dart';
 import 'package:flutter_pos/features/inventory/model/model_item.dart';
 import 'package:flutter_pos/features/batch/model/model_item_batch.dart';
-import 'package:flutter_pos/shared/helper/request/delete_data.dart';
+import 'package:flutter_pos/core/request/delete_data.dart';
 import 'package:uuid/uuid.dart';
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {

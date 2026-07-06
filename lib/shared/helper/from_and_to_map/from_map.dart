@@ -18,7 +18,7 @@ import 'package:flutter_pos/features/history_adjustment/model/model_transaction_
 import 'package:flutter_pos/features/history_adjustment/model/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/features/history_financial/model/model_transaction_financial.dart';
 import 'package:flutter_pos/features/operator/model/model_user.dart';
-import 'package:flutter_pos/shared/helper/request/get_data.dart';
+import 'package:flutter_pos/core/request/get_data.dart';
 
 ModelTransactionFinancial fromMapTransFinancial(
   Map<String, dynamic> data,

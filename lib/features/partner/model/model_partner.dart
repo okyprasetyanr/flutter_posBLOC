@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pos/shared/helper/from_and_to_map/convert_to_map.dart';
 import 'package:flutter_pos/shared/helper/common_helper/function.dart';
-import 'package:flutter_pos/shared/helper/request/push_data.dart';
+import 'package:flutter_pos/core/request/push_data.dart';
 
 enum PartnerType { customer, supplier }
 

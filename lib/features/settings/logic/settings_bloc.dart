@@ -29,7 +29,7 @@ import 'package:flutter_pos/features/transaction/model/model_split.dart';
 import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/features/history_financial/model/model_transaction_financial.dart';
 import 'package:flutter_pos/features/operator/model/model_user.dart';
-import 'package:flutter_pos/shared/helper/request/update_data.dart';
+import 'package:flutter_pos/core/request/update_data.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';

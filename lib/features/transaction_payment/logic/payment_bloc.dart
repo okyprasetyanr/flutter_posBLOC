@@ -20,7 +20,7 @@ import 'package:flutter_pos/shared/helper/common_helper/function.dart';
 import 'package:flutter_pos/features/transaction/model/model_item_ordered.dart';
 import 'package:flutter_pos/features/transaction/model/model_split.dart';
 import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
-import 'package:flutter_pos/shared/helper/request/update_data.dart';
+import 'package:flutter_pos/core/request/update_data.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   DataUserRepositoryCache repoCache;

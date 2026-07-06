@@ -12,7 +12,7 @@ import 'package:flutter_pos/features/operator/model/model_user.dart';
 import 'package:flutter_pos/features/partner/model/model_partner.dart';
 import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/features/history_financial/model/model_transaction_financial.dart';
-import 'package:flutter_pos/shared/helper/request/get_data.dart';
+import 'package:flutter_pos/core/request/get_data.dart';
 
 class DataUserRepository {
   final _db = FirebaseFirestore.instance;
