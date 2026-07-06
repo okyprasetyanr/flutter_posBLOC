@@ -34,14 +34,14 @@ import 'package:flutter_pos/features/common_user/report/logic/report_event.dart'
 import 'package:flutter_pos/features/common_user/report/presentation/ui_report.dart';
 import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction.dart';
 import 'package:flutter_pos/features/common_user/transaction_financial/presentation/page/page_transaction_financial.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_payment.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction_success.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/presentation/page/page_transaction_payment.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_success.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/main.dart';
@@ -133,7 +133,7 @@ final routesPage = {
 
     return BlocProvider.value(
       value: paymentBloc,
-      child: const UITransactionSuccess(),
+      child: const TPaymentSuccess(),
     );
   },
   '/sellpayment': (context) {
@@ -151,7 +151,7 @@ final routesPage = {
       ],
       child: Builder(
         builder: (context) {
-          return const UITransactionPayment();
+          return const PageTransactionPayment();
         },
       ),
     );

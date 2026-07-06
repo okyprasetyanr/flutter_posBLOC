@@ -4,18 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
-class UIPaymentPPN extends StatelessWidget {
-  final TextEditingController customPPNController;
-  const UIPaymentPPN({super.key, required this.customPPNController});
+class TPaymentDiscount extends StatelessWidget {
+  final TextEditingController customDiscountController;
+  const TPaymentDiscount({super.key, required this.customDiscountController});
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,13 @@ class UIPaymentPPN extends StatelessWidget {
         }
         return null;
       },
-      builder: (contextBloc, state) {
+      builder: (context, state) {
         if (state == null) {
           return SizedBox.shrink();
         }
         return Row(
           children: [
-            SizedBox(width: 100, child: Text("PPN", style: lv05TextStyle)),
+            SizedBox(width: 100, child: Text("Diskon", style: lv05TextStyle)),
             Spacer(),
             Text(":", style: lv05TextStyle),
             Spacer(),
@@ -40,8 +40,8 @@ class UIPaymentPPN extends StatelessWidget {
               children: [
                 Wrap(
                   spacing: 5,
-                  children: [11, 25, 30].map((ppn) {
-                    final isSelected = state.getppn == ppn;
+                  children: [10, 25, 50].map((discount) {
+                    final isSelected = state.getdiscount == discount;
                     return DynamicColorWrapper(
                       colorSelector: (context) => context.colorTrans,
                       builder: (context, color) => SizedBox(
@@ -58,18 +58,18 @@ class UIPaymentPPN extends StatelessWidget {
                                 : AppPropertyColor.black,
                           ),
                           label: Text(
-                            "$ppn%",
+                            "$discount%",
                             style: isSelected
                                 ? lv05TextStyleWhite
                                 : lv05TextStyle,
                           ),
                           onPressed: () {
-                            if (customPPNController.text.isNotEmpty) {
-                              customPPNController.clear();
+                            if (customDiscountController.text.isNotEmpty) {
+                              customDiscountController.clear();
                             }
-                            final ppnValue = isSelected ? 0 : ppn;
+                            final discountValue = isSelected ? 0 : discount;
                             context.read<PaymentBloc>().add(
-                              PaymentAdjust(ppn: ppnValue),
+                              PaymentAdjust(discount: discountValue),
                             );
                           },
                         ),
@@ -84,22 +84,25 @@ class UIPaymentPPN extends StatelessWidget {
               width: 50,
               child: customTextField(
                 hint: false,
-                controller: customPPNController,
+                controller: customDiscountController,
                 inputType: const TextInputType.numberWithOptions(),
-                label: "PPN",
+                label: "Dis.",
                 suffixText: "%",
                 inputFormatter: [
                   FilteringTextInputFormatter.digitsOnly,
                   TextInputFormatter.withFunction((oldValue, newValue) {
-                    final customPpn = newValue.text;
+                    final customDiscount = newValue.text;
                     final intValue =
-                        int.tryParse(customPpn.isEmpty ? "0" : customPpn) ?? 0;
+                        int.tryParse(
+                          customDiscount.isEmpty ? "0" : customDiscount,
+                        ) ??
+                        0;
                     if (intValue > 100) {
                       customSnackBar(context, "Jumlah melebihi 100%");
                       return oldValue;
                     }
                     context.read<PaymentBloc>().add(
-                      PaymentAdjust(ppn: intValue),
+                      PaymentAdjust(discount: intValue),
                     );
                     return newValue;
                   }),

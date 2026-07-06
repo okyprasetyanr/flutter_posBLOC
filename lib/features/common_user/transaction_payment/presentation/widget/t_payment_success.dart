@@ -5,16 +5,16 @@ import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_bloc.dart';
 import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 
-class UITransactionSuccess extends StatelessWidget {
-  const UITransactionSuccess({super.key});
+class TPaymentSuccess extends StatelessWidget {
+  const TPaymentSuccess({super.key});
 
   @override
   Widget build(BuildContext context) {

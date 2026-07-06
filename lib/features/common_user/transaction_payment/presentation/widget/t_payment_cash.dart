@@ -6,19 +6,19 @@ import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-class UIPaymentCashPayment extends StatelessWidget {
+class TPaymentCash extends StatelessWidget {
   final bool split;
   final TextEditingController payController;
   final ValueNotifier<double> selectedAmount;
 
-  const UIPaymentCashPayment({
+  const TPaymentCash({
     super.key,
     required this.split,
     required this.payController,

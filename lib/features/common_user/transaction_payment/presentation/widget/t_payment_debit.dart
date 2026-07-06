@@ -4,20 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
-class UIPaymentDebitPayment extends StatelessWidget {
+class TPaymentDebit extends StatelessWidget {
   final bool split;
   final TextEditingController chargeController;
   final TextEditingController payDebitController;
-  const UIPaymentDebitPayment({
+  const TPaymentDebit({
     super.key,
     required this.chargeController,
     required this.split,

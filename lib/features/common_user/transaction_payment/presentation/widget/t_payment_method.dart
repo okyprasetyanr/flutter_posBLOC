@@ -3,23 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/payment/payment_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/cash_payment.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/payment/top_page/debit_payment.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_cash.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_debit.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/model_data/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-class UIPaymentPaymentMethod extends StatelessWidget {
+class TPaymentMethod extends StatelessWidget {
   final Function(int) gotoPage;
   final TextEditingController chargeController;
   final TextEditingController payController;
   final TextEditingController payDebitController;
   final ValueNotifier<double> selectedAmount;
-  const UIPaymentPaymentMethod({
+  const TPaymentMethod({
     super.key,
     required this.gotoPage,
     required this.chargeController,
@@ -82,7 +82,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                                 style: lv1TextStyleBold,
                               ),
                               const SizedBox(width: 10),
-                              UIPaymentCashPayment(
+                              TPaymentCash(
                                 split: true,
                                 payController: payController,
                                 selectedAmount: selectedAmount,
@@ -93,7 +93,7 @@ class UIPaymentPaymentMethod extends StatelessWidget {
                                 style: lv1TextStyleBold,
                               ),
                               const SizedBox(width: 10),
-                              UIPaymentDebitPayment(
+                              TPaymentDebit(
                                 split: true,
                                 chargeController: chargeController,
                                 payDebitController: payDebitController,
