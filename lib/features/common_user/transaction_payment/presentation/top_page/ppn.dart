@@ -13,9 +13,9 @@ import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/template/dynamic_stl_for_color_wrapper.dart';
 
-class TPaymentPPN extends StatelessWidget {
+class UIPaymentPPN extends StatelessWidget {
   final TextEditingController customPPNController;
-  const TPaymentPPN({super.key, required this.customPPNController});
+  const UIPaymentPPN({super.key, required this.customPPNController});
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
+import 'package:flutter_pos/features/common_user/transaction/util/push_data_transaction.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
@@ -18,7 +19,7 @@ import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 import 'package:flutter_pos/request/update_data.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
@@ -393,7 +394,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             await box.delete(currentState.revisionInvoice);
           }
         }
-        await transaction.pushDataTransaction(isSell: isSell);
+        await pushDataTransaction(isSell: isSell, data: transaction);
       }
 
       final finalCounter = counter.copyWith(

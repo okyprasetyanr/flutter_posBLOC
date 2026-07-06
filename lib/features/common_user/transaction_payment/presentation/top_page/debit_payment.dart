@@ -13,11 +13,11 @@ import 'package:flutter_pos/features/common_user/transaction/domain/model/model_
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
-class TPaymentDebit extends StatelessWidget {
+class UIPaymentDebitPayment extends StatelessWidget {
   final bool split;
   final TextEditingController chargeController;
   final TextEditingController payDebitController;
-  const TPaymentDebit({
+  const UIPaymentDebitPayment({
     super.key,
     required this.chargeController,
     required this.split,

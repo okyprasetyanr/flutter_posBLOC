@@ -6,8 +6,8 @@ import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 
-class TPaymentReceiptHeader extends StatelessWidget {
-  const TPaymentReceiptHeader({super.key});
+class UIPaymentDateInvoiceCustomerOperator extends StatelessWidget {
+  const UIPaymentDateInvoiceCustomerOperator({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter_pos/features/data_user/isar/collection/model_transaction
 import 'package:flutter_pos/features/data_user/isar/collection/model_transaction_sell_isar.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_user_isar.dart';
 import 'package:flutter_pos/from_and_to_map/from_isar.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 import 'package:flutter_pos/service/isar_service.dart';
 import 'package:isar/isar.dart';
 

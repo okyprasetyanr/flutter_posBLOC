@@ -15,7 +15,7 @@ import 'package:flutter_pos/features/common_user/settings/logic/printer/printer_
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/from_and_to_map/from_isar.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/style_and_transition_text/transition_navigator/transition_up_down.dart';
 

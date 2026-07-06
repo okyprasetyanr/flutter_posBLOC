@@ -45,7 +45,7 @@ import 'package:flutter_pos/features/common_user/transaction_payment/presentatio
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/main.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 import 'package:flutter_pos/screen_signup.dart';
 import 'package:flutter_pos/features/common_user/settings/presentation/page/ui_setting_menu.dart';
 import 'package:flutter_pos/features/common_user/main_menu/presentation/page/page_main_menu.dart';

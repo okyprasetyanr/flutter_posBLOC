@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
+import 'package:flutter_pos/features/common_user/transaction/util/apply_fifo_price_to_item.dart';
+import 'package:flutter_pos/features/common_user/transaction/util/build_fifo_batch_map.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_all.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
-import 'package:flutter_pos/fifo_logic/fifo_logic.dart';
+import 'package:flutter_pos/features/common_user/transaction/util/fifo_logic.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction_event.dart';
 import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
@@ -18,7 +20,7 @@ import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/model_data/model_category.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
 import 'package:flutter_pos/model_data/model_split.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final DataUserRepositoryCache repoCache;

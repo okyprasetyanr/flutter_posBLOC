@@ -13,8 +13,8 @@ import 'package:flutter_pos/features/common_user/transaction/domain/model/model_
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 
-class TPaymentSuccess extends StatelessWidget {
-  const TPaymentSuccess({super.key});
+class UITransactionSuccess extends StatelessWidget {
+  const UITransactionSuccess({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -139,5 +139,9 @@ class TPaymentSuccess extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> refreshIndicator() async {
+    return;
   }
 }

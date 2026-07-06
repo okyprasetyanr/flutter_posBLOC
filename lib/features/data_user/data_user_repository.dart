@@ -10,7 +10,7 @@ import 'package:flutter_pos/model_data/model_transaction_adjustment_in.dart';
 import 'package:flutter_pos/model_data/model_transaction_adjustment_out.dart';
 import 'package:flutter_pos/model_data/model_user.dart';
 import 'package:flutter_pos/model_data/model_partner.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 import 'package:flutter_pos/model_data/model_transaction_financial.dart';
 import 'package:flutter_pos/request/get_data.dart';
 

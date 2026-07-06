@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/enum_and_string/enum.dart';
+import 'package:flutter_pos/features/common_user/transaction/util/push_data_transaction.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.
 import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
 class HistoryTransactionBloc
@@ -132,7 +133,8 @@ class HistoryTransactionBloc
           ? await saveTransactionSell_Isar(finaldataTransaction)
           : await saveTransactionBuy_Isar(finaldataTransaction);
 
-      await finaldataTransaction.pushDataTransaction(
+      await pushDataTransaction(
+        data: finaldataTransaction,
         statusRemove: true,
         isSell: currentState.isSell,
       );

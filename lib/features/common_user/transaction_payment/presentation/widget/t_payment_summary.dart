@@ -4,7 +4,7 @@ import 'package:flutter_pos/common_widget/row_content.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
 
 class TPaymentSummary extends StatelessWidget {
   const TPaymentSummary({super.key});
