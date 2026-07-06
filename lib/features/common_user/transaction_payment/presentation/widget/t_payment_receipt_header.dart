@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/common_widget/row_content.dart';
 
 class TPaymentReceiptHeader extends StatelessWidget {

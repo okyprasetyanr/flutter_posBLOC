@@ -1,5 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/model/model_transaction.dart';
 import 'package:intl/intl.dart';
 
 List<FlSpot> buildWeeklyTransactionSpots(List<ModelTransaction> transactions) {

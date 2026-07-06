@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';

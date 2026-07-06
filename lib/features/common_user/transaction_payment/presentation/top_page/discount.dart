@@ -7,7 +7,7 @@ import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';

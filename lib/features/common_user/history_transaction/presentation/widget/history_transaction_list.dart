@@ -6,7 +6,7 @@ import 'package:flutter_pos/features/common_user/history_transaction/logic/histo
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_event.dart';
 import 'package:flutter_pos/features/common_user/history_transaction/logic/history_transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
 class HistoryTransactionList extends StatelessWidget {

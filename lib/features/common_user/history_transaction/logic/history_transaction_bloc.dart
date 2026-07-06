@@ -12,7 +12,7 @@ import 'package:flutter_pos/features/data_user/isar/action/get/get_data_isar_by.
 import 'package:flutter_pos/features/data_user/isar/action/save/save_update_data_isar.dart';
 import 'package:flutter_pos/function/event_transformer.dart.dart';
 import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/request/delete_data.dart';
 
 class HistoryTransactionBloc

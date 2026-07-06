@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_pos/features/common_user/transaction/domain/model/model_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/model/model_transaction.dart';
 import 'package:flutter_pos/features/common_user/transaction/util/commit_stock_from_ordered.dart';
 import 'package:flutter_pos/features/common_user/transaction/util/push_data_batch.dart';
 import 'package:flutter_pos/features/common_user/transaction/util/revert_fifo_stock.dart';
