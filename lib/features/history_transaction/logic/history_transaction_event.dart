@@ -1,0 +1,42 @@
+import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
+import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
+
+class HistoryTransactionEvent {}
+
+class HistoryTransactionGetData extends HistoryTransactionEvent {
+  final String? idBranch;
+  final DateTime? dateStart;
+  final DateTime? dateEnd;
+  final bool? isSell;
+
+  HistoryTransactionGetData({
+    this.isSell,
+    this.dateStart,
+    this.dateEnd,
+    this.idBranch,
+  });
+}
+
+class HistoryTransactionSelectedData extends HistoryTransactionEvent {
+  final ModelTransaction? selectedData;
+
+  HistoryTransactionSelectedData({required this.selectedData});
+}
+
+class HistoryTransactionCancelData extends HistoryTransactionEvent {}
+
+class HistoryTransactionResetSelectedData extends HistoryTransactionEvent {}
+
+class HistoryTransactionPrintData extends HistoryTransactionEvent {}
+
+class HistoryTransactionSearchData extends HistoryTransactionEvent {
+  final String search;
+
+  HistoryTransactionSearchData({required this.search});
+}
+
+class HistoryTransactionSelectedFilter extends HistoryTransactionEvent {
+  final ListStatusTransaction filter;
+
+  HistoryTransactionSelectedFilter({required this.filter});
+}

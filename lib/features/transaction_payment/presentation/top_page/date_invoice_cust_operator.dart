@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/features/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/transaction_payment/logic/payment_state.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
+import 'package:flutter_pos/shared/widget/common_widget/row_content.dart';
+
+class UIPaymentDateInvoiceCustomerOperator extends StatelessWidget {
+  const UIPaymentDateInvoiceCustomerOperator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<PaymentBloc, PaymentState, ModelTransaction?>(
+      selector: (state) {
+        if (state is PaymentLoaded) {
+          return state.transaction_sell;
+        }
+        return null;
+      },
+      builder: (context, state) {
+        if (state == null) {
+          return SizedBox.shrink();
+        }
+        return Column(
+          children: [
+            rowContent("Nomor Faktur", "${state.getinvoice}"),
+            rowContent("Tanggal", "${formatDate(date: state.getdate)}"),
+            rowContent("Kontak", "${state.getnamePartner}"),
+            rowContent("Operator", "${state.getnameOperator}"),
+          ],
+        );
+      },
+    );
+  }
+}

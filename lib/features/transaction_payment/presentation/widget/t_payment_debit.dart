@@ -1,0 +1,186 @@
+import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
+import 'package:flutter_pos/features/transaction_payment/logic/payment_bloc.dart';
+import 'package:flutter_pos/features/transaction_payment/logic/payment_event.dart';
+import 'package:flutter_pos/features/transaction_payment/logic/payment_state.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/transaction/model/model_split.dart';
+import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_snack_bar.dart';
+
+class TPaymentDebit extends StatelessWidget {
+  final bool split;
+  final TextEditingController chargeController;
+  final TextEditingController payDebitController;
+  const TPaymentDebit({
+    super.key,
+    required this.chargeController,
+    required this.split,
+    required this.payDebitController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final listBank = [
+      "BCA",
+      "BRI",
+      "Mandiri",
+      "BNI",
+      "BTN",
+      "CIMB Niaga",
+      "Permata",
+      "Danamon",
+      "BTPN / Jenius",
+      "BNC (Neo Commerce)",
+      "SeaBank",
+      "Bank Jago",
+      "BSI (Syariah Indonesia)",
+    ];
+    return BlocSelector<
+      PaymentBloc,
+      PaymentState,
+      (ModelTransaction?, List<ModelSplit>?)
+    >(
+      selector: (state) {
+        if (state is PaymentLoaded) {
+          return (
+            state.transaction_sell,
+            state.transaction_sell?.getdataSplit ?? const [],
+          );
+        }
+        return (null, []);
+      },
+      builder: (context, state) {
+        if (state.$1 == null) {
+          return SizedBox.shrink();
+        } else {
+          payDebitController.text = formatQtyOrPrice(
+            state.$2
+                    ?.firstWhereOrNull(
+                      (element) =>
+                          element.getpaymentName == LabelPaymentMethod.Debit,
+                    )
+                    ?.getpaymentTotal ??
+                0,
+          );
+        }
+        return Padding(
+          padding: const EdgeInsetsGeometry.all(5),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        label: Text("Daftar Bank", style: lv05TextStyle),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                      items: listBank
+                          .map(
+                            (map) => DropdownMenuItem(
+                              value: map,
+                              child: Text(map, style: lv05TextStyle),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        context.read<PaymentBloc>().add(
+                          PaymentAdjust(bankName: value),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: customTextField(
+                      hint: false,
+                      controller: chargeController,
+                      inputType: const TextInputType.numberWithOptions(),
+                      label: "Charge",
+                      suffixText: "%",
+                      inputFormatter: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          final customPpn = newValue.text;
+                          final intValue =
+                              int.tryParse(
+                                customPpn.isEmpty ? "0" : customPpn,
+                              ) ??
+                              0;
+                          if (intValue > 100) {
+                            customSnackBar(
+                              top: true,
+                              context,
+                              "Jumlah melebihi 100%",
+                            );
+                            return oldValue;
+                          }
+                          context.read<PaymentBloc>().add(
+                            PaymentAdjust(charge: intValue),
+                          );
+                          return newValue;
+                        }),
+                      ],
+                      alignEnd: true,
+                      context: context,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              split
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Sesuaikan Nominal: Rp", style: lv05TextStyle),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: customTextField(
+                            alignEnd: true,
+                            context: context,
+                            controller: payDebitController,
+                            inputType: TextInputType.number,
+                            suffixText: ",00",
+                            label: "Nominal Bayar",
+                            onChanged: (value) {
+                              final finalValue = double.tryParse(value) ?? 0;
+
+                              split
+                                  ? context.read<PaymentBloc>().add(
+                                      PaymentAdjust(
+                                        billPaidSplitDebit: finalValue,
+                                      ),
+                                    )
+                                  : context.read<PaymentBloc>().add(
+                                      PaymentAdjust(billPaid: finalValue),
+                                    );
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

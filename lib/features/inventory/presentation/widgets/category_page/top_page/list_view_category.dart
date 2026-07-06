@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/core/app_property/app_properties.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_list_gradient.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/inventory/model/model_category.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+class UIInventoryListViewCategory extends StatelessWidget {
+  const UIInventoryListViewCategory({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<InventoryBloc, InventoryState, List<ModelCategory>?>(
+      selector: (state) => state is InventoryLoaded ? state.dataCategory : null,
+      builder: (context, state) {
+        devLog("Log UIInventory category: search: ${state}");
+        if (state == null) {
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: SpinKitThreeBounce(
+              color: AppPropertyColor.primary,
+              size: lv1IconSize,
+            ),
+          );
+        }
+        return customListGradient(
+          data: state,
+          deleteData: (deleteData) => context.read<InventoryBloc>().add(
+            InventoryDeleteCategory(id: deleteData.getidCategory),
+          ),
+          getId: (data) => data.getidCategory,
+          getName: (data) => data.getnameCategory,
+          selectedData: (selectedData) => context.read<InventoryBloc>().add(
+            InventorySelectedCategory(selectedCategory: selectedData),
+          ),
+        );
+      },
+    );
+  }
+}

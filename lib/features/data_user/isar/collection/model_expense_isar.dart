@@ -1,8 +1,0 @@
-import 'package:flutter_pos/features/data_user/isar/ModelBase/model_financial_base_isar.dart';
-import 'package:isar/isar.dart';
-part 'model_expense_isar.g.dart';
-
-@collection
-class ModelExpenseIsar extends ModelFinancialBaseIsar {
-  Id isarId = Isar.autoIncrement;
-}

@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/core/app_property/app_properties.dart';
+import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
+import 'package:flutter_pos/features/transaction_adjustment/logic/transaction_adjustment_bloc.dart';
+import 'package:flutter_pos/features/transaction_adjustment/logic/transaction_adjustment_event.dart';
+import 'package:flutter_pos/features/transaction_adjustment/logic/transaction_adjustment_state.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/inventory/model/model_item.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/style_font_size.dart';
+
+class TAdjustmentGridViewItem extends StatelessWidget {
+  const TAdjustmentGridViewItem({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<
+      AdjustmentBloc,
+      AdjustmentState,
+      (List<ModelItem>, bool)
+    >(
+      selector: (state) {
+        if (state is AdjustmentLoaded) {
+          return (state.filteredItem, state.isAdjustIn);
+        }
+        return ([], false);
+      },
+      builder: (context, state) {
+        return GridView.builder(
+          padding: const EdgeInsets.all(10),
+          itemCount: state.$1.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisExtent: 95,
+            crossAxisSpacing: 5,
+            mainAxisSpacing: 5,
+            childAspectRatio: 1,
+          ),
+          itemBuilder: (context, index) {
+            final item = state.$1[index];
+            return Material(
+              color: AppPropertyColor.white,
+              borderRadius: BorderRadius.circular(15),
+              elevation: 4,
+              child: Stack(
+                clipBehavior: Clip.hardEdge,
+                children: [
+                  InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () {
+                      context.read<AdjustmentBloc>().add(
+                        AdjustmentSelectedItem(selectedItem: item),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsetsGeometry.all(3),
+                      child: Column(
+                        children: [
+                          Image.asset("assets/logo.png", height: 50),
+                          const SizedBox(height: 5),
+                          Text(
+                            item.getnameItem,
+                            style: lv05TextStyle,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Text(
+                                formatQtyOrPrice(item.getqtyItem),
+                                style: lv0TextStyleRED,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (item.getstatusCondiment == StatusData.Aktif)
+                    Positioned(
+                      top: -5,
+                      right: -15,
+                      child: Transform.rotate(
+                        angle: 0.8,
+                        child: Container(
+                          width: 40,
+                          height: 20,
+                          color: AppPropertyColor.primary,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}

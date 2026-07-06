@@ -1,0 +1,188 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/core/app_property/app_properties.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_button.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction_state.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_bottom_sheet.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/style_font_size.dart';
+
+class TransactionSavedCart extends StatelessWidget {
+  const TransactionSavedCart({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SizedBox(
+          height: 32,
+          child: customButton(
+            backgroundColor: AppPropertyColor.primary,
+            child: const Icon(
+              Icons.shopping_bag_rounded,
+              size: lv2IconSize,
+              color: AppPropertyColor.white,
+            ),
+            onPressed: () {
+              customBottomSheet(
+                context: context,
+                resetItemForm: () {},
+                content: (scrollController) {
+                  return BlocProvider.value(
+                    value: context.read<TransactionBloc>(),
+                    child:
+                        BlocSelector<
+                          TransactionBloc,
+                          TransactionState,
+                          List<ModelTransaction>
+                        >(
+                          selector: (state) {
+                            if (state is TransactionLoaded) {
+                              return state.dataTransactionSaved;
+                            }
+                            return const [];
+                          },
+                          builder: (context, state) {
+                            final transactionBloc = context
+                                .read<TransactionBloc>();
+                            return ListView.builder(
+                              itemCount: state.length,
+                              itemBuilder: (context, index) {
+                                final transaction = state[index];
+                                return InkWell(
+                                  onTap: () {
+                                    devLog(
+                                      "Log UITransaction: CartSaved: ${state[index].getitemsOrdered}",
+                                    );
+                                    context.read<TransactionBloc>().add(
+                                      TransactionResetOrderedItem(),
+                                    );
+                                    context.read<TransactionBloc>().add(
+                                      TransactionLoadTransaction(
+                                        currentTransaction: state[index],
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                  child: Dismissible(
+                                    key: Key(state[index].getinvoice),
+                                    direction: DismissDirection.endToStart,
+                                    background: Container(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      color: AppPropertyColor.red,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: AppPropertyColor.white,
+                                        ),
+                                      ),
+                                    ),
+                                    confirmDismiss: (direction) async {
+                                      final result = await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text(
+                                            "Konfirmasi",
+                                            style: lv2TextStyle,
+                                          ),
+                                          content: Text(
+                                            "Hapus Transaksi ${state[index].getinvoice}?",
+                                            style: lv1TextStyle,
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, false),
+                                              child: Text(
+                                                "Batal",
+                                                style: lv1TextStyle,
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                transactionBloc.add(
+                                                  TransactionDeleteItemSaved(
+                                                    invoice:
+                                                        state[index].getinvoice,
+                                                  ),
+                                                );
+                                                Navigator.pop(context, true);
+                                              },
+                                              child: Text(
+                                                "Hapus",
+                                                style: lv1TextStyle,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                      if (result == true) {
+                                        return true;
+                                      }
+                                      return false;
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 5,
+                                        right: 5,
+                                        top: 10,
+                                        bottom: 10,
+                                      ),
+
+                                      child: ListTile(
+                                        title: Text(
+                                          "${transaction.getinvoice}, ${formatPriceRp(transaction.gettotal)}",
+                                        ),
+                                        subtitle: Text(
+                                          "Date: ${transaction.getdate}, Note: ${transaction.getnote}",
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        Positioned(
+          right: 11,
+          top: 5,
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: AppPropertyColor.red,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              context.select<TransactionBloc, String>(
+                (bloc) => bloc.state is TransactionLoaded
+                    ? (bloc.state as TransactionLoaded)
+                          .dataTransactionSaved
+                          .length
+                          .toString()
+                    : "0",
+              ),
+              style: TextStyle(
+                color: AppPropertyColor.white,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

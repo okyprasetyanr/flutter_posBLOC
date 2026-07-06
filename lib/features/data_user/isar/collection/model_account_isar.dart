@@ -1,9 +1,0 @@
-import 'package:flutter_pos/features/data_user/isar/ModelBase/model_user_base_isar.dart';
-import 'package:isar/isar.dart';
-
-part 'model_account_isar.g.dart';
-
-@collection
-class ModelAccountIsar extends ModelUserBaseIsar {
-  Id isarId = Isar.autoIncrement;
-}

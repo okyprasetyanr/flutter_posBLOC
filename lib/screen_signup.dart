@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/app_property/app_properties.dart';
-import 'package:flutter_pos/connection/authentication_account.dart';
-import 'package:flutter_pos/enum_and_string/enum.dart';
-import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';
-import 'package:flutter_pos/function/function.dart';
-import 'package:flutter_pos/model_data/model_user.dart';
-import 'package:flutter_pos/request/push_data.dart';
-import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
-import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
-import 'package:flutter_pos/common_widget/widget_custom_dropdown_filter.dart';
-import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
-import 'package:flutter_pos/common_widget/widget_custom_spin_kit.dart';
-import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/core/app_property/app_properties.dart';
+import 'package:flutter_pos/core/connection/authentication_account.dart';
+import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
+import 'package:flutter_pos/core/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/shared/helper/from_and_to_map/convert_to_map.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/operator/model/model_user.dart';
+import 'package:flutter_pos/shared/helper/request/push_data.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_spin_kit.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_text_field.dart';
 import 'package:uuid/uuid.dart';
 
 class ScreenSignup extends StatefulWidget {

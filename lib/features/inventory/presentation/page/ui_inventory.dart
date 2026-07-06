@@ -1,0 +1,480 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/core/app_property/app_properties.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_dropdown_filter.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_text_branch.dart';
+import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
+import 'package:flutter_pos/core/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_event.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_state.dart';
+import 'package:flutter_pos/features/inventory/logic/inventory_bloc.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/search_and_cabang.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/button_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/dropdown_category_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/bottom_page/form_field_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/filters_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/grid_view_item.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/item_page/top_page/search_and_cabang.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/bottom_page/button_category.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/bottom_page/text_field_and_branch.dart';
+import 'package:flutter_pos/features/inventory/presentation/widgets/category_page/top_page/list_view_category.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/icon_size.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/style_font_size.dart';
+import 'package:flutter_pos/shared/widget/template/dynamic_layout_top_bottom.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_animatePage.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_button_reset.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_navigation_gesture.dart';
+
+class UIInventory extends StatefulWidget {
+  const UIInventory({super.key});
+
+  @override
+  State<UIInventory> createState() => _UIInventoryState();
+}
+
+class _UIInventoryState extends State<UIInventory> {
+  List<FocusNode> nodes = List.generate(1, (_) => FocusNode());
+  List<FocusNode> nodesForm = List.generate(3, (_) => FocusNode());
+
+  final selectedIdCategoryItem = ValueNotifier<String?>(null);
+
+  final _formKey = GlobalKey<FormState>();
+  final nameItemController = TextEditingController();
+  final branchItemController = TextEditingController();
+  final priceItemController = TextEditingController();
+  final codeBarcodeController = TextEditingController();
+  final nameCategoryController = TextEditingController();
+  final searchControllerItem = TextEditingController();
+  final searchControllerCategory = TextEditingController();
+  final branchController = TextEditingController();
+  final isOpen = ValueNotifier<bool>(false);
+  final currentPage = ValueNotifier<bool>(true);
+
+  PageController pageControllerTop = PageController();
+  PageController pageControllerBottom = PageController();
+
+  @override
+  void dispose() {
+    if (mounted) {
+      selectedIdCategoryItem.dispose();
+      isOpen.dispose();
+      currentPage.dispose();
+      nameItemController.dispose();
+      branchItemController.dispose();
+      priceItemController.dispose();
+      codeBarcodeController.dispose();
+      nameCategoryController.dispose();
+      pageControllerTop.dispose();
+      pageControllerBottom.dispose();
+      searchControllerItem.dispose();
+      searchControllerCategory.dispose();
+      branchController.dispose();
+    }
+    super.dispose();
+  }
+
+  void _gotoPage(bool page) {
+    int goto = page ? 0 : 1;
+    currentPage.value = page;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (pageControllerTop.hasClients && pageControllerBottom.hasClients) {
+        pageControllerTop.animateToPage(
+          goto,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        pageControllerBottom.animateToPage(
+          goto,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    context.read<InventoryBloc>().add(InventoryGetData());
+  }
+
+  Future<void> _onRefresh() async {
+    final bloc = context.read<InventoryBloc>();
+    bloc.add(InventoryResetItemForm());
+    bloc.add(InventoryResetCategoryForm());
+    _resetItemForm();
+    nameCategoryController.clear();
+
+    await Future.wait([
+      context.read<DataUserRepositoryCache>().initItem(),
+      context.read<DataUserRepositoryCache>().initCategory(),
+      context.read<DataUserRepositoryCache>().initBatch(),
+    ]);
+
+    _initData();
+    devLog("Log UIInventory: initData");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutTopBottom(
+      refreshIndicator: _onRefresh,
+      layoutTop: topLayout(),
+      layoutBottom: bottomLayout(),
+      widgetNavigation: navigationGesture(),
+    );
+  }
+
+  Widget topLayout() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            customButtonIcon(
+              backgroundColor: AppPropertyColor.primary,
+              icon: const Icon(
+                Icons.menu_rounded,
+                color: AppPropertyColor.white,
+                size: lv2IconSize,
+              ),
+              label: Text("Menu", style: lv05TextStyleWhite),
+              onPressed: () {
+                isOpen.value = !isOpen.value;
+              },
+            ),
+            Spacer(),
+            GestureDetector(
+              onTap: () {
+                _gotoPage(!currentPage.value);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                width: 115,
+                height: 30,
+                child: ValueListenableBuilder(
+                  valueListenable: currentPage,
+                  builder: (context, value, child) {
+                    return WidgetAnimatePage(
+                      change: value,
+                      text1: "Inventori",
+                      text2: "Kategori",
+                      showAt1: 0,
+                      showAt2: 5,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        Expanded(
+          child: PageView(
+            controller: pageControllerTop,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UIInventorySearchAndBranchItem(
+                    searchControllerCategory: searchControllerCategory,
+                    searchControllerItem: searchControllerItem,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  UIFiltersItem(
+                    filters: filterItem,
+                    statusItem: statusData,
+                    filterType: filterTypeItem,
+                    onFilterChangedCallBack:
+                        ({
+                          FilterItem? filter,
+                          StatusData? status,
+                          FilterTypeItem? filterType,
+                          int? filterIDCategory,
+                        }) {
+                          context.read<InventoryBloc>().add(
+                            InventoryFilterItem(
+                              filter: filter,
+                              status: status,
+                              filterType: filterType,
+                              filterByCategory: filterIDCategory,
+                            ),
+                          );
+                        },
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Expanded(child: UIInventoryGridViewItem()),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 5),
+                  UIInventorySearchAndBranchCategory(
+                    searchControllerItem: searchControllerItem,
+                    searchControllerCategory: searchControllerCategory,
+                  ),
+                  Expanded(child: UIInventoryListViewCategory()),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget bottomLayout() {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: GestureDetector(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              width: 250,
+              height: 35,
+              child: ValueListenableBuilder(
+                valueListenable: currentPage,
+                builder: (context, value, child) {
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        right: value ? -250 : 0,
+                        top: 4,
+                        duration: const Duration(milliseconds: 500),
+                        child: customButtonIconReset(
+                          onPressed: () {
+                            _resetCategoryForm();
+                          },
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        curve: Curves.easeInOut,
+                        right: value ? 0 : -200,
+                        top: 0,
+                        duration: const Duration(milliseconds: 500),
+                        child: customButtonIconReset(
+                          onPressed: () {
+                            context.read<InventoryBloc>().add(
+                              InventoryResetItemForm(),
+                            );
+                            _resetItemForm();
+                          },
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        top: 0,
+                        curve: Curves.easeInOut,
+                        left: value ? 0 : 650,
+                        duration: const Duration(milliseconds: 500),
+                        child: SizedBox(
+                          width: 100,
+                          child: WidgetDropDownFilter(
+                            initialValue: context
+                                .select<InventoryBloc, FilterTypeItem>((value) {
+                                  final blocurrentState = value.state;
+                                  if (blocurrentState is InventoryLoaded) {
+                                    return blocurrentState.filterTypeItem;
+                                  }
+                                  return FilterTypeItem.All;
+                                }),
+                            filters: filterTypeItem,
+                            text: "Jenis Item",
+                            selectedValue: (selectedEnum) =>
+                                context.read<InventoryBloc>().add(
+                                  InventoryFilterItem(filterType: selectedEnum),
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Expanded(
+          child: PageView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: pageControllerBottom,
+            reverse: true,
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 5,
+                      ),
+                      children: [
+                        UIInventoryFormFieldItem(
+                          nodes: nodesForm,
+                          formKey: _formKey,
+                          nameItemController: nameItemController,
+                          codeBarcodeController: codeBarcodeController,
+                          priceItemController: priceItemController,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: DropdownCategoryItem(
+                                idCategory: selectedIdCategoryItem,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              flex: 1,
+                              child:
+                                  customTextBranch<
+                                    InventoryBloc,
+                                    InventoryState
+                                  >(
+                                    context,
+                                    result: (state) {
+                                      if (state is InventoryLoaded) {
+                                        return state.dataBranch!
+                                            .firstWhere(
+                                              (element) =>
+                                                  element.getidBranch ==
+                                                  state.idBranch,
+                                            )
+                                            .getareaBranch;
+                                      }
+                                      return "";
+                                    },
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Expanded(
+                    flex: 2,
+                    child: UIInventoryButtonItem(
+                      formKey: _formKey,
+                      nameItemController: nameItemController,
+                      priceItemController: priceItemController,
+                      codeBarcodeController: codeBarcodeController,
+                      selectedIdCategoryItem: selectedIdCategoryItem,
+                      resetItemForm: () {
+                        _resetItemForm();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  UICategoryTextFieldAndBranch(
+                    branchController: branchController,
+                    nameCategoryController: nameCategoryController,
+                    resetCategoryForm: _resetCategoryForm,
+                  ),
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: UICategoryButtonCategory(
+                      nameCategoryController: nameCategoryController,
+                      resetCategoryForm: () => _resetCategoryForm(),
+                    ),
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                      child: Text(
+                        AppPropertyText.ManualDelete,
+                        style: lv05TextStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget navigationGesture() {
+    final contentNavGesture = [
+      {
+        "id": "inventory",
+        "toContext": '/inventory',
+        "text_menu": "Inventori",
+        "onTap": () {},
+      },
+      {
+        "id": "batch",
+        "toContext": '/batch',
+        "text_menu": "Batch",
+        "onTap": () {},
+      },
+    ];
+
+    return NavigationGesture(
+      currentPage: "inventory",
+      attContent: contentNavGesture,
+      isOpen: isOpen,
+      close: () {
+        isOpen.value = false;
+      },
+    );
+  }
+
+  Widget rowContentAnim(Icon iconContent, Text textCOntent) {
+    return Row(children: [iconContent, textCOntent]);
+  }
+
+  void _resetItemForm() {
+    _formKey.currentState!.reset();
+    final bloc = context.read<InventoryBloc>();
+    bloc.add(InventoryResetItemForm());
+    nameItemController.clear();
+    priceItemController.clear();
+    codeBarcodeController.clear();
+  }
+
+  void _resetCategoryForm() {
+    context.read<InventoryBloc>().add(InventoryResetCategoryForm());
+    nameCategoryController.clear();
+  }
+}

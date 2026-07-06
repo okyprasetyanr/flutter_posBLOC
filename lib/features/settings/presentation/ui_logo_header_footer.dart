@@ -1,0 +1,90 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/core/app_property/app_properties.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_button_icon.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_text_border.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_text_field.dart';
+import 'package:flutter_pos/features/settings/logic/settings_bloc.dart';
+import 'package:flutter_pos/features/settings/logic/settings_event.dart';
+import 'package:flutter_pos/features/settings/logic/settings_state.dart';
+import 'package:flutter_pos/shared/style_and_transition_text/style/style_font_size.dart';
+
+class UiLogoHeaderFooter extends StatelessWidget {
+  final TextEditingController headerController;
+  final TextEditingController footerController;
+  final ScrollController controller;
+  UiLogoHeaderFooter({
+    super.key,
+    required this.headerController,
+    required this.footerController,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppPropertyColor.white,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: customTextBorder("Branding", lv2TextStyleWhite),
+            ),
+            const SizedBox(height: 20),
+            Image.asset("assets/logo.png", height: 150, width: 150),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 250,
+                child: BlocListener<SettingsBloc, SettingsState>(
+                  listener: (context, state) {
+                    if (state is SettingsLogoHeaderFooterLoaded) {
+                      headerController.text = state.header;
+                      footerController.text = state.footer;
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      customTextField(
+                        controller: headerController,
+                        label: "Header",
+                      ),
+                      const SizedBox(height: 10),
+                      customTextField(
+                        controller: footerController,
+                        label: "Footer",
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            customButtonIcon(
+              icon: const Icon(
+                Icons.check_rounded,
+                color: AppPropertyColor.white,
+              ),
+              label: Text("Simpan", style: lv05TextStyleWhite),
+              backgroundColor: AppPropertyColor.primary,
+              onPressed: () {
+                context.read<SettingsBloc>().add(
+                  SettingsLogoHeaderFooterUpdate(
+                    footer: footerController.text,
+                    header: headerController.text,
+                  ),
+                );
+
+                footerController.clear();
+                headerController.clear();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,205 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_pos/shared/helper/from_and_to_map/from_map.dart';
+import 'package:flutter_pos/features/batch/model/model_batch.dart';
+import 'package:flutter_pos/shared/model/model_branch.dart';
+import 'package:flutter_pos/features/inventory/model/model_category.dart';
+import 'package:flutter_pos/shared/model/model_company.dart';
+import 'package:flutter_pos/shared/model/model_counter.dart';
+import 'package:flutter_pos/features/financial/model/model_financial.dart';
+import 'package:flutter_pos/features/inventory/model/model_item.dart';
+import 'package:flutter_pos/features/transaction/model/model_item_ordered.dart';
+import 'package:flutter_pos/features/partner/model/model_partner.dart';
+import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
+import 'package:flutter_pos/features/history_adjustment/model/model_transaction_adjustment_in.dart';
+import 'package:flutter_pos/features/history_adjustment/model/model_transaction_adjustment_out.dart';
+import 'package:flutter_pos/features/history_financial/model/model_transaction_financial.dart';
+import 'package:flutter_pos/features/operator/model/model_user.dart';
+
+List<ModelTransactionAdjustmentIn> getDataListTransAdjustmentIn(
+  QuerySnapshot data,
+) {
+  return data.docs.map((map) {
+    final dataAdjustmentIn = map.data() as Map<String, dynamic>;
+    return fromMapTransactionAdjustmentIn(dataAdjustmentIn, map.id);
+  }).toList();
+}
+
+List<ModelTransactionAdjustmentOut> getDataListTransAdjustmentOut(
+  QuerySnapshot data,
+) {
+  return data.docs.map((map) {
+    final dataAdjustmentOut = map.data() as Map<String, dynamic>;
+    return fromMapTransactionAdjustmentOut(dataAdjustmentOut, map.id);
+  }).toList();
+}
+
+List<ModelTransactionFinancial> getDataListTransFinancial(QuerySnapshot data) {
+  return data.docs.map((map) {
+    final dataFinancial = map.data() as Map<String, dynamic>;
+    return fromMapTransFinancial(dataFinancial, map.id);
+  }).toList();
+}
+
+List<ModelFinancial> getDataListFinancial(QuerySnapshot data) {
+  return data.docs.map((map) {
+    final dataFinancial = map.data() as Map<String, dynamic>;
+    return fromMapFinancial(dataFinancial, map.id);
+  }).toList();
+}
+
+List<ModelBranch> getDataListBranch(DocumentSnapshot data) {
+  List listbranch = data['list_branch'] ?? const [];
+  return listbranch.map((map) => fromMapListBranch(map, data.id)).toList();
+}
+
+ModelCompany getDataCompany(DocumentSnapshot data) {
+  final dataUser = data.data() as Map<String, dynamic>;
+  return fromMapCompany(dataUser, data.id, dataList: data);
+}
+
+List<ModelCounter> getDataCounter(
+  QuerySnapshot dataCounter,
+  ModelCompany? dataCompany,
+) {
+  if (dataCounter.docs.isEmpty) {
+    return dataCompany!.getListBranch
+        .map((element) => fromMapCounter(null, element.getidBranch))
+        .toList();
+  }
+  return dataCounter.docs.map((counter) {
+    return fromMapCounter(counter.data() as Map<String, dynamic>, counter.id);
+  }).toList();
+}
+
+Future<List<ModelBatch>> getDataListBatch(QuerySnapshot data) async {
+  final firestore = FirebaseFirestore.instance;
+  return await Future.wait(
+    data.docs.map((map) async {
+      final dataBatch = map.data() as Map<String, dynamic>;
+      final itemsSnapshot = await firestore
+          .collection('batch')
+          .doc(map.id)
+          .collection('items_batch')
+          .get();
+
+      final itemsBatch = itemsSnapshot.docs.map((itemDoc) {
+        final data = itemDoc.data();
+        return fromMapItembatch(data, itemDoc.id);
+      }).toList();
+
+      return fromMapBatch(dataBatch, map.id, dataList: itemsBatch);
+    }).toList(),
+  );
+}
+
+Future<List<ModelTransaction>> getDataListTransaction(
+  QuerySnapshot data, {
+  required bool isSell,
+}) async {
+  final firestore = FirebaseFirestore.instance;
+  final String collection = isSell ? 'transaction_sell' : 'transaction_buy';
+
+  final List<ModelTransaction> result = [];
+
+  for (final map in data.docs) {
+    final dataTransaction = map.data() as Map<String, dynamic>;
+
+    final itemsSnapshot = await firestore
+        .collection(collection)
+        .doc(map.id)
+        .collection('items_ordered')
+        .get();
+
+    final List<ModelItemOrdered> itemsOrdered = [];
+
+    for (final itemDoc in itemsSnapshot.docs) {
+      final itemBatchSnapshot = await firestore
+          .collection(collection)
+          .doc(map.id)
+          .collection('items_ordered')
+          .doc(itemDoc.id)
+          .collection('items_ordered_batch')
+          .get();
+
+      final itemOrderedBatch = itemBatchSnapshot.docs
+          .map(
+            (itemOrderedBatchDoc) => fromMapItemOrderedBatch(
+              orderedBatch: itemOrderedBatchDoc.data(),
+              id_ordered: itemOrderedBatchDoc.id,
+            ),
+          )
+          .toList();
+
+      final condimentSnapshot = await firestore
+          .collection(collection)
+          .doc(map.id)
+          .collection('items_ordered')
+          .doc(itemDoc.id)
+          .collection('condiment')
+          .get();
+
+      final condiments = condimentSnapshot.docs
+          .map(
+            (condimentDoc) => fromMapItemOrdered(
+              itemBatch: [],
+              items: condimentDoc.data(),
+              condiment: [],
+              isCondiment: true,
+              id_ordered: condimentDoc.id,
+            ),
+          )
+          .toList();
+
+      itemsOrdered.add(
+        fromMapItemOrdered(
+          itemBatch: itemOrderedBatch,
+          items: itemDoc.data(),
+          condiment: condiments,
+          isCondiment: false,
+          id_ordered: itemDoc.id,
+        ),
+      );
+    }
+
+    final splitSnapshot = await firestore
+        .collection(collection)
+        .doc(map.id)
+        .collection('data_split')
+        .get();
+
+    final splitData = splitSnapshot.docs
+        .map((splitDoc) => fromMapSplit(splitDoc.data(), invoice: map.id))
+        .toList();
+
+    result.add(
+      fromMapTransaction(dataTransaction, itemsOrdered, splitData, map.id),
+    );
+  }
+
+  return result;
+}
+
+List<ModelPartner> getDataListPartner(QuerySnapshot data) {
+  return data.docs.map((map) {
+    final dataPartner = map.data() as Map<String, dynamic>;
+    return fromMapPartner(dataPartner, map.id);
+  }).toList();
+}
+
+List<ModelUser> getDataListUser(QuerySnapshot<Map<String, dynamic>> data) {
+  return data.docs.map((map) => fromMapUser(map.data(), map.id)).toList();
+}
+
+List<ModelItem> getDataListItem(QuerySnapshot data) {
+  return data.docs.map((map) {
+    final dataItem = map.data() as Map<String, dynamic>;
+    return fromMapItem(dataItem, map.id);
+  }).toList();
+}
+
+List<ModelCategory> getDataListCategory(QuerySnapshot data) {
+  return data.docs.map((map) {
+    final dataCategory = map.data() as Map<String, dynamic>;
+    return fromMapCategory(dataCategory, map.id);
+  }).toList();
+}

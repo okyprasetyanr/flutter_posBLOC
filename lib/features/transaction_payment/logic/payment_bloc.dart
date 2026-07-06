@@ -1,0 +1,436 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
+import 'package:flutter_pos/features/transaction/util/push_data_transaction.dart';
+import 'package:flutter_pos/core/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/transaction_payment/logic/payment_event.dart';
+import 'package:flutter_pos/features/transaction_payment/logic/payment_state.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/transaction/logic/transaction_state.dart';
+import 'package:flutter_pos/core/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/core/data_user/isar/action/get/get_data_isar_by.dart';
+import 'package:flutter_pos/core/data_user/isar/action/save/save_update_data_isar.dart';
+import 'package:flutter_pos/core/hive_setup/model_transaction_save.dart';
+import 'package:flutter_pos/shared/helper/from_and_to_map/convert_to_map.dart';
+import 'package:flutter_pos/shared/helper/common_helper/event_transformer.dart.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/transaction/model/model_item_ordered.dart';
+import 'package:flutter_pos/features/transaction/model/model_split.dart';
+import 'package:flutter_pos/features/transaction/model/model_transaction.dart';
+import 'package:flutter_pos/shared/helper/request/update_data.dart';
+
+class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
+  DataUserRepositoryCache repoCache;
+  final TransactionBloc transactionBloc;
+
+  PaymentBloc(this.repoCache, this.transactionBloc) : super(PaymentInitial()) {
+    on<PaymentGetTransaction>(_onGetTransaction);
+    on<PaymentAdjust>(_onAdjust, transformer: debounceRestartable());
+    on<PaymentProcess>(_onPaymentProcess);
+    on<PaymentResetSplit>(_onResetSplit);
+    on<PaymentResetTransaction>(_onResetTransaction);
+    on<PaymentNote>(_onPaymentNote, transformer: debounceRestartable());
+  }
+
+  FutureOr<void> _onResetSplit(
+    PaymentResetSplit event,
+    Emitter<PaymentState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is PaymentLoaded) {
+      final dataTransaction = currentState.transaction_sell!.copyWith(
+        charge: 0,
+      );
+      dataTransaction.getdataSplit.clear();
+
+      emit(currentState.copyWith(transaction_sell: dataTransaction));
+      devLog("Log PaymentBloc: Split data dihapus");
+    }
+  }
+
+  FutureOr<void> _onAdjust(PaymentAdjust event, Emitter<PaymentState> emit) {
+    final currentState = state;
+    if (currentState is PaymentLoaded) {
+      final dataTransaction = currentState.transaction_sell!.copyWith();
+      int discount = dataTransaction.getdiscount;
+      int ppn = dataTransaction.getppn;
+      LabelPaymentMethod paymentMethod = dataTransaction.getpaymentMethod;
+      int charge =
+          paymentMethod == event.paymentMethod || event.paymentMethod == null
+          ? dataTransaction.getcharge
+          : 0;
+      List<ModelSplit>? dataSplit = dataTransaction.getdataSplit;
+      String? bankName;
+      double billPaid = 0;
+      double total = 0;
+
+      devLog(
+        "Log PaymentBloc: before Ajust: $paymentMethod, $charge, ${event.paymentMethod}",
+      );
+
+      if (event.charge != null) {
+        charge = event.charge!;
+      }
+
+      if (event.discount != null) {
+        discount = event.discount!;
+      }
+
+      if (event.ppn != null) {
+        ppn = event.ppn!;
+      }
+
+      if (event.paymentMethod != null) {
+        paymentMethod = event.paymentMethod!;
+      }
+
+      if (event.billPaid != null) {
+        billPaid = event.billPaid!;
+      }
+
+      if (event.bankName != null) {
+        bankName = event.bankName;
+      }
+
+      if (paymentMethod == LabelPaymentMethod.Split) {
+        final splitPayments = {
+          LabelPaymentMethod.Cash: event.billPaidSplitCash,
+          LabelPaymentMethod.Debit: event.billPaidSplitDebit,
+        };
+
+        for (final entry in splitPayments.entries) {
+          final paymentType = entry.key;
+          final amount = entry.value;
+          if (amount == null) continue;
+
+          int indexdataSplit = dataSplit.indexWhere(
+            (e) => e.getpaymentName == paymentType,
+          );
+
+          if (indexdataSplit != -1) {
+            dataSplit[indexdataSplit] = dataSplit[indexdataSplit].copyWith(
+              paymentTotal: amount,
+            );
+          } else {
+            dataSplit.add(
+              ModelSplit(paymentName: paymentType, paymentTotal: amount),
+            );
+          }
+        }
+        for (final data in dataSplit) {
+          billPaid += data.getpaymentTotal;
+        }
+        if (event.bankName != null) {
+          int indexdataSplit = dataSplit.indexWhere(
+            (e) => e.getpaymentName == LabelPaymentMethod.Debit,
+          );
+          if (indexdataSplit != -1) {
+            dataSplit[indexdataSplit] = dataSplit[indexdataSplit].copyWith(
+              paymentDebitName: event.bankName,
+            );
+          } else {
+            dataSplit.add(
+              ModelSplit(
+                paymentName: LabelPaymentMethod.Debit,
+                paymentTotal: 0,
+                paymentDebitName: event.bankName ?? "",
+              ),
+            );
+          }
+          bankName = null;
+        }
+        devLog("Log PaymentBloc: Ajust Split: ${event.bankName} ${dataSplit}");
+      }
+
+      devLog(
+        "Log PaymentBloc: Ajust: $paymentMethod, $bankName, $charge, ${event.paymentMethod}",
+      );
+
+      final totalOrdered = dataTransaction.getsubTotal;
+      final totalDiscount = totalOrdered * (discount / 100);
+      final afterDiscount = totalOrdered - totalDiscount;
+      final totalPpn = afterDiscount * (ppn / 100);
+      final totalCharge = afterDiscount * (charge / 100);
+      total = afterDiscount + totalPpn + totalCharge;
+
+      if (paymentMethod == LabelPaymentMethod.Debit ||
+          paymentMethod == LabelPaymentMethod.QRIS) {
+        billPaid = total;
+      }
+
+      emit(
+        currentState.copyWith(
+          transaction_sell: dataTransaction.copyWith(
+            bankName: bankName,
+            billPaid: billPaid,
+            discount: discount,
+            ppn: ppn,
+            charge: charge,
+            paymentMethod: paymentMethod,
+            total: total,
+            totalCharge: totalCharge,
+            totalDiscount: totalDiscount,
+            totalPpn: totalPpn,
+            dataSplit: [...dataSplit],
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onGetTransaction(
+    PaymentGetTransaction event,
+    Emitter<PaymentState> emit,
+  ) async {
+    final sellState = this.transactionBloc.state as TransactionLoaded;
+    devLog(
+      "Log PaymentBloc: dataRevisiOrSaved: ${sellState.selectedTransaction}",
+    );
+    final formattedDate = parseDate(date: DateTime.now());
+
+    List<ModelItemOrdered> itemOrdered = await List.from(sellState.itemOrdered);
+    if (!sellState.isSell) {
+      itemOrdered = itemOrdered
+          .map((item) => item.copyWith(dateBuy: formattedDate))
+          .toList();
+    }
+    int itemTotal = 0;
+    double priceTotal = 0;
+    for (int indexItem = 0; indexItem < itemOrdered.length; indexItem++) {
+      final Item = itemOrdered[indexItem];
+      itemTotal++;
+      priceTotal += Item.getsubTotal;
+      final condiment = Item.getCondiment;
+      for (
+        int indexCondiment = 0;
+        indexCondiment < condiment.length;
+        indexCondiment++
+      ) {
+        itemTotal++;
+        priceTotal += condiment[indexCondiment].getsubTotal;
+      }
+    }
+
+    final ModelTransaction? dataRevisiOrSaved = sellState.selectedTransaction;
+    final isNewTransaction = dataRevisiOrSaved == null;
+    final note = isNewTransaction ? "" : dataRevisiOrSaved.getnote;
+    final discount = isNewTransaction ? 0 : dataRevisiOrSaved.getdiscount;
+    final ppn = isNewTransaction ? 0 : dataRevisiOrSaved.getppn;
+
+    final counter = await getCounterIsar(sellState.idBranch!);
+
+    final dataOperator = await getAllAccountIsar();
+
+    final invoice = generateInvoice(
+      idOP: dataOperator.getNameUser,
+      branchId: sellState.idBranch,
+      queue: sellState.isSell
+          ? counter.getcounterSell + 1
+          : counter.getcounterBuy + 1,
+    );
+
+    if (!sellState.isSell) {
+      itemOrdered = itemOrdered
+          .map(
+            (item) => item.copyWith(
+              dateBuy: formattedDate,
+              invoice: invoice,
+              itemOrderedBatch: item.getitemOrderedBatch
+                  .map((e) => e.copyWith(invoice: invoice))
+                  .toList(),
+            ),
+          )
+          .toList();
+    } else {
+      itemOrdered = itemOrdered
+          .map(
+            (item) => item.copyWith(
+              invoice: invoice,
+              itemOrderedBatch: item.getitemOrderedBatch
+                  .map((e) => e.copyWith(invoice: invoice))
+                  .toList(),
+            ),
+          )
+          .toList();
+    }
+
+    add(PaymentAdjust(ppn: ppn, discount: discount));
+    devLog("Log PaymentBloc: Counter: ${counter.getcounterSell}");
+    emit(
+      PaymentLoaded(
+        revisionInvoice: dataRevisiOrSaved?.getinvoice ?? "",
+        isSell: sellState.isSell,
+        itemOrdered: itemOrdered,
+        transaction_sell: ModelTransaction(
+          idBranch: sellState.idBranch!,
+          itemsOrdered: itemOrdered,
+          dataSplit: [],
+          billPaid: 0,
+          note: note,
+          paymentMethod: LabelPaymentMethod.Cash,
+          date: formattedDate,
+          invoice: invoice,
+          namePartner: sellState.selectedPartner?.getnamePartner,
+          idPartner: sellState.selectedPartner?.getidPartner,
+          nameOperator: dataOperator.getNameUser,
+          idOperator: dataOperator.getIdUser,
+          discount: discount,
+          ppn: ppn,
+          totalItem: itemTotal,
+          subTotal: priceTotal,
+          charge: 0,
+          total: priceTotal,
+          totalCharge: 0,
+          totalDiscount: 0,
+          totalPpn: 0,
+        ),
+      ),
+    );
+  }
+
+  FutureOr<void> _onPaymentNote(PaymentNote event, Emitter<PaymentState> emit) {
+    final currentState = state;
+    if (currentState is PaymentLoaded) {
+      devLog("Log PaymentBloc: Note ${currentState.transaction_sell!.getnote}");
+      emit(
+        currentState.copyWith(
+          transaction_sell: currentState.transaction_sell!.copyWith(
+            note: event.note,
+          ),
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _onResetTransaction(
+    PaymentResetTransaction event,
+    Emitter<PaymentState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is PaymentLoaded) {
+      emit(currentState.copyWith(transaction_sell: null));
+    }
+  }
+
+  Future<void> _onPaymentProcess(
+    PaymentProcess event,
+    Emitter<PaymentState> emit,
+  ) async {
+    final sellState = this.transactionBloc;
+    final currentState = state;
+
+    final saved = event.statusTransaction == ListStatusTransaction.Tersimpan;
+    final dataAccount = await getAllAccountIsar();
+    if (currentState is PaymentLoaded) {
+      final isSell = currentState.isSell;
+      final counter = await getCounterIsar(
+        currentState.transaction_sell!.getidBranch,
+      );
+
+      devLog(
+        "Log PaymentBloc: onPaymentProcess: ${currentState.revisionInvoice}",
+      );
+
+      final invoice = saved
+          ? (sellState.state as TransactionLoaded).dataTransactionSaved.any(
+                  (element) =>
+                      element.getinvoice == currentState.revisionInvoice,
+                )
+                ? currentState.revisionInvoice
+                : generateInvoice(
+                    idOP: dataAccount.getNameUser,
+                    branchId: currentState.transaction_sell?.getidBranch,
+                    queue: counter.getcounterSellSaved + 1,
+                  )
+          : currentState.transaction_sell!.getinvoice;
+
+      final transaction = currentState.transaction_sell!.copyWith(
+        statusTransaction: event.statusTransaction,
+        invoice: invoice,
+      );
+
+      final box = await repoCache.getHiveSavedTransaction();
+      devLog(
+        "Log PaymentBlog: OnPaymentProcess check saved Invoice: $invoice, InvoiceSaved: ${currentState.revisionInvoice}",
+      );
+
+      if (saved) {
+        final existing = box.get(invoice);
+        final cleanedItems = transaction.getitemsOrdered.map((e) {
+          return e.copyWith(itemOrderedBatch: []);
+        }).toList();
+
+        final newTransaction = transaction.copyWith(
+          itemsOrdered: cleanedItems,
+          statusTransaction: transaction.getstatusTransaction,
+        );
+        final newData = convertToMapTransactionSaveHive(newTransaction);
+
+        if (existing != null) {
+          await box.put(
+            invoice,
+            TransactionSavedHive(
+              invoice: existing.invoice,
+              datatransactionSaved: newData,
+              createdAt: existing.createdAt,
+            ),
+          );
+        } else {
+          await box.put(
+            invoice,
+            TransactionSavedHive(
+              invoice: invoice!,
+              datatransactionSaved: newData,
+              createdAt: DateTime.now(),
+            ),
+          );
+        }
+      } else {
+        if (currentState.revisionInvoice != null) {
+          if (box.get(currentState.revisionInvoice!) != null) {
+            await box.delete(currentState.revisionInvoice);
+          }
+        }
+        await pushDataTransaction(isSell: isSell, data: transaction);
+      }
+
+      final finalCounter = counter.copyWith(
+        counterSell: saved
+            ? null
+            : isSell
+            ? counter.getcounterSell + 1
+            : null,
+        counterBuy: saved
+            ? null
+            : isSell
+            ? null
+            : counter.getcounterBuy + 1,
+      );
+      devLog(
+        "Log PaymentBloc: Counter After Payment: finalCounter: ${finalCounter.getcounterSell}",
+      );
+      await saveCounter_Isar(finalCounter);
+
+      await updateCounter(
+        field: currentState.isSell ? 'counter_sell' : 'counter_buy',
+        idBranch: transaction.getidBranch,
+      );
+    }
+
+    if (sellState.state is TransactionLoaded) {
+      sellState.add(TransactionResetOrderedItem());
+      sellState.add(
+        TransactionGetData(
+          idBranch: (sellState.state as TransactionLoaded).idBranch,
+        ),
+      );
+    }
+
+    if (saved) {
+      Navigator.pop(event.context);
+    }
+  }
+}

@@ -1,0 +1,297 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pos/core/app_property/app_properties.dart';
+import 'package:flutter_pos/core/connection/authentication_account.dart';
+import 'package:flutter_pos/shared/helper/enum_and_string/enum.dart';
+import 'package:flutter_pos/core/data_user/data_user_repository_cache.dart';
+import 'package:flutter_pos/features/operator/logic/operator_event.dart';
+import 'package:flutter_pos/features/operator/logic/operator_state.dart';
+import 'package:flutter_pos/core/data_user/isar/action/delete/delete_data_isar_by.dart';
+import 'package:flutter_pos/core/data_user/isar/action/get/get_data_isar_all.dart';
+import 'package:flutter_pos/core/data_user/isar/action/save/save_update_data_isar.dart';
+import 'package:flutter_pos/shared/helper/common_helper/event_transformer.dart.dart';
+import 'package:flutter_pos/shared/helper/common_helper/function.dart';
+import 'package:flutter_pos/features/operator/model/model_user.dart';
+import 'package:flutter_pos/shared/helper/request/delete_data.dart';
+import 'package:flutter_pos/shared/widget/common_widget/widget_custom_spin_kit.dart';
+
+class OperatorBloc extends Bloc<OperatorEvent, OperatorState> {
+  DataUserRepositoryCache repoCache;
+  OperatorBloc(this.repoCache) : super(OperatorInitial()) {
+    on<OperatorGetData>(_onGetData);
+    on<OperatorFilterOperator>(_onFilterOperator);
+    on<OperatorRemoveData>(_onRemove);
+    on<OperatorUploadData>(_onUpload);
+    on<OperatorSelectedData>(_onSelectedData);
+    on<OperatorResetPassword>(_onResetPassword);
+    on<OperatorSearch>(_onSearch, transformer: debounceRestartable());
+    on<OperatorResetForm>(_onResetForm);
+  }
+
+  List<ModelUser> filterData({
+    required List<ModelUser> dataUser,
+    RoleType? roleUser,
+    StatusData? statusUser,
+    String? idBranch,
+  }) {
+    if (idBranch == null) {
+      final currentState = state as OperatorLoaded;
+      idBranch = currentState.idBranch;
+    }
+
+    devLog("Log OperatorBloc: ${dataUser.map((e) => e.getNameUser)}");
+    return dataUser.where((element) {
+      if (statusUser != null) {
+        final byStatus = element.getstatusUser == statusUser;
+        if (!byStatus) return false;
+      }
+      if (roleUser != RoleType.All) {
+        final byRole = element.getRoleUser == roleUser;
+        if (!byRole) return false;
+      }
+      final byIdBranch =
+          element.getIdBranchUser == idBranch ||
+          element.getIdBranchUser == null;
+      if (!byIdBranch) return false;
+
+      return true;
+    }).toList();
+  }
+
+  Future<void> _onGetData(
+    OperatorGetData event,
+    Emitter<OperatorState> emit,
+  ) async {
+    final currentState = state is OperatorLoaded
+        ? state as OperatorLoaded
+        : OperatorLoaded();
+
+    final dataBranch = currentState.dataBranch ?? await getAllListBranchIsar();
+    final idBranch =
+        event.idBranch ?? currentState.idBranch ?? dataBranch.first.getidBranch;
+    final roleUser = event.roleUser ?? currentState.filterRoleUser;
+    final statusUser = event.statusUser ?? currentState.filterStatusUser;
+    final dataUser = await getAllUserIsar();
+    final filteredData = filterData(
+      idBranch: idBranch,
+      dataUser: dataUser,
+      roleUser: roleUser,
+      statusUser: statusUser,
+    );
+
+    emit(
+      currentState.copyWith(
+        dataBranch: dataBranch,
+        idBranch: idBranch,
+        dataUser: dataUser,
+        isEdit: false,
+        filteredData: filteredData,
+        filterRoleUser: roleUser,
+        filterStatusUser: statusUser,
+        selectedPermission: {
+          for (final permission in Permission.values) permission: false,
+        },
+      ),
+    );
+  }
+
+  FutureOr<void> _onFilterOperator(
+    OperatorFilterOperator event,
+    Emitter<OperatorState> emit,
+  ) {
+    final currentState = state as OperatorLoaded;
+    final roleUser = event.roleUser ?? currentState.filterRoleUser;
+    final statusUser = event.statusUser ?? currentState.filterStatusUser;
+    final filteredData = filterData(
+      dataUser: currentState.dataUser,
+      roleUser: roleUser,
+      statusUser: statusUser,
+    );
+
+    devLog("Log OperatorBloc: onFilter: $filteredData");
+
+    emit(
+      currentState.copyWith(
+        filteredData: filteredData,
+        filterRoleUser: roleUser,
+        filterStatusUser: statusUser,
+      ),
+    );
+  }
+
+  FutureOr<void> _onSearch(OperatorSearch event, Emitter<OperatorState> emit) {
+    final currentState = state as OperatorLoaded;
+    final roleUser = currentState.filterRoleUser;
+    final statusUser = currentState.filterStatusUser;
+    final dataFiltered = currentState.dataUser.where((element) {
+      final search = element.getNameUser.toLowerCase().contains(
+        event.search.toLowerCase(),
+      );
+      if (!search) return false;
+      final byStatus = element.getstatusUser == statusUser;
+      if (!byStatus) return false;
+
+      if (roleUser != null) {
+        final byRole = element.roleUser == roleUser;
+        if (!byRole) return false;
+      }
+      return true;
+    }).toList();
+    devLog("Log OperatorBloc: onSearch: $roleUser, $statusUser");
+    emit(currentState.copyWith(filteredData: dataFiltered));
+  }
+
+  Future<void> _onRemove(
+    OperatorRemoveData event,
+    Emitter<OperatorState> emit,
+  ) async {
+    final idUser = event.data.getIdUser;
+    await deleteUserById_Isar(idUser!);
+    await deleteDataUser(idUser);
+
+    add(OperatorGetData());
+  }
+
+  FutureOr<void> _onSelectedData(
+    OperatorSelectedData event,
+    Emitter<OperatorState> emit,
+  ) {
+    final currentState = state as OperatorLoaded;
+    final selectedData = event.selectedData ?? currentState.selectedData;
+    devLog("Log OperatorBloc: selectedData: $selectedData");
+    emit(
+      currentState.copyWith(
+        selectedData: selectedData,
+        isEdit: selectedData != null ? true : false,
+        selectedRole: event.selectedRole ?? selectedData?.getRoleUser,
+        selectedStatus: event.selectedStatus ?? selectedData?.getstatusUser,
+        selectedPermission:
+            event.selectedPermission ?? selectedData?.getPermissionsUser,
+      ),
+    );
+  }
+
+  Future<void> _onUpload(
+    OperatorUploadData event,
+    Emitter<OperatorState> emit,
+  ) async {
+    final context = event.context;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return Center(
+          child: customSpinKit(color: AppPropertyColor.white, size: 30),
+        );
+      },
+    );
+    final currentState = state as OperatorLoaded;
+    ModelUser data = ModelUser(
+      idUser: currentState.selectedData?.idUser,
+      permissionsUser: currentState.selectedPermission,
+      nameUser: event.name,
+      idBranchUser: currentState.idBranch!,
+      roleUser: currentState.selectedRole,
+      emailUser: event.email,
+      phoneUser: event.phone,
+      statusUser: currentState.selectedStatus,
+      noteUser: event.note,
+    );
+
+    if (currentState.selectedData == null) {
+      final credential = await authenticatorAccount(
+        repo: context.read<DataUserRepositoryCache>(),
+        context: context,
+        email: event.email,
+        password: event.password,
+        signup: true,
+      );
+      if (credential == null) return Navigator.of(context).pop();
+      final uid = credential.user!.uid;
+      data = data.copyWith(idBranchUser: currentState.idBranch, idUser: uid);
+    }
+
+    if (currentState.selectedRole == RoleType.Pemilik) {
+      await saveAccount_Isar(data);
+    } else {
+      await saveUser_Isar(data);
+    }
+    devLog("Log OperatorBloc: upload: ${data}");
+    await data.pushDataUser();
+
+    emit(resetData());
+    add(OperatorGetData());
+    Navigator.of(context).pop();
+  }
+
+  FutureOr<void> _onResetForm(
+    OperatorResetForm event,
+    Emitter<OperatorState> emit,
+  ) {
+    emit(resetData());
+  }
+
+  OperatorLoaded resetData() {
+    final currentState = state as OperatorLoaded;
+    return currentState.copyWith(
+      selectedData: null,
+      isEdit: false,
+      selectedPermission: {
+        for (final permission in Permission.values) permission: false,
+      },
+      selectedStatus: StatusData.Aktif,
+      selectedRole: RoleType.Kasir,
+    );
+  }
+
+  Future<void> _onResetPassword(
+    OperatorResetPassword event,
+    Emitter<OperatorState> emit,
+  ) async {
+    final currentState = state as OperatorLoaded;
+    final selectedData = currentState.selectedData;
+    final email = currentState.selectedData?.getEmailUser;
+    if (email == null || email.isEmpty) {
+      emit(
+        currentState.copyWith(
+          resetStatus: ResetPasswordStatus.failure,
+          selectedData: selectedData,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      currentState.copyWith(
+        resetStatus: ResetPasswordStatus.loading,
+        selectedData: selectedData,
+      ),
+    );
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      emit(
+        currentState.copyWith(
+          resetStatus: ResetPasswordStatus.success,
+          selectedData: selectedData,
+        ),
+      );
+    } catch (e) {
+      devLog("Log OperatorBloc: ResetPassword Error: ${e.toString()}");
+      emit(
+        currentState.copyWith(
+          resetStatus: ResetPasswordStatus.failure,
+          selectedData: selectedData,
+        ),
+      );
+    }
+    emit(
+      currentState.copyWith(
+        resetStatus: ResetPasswordStatus.idle,
+        selectedData: selectedData,
+      ),
+    );
+  }
+}
