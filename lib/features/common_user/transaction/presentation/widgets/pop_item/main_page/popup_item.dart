@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_condiment/page_condiment.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/page/page_item.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/page_condiment/page/page_popup_condiment.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/page_item/page/page_popup_item.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 
 class UITransactionPopUpItem extends StatefulWidget {
@@ -61,13 +61,13 @@ class _UITransactionPopUpItemState extends State<UITransactionPopUpItem> {
                 PageView(
                   controller: pageController,
                   children: [
-                    TransactionPopUpPageItem(
+                    PagePopUpItem(
                       sellPrice: sellPrice,
                       buyPrice: buyPrice,
                       editSell: editSell,
                       editBuy: editBuy,
                     ),
-                    UITransactionPopUpPageCondiment(),
+                    PopUpPageCondiment(),
                   ],
                 ),
 

@@ -3,19 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-class UITransactionPopUpPriceAndCustom extends StatelessWidget {
+class PopUpPriceAndCustom extends StatelessWidget {
   final bool forSell;
   final String labelPrice;
   final TextEditingController controller;
   final ValueNotifier<bool> editPrice;
   final Function({required double? value}) onChange;
-  const UITransactionPopUpPriceAndCustom({
+  const PopUpPriceAndCustom({
     super.key,
     required this.editPrice,
     required this.forSell,

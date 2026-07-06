@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pos/enum_and_string/string.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
 import 'package:flutter_pos/features/data_user/isar/collection/model_batch_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_isar.dart';
 import 'package:flutter_pos/from_and_to_map/convert_to_map.dart';

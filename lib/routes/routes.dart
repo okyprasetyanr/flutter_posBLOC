@@ -36,9 +36,9 @@ import 'package:flutter_pos/features/common_user/transaction_financial/logic/tra
 import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_event.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/page/ui_transaction.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/page/page_transaction.dart';
 import 'package:flutter_pos/features/common_user/transaction_financial/presentation/page/page_transaction_financial.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/presentation/page/page_transaction_payment.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_success.dart';
@@ -108,7 +108,7 @@ final routesPage = {
             revision: revision,
           ),
         ),
-      child: const UITransaction(),
+      child: const PageTransaction(),
     );
   },
   '/historyadjustment': (context) => BlocProvider(

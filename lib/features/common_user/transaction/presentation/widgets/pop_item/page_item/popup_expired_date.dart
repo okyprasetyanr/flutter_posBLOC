@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/common_widget/widget_custom_date.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/model_data/model_item_ordered.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 
-class UITransactionPopUpExpiredDate extends StatefulWidget {
-  const UITransactionPopUpExpiredDate({super.key});
+class PopUpExpiredDate extends StatefulWidget {
+  const PopUpExpiredDate({super.key});
 
   @override
-  State<UITransactionPopUpExpiredDate> createState() =>
-      _UITransactionPopUpExpiredDateState();
+  State<PopUpExpiredDate> createState() => _PopUpExpiredDateState();
 }
 
-class _UITransactionPopUpExpiredDateState
-    extends State<UITransactionPopUpExpiredDate> {
+class _PopUpExpiredDateState extends State<PopUpExpiredDate> {
   @override
   Widget build(BuildContext context) {
     return Row(

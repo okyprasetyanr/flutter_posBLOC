@@ -4,23 +4,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 
-class UITransactionPopUpDiscountAndCustom extends StatefulWidget {
-  const UITransactionPopUpDiscountAndCustom({super.key});
+class PopUpDiscountAndCustom extends StatefulWidget {
+  const PopUpDiscountAndCustom({super.key});
 
   @override
-  State<UITransactionPopUpDiscountAndCustom> createState() =>
-      _UITransactionPopUpDiscountAndCustomState();
+  State<PopUpDiscountAndCustom> createState() => _PopUpDiscountAndCustomState();
 }
 
-class _UITransactionPopUpDiscountAndCustomState
-    extends State<UITransactionPopUpDiscountAndCustom> {
+class _PopUpDiscountAndCustomState extends State<PopUpDiscountAndCustom> {
   TextEditingController customDiscountController = TextEditingController();
 
   @override

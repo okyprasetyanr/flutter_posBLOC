@@ -3,33 +3,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pos/app_property/app_properties.dart';
 import 'package:flutter_pos/common_widget/widget_custom_button_icon.dart';
 import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/main_page/popup_item.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/main_page/popup_item.dart';
 import 'package:flutter_pos/features/data_user/data_user_repository_cache.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/grid_view_item.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/list_view_category.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/top_page/saved_cart.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/top_page/transaction_grid_item.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/top_page/transaction_list_category.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/top_page/transaction_saved_cart.dart';
 import 'package:flutter_pos/common_widget/widget_custom_bottom_sheet.dart';
 import 'package:flutter_pos/function/function.dart';
 import 'package:flutter_pos/style_and_transition_text/style/icon_size.dart';
 import 'package:flutter_pos/style_and_transition_text/style/style_font_size.dart';
 import 'package:flutter_pos/template/dynamic_layout_top_bottom.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/bottom_page/list_view_ordered_item.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/bottom_page/transaction_bottom_page.dart';
 import 'package:flutter_pos/common_widget/widget_animatePage.dart';
 import 'package:flutter_pos/common_widget/widget_custom_snack_bar.dart';
 import 'package:flutter_pos/common_widget/widget_dropdown_branch.dart';
 import 'package:flutter_pos/common_widget/widget_navigation_gesture.dart';
 
-class UITransaction extends StatefulWidget {
-  const UITransaction({super.key});
+class PageTransaction extends StatefulWidget {
+  const PageTransaction({super.key});
 
   @override
-  State<UITransaction> createState() => _UITransactionState();
+  State<PageTransaction> createState() => _PageTransactionState();
 }
 
-class _UITransactionState extends State<UITransaction> {
+class _PageTransactionState extends State<PageTransaction> {
   final searchController = TextEditingController();
   final isOpen = ValueNotifier<bool>(false);
   double ratioGridView = 0;
@@ -142,10 +142,7 @@ class _UITransactionState extends State<UITransaction> {
                 const SizedBox(width: 5),
                 Expanded(
                   flex: 6,
-                  child: SizedBox(
-                    height: 27,
-                    child: UITransactionListViewCategory(),
-                  ),
+                  child: SizedBox(height: 27, child: TransactionListCategory()),
                 ),
                 const SizedBox(width: 5),
                 SizedBox(
@@ -176,13 +173,13 @@ class _UITransactionState extends State<UITransaction> {
                   },
                   builder: (context, state) {
                     return state
-                        ? const UITransactionSavedCart()
+                        ? const TransactionSavedCart()
                         : SizedBox.shrink();
                   },
                 ),
               ],
             ),
-            Expanded(child: const UITransactionGridViewItem()),
+            Expanded(child: const TransactionGridItem()),
             BlocListener<TransactionBloc, TransactionState>(
               listenWhen: (prev, curr) =>
                   prev is TransactionLoaded &&
@@ -286,7 +283,7 @@ class _UITransactionState extends State<UITransaction> {
         ),
 
         Divider(color: AppPropertyColor.grey, thickness: 1),
-        Expanded(child: const TransactionListViewOrderedItem()),
+        Expanded(child: const TransactionBottomPage()),
       ],
     );
   }

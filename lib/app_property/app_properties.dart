@@ -18,8 +18,8 @@ import 'package:flutter_pos/features/common_user/report/logic/report_bloc.dart';
 import 'package:flutter_pos/features/common_user/report/logic/report_state.dart';
 import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_financial/logic/transaction_financial_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
 
 class AppPropertyColor {
   static const Color primary = const Color.fromARGB(249, 110, 161, 111);

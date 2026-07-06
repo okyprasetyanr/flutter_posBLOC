@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_bloc.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_event.dart';
-import 'package:flutter_pos/features/common_user/transaction/logic/transaction/transaction_state.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/discount_and_custom.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/expired_date.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/name_and_qty.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/note_and_subtotal.dart';
-import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/transaction/pop_item/page_item/price_and_custom.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_bloc.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_event.dart';
+import 'package:flutter_pos/features/common_user/transaction/logic/transaction_state.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/page_item/popup_discount_and_custom.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/page_item/popup_expired_date.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/page_item/popup_name_and_qty.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/page_item/popup_note_and_subtotal.dart';
+import 'package:flutter_pos/features/common_user/transaction/presentation/widgets/pop_item/page_item/popup_price_and_custom.dart';
 
-class TransactionPopUpPageItem extends StatelessWidget {
+class PagePopUpItem extends StatelessWidget {
   final TextEditingController sellPrice;
   final TextEditingController buyPrice;
   final ValueNotifier<bool> editSell;
   final ValueNotifier<bool> editBuy;
 
-  const TransactionPopUpPageItem({
+  const PagePopUpItem({
     super.key,
     required this.sellPrice,
     required this.buyPrice,
@@ -27,14 +27,14 @@ class TransactionPopUpPageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        UITransactionPopUpNameAndQty(),
+        PopUpNameAndQty(),
         const SizedBox(height: 10),
-        UITransactionPopUpNoteAndSubTotal(),
+        PopUpNoteAndSubTotal(),
         const SizedBox(height: 10),
         BlocSelector<TransactionBloc, TransactionState, bool>(
           selector: (state) => state is TransactionLoaded ? state.isSell : true,
           builder: (context, state) =>
-              state ? SizedBox.shrink() : UITransactionPopUpExpiredDate(),
+              state ? SizedBox.shrink() : PopUpExpiredDate(),
         ),
         const SizedBox(height: 10),
         BlocSelector<TransactionBloc, TransactionState, bool>(
@@ -51,7 +51,7 @@ class TransactionPopUpPageItem extends StatelessWidget {
               children: [
                 Expanded(
                   flex: state ? 3 : 1,
-                  child: UITransactionPopUpPriceAndCustom(
+                  child: PopUpPriceAndCustom(
                     forSell: true,
                     labelPrice: "Harga Jual:",
                     controller: sellPrice,
@@ -70,8 +70,8 @@ class TransactionPopUpPageItem extends StatelessWidget {
                 Expanded(
                   flex: state ? 4 : 1,
                   child: state
-                      ? const UITransactionPopUpDiscountAndCustom()
-                      : UITransactionPopUpPriceAndCustom(
+                      ? const PopUpDiscountAndCustom()
+                      : PopUpPriceAndCustom(
                           forSell: false,
                           labelPrice: "Harga Beli:",
                           controller: buyPrice,
