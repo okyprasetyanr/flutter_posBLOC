@@ -140,8 +140,4 @@ class TPaymentSuccess extends StatelessWidget {
       ),
     );
   }
-
-  Future<void> refreshIndicator() async {
-    return;
-  }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_pos/common_widget/widget_custom_text_field.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_bloc.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_event.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/logic/payment_state.dart';
+import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_button.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_receipt_header.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_discount.dart';
 import 'package:flutter_pos/features/common_user/transaction_payment/presentation/widget/t_payment_method.dart';
@@ -185,7 +186,7 @@ class _PageTransactionPaymentState extends State<PageTransactionPayment> {
             children: [
               Expanded(flex: 5, child: TPaymentSummary()),
               const SizedBox(width: 8),
-              Expanded(flex: 2, child: TPaymentSummary()),
+              Expanded(flex: 2, child: TPaymentButton()),
             ],
           ),
         ),
